@@ -51,45 +51,31 @@ STYLES = {
 
 
 def load_scenes() -> list[dict]:
-    """Load scenes from gallery_preview.html."""
-    gallery_path = os.path.join(HERE, "gallery_preview.html")
-    with open(gallery_path) as f:
-        html = f.read()
+    """Load scenes from runs/<row_id>/scenes.json."""
+    runs_dir = os.path.join(HERE, "runs")
+    if os.path.isdir(runs_dir):
+        for row_id in os.listdir(runs_dir):
+            scenes_file = os.path.join(runs_dir, row_id, "scenes.json")
+            if os.path.isfile(scenes_file):
+                with open(scenes_file) as f:
+                    data = json.load(f)
+                    # scenes.json is an array directly
+                    if isinstance(data, list):
+                        scenes = data[:20]
+                        # Ensure scene_number is set
+                        for i, s in enumerate(scenes, 1):
+                            if "scene_number" not in s:
+                                s["scene_number"] = i
+                        return scenes
 
-    scenes = []
-    # Extract scene data from the HTML (stored in data-* attrs or script)
-    # Actually, gallery.py writes scenes to runs/<row_id>/scenes.json
-    # For now, parse the HTML to get snippets
-    snippet_matches = re.findall(r'<div class="scene"[^>]*data-snippet="([^"]*)"[^>]*>', html)
-    if not snippet_matches:
-        # Fallback: look for runs/<row_id>/scenes.json
-        runs_dir = os.path.join(HERE, "runs")
-        if os.path.isdir(runs_dir):
-            for row_id in os.listdir(runs_dir):
-                scenes_file = os.path.join(runs_dir, row_id, "scenes.json")
-                if os.path.isfile(scenes_file):
-                    with open(scenes_file) as f:
-                        data = json.load(f)
-                        if "scenes" in data:
-                            return data["scenes"][:20]  # First 20 scenes
-
-    # If no scenes found in runs, create minimal test scenes
-    if not snippet_matches:
-        print("WARNING: No scenes found, using placeholder", flush=True)
-        return [
-            {"script_snippet": f"Scene {i}: A spiritual moment of transformation.",
-             "image_prompt": f"A person experiencing spiritual transformation and divine light, scene {i}."}
-            for i in range(1, 21)
-        ]
-
-    # Build scenes from snippet matches
-    for i, snippet in enumerate(snippet_matches[:20], 1):
-        scenes.append({
-            "scene_number": i,
-            "script_snippet": snippet,
-            "image_prompt": f"A spiritual moment of transformation and divine light.",
-        })
-    return scenes
+    # Fallback: create test scenes
+    print("WARNING: No scenes.json found, using placeholder", flush=True)
+    return [
+        {"scene_number": i,
+         "script_snippet": f"Scene {i}: A spiritual moment of transformation.",
+         "image_prompt": f"A person experiencing spiritual transformation and divine light."}
+        for i in range(1, 21)
+    ]
 
 
 def generate_image(scene_num: int, style_key: str, style_info: dict, image_prompt: str) -> dict:
@@ -156,7 +142,7 @@ if __name__ == "__main__":
 
     print(f"Generating {len(scenes)} scenes × {len(STYLES)} styles = {len(scenes) * len(STYLES)} images...")
     results = []
-    with ThreadPoolExecutor(max_workers=6) as ex:
+    with ThreadPoolExecutor(max_workers=3) as ex:
         futures = []
         for scene in scenes:
             scene_num = scene.get("scene_number", 1)
