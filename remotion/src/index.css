@@ -1,0 +1,5 @@
+/* Card type system — Archivo (DISPLAY) + Oswald (LABEL); see
+   src/typography.ts for the role split. Loaded from Google Fonts at render
+   time so Lambda headless Chrome has the exact weights regardless of what's
+   bundled in the OS image. */
+@import url("https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Oswald:wght@300;400;500;600;700&display=block");

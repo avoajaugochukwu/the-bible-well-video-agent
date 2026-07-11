@@ -1,0 +1,20 @@
+{
+  "name": "heritage-render",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone Remotion prototype for Heritage Decoded scene-image motion (fade-in/zoom-out -> pause -> rotate -> zoom-in/fade-out, crossfaded between scenes).",
+  "scripts": {
+    "render": "remotion render src/index.ts HeritageScenes out/preview.mp4",
+    "preview": "remotion studio src/index.ts",
+    "deploy:lambda": "node --env-file-if-exists=.env scripts/deploy-lambda.mjs",
+    "deploy:site": "node --env-file-if-exists=.env scripts/deploy-site.mjs",
+    "render:remote": "node --env-file-if-exists=.env scripts/render-remote.mjs"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.486",
+    "@remotion/lambda": "4.0.486",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.486"
+  }
+}

@@ -1,0 +1,309 @@
+[
+  {
+    "kind": "opening-title",
+    "id": "spine-opening-title",
+    "startSec": 4,
+    "title": "Blue Sleep",
+    "eyebrow": "AMISH COMMUNITIES"
+  },
+  {
+    "kind": "pull-quote",
+    "id": "v-02",
+    "startSec": 38.66,
+    "quote": "it is medicine, and for a small number of Amish and Mennonite children scattered across Pennsylvania, this blue light is the thin thread that holds their entire life together."
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-05",
+    "startSec": 80.18,
+    "word": "Every",
+    "descriptor": "second of recycling"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-06",
+    "startSec": 103.7,
+    "word": "bilirubin",
+    "descriptor": "the yellow pigment"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-07",
+    "startSec": 125.02,
+    "text": "Fat-soluble waste that needs tagging"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-09",
+    "startSec": 188.08,
+    "text": "Conjugation makes bilirubin water-friendly"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-10",
+    "startSec": 224.56,
+    "word": "handyman",
+    "descriptor": "who never shows up"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-11",
+    "startSec": 238.18,
+    "text": "Crigler-Najjar type one explained"
+  },
+  {
+    "kind": "big-stat",
+    "id": "v-13",
+    "startSec": 374.36,
+    "figure": "1 in 1,000,000",
+    "label": "WORLDWIDE INCIDENCE",
+    "direction": "neutral"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-14",
+    "startSec": 392.08,
+    "text": "Why it clusters in Plain communities"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-15",
+    "startSec": 428.4,
+    "word": "Anabaptists",
+    "descriptor": "origin story"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-16",
+    "startSec": 451.32,
+    "text": "Early 1700s migration to Pennsylvania"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-18",
+    "startSec": 536.84,
+    "text": "Hidden typos copied through generations"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-19",
+    "startSec": 573.6,
+    "word": "carrier",
+    "descriptor": "silent inheritance"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-20",
+    "startSec": 616.88,
+    "text": "Close-knit marriage increases shared genes"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-21",
+    "startSec": 676.28,
+    "word": "Researchers",
+    "descriptor": "trace a single change"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-24",
+    "startSec": 796.22,
+    "word": "Morton",
+    "descriptor": "the physician who looked"
+  },
+  {
+    "kind": "year-card",
+    "id": "v-23",
+    "startSec": 848.76,
+    "year": "1989",
+    "eyebrow": "FOUNDING"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-25",
+    "startSec": 872.44,
+    "text": "A clinic built with community barn-raising spirit"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-27",
+    "startSec": 930.42,
+    "text": "Targeted genetic testing within days of birth"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-28",
+    "startSec": 962.14,
+    "word": "blue",
+    "descriptor": "the second half"
+  },
+  {
+    "kind": "big-stat",
+    "id": "v-29",
+    "startSec": 991.42,
+    "figure": "450 nm",
+    "label": "PHOTOTHERAPY WAVELENGTH",
+    "direction": "neutral"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-30",
+    "startSec": 1004.82,
+    "text": "Light rearranges bilirubin molecules"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-33",
+    "startSec": 1107.46,
+    "text": "A household organized around a treatment"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-34",
+    "startSec": 1139.1,
+    "word": "backup",
+    "descriptor": "generators for power"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-35",
+    "startSec": 1161.06,
+    "text": "Skin thickens over years, reducing efficacy"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-36",
+    "startSec": 1197.74,
+    "word": "cure",
+    "descriptor": "the transplant answer"
+  },
+  {
+    "kind": "big-stat",
+    "id": "v-37",
+    "startSec": 1217.9,
+    "figure": "1",
+    "label": "LIVER TRANSPLANT = DEFINITIVE CURE",
+    "direction": "neutral"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-38",
+    "startSec": 1250.6,
+    "text": "Transplant carries lifelong trade-offs"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-39",
+    "startSec": 1276.68,
+    "word": "born",
+    "descriptor": "deeply yellow"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-40",
+    "startSec": 1302.42,
+    "text": "Testing + blue light + possible transplant"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-41",
+    "startSec": 1322.32,
+    "word": "strength",
+    "descriptor": "and hidden risk"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-42",
+    "startSec": 1343.14,
+    "text": "This is human genetics, magnified"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-43",
+    "startSec": 1361.86,
+    "word": "hopeful",
+    "descriptor": "community response"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-44",
+    "startSec": 1378.38,
+    "text": "Children grow up, work, marry, raise families"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "v-46",
+    "startSec": 1417.38,
+    "text": "A nightly, stubborn act of love"
+  },
+  {
+    "kind": "photo-title",
+    "id": "v-47",
+    "startSec": 1426.48,
+    "word": "love",
+    "descriptor": "switching on each night"
+  },
+  {
+    "kind": "photo-title",
+    "id": "t-1001",
+    "startSec": 286.56,
+    "word": "Doctors",
+    "descriptor": "Diagnosis folder"
+  },
+  {
+    "kind": "photo-title",
+    "id": "t-1002",
+    "startSec": 721.68,
+    "word": "And",
+    "descriptor": "Pediatric text"
+  },
+  {
+    "kind": "photo-title",
+    "id": "t-1003",
+    "startSec": 1050.56,
+    "word": "Light",
+    "descriptor": "Jaundiced infant"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "t-1004",
+    "startSec": 133.72,
+    "text": "Lipid droplets"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "t-1005",
+    "startSec": 485.06,
+    "text": "Family Bible"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "t-1006",
+    "startSec": 547.46,
+    "text": "DNA model"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "t-1007",
+    "startSec": 600.52,
+    "text": "Chance meeting"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "t-1008",
+    "startSec": 666.16,
+    "text": "Newborn cradle"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "t-1009",
+    "startSec": 807.6,
+    "text": "Farmhouse child"
+  },
+  {
+    "kind": "photo-caption",
+    "id": "t-1010",
+    "startSec": 900.34,
+    "text": "Grazing horse"
+  }
+]
