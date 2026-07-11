@@ -86,21 +86,13 @@ def _turso_blocked_domains() -> set:
         _TURSO_BLOCKED_CACHE = set()
     return _TURSO_BLOCKED_CACHE
 
-# All scenes for Bible app: high quality digital painting with spiritual/biblical
-# aesthetic. Single style across all scene_types — the app tells transformation
-# stories centered on a believer's faith journey, rendered as spiritual art.
+# All scenes for Bible app: simple minimalist stick figure style.
 STYLE_PREFIXES = {
-    "historical_dramatic": (
-        "high quality digital painting, spiritual and emotional, divine light, "
-    ),
-    "geographic": (
-        "high quality digital painting, spiritual landscape, divine light, "
-    ),
-    "modern_scientific": (
-        "high quality digital painting, spiritual transformation, divine light, "
-    ),
+    "historical_dramatic": "simple minimalist stick figure drawing, black ink on white, ",
+    "geographic": "simple minimalist stick figure drawing, black ink on white, ",
+    "modern_scientific": "simple minimalist stick figure drawing, black ink on white, ",
 }
-DEFAULT_STYLE_PREFIX = "high quality digital painting, spiritual and emotional, divine light, "
+DEFAULT_STYLE_PREFIX = "simple minimalist stick figure drawing, black ink on white, "
 
 # Graphic-lane prompt style, keyed by scene_type ('map'/'document'). gpt-image has
 # no negative_prompt param — "no photographs" is baked into the prompt text itself,
