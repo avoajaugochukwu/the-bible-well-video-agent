@@ -86,13 +86,13 @@ def _turso_blocked_domains() -> set:
         _TURSO_BLOCKED_CACHE = set()
     return _TURSO_BLOCKED_CACHE
 
-# All scenes for Bible app: simple minimalist stick figure style.
+# All scenes for Bible app: delicate stick figure style with subtle color accents, no text.
 STYLE_PREFIXES = {
-    "historical_dramatic": "simple minimalist stick figure drawing, black ink on white, ",
-    "geographic": "simple minimalist stick figure drawing, black ink on white, ",
-    "modern_scientific": "simple minimalist stick figure drawing, black ink on white, ",
+    "historical_dramatic": "delicate thin-line stick figure drawing, subtle soft color accents, black ink on white background, no text, ",
+    "geographic": "delicate thin-line stick figure drawing, subtle soft color accents, black ink on white background, no text, ",
+    "modern_scientific": "delicate thin-line stick figure drawing, subtle soft color accents, black ink on white background, no text, ",
 }
-DEFAULT_STYLE_PREFIX = "simple minimalist stick figure drawing, black ink on white, "
+DEFAULT_STYLE_PREFIX = "delicate thin-line stick figure drawing, subtle soft color accents, black ink on white background, no text, "
 
 # Graphic-lane prompt style, keyed by scene_type ('map'/'document'). gpt-image has
 # no negative_prompt param — "no photographs" is baked into the prompt text itself,
