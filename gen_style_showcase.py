@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Generate a style showcase gallery — protagonist in 10 different stick-figure styles."""
+"""Fetch Verdun prompts from S3, run through Krea, build local gallery."""
 import json
 import os
+import re
 import sys
 import urllib.request
 
@@ -12,111 +13,81 @@ sys.path.insert(0, os.path.join(HERE, "src"))
 import env
 import krea as scene_assets
 
-SHOWCASE_STYLES = {
-    "01-simple": {
-        "label": "Simple clean lines",
-        "desc": "Minimal stick figures, basic shapes, no embellishment.",
-        "prefix": "simple minimalist stick figure drawing, thin black lines on white background, ",
-    },
-    "02-expressive": {
-        "label": "Expressive gesture",
-        "desc": "Stick figures with exaggerated movement and emotional poses.",
-        "prefix": "expressive cartoon stick figure, exaggerated gestures and poses, black ink on white, ",
-    },
-    "03-geometric": {
-        "label": "Geometric shapes",
-        "desc": "Stick figures constructed from clean geometric forms.",
-        "prefix": "geometric stick figure drawing, made of simple circles and lines, clean minimalist, ",
-    },
-    "04-flowing": {
-        "label": "Flowing lines",
-        "desc": "Stick figures with smooth, flowing curved lines.",
-        "prefix": "flowing curved stick figure drawing, smooth elegant lines, black ink, ",
-    },
-    "05-storybook": {
-        "label": "Storybook style",
-        "desc": "Warm children's book illustration of stick figures.",
-        "prefix": "children's storybook stick figure illustration, warm pen and ink, gentle and approachable, ",
-    },
-    "06-bold": {
-        "label": "Bold outlines",
-        "desc": "Thick bold outlined stick figures, high contrast.",
-        "prefix": "bold thick-outline stick figure, chunky black lines on white, high contrast, ",
-    },
-    "07-watercolor": {
-        "label": "Watercolor",
-        "desc": "Soft watercolor wash with stick figure linework.",
-        "prefix": "watercolor stick figure, clean ink outlines with soft color washes, ",
-    },
-    "08-comic": {
-        "label": "Comic style",
-        "desc": "Comic book style stick figures with Ben-Day dots.",
-        "prefix": "comic book stick figure, bold outlines, flat bright color with halftone texture, ",
-    },
-    "09-retro": {
-        "label": "Retro 70s",
-        "desc": "Groovy retro 1970s cartoon stick figures.",
-        "prefix": "retro 1970s cartoon stick figure, groovy bold shapes, bright earthy palette, ",
-    },
-    "10-elegant": {
-        "label": "Elegant minimal",
-        "desc": "Sophisticated minimal line drawing, artist quality.",
-        "prefix": "elegant minimal stick figure, artist-quality line drawing, refined and sophisticated, ",
-    },
-}
+VERDUN_URL = "https://art-of-war-attachments.s3.us-west-2.amazonaws.com/thumbnails/sleepretreat/1000-verdun-cartoon/gallery.html"
 
-HERO_SUBJECTS = [
-    "A man in his 30s with simple casual modern clothes, kneeling with hands open in surrender, face peaceful, surrounded by divine light.",
-    "A woman in her 40s wearing comfortable modern clothing, arms raised in praise, face radiant with joy, bathed in warm light.",
-    "A young adult in their 20s in casual modern attire, sitting quietly in reflection, face thoughtful and calm, glowing with inner peace.",
-    "A middle-aged person in simple modern clothes, reaching forward with hope and expectation, face peaceful, surrounded by gentle light.",
-]
 
-def generate_style_variant(hero_idx: int, style_key: str, style_info: dict) -> tuple[str, str, str]:
-    """Generate one style variant. Returns (image_url, prompt_used, style_key)."""
-    hero = HERO_SUBJECTS[hero_idx % len(HERO_SUBJECTS)]
-    prefix = style_info["prefix"]
-    prompt = prefix + hero
+def fetch_verdun_html() -> str:
+    """Fetch Verdun gallery HTML from S3."""
+    try:
+        with urllib.request.urlopen(VERDUN_URL, timeout=30) as r:
+            return r.read().decode()
+    except Exception as ex:
+        raise RuntimeError(f"Failed to fetch Verdun gallery: {ex}")
 
+
+def extract_styles(html: str) -> list[dict]:
+    """Parse HTML, extract each style's key, desc, and full prompt."""
+    styles = []
+    # Match each .card block
+    cards = re.findall(r'<div class="card">.*?</div>', html, re.DOTALL)
+    for card in cards:
+        # Extract style key from h3
+        key_match = re.search(r'<h3>(v\d+-[^<]+)</h3>', card)
+        if not key_match:
+            continue
+        key = key_match.group(1)
+
+        # Extract description from .s paragraph
+        desc_match = re.search(r'<p class="s">([^<]+)</p>', card)
+        desc = desc_match.group(1) if desc_match else ""
+
+        # Extract full prompt from <pre>
+        prompt_match = re.search(r'<pre>([^<]+)</pre>', card)
+        if not prompt_match:
+            continue
+        prompt = prompt_match.group(1).strip()
+        # Unescape HTML entities
+        prompt = prompt.replace("&#x27;", "'").replace("&quot;", '"')
+
+        styles.append({"key": key, "desc": desc, "prompt": prompt})
+
+    return styles
+
+
+def generate_krea(prompt: str, style_key: str) -> str | None:
+    """Run prompt through Krea. Returns image URL or None."""
     scene_assets._load_env()
     try:
-        url = scene_assets.krea_photo(prompt, negative_prompt="text, labels, words")
+        url = scene_assets.krea_photo(prompt, negative_prompt="")
         print(f"  {style_key}: generated", flush=True)
-        return url, prompt, style_key
+        return url
     except Exception as ex:
         print(f"  {style_key}: failed — {ex}", flush=True)
-        return None, prompt, style_key
+        return None
 
 
-def build_html(results: list[dict]) -> str:
-    """Build gallery HTML from style variants."""
+def build_html(styles_with_urls: list[dict]) -> str:
+    """Build gallery HTML from styles + generated URLs."""
     cards = []
-    for r in results:
-        if not r["url"]:
+    for s in styles_with_urls:
+        if not s["url"]:
             continue
-        style_key = r["style_key"]
-        style_info = SHOWCASE_STYLES[style_key]
-        cards.append(f"""<div class="card">
-<img src="{r['url']}" alt="{style_info['label']}">
-<h3>{style_info['label']}</h3>
-<p class="s">{style_info['desc']}</p>
-<details><summary>full prompt</summary><pre>{r['prompt']}</pre></details>
-</div>""")
+        cards.append(f"""<div class="card"><img src="{s['url']}"><h3>{s['key']}</h3><p class="s">{s['desc']}</p><details><summary>full prompt</summary><pre>{s['prompt']}</pre></details></div>""")
 
     html = f"""<!doctype html><meta charset=utf-8>
-<title>Bible Well — protagonist style showcase</title>
+<title>Verdun — 20 cartoon styles (Krea-generated)</title>
 <style>
  body{{background:#f4f4f4;color:#222;font-family:system-ui,Arial;margin:24px}}
  h1{{font-size:20px}} .grid{{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}}
  .card{{background:#fff;border:1px solid #ddd;border-radius:10px;padding:10px}}
  .card img{{width:100%;border-radius:6px;display:block}}
- .card h3{{margin:8px 0 2px;font-size:14px;color:#06c}}
+ .card h3{{margin:8px 0 2px;font-size:14px;color:#b00}}
  .card .s{{margin:0 0 6px;font-size:12px;color:#666}}
  details summary{{cursor:pointer;font-size:12px;color:#06c}}
  pre{{white-space:pre-wrap;font-size:11px;color:#333;background:#f0f0f0;padding:8px;border-radius:6px;margin:6px 0 0}}
 </style>
-<h1>Bible Well — Protagonist Style Showcase</h1>
-<p style="color:#888">Same character, {len(cards)} different stick-figure rendering styles</p>
+<h1>Verdun (Krea-generated) — 20 cartoon styles</h1>
+<p style="color:#888">Prompts from original Verdun gallery, rendered locally via Krea</p>
 <div class="grid">
 {chr(10).join(cards)}
 </div>"""
@@ -124,15 +95,22 @@ def build_html(results: list[dict]) -> str:
 
 
 if __name__ == "__main__":
-    print("Generating protagonist style showcase...")
-    results = []
-    for style_key, style_info in SHOWCASE_STYLES.items():
-        url, prompt, key = generate_style_variant(0, style_key, style_info)
-        results.append({"url": url, "prompt": prompt, "style_key": key})
+    print("Fetching Verdun prompts...")
+    html = fetch_verdun_html()
 
-    html = build_html(results)
-    out_path = os.path.join(HERE, "style_showcase.html")
+    print("Extracting styles...")
+    styles = extract_styles(html)
+    print(f"Found {len(styles)} styles")
+
+    print("Generating via Krea...")
+    for s in styles:
+        url = generate_krea(s["prompt"], s["key"])
+        s["url"] = url
+
+    print("Building gallery...")
+    gallery_html = build_html(styles)
+    out_path = os.path.join(HERE, "verdun_krea_gallery.html")
     with open(out_path, "w") as f:
-        f.write(html)
+        f.write(gallery_html)
 
-    print(f"Style showcase written to {out_path}")
+    print(f"Gallery written to {out_path}")
