@@ -1,4 +1,4 @@
-# Krea art-style test — Pixar-adjacent semi-realistic render
+ generate the # Krea art-style test — Pixar-adjacent semi-realistic render
 
 Reference: user-supplied screenshot, semi-realistic 3D character render (natural eye
 size, skin texture/freckles, realistic proportions) — not full chibi/Pixar-cartoon.

@@ -48,6 +48,33 @@ BASE_NEGATIVE = (
     "distorted anatomy, oversaturated, grainy, headless, neck crop, cut off head"
 )
 
+# Appended to negative_prompt whenever a scene has a supporting character but not
+# Jesus — faith-themed image generators default any unspecified secondary
+# character into a robed, bearded Jesus look without this.
+JESUS_NEGATIVE_BLOCK = "Jesus, biblical robes, bearded man, long hair, ancient tunic, halo"
+
+# Image models (Krea) routinely render an extra unrequested person in group scenes —
+# same class of hallucination as the Jesus regression, just headcount instead of
+# identity. The LLM self-reports intended headcount via people_count; code then
+# force-appends a deterministic negative_prompt guard rather than trusting the
+# image model to respect a bare number mentioned once in the prompt.
+COUNT_NEGATIVE_BLOCKS = {
+    1: "second person, another person, additional figure, extra man, extra woman, companion, crowd, group of people",
+    2: "third person, extra person, additional man, additional woman, additional figure, crowd, group of three or more",
+    3: "fourth person, extra person, additional figure, crowd, group of four or more",
+}
+
+# Fixed, channel-wide Jesus design — NOT LLM-generated per script. Every Christian
+# Story video must render the same Jesus, so this is a constant rather than
+# something infer_characters() invents fresh each run.
+JESUS_APPEARANCE = (
+    "a compassionate man in his early-to-mid 30s with warm olive skin, flowing "
+    "shoulder-length dark brown hair worn loose with no head covering of any kind "
+    "(no turban, no headscarf, no headgear), a short well-kept beard, gentle warm "
+    "eyes, wearing a simple flowing white garment with a red cloak draped over one "
+    "shoulder, calm reverent bearing, soft warm light around him"
+)
+
 CONTEXT_SCHEMA = {
     "name": "story_context",
     "schema": {
@@ -79,31 +106,31 @@ CHARACTER_SCHEMA = {
                 "required": ["gender", "ethnicity", "age_range", "facial_features", "appearance"],
                 "additionalProperties": False,
             },
-            "jesus": {
-                "type": "object",
-                "properties": {
-                    "appearance": {"type": "string", "description": "consistent artistic rendering for this story (e.g., 'serene, robed figure with gentle eyes and warm light around him')"},
-                },
-                "required": ["appearance"],
-                "additionalProperties": False,
+            "jesus_appears": {
+                "type": "boolean",
+                "description": "true if Jesus is mentioned or directly encountered anywhere in the script, false otherwise. His visual appearance is fixed separately — not something you invent.",
             },
             "supporting_characters": {
                 "type": "array",
                 "items": {
                     "type": "object",
                     "properties": {
-                        "role": {"type": "string", "description": "their role in the story (e.g. 'friend', 'mentor', 'skeptic')"},
-                        "appearance": {"type": "string", "description": "visual features: clothing, age, build, distinctive features. NO NAME."},
+                        "role": {"type": "string", "description": "their role in the story (e.g. 'friend', 'mentor', 'coworker', 'family member')"},
+                        "gender": {"type": "string", "description": "A single concrete choice: e.g., 'male' or 'female'."},
+                        "ethnicity": {"type": "string", "description": "A single concrete choice: e.g., 'African American', 'East Asian', 'Hispanic', 'Caucasian'."},
+                        "age_range": {"type": "string", "description": "e.g. '20s', 'mid-40s', '60s'"},
+                        "hairstyle": {"type": "string", "description": "SPECIFIC modern hairstyle, e.g. 'short cropped blonde hair', 'neatly styled black bob'. NO long biblical hair/beards — that reads as Jesus."},
+                        "clothing": {"type": "string", "description": "SPECIFIC modern-2020s clothing, e.g. 'a red puffer jacket over a black t-shirt', 'a blue business blazer'. Never generic ('casual clothes'). NO robes, tunics, or sandals."},
                     },
-                    "required": ["role", "appearance"],
+                    "required": ["role", "gender", "ethnicity", "age_range", "hairstyle", "clothing"],
                     "additionalProperties": False,
                 },
-                "minItems": 0,
+                "minItems": 2,
                 "maxItems": 5,
-                "description": "recurring supporting characters (beyond protagonist and Jesus)",
+                "description": "recurring supporting characters (beyond protagonist and Jesus) who share the protagonist's journey — friends, mentors, coworkers, family. The story needs people, not just the protagonist alone with objects.",
             },
         },
-        "required": ["protagonist", "jesus", "supporting_characters"],
+        "required": ["protagonist", "jesus_appears", "supporting_characters"],
         "additionalProperties": False,
     },
 }
@@ -148,10 +175,22 @@ def _chunk_author_schema() -> dict:
                             "hero_subject": {"type": "string"},
                             "image_prompt": {"type": "string"},
                             "negative_prompt": {"type": "string"},
+                            "people_count": {
+                                "type": "integer",
+                                "enum": [1, 2, 3],
+                                "description": (
+                                    "Exact number of people (including the protagonist) "
+                                    "depicted in image_prompt for this scene — 1 if the "
+                                    "protagonist is alone, 2 if with one supporting character "
+                                    "or Jesus, 3 if with two others. Must match image_prompt "
+                                    "exactly, no more, no fewer."
+                                ),
+                            },
                             **_CLASSIFICATION_PROPERTIES,
                         },
                         "required": ["script_snippet", "hero_subject",
-                                     "image_prompt", "negative_prompt", "scene_type"],
+                                     "image_prompt", "negative_prompt", "scene_type",
+                                     "people_count"],
                         "additionalProperties": False,
                     },
                 }
@@ -261,10 +300,20 @@ def infer_characters(script: str) -> dict:
                 "counter that explicitly: the protagonist must read as a normal person in 2020s "
                 "clothing, NEVER robes, tunics, sandals, or long biblical hair/beard. NO NAME. Must be "
                 "a real person look. "
-                "(2) Jesus — a specific artistic rendering consistent throughout (describe "
-                "appearance, bearing, spiritual light, how he looks visually - ONLY if mentioned "
-                "in script). (3) any recurring supporting characters mentioned by role and their "
-                "visual appearances (clothing, age, build, features — NO NAMES). Return ONLY JSON."
+                "(2) jesus_appears — true only if Jesus is mentioned or directly encountered "
+                "anywhere in the script. His visual design is fixed separately; do not describe "
+                "his appearance. "
+                "(3) supporting characters — the story needs PEOPLE, not just the protagonist alone "
+                "with objects. Invent AT LEAST 2 recurring supporting characters tied to relationships, "
+                "community, guidance, or struggle implied by the script (e.g. a friend, a mentor, a "
+                "coworker, a family member) even if the script doesn't name them explicitly. For EACH "
+                "you MUST pick a concrete gender, ethnicity, age range, a SPECIFIC modern hairstyle "
+                "(e.g. 'short cropped blonde hair'), and SPECIFIC modern clothing (e.g. 'a red puffer "
+                "jacket over a black t-shirt') — never generic ('casual clothes', 'a person'). This is "
+                "CRITICAL: faith-themed image generators have an extreme bias toward rendering ANY "
+                "unspecified secondary character as a long-haired, bearded Jesus in robes — concrete "
+                "modern hairstyle + clothing on every supporting character is what prevents that. "
+                "NO NAMES on anyone. Return ONLY JSON."
             )},
             {"role": "user", "content": script},
         ],
@@ -281,6 +330,24 @@ def infer_characters(script: str) -> dict:
             "facial_features": "short cropped dark hair, gentle brown eyes, a friendly expression",
             "appearance": "a grey hoodie over jeans, authentic everyday person — no robes or biblical clothing"
         }
+
+    # Jesus's look is a fixed constant, never LLM-invented — only whether he's in
+    # this story at all is decided per script.
+    result["jesus"] = {"appearance": JESUS_APPEARANCE} if result.pop("jesus_appears", False) else None
+
+    # Ensure at least 2 supporting characters, even if the LLM returns too few
+    supporting = result.get("supporting_characters") or []
+    fallback_supporting = [
+        {"role": "friend", "gender": "female", "ethnicity": "Hispanic", "age_range": "30s",
+         "hairstyle": "shoulder-length black hair", "clothing": "an olive knit sweater over jeans"},
+        {"role": "mentor", "gender": "male", "ethnicity": "African American", "age_range": "50s",
+         "hairstyle": "short grey hair", "clothing": "a brown cardigan over a collared shirt"},
+    ]
+    for fb in fallback_supporting:
+        if len(supporting) >= 2:
+            break
+        supporting.append(fb)
+    result["supporting_characters"] = supporting
     return result
 
 
@@ -320,6 +387,47 @@ def chunk_script(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUNK) ->
             for i in range(0, len(sentences), sentences_per_chunk)]
 
 
+def _anchor_snippet(text: str, snippet: str, cursor: int) -> tuple[int, int] | None:
+    """Locate snippet in text at or after cursor, whitespace-tolerant. Forward-only
+    search (never before cursor) is the whole guarantee: ported from military's
+    lib/agent/core.ts anchorSnippet/sliceBySnippets — the same text can never
+    anchor twice, so duplicate/backward LLM snippets simply fail to anchor."""
+    words = snippet.split()
+    if not words:
+        return None
+    pattern = r"\s+".join(re.escape(w) for w in words)
+    m = re.compile(pattern).search(text, cursor)
+    return (m.start(), m.end()) if m else None
+
+
+def _slice_by_snippets(chunk: str, scenes: list[dict]) -> list[dict]:
+    """Re-slice every scene's script_snippet from the REAL chunk text using a
+    forward-only cursor anchor, instead of trusting the LLM's copy. Structurally
+    kills duplicate/overlapping snippets (a scene whose text can't anchor forward
+    of the previous scene's end is dropped) and guarantees full, gapless,
+    non-overlapping coverage by construction — segments always tile the whole
+    chunk, regardless of where each anchor landed."""
+    cursor = 0
+    starts, kept = [], []
+    for s in scenes:
+        anchor = _anchor_snippet(chunk, s.get("script_snippet", ""), cursor)
+        if anchor is None:
+            print(f"  dropping unanchorable scene (duplicate/paraphrased snippet): "
+                  f"{s.get('script_snippet', '')[:60]!r}...", flush=True)
+            continue
+        start, end = anchor
+        starts.append(start)
+        kept.append(s)
+        cursor = end
+    if not kept:
+        return []
+    starts[0] = 0
+    ends = starts[1:] + [len(chunk)]
+    for s, start, end in zip(kept, starts, ends):
+        s["script_snippet"] = chunk[start:end]
+    return kept
+
+
 def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> list[dict]:
     """ONE combined call, ~SENTENCES_PER_CHUNK sentences: cut this chunk into
     visual-beat scenes AND author every per-scene field for each, together.
@@ -347,7 +455,13 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
     if jesus:
         char_context += f"JESUS (ONLY when script explicitly says 'Jesus' or 'he' in teaching context. DISTINCTIVE appearance - no one else looks like this): {jesus.get('appearance', 'serene spiritual figure with distinctive presence')}.\n"
     if supporting:
-        char_context += "SUPPORTING CHARACTERS (each visually distinct, different from protagonist AND Jesus): " + "; ".join([f"role={c.get('role')}, appearance={c.get('appearance')}" for c in supporting]) + ".\n"
+        char_context += "SUPPORTING CHARACTERS (USE THESE PRE-PLANNED PEOPLE VERBATIM — never invent a new character, never change their features):\n"
+        for i, c in enumerate(supporting):
+            char_context += (
+                f"- {c.get('role', f'character_{i}')}: {c.get('ethnicity', 'a')} {c.get('gender', 'person')}, "
+                f"{c.get('age_range', 'adult')}, {c.get('hairstyle', 'modern hairstyle')}, wearing "
+                f"{c.get('clothing', 'modern clothing')}.\n"
+            )
 
     system = (
         f"GLOBAL VISUAL CONTEXT (Christian Story App):\n"
@@ -361,6 +475,19 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "their spiritual journey, emotional state, and transformation. You are given one "
         "chunk of script. Break it into visual beats, and author every field for each, "
         "in one pass. Every scene's hero_subject MUST feature the protagonist.\n\n"
+        "## CRITICAL MANDATE: ANTI-JESUS REGRESSION DEFENSE\n"
+        "Faith-based image generators have an extreme bias where ANY secondary character "
+        "automatically regresses into a long-haired, bearded Jesus in robes — even a "
+        "planned modern friend or coworker. Defend against this:\n"
+        "1. Never write a generic secondary term ('another person', 'a man', 'a helper', "
+        "or a bare role word like 'the mentor'/'a friend' with nothing else). EVERY TIME "
+        "a supporting character appears — not just their first scene — restate their "
+        "planned gender, ethnicity, hairstyle, and clothing verbatim from the CHARACTERS "
+        "block, in every single image_prompt they're in.\n"
+        "2. Never invent a new character. Use ONLY the protagonist, Jesus, and the "
+        "pre-planned supporting characters listed above — do not add anyone else.\n"
+        f"3. In any scene with a supporting character but NOT Jesus, append "
+        f"'{JESUS_NEGATIVE_BLOCK}' to that scene's negative_prompt.\n\n"
         "## PILLAR 1: SCENE BREAKING (CUT ON VISUAL CHANGE)\n\n"
         "### CUT ON VISUAL CHANGE, NOT PER SENTENCE (CORE RULE)\n"
         "A new scene is required ONLY when the visual changes. A visual change is ANY "
@@ -422,10 +549,37 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "person-standing-around composition — these are boring and fail to tell a story. ALSO "
         "BANNED: cropping the protagonist's head out of frame, cutting off their face at the neck, "
         "or hiding them in a flat anonymous silhouette — they are a real, emotionally expressive "
-        "protagonist whose face must be clearly seen. "
-        "MANDATED: every scene depicts the protagonist's upper body and face clearly as they "
-        "physically interact with a concrete, symbolic representation of their spiritual state — a "
-        "visual metaphor, not a mood shot. "
+        "protagonist whose face must be clearly seen.\n\n"
+        "### INTERACTION MANDATE (PRIORITIZE PEOPLE OVER OBJECTS)\n"
+        "The story must not be just the protagonist alone with objects — that reads as bland, and "
+        "you may NOT wait for the literal script words to say 'friend' or 'relationship' before "
+        "using a supporting character. Supporting characters and Jesus are DIRECTORIAL choices you "
+        "make even for inward/reflective beats — e.g. a mentor can be shown physically present, "
+        "watching with concern, WHILE the protagonist reaches for a symbolic object; that still "
+        "satisfies the object-metaphor beat AND adds a person. TARGET RATIO: of ALL the scenes you "
+        "output for this chunk, roughly HALF TO TWO-THIRDS should physically include a supporting "
+        "character or Jesus alongside the protagonist — NOT every single scene. Genuinely solitary "
+        "beats still matter for pacing contrast, so deliberately leave some scenes with the "
+        "protagonist alone with a symbolic object, especially private/inward temptation beats. "
+        "Before finalizing, COUNT your own scenes with a person: if under half, add one to more of "
+        "them; if it's all or nearly all of them, remove the companion from a few and let the "
+        "protagonist face those beats alone instead. Also never let more than 2 scenes in a row "
+        "pass with the protagonist alone. Prioritize, in this order:\n"
+        "1. If the beat touches relationships, community, sharing a burden, learning, or everyday "
+        "support, depict the protagonist physically interacting with ONE of the pre-planned "
+        "supporting characters: sitting together, a hand of comfort on the shoulder, walking "
+        "side by side, studying an object together.\n"
+        "2. If the beat is a direct divine encounter, surrender, or mercy moment, depict the "
+        "protagonist physically interacting with Jesus: a hand on the shoulder, walking alongside, "
+        "reaching out a hand to help them up.\n"
+        "3. If the beat is an inward struggle (temptation, doubt, distraction, chasing something "
+        "empty) but the frequency floor above isn't yet satisfied, still place a pre-planned "
+        "supporting character in the scene as a present witness or companion beside the "
+        "protagonist's symbolic action — don't force them into a role the text doesn't support, "
+        "just have them physically present and reactive.\n"
+        "4. ONLY when the frequency floor is already satisfied by nearby scenes, fall back to the "
+        "protagonist alone physically interacting with a concrete, symbolic object — a visual "
+        "metaphor, not a mood shot. "
         "Examples of the pattern (invent the specific metaphor from the actual sentence, don't "
         "reuse these verbatim): chasing worldly success -> running up a steep hill toward a "
         "floating, empty golden crown; weighing priorities -> looking at a massive scale balancing "
@@ -435,7 +589,11 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "carry a heavy, crumbling stone on their shoulder; hidden pressure or temptation -> standing "
         "amid dark glowing eyes in the shadows while looking up at a shaft of light; breaking free -> "
         "chains made of phone icons or dollar signs shattering around them while they look up with a "
-        "hopeful expression.\n"
+        "hopeful expression. Examples of the people-interaction pattern (rule 1/2 above, invent from "
+        "the actual sentence): sharing a burden -> sitting side by side with a supporting character "
+        "who has a comforting hand on their shoulder; seeking guidance -> a mentor character pointing "
+        "something out while the protagonist listens intently; surrender/mercy -> Jesus placing a hand "
+        "on the protagonist's shoulder as they look up with relief.\n"
         "Always incorporate the protagonist's ethnicity, gender, age range, facial features, and "
         "modern clothing from the CHARACTERS block above so the same identifiable person anchors "
         "every scene — never a name, never a generic 'a person'.\n"
@@ -468,7 +626,10 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "in an olive jacket watching a massive scale balance a Bible against gold coins.' 'A man in "
         "a denim jacket, determined expression, straining to carry a heavy, crumbling stone on his "
         "shoulder.' 'A person's face lit with hope as chains shaped like phone icons shatter around "
-        "them.'\n"
+        "them.' 'A Hispanic female in an olive knit sweater, talking to an elderly male mentor with "
+        "short grey hair in a brown cardigan over an open Bible.' 'A Hispanic female in an olive knit "
+        "sweater, comforted by a female friend with a black bob in a blue blazer, hand on her shoulder.' "
+        "'A man in a grey hoodie walking beside a serene, robed Jesus figure under warm light.'\n"
         "  MODERN AND GROUNDED in the setting above — clothing, rooms, and objects should read "
         "as present-day and everyday. Do NOT name an art style, medium, "
         "camera, or lens — a style prefix is added automatically.\n"
@@ -486,6 +647,10 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "clutter/anachronisms most likely to leak in for THIS exact scene (e.g. \"cluttered "
         "background, harsh fluorescent light, cartoonish, headless, cut off face\"). Don't repeat "
         "generic quality terms — those are added automatically.\n"
+        "- people_count: the exact number of people image_prompt depicts (protagonist "
+        "included) — 1 alone, 2 with one companion/Jesus, 3 with two others. Image models "
+        "routinely render an extra unrequested person in group scenes, so this count is "
+        "enforced in code afterward — it MUST match what image_prompt actually describes.\n"
         "- scene_type: classify as ONE of spiritual_moment (a quiet personal encounter with "
         "faith or God's presence), transformation (a visible change or breakthrough in the "
         "protagonist's faith), revelation (understanding or realization about God or faith), "
@@ -510,6 +675,39 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
     scenes = [s for s in data.get("scenes", []) if s.get("script_snippet", "").strip()]
     if not scenes:
         raise RuntimeError(f"author_chunk: no scenes returned for chunk {chunk[:80]!r}...: {data}")
+
+    scenes = _slice_by_snippets(chunk, scenes)
+    if not scenes:
+        raise RuntimeError(f"author_chunk: no scene snippets anchored in chunk {chunk[:80]!r}...")
+
+    # Deterministic safety net for the anti-Jesus-regression negative_prompt rule —
+    # the LLM follows it most but not all of the time (observed ~1/16 misses), so
+    # enforce it in code rather than trust every call to comply.
+    if supporting and jesus:
+        for s in scenes:
+            prompt_l = s.get("image_prompt", "").lower()
+            neg_l = s.get("negative_prompt", "").lower()
+            if "jesus" not in prompt_l and "jesus" not in neg_l:
+                s["negative_prompt"] = (
+                    s.get("negative_prompt", "").rstrip(", ") + ", " + JESUS_NEGATIVE_BLOCK
+                ).lstrip(", ")
+
+    # Deterministic safety net for phantom extra people (Krea hallucinates an
+    # unrequested additional person in group scenes) — force the declared
+    # people_count into both prompts rather than trust the image model to read
+    # a bare number once. Same "code, not prompt-trust" pattern as the Jesus block.
+    for s in scenes:
+        count = s.get("people_count", 1)
+        block = COUNT_NEGATIVE_BLOCKS.get(count)
+        if block:
+            s["negative_prompt"] = (
+                s.get("negative_prompt", "").rstrip(", ") + ", " + block
+            ).lstrip(", ")
+        word = {1: "one person", 2: "two people", 3: "three people"}.get(count, "one person")
+        s["image_prompt"] = (
+            s.get("image_prompt", "").rstrip(". ") + f", exactly {word} total, no additional figures"
+        )
+
     return scenes
 
 
@@ -559,13 +757,17 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
             })
     print(f"  -> {len(out)} scenes", flush=True)
 
-    # Coverage sanity check — warn only, never block the pipeline on an LLM
-    # near-miss (whitespace/punctuation drift is common and harmless).
+    # Coverage is now structurally guaranteed per-chunk by _slice_by_snippets (every
+    # scene's script_snippet is a real, cursor-anchored, gapless slice of its chunk),
+    # so a mismatch here can only mean chunk_script() itself split incorrectly —
+    # that's a real bug, not LLM near-miss drift, so raise instead of warn-and-proceed.
     joined = "".join(s["script_snippet"] for s in out)
     norm = lambda t: re.sub(r"\s+", " ", t).strip()  # noqa: E731
     if norm(joined) != norm(clean_script):
-        print(f"  warning: scene snippets don't exactly reconstruct the input script "
-              f"({len(norm(joined))} vs {len(norm(clean_script))} chars) — proceeding anyway", flush=True)
+        raise RuntimeError(
+            f"break_into_scenes: scene snippets don't reconstruct the input script "
+            f"({len(norm(joined))} vs {len(norm(clean_script))} chars) — chunk_script() bug"
+        )
 
     return out
 

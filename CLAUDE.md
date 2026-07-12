@@ -203,6 +203,15 @@ image routing) and `src/gallery.py` (review HTML) are built and maintained as th
 this doc deliberately doesn't duplicate their internals since they're still evolving. Read
 those files directly for the current contract.
 
+**Anti-Jesus regression bias (known Krea failure mode):** faith-themed image generators default
+ANY unspecified secondary character into a long-haired, bearded Jesus in robes. Every non-Jesus
+character (protagonist and supporting cast) must carry an explicit concrete gender, ethnicity,
+modern hairstyle, and modern clothing in both `infer_characters()`'s planning stage and every
+`image_prompt` — a bare "a person"/"a figure" is what triggers the regression. Scenes with a
+supporting character but no Jesus get `Jesus, biblical robes, bearded man, long hair, ancient
+tunic, halo` appended to `negative_prompt`. See `CHARACTER_SCHEMA` / `author_chunk()` in
+`src/scene_engine.py`.
+
 ## Layout
 
 ```

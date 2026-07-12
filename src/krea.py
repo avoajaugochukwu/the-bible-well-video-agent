@@ -41,11 +41,14 @@ def _get(url, headers):
         return json.load(r)
 
 
-def _krea_job(prompt: str, h: dict, timeout_s: int, negative_prompt: str = "") -> str:
-    body = {"prompt": prompt[:2000], "style": "photo", "aspect_ratio": "16:9",
+def _krea_job(prompt: str, h: dict, timeout_s: int, negative_prompt: str = "",
+              style: str = "photo", lora: str | None = None) -> str:
+    body = {"prompt": prompt[:2000], "style": style, "aspect_ratio": "16:9",
             "quality": "fast", "scale": 1, "n": 1}
     if negative_prompt:
         body["negative_prompt"] = negative_prompt[:1000]
+    if lora:
+        body["lora"] = lora
     job = _post(f"{_IMAGE_API}/generate", body, h)
     jid = job["job_id"]
     deadline = time.monotonic() + timeout_s
@@ -64,17 +67,65 @@ def _krea_job(prompt: str, h: dict, timeout_s: int, negative_prompt: str = "") -
 
 
 def krea_photo(prompt: str, token: str | None = None, timeout_s: int = 300, tries: int = 3,
-               negative_prompt: str = "") -> str:
-    """Generate one photoreal 16:9 still; return its public URL. Retries the whole
-    job (submit + poll), not just the submit -- a job-level failure/timeout is
-    usually transient, not the API being down, so a fresh job often succeeds.
-    Backoff (3s, 6s, 12s, ...) so a rough patch gets more breathing room each retry."""
+               negative_prompt: str = "", style: str = "photo", lora: str | None = None) -> str:
+    """Generate one 16:9 still; return its public URL. Retries the whole job (submit
+    + poll), not just the submit -- a job-level failure/timeout is usually
+    transient, not the API being down, so a fresh job often succeeds. Backoff (3s,
+    6s, 12s, ...) so a rough patch gets more breathing room each retry.
+    `style`/`lora` default to the existing photoreal pipeline (lora is ignored when
+    style="photo") -- pass style="cartoon" + a named lora key (e.g. "gouache",
+    "watercolor", "poster") to use Krea's illustrated-style LoRA router instead of
+    prompt-only styling."""
     import os
     token = token or os.environ["IMAGE_API_TOKEN"]
     h = {"Authorization": f"Bearer {token}"}
     for attempt in range(tries):
         try:
-            return _krea_job(prompt, h, timeout_s, negative_prompt)
+            return _krea_job(prompt, h, timeout_s, negative_prompt, style, lora)
+        except Exception:
+            if attempt == tries - 1:
+                raise
+            time.sleep(3 * 2 ** attempt)
+
+
+def _poll_job(jid: str, h: dict, timeout_s: int) -> str:
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        try:
+            st = _get(f"{_IMAGE_API}/status/{jid}", h)
+        except Exception:                           # transient blip mid-poll -> keep polling
+            time.sleep(3)
+            continue
+        if st.get("status") == "completed":
+            return st["images"][0]["url"]
+        if st.get("status") in ("failed", "error"):
+            raise RuntimeError(f"krea failed: {st.get('error')}")
+        time.sleep(3)
+    raise TimeoutError(f"krea job {jid} unfinished in {timeout_s}s")
+
+
+def _krea_edit_job(prompt: str, reference_images: list[str], h: dict, timeout_s: int,
+                    negative_prompt: str = "", style: str = "cartoon") -> str:
+    body = {"prompt": prompt[:2000], "aspect_ratio": "16:9", "style": style,
+            "quality": "fast", "scale": 1, "n": 1, "reference_images": reference_images}
+    if negative_prompt:
+        body["negative_prompt"] = negative_prompt[:1000]
+    job = _post(f"{_IMAGE_API}/edit", body, h)
+    return _poll_job(job["job_id"], h, timeout_s)
+
+
+def krea_edit_photo(prompt: str, reference_images: list[str], token: str | None = None,
+                     timeout_s: int = 300, tries: int = 3, negative_prompt: str = "",
+                     style: str = "cartoon") -> str:
+    """Image-to-image style transfer: apply the look of `reference_images` (public
+    URLs or base64 data) to a new scene described by `prompt`. Same submit+poll
+    retry shape as krea_photo()."""
+    import os
+    token = token or os.environ["IMAGE_API_TOKEN"]
+    h = {"Authorization": f"Bearer {token}"}
+    for attempt in range(tries):
+        try:
+            return _krea_edit_job(prompt, reference_images, h, timeout_s, negative_prompt, style)
         except Exception:
             if attempt == tries - 1:
                 raise
