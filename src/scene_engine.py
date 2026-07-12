@@ -2,34 +2,16 @@
 since every caller needs both in sequence:
 
   break_into_scenes(script) -> OpenAI chat-completions calls (gpt-5-mini, raw urllib, this
-                                repo's house style — see shared/clickup.py). Returns
-                                [{scene_number, script_snippet, hero_subject, search_terms,
+                                repo's house style). Returns
+                                [{scene_number, script_snippet, hero_subject,
                                 image_prompt, negative_prompt, scene_type, named_entity,
                                 named_entity_kind}, ...] — scene_type/named_entity/
-                                named_entity_kind drive asset_selector.py's lane routing
-                                (archival/stock/graphic/Krea), see that file for the
-                                routing contract.
+                                named_entity_kind drive asset_selector.py's lane routing.
 
-                                Scene-splitting + search_terms follow the sibling
-                                `service/scene-generation-service`'s `breakdown-pro`
-                                design (ported, not imported — separate repo/language):
-                                mechanical, LLM-free sentence chunking (chunk_script(),
-                                ~8 sentences/chunk, a pure batching device) feeds ONE
-                                combined LLM call per chunk (author_chunk()) that BOTH
-                                cuts the chunk into visual-beat scenes (list-cut /
-                                staccato / merge-cap rules) AND writes hero_subject +
-                                search_terms + image_prompt together — so a scene's
-                                search query and its generative-fallback prompt always
-                                describe the SAME concrete subject instead of drifting
-                                apart. Replaces an earlier three-stage design (a whole-
-                                script LLM snippet-proposal pass, then a separate batch-
-                                authoring pass) that produced scenes/search terms
-                                disconnected from the narration — literalized surnames
-                                into search queries, invented specific landmark names,
-                                mood/lighting words in search terms. Root cause: splitting
-                                and authoring were two LLM calls with no shared anchor: a
-                                single hero_subject requirement each scene's search_terms
-                                and image_prompt both build around fixes that.
+                                Scene-splitting follows mechanical, LLM-free sentence chunking
+                                (chunk_script(), ~8 sentences/chunk) feeding ONE combined LLM call
+                                per chunk (author_chunk()) that cuts scenes (list-cut / staccato /
+                                merge-cap rules) and writes hero_subject + image_prompt together.
   generate_images(scenes)    -> asset_selector.py:route() per scene, IN PARALLEL
                                 (every lane is I/O-bound, scenes are independent).
                                 Returns each scene with an added image_url + lane.
@@ -83,13 +65,11 @@ CONTEXT_SCHEMA = {
     "schema": {
         "type": "object",
         "properties": {
-            "era": {"type": "string", "description": "exact period/dynasty/decade, e.g. 'Tang Dynasty, 8th century' or 'Scottish Highlands, 17th century'"},
-            "place": {"type": "string", "description": "exact place/region, e.g. 'Chang'an, Tang China' or 'Glencoe, Scotland'"},
-            "palette": {"type": "string", "description": "3-6 words on the era's real-world colour palette, e.g. 'jade, lacquer red, gold leaf' or 'moss green, slate grey, heather purple'"},
-            "cultural_anchors": {"type": "string", "description": "3-5 iconic, visually recognizable physical elements of this specific culture, such as clothing silhouettes, headwear, armor, materials, or signature tools"},
-            "environmental_anchors": {"type": "string", "description": "2-3 characteristic geographic, architectural, or atmospheric/weather elements native to this setting, such as stone keeps, rolling valley fog, shoji screens, or heavy snow"},
+            "setting": {"type": "string", "description": "contemporary setting for the spiritual journey, e.g. 'modern urban life, everyday struggles, personal spaces'"},
+            "spiritual_theme": {"type": "string", "description": "core spiritual transformation theme, e.g. 'faith, surrender, trust in God, putting God first'"},
+            "emotional_palette": {"type": "string", "description": "emotional tone and mood, e.g. 'hopeful, peaceful, transformative, divine light'"},
         },
-        "required": ["era", "place", "palette", "cultural_anchors", "environmental_anchors"],
+        "required": ["setting", "spiritual_theme", "emotional_palette"],
         "additionalProperties": False,
     },
 }
@@ -137,47 +117,30 @@ CHARACTER_SCHEMA = {
     },
 }
 
-# Five buckets a scene can be classified into — drives asset_selector.py's lane
-# routing. Kept here (not in asset_selector.py) since the LLM that assigns them
-# lives in this file; asset_selector.py just reads the field.
-SCENE_TYPES = ["historical_dramatic", "geographic", "modern_scientific", "map", "document"]
-NAMED_ENTITY_KINDS = ["person", "location", ""]
+# Scene types for spiritual journey — all scenes focus on faith transformation.
+SCENE_TYPES = ["spiritual_moment", "transformation", "revelation", "decision", "reflection"]
+NAMED_ENTITY_KINDS = [""]
 
 _CLASSIFICATION_PROPERTIES = {
     "scene_type": {
         "type": "string",
         "enum": SCENE_TYPES,
         "description": (
-            "historical_dramatic: a period scene with no separate map/document/modern "
-            "content. geographic: a landscape/region/travel-route establishing shot. "
-            "modern_scientific: present-day content (labs, DNA, interviews, archives-as-"
-            "modern-institution). map: the beat is literally about a map/route/migration. "
-            "document: ONLY when a SPECIFIC physical record/ledger/manuscript/letter is "
-            "actually shown, held, read, or found — never just because the beat mentions "
-            "a surname, a name, a list, or a number in the abstract (those default to "
-            "historical_dramatic)."
+            "spiritual_moment: a quiet personal encounter with faith or God's presence. "
+            "transformation: a visible change or breakthrough in the protagonist's faith. "
+            "revelation: understanding or realization about God or faith. "
+            "decision: a choice point where the protagonist chooses faith/obedience. "
+            "reflection: internal pondering, prayer, or spiritual contemplation."
         ),
     },
     "named_entity": {
         "type": "string",
-        "description": (
-            "The exact real-world proper noun this snippet names, if any — a specific "
-            "landmark, ship, person, region, or document/record title (e.g. 'Dunvegan "
-            "Castle', 'the Charming Nancy', 'Lancaster County', 'a 1730s baptismal "
-            "register'). Empty string \"\" if the snippet describes a generic/composite "
-            "scene with no single real thing to look up."
-        ),
+        "description": "Empty string for all spiritual scenes — this field is not used in faith-focused narratives.",
     },
     "named_entity_kind": {
         "type": "string",
         "enum": NAMED_ENTITY_KINDS,
-        "description": (
-            "Only meaningful when named_entity is non-empty AND scene_type is "
-            "historical_dramatic or geographic: 'person' for a named individual, "
-            "'location' for a named place/landmark/ship/region. Empty string \"\" "
-            "otherwise (including whenever named_entity is empty, or scene_type is "
-            "map/document — those lanes don't need a kind)."
-        ),
+        "description": "Always empty — not used in Christian Story.",
     },
 }
 
@@ -202,15 +165,11 @@ def _chunk_author_schema() -> dict:
                         "properties": {
                             "script_snippet": {"type": "string"},
                             "hero_subject": {"type": "string"},
-                            "search_terms": {
-                                "type": "array", "items": {"type": "string"},
-                                "minItems": 1, "maxItems": 3,
-                            },
                             "image_prompt": {"type": "string"},
                             "negative_prompt": {"type": "string"},
                             **_CLASSIFICATION_PROPERTIES,
                         },
-                        "required": ["script_snippet", "hero_subject", "search_terms",
+                        "required": ["script_snippet", "hero_subject",
                                      "image_prompt", "negative_prompt",
                                      "scene_type", "named_entity", "named_entity_kind"],
                         "additionalProperties": False,
@@ -309,19 +268,17 @@ def _chat(messages: list[dict], schema: dict, max_completion_tokens: int = 4096)
 
 
 def infer_context(script: str) -> dict:
-    """One cheap call: pin the script's exact era/place/palette/anchors ONCE up front, so
-    every later batch call (which only ever sees its own slice of the script)
-    stays period-locked and visually consistent with the culture being depicted."""
+    """Extract spiritual context from the script — setting, theme, emotional tone."""
     return _chat(
         [
             {"role": "system", "content": (
-                "This is a MODERN EXPLAINER VIDEO, not a historical narrative. Identify the "
-                "ACTUAL SETTING and visual aesthetic: this is CONTEMPORARY TIMES (2020s, modern "
-                "era). Ignore any biblical/religious CONTENT in the script — that's what's being "
-                "explained, not the setting. Extract a color palette and cultural/environmental "
-                "anchors for MODERN CONTEMPORARY life (current era, contemporary clothing, modern "
-                "environments, present-day aesthetics). The setting is NOW, not historical. Return "
-                "ONLY the JSON object described by the schema."
+                "You are analyzing a spiritual transformation narrative for a Christian story app. "
+                "Extract the context: (1) setting — describe the contemporary, everyday "
+                "setting where this faith journey unfolds (modern homes, workplaces, daily life), "
+                "(2) spiritual_theme — the core transformation theme (e.g., faith, surrender, "
+                "trust, putting God first), (3) emotional_palette — the emotional and spiritual "
+                "tone (e.g., hopeful, peaceful, transformative, divine presence). Focus on the "
+                "spiritual journey, not locations or time periods. Return ONLY the JSON object."
             )},
             {"role": "user", "content": script},
         ],
@@ -412,8 +369,8 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         char_context += "SUPPORTING CHARACTERS (each visually distinct, different from protagonist AND Jesus): " + "; ".join([f"role={c.get('role')}, appearance={c.get('appearance')}" for c in supporting]) + ".\n"
 
     system = (
-        f"GLOBAL VISUAL CONTEXT (Bible Story App):\n"
-        f"Setting: {context['era']} — {context['place']}\n"
+        f"GLOBAL VISUAL CONTEXT (Christian Story App):\n"
+        f"Setting: {context['spiritual context']}\n"
         f"Color Palette: {context['palette']}\n"
         f"Cultural/Environmental Anchors: {context['cultural_anchors']}; "
         f"{context['environmental_anchors']}\n\n"
@@ -491,83 +448,22 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "\"push-in\", \"wide shot\", \"close-up\", \"tracking shot\", \"dolly\", "
         "\"crane\") and pure mood words with no subject (\"tense\", \"ominous\", "
         "\"peaceful\") — describe the physical thing, not the feeling.\n\n"
-        "## PILLAR 3: SEARCH TERM RULES\n\n"
-        "search_terms: 1-3 SHORT literal search queries (3-8 words each) for finding a "
-        "REAL archival photo, painting, map, document, or stock photo of the "
-        "hero_subject.\n"
-        "RULE 1 — NO LITERALISM: translate abstract narration into a physical, "
-        "photographable object. BAD: 'The industry forgot' (too abstract), 'Zulu chief's "
-        "surname'. GOOD: 'Dusty abandoned ledger book', 'Zulu royal kraal homestead'.\n"
-        "RULE 2 — CONCRETE SUBJECTS ONLY: every query must name a concrete subject "
-        "(person, object, place, document). Never query for moods, states, or "
-        "adjectives alone. BAD: 'quiet morning', 'inhospitable terrain'. GOOD: "
-        "'soldiers in fog-filled trenches', 'stone farmhouse foggy morning'. Ask "
-        "'could I photograph this?' — if no, find the nearest physical visual.\n"
-        "RULE 3 — MODIFIER + HERO SUBJECT, NO COMPOUNDS: keep queries simple — "
-        "(modifier) + (hero subject) + (optional setting). BAD (too compound): 'P-51 "
-        "Mustang with severed oil line trailing smoke over Czechoslovakia'. GOOD: 'P-51 "
-        "trailing smoke', 'Damaged P-51 fighter'.\n"
-        "RULE 4 — HERO SUBJECT REUSE: at least 2 of your 1-3 search_terms must reuse "
-        "the hero_subject named above — this anchors every query to the same real "
-        "thing.\n"
-        "RULE 5 — STRONGEST VISUAL FIRST: order queries so the most visually "
-        "compelling, real-photograph-likely one comes first (named person -> portrait; "
-        "landscape/culture -> the iconic real-world scene; document/record -> the "
-        "object itself).\n"
-        "RULE 6 — STATIC SUBJECTS ONLY: name a static thing/place/object, no verbs, no "
-        "'-ing' actions — a photo search indexes static subject tags, not described "
-        "actions. BAD: 'man playing bagpipes'. GOOD: 'bagpiper portrait'.\n"
-        "RULE 7 — NO OBSCURE NAMES: never write a specific proper-noun site/building "
-        "name unless it's WIDELY POPULAR (a major landmark tourists know) — an obscure "
-        "real place has almost no indexed photos and the search will still fail. "
-        "Default to a GENERIC real category instead: 'Andean stone terrace farmhouse' "
-        "not 'the Quispe family homestead'.\n"
-        "RULE 8 — ERA SUFFIX: every search_term should read as period-appropriate for "
-        f"\"{era_tail}\" — if a bare term would just as easily return a modern photo "
-        "(a plain object, a landscape, a generic building), fold a short era/place cue "
-        "into the query itself so the search stays period-locked, e.g. '16th century "
-        "Ottoman bazaar street' not just 'bazaar street'.\n"
-        "BANNED WORDS IN SEARCH_TERMS (mood/lighting/cinematic — these belong in "
-        "hero_subject and image_prompt, NOT in a search query; a real photo search "
-        "engine does not index captions on these words): night sky, golden-hour, dim, "
-        "sunlit, moody, dark, dramatic, weathered, faded, abandoned, overgrown, eerie, "
-        "haunting, silhouette, backlit, atmospheric, candlelit, lamplit, misty, "
-        "cinematic, chiaroscuro, sepia. If the hero_subject's own modifiers include one "
-        "of these words, DROP it from the search_term wording and keep only the "
-        "concrete noun + a RULE 8 era/place cue.\n"
-        "- BAD: 'candlelit family Bible', 'sepia portrait silhouette', 'weathered "
-        "stone cottage'.\n"
-        "- GOOD: '18th century family Bible', 'Edo-period portrait engraving', "
-        "'stone cottage Scottish Highlands'.\n"
-        "ATMOSPHERIC SCENE HANDLING: when narration is mood-heavy with no obvious "
-        "subject, query the physical setting or objects that would actually be "
-        "visible, never mood words.\n"
-        "- \"The tension was unbearable\" -> \"soldiers waiting in trenches\", \"stone "
-        "farmhouse dusk exterior\".\n"
-        "- \"30 seconds. The forest exploded.\" -> \"forest clearing trees\", \"smoke "
-        "rising from woodland\".\n\n"
-        "ABSTRACT/HARD-TO-VISUALIZE BEATS: for CTAs (subscribe/like/comment), create a "
-        "scene ONLY if it's an explicit subscribe action (e.g. 'subscribe to...'). For "
-        "list callouts and retention hooks, depict OUTDOOR on-culture scenes only. Never "
-        "reference YouTube, platforms, or media technology in any scene — keep all visuals "
-        "in the spiritual/biblical context only.\n\n"
-        "- image_prompt: a SHORT (8-15 words) plain description of the actual scene/"
-        "activity happening, built around the SAME hero_subject/scene as search_terms "
-        "(for when no real photo is found) — never illustrate a different scene than the "
-        "one search_terms is looking for. Say WHAT is shown (a real activity, place, or "
+        "## PILLAR 3: IMAGE PROMPT RULES\n\n"
+        "image_prompt: a SHORT (8-15 words) plain description of the actual scene/"
+        "activity happening, centered on the hero_subject. Say WHAT is shown (a real activity, place, or "
         "moment — people doing something, a landscape, a scene in motion) and WHEN/WHERE "
-        "(era, place, culture) so the image generator dates it correctly. Do NOT describe "
+        "(spiritual context, culture) so the image generator dates it correctly. Do NOT describe "
         "lighting, shadow, mood, or atmosphere (no 'moody', 'dark', 'dramatic', "
         "'chiaroscuro', 'candlelit', 'golden-hour', 'eerie', 'atmospheric') and do NOT "
         "prescribe a light source, texture, or camera angle — none of that; a style "
         "prefix and the palette above already set the visual treatment. Just the "
-        "subject/activity + era/place cue, plainly.\n"
-        "  EXAMPLES (STUDY AND CONFORM — for whatever era/place THIS script actually is, "
+        "subject/activity + spiritual context cue, plainly.\n"
+        "  EXAMPLES (STUDY AND CONFORM — for whatever spiritual context THIS script actually is, "
         "not necessarily these): 'Amish family tending a farm with a horse-drawn buggy, "
         "18th century Pennsylvania.' 'Rolling hills of the Scottish Highlands.' "
         "'Merchants trading silk in a Tang-dynasty market street, 8th century Chang'an.' "
         "'Andean farmers terracing a mountainside, 15th century Inca highlands.'\n"
-        "  PERIOD- AND PLACE-LOCKED to the era/place above — clothing, architecture, and "
+        "  PERIOD- AND PLACE-LOCKED to the spiritual context above — clothing, architecture, and "
         "technology must be historically accurate. Do NOT name an art style, medium, "
         "camera, or lens — a style prefix is added automatically.\n"
         "  NO LEGIBLE TEXT, EVER: the image generator cannot render real words and always "
@@ -581,7 +477,7 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "object's texture/edge/binding, or the text-bearing face angled fully away from "
         "camera. Do NOT mention text, captions, watermarks, or logos.\n"
         "- negative_prompt: a short comma-separated list (under ~40 words) of "
-        "anachronisms most likely to leak in for THIS exact era/place (e.g. "
+        "anachronisms most likely to leak in for THIS exact spiritual context (e.g. "
         "pre-industrial -> \"cars, electricity, power lines, plastic, modern clothing, "
         "cameras, firearms\"). Don't repeat generic quality terms — those are added "
         "automatically.\n"
@@ -634,9 +530,9 @@ def classify_batch(context: dict, scenes: list[dict]) -> list[dict]:
     multi-lane contract — see classify_scenes()."""
     system = (
         f"GLOBAL VISUAL CONTEXT:\n"
-        f"Era/Place: {context['era']} — {context['place']}\n\n"
+        f"Era/Place: {context['spiritual context']}\n\n"
         "You are classifying already-written image prompts for a history-narration channel "
-        "(\"Heritage Decoded\") so each scene can be routed to the right image source (real "
+        "(\"Christian Story\") so each scene can be routed to the right image source (real "
         "archival photo/painting/map/document search, stock photo, an AI-generated map/"
         "document graphic, or an AI-painted illustration as fallback). You are given a list "
         "of {script_snippet, image_prompt} pairs, in order. For EACH ONE, in the SAME "
@@ -699,7 +595,7 @@ def classify_scenes(context: dict, scenes: list[dict], batch_size: int = BATCH_S
 
     out = list(scenes)
     for i, classification in zip(todo_idx, flat):
-        out[i] = {**out[i], "scene_type": classification.get("scene_type", "historical_dramatic"),
+        out[i] = {**out[i], "scene_type": classification.get("scene_type", "spiritual_moment"),
                   "named_entity": classification.get("named_entity", ""),
                   "named_entity_kind": classification.get("named_entity_kind", "")}
     return out
@@ -725,7 +621,7 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
     from concurrent.futures import ThreadPoolExecutor
 
     context = context or infer_context(script)
-    print(f"  context: {context['era']} — {context['place']}", flush=True)
+    print(f"  context: {context['spiritual context']}", flush=True)
 
     characters = infer_characters(script)
     prot_appearance = characters.get('protagonist', {}).get('appearance', 'undefined')[:30] if characters.get('protagonist') else 'none'
@@ -744,10 +640,9 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
                 "scene_number": len(out) + 1,
                 "script_snippet": a["script_snippet"],
                 "hero_subject": a.get("hero_subject", ""),
-                "search_terms": a.get("search_terms") or [],
                 "image_prompt": a["image_prompt"],
                 "negative_prompt": a.get("negative_prompt", ""),
-                "scene_type": a.get("scene_type", "historical_dramatic"),
+                "scene_type": a.get("scene_type", "spiritual_moment"),
                 "named_entity": a.get("named_entity", ""),
                 "named_entity_kind": a.get("named_entity_kind", ""),
             })
@@ -767,7 +662,7 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
 def generate_images(scenes: list[dict], context: dict, workers: int = 8) -> list[dict]:
     """Each scene -> asset_selector.py:route(), IN PARALLEL (every lane — archival
     search, stock search, graphic generation, Krea — is I/O-bound, scenes are
-    independent). `context` is infer_context()'s output (era/place), needed by the
+    independent). `context` is infer_context()'s output (spiritual context), needed by the
     archival lane's vision-QA prompts. A scene's image failure degrades to
     image_url=None rather than aborting the batch. Adds `lane` to every scene
     (which lane actually produced the image, or None if every lane failed).

@@ -11,7 +11,7 @@ for personal tokens).
   Falls back to POST /api/v2/task/{id}/comment if the description PUT fails.
 Never raises into the caller — returns True/False.
 
-List: "Heritage Decoded", id 901113620100, Team Space, Karl's Workspace.
+List: "Christian Story", id 901113620100, Team Space, Karl's Workspace.
 """
 import json
 import os

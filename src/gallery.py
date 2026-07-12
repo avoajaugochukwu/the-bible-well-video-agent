@@ -66,7 +66,7 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Heritage Decoded — Scene Gallery</title>
+<title>Christian Story — Scene Gallery</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   :root {{
@@ -309,7 +309,7 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
 </style>
 </head>
 <body>
-  <h1>Heritage Decoded — Scene Gallery</h1>
+  <h1>Christian Story — Scene Gallery</h1>
   <p class="sub">{len(scenes)} scenes, {sum(1 for s in scenes if s.get("mood_designated"))} marked
     <span style="color: var(--mood); font-weight: 700;">CULTURAL ANCHOR</span>
     (code-picked mood/establishing scenes). Click any image to view full size.</p>

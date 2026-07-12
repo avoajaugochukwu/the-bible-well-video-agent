@@ -1,4 +1,4 @@
-"""One-time experiment: fire a Heritage Decoded run's scenes at the shared
+"""One-time experiment: fire a Christian Story run's scenes at the shared
 remotion-test-2 render service (/api/handoff) instead of our own remotion/
 Lambda deploy, just to see how their composition (Ken Burns + cards, own
 Whisper alignment) renders our material. Not wired into run.py.

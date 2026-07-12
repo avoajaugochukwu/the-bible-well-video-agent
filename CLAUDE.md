@@ -1,20 +1,20 @@
-# CLAUDE.md — Heritage Decoded SOP
+# CLAUDE.md — Christian Story Video Agent SOP
 
 The operating SOP, self-contained. Everything an agent needs to run this is in this file.
 
-This repo holds one pipeline — Heritage Decoded — laid out with standard project directory
+This repo holds one pipeline — Christian Story — laid out with standard project directory
 names (`src/`, `utils/`, `remotion/`, `runs/`) at the repo root. There is no separate
 sub-folder for the pipeline and no cross-pipeline `shared/` folder to keep in sync.
 
 ## What this project does
 
-Generate a scene-by-scene "sleep story" video for the Heritage Decoded channel (history,
-any period/place — not limited to any one region or era — long-form, ambient) from a script
-that already exists in Baserow. **This pipeline never writes scripts.** Script, narration
+Generate a scene-by-scene spiritual transformation video for the Christian Story channel (faith-based,
+character-driven narratives focused on personal transformation and God's work in daily life)
+from a script that already exists in Baserow. **This pipeline never writes scripts.** Script, narration
 audio, and sound all come from a Baserow row that's already been marked `script_status=done`
 and `voice_status=done` by an upstream writing process (not this repo). This project's job
-starts after that: break the script into scenes, generate a period-accurate image per scene
-(Krea), assemble/render, then push the finished video url back to ClickUp and mark the Baserow
+starts after that: break the script into scenes, generate a spiritual image per scene
+(Krea, high-quality digital painting), assemble/render, then push the finished video url back to ClickUp and mark the Baserow
 row `video_processed=done`.
 
 Output per run → one rendered video, one ClickUp task updated with the video url, one Baserow
@@ -42,7 +42,7 @@ shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → Basero
 
 ## Inputs
 
-- **A Baserow row**, channel = `"Heritage Decoded"` (single_select value on the shared Baserow
+- **A Baserow row**, channel = `"Christian Story"` (single_select value on the shared Baserow
   instance/table, id `2` — same instance space-cluster uses). No CLI args, no manual brief —
   `src/baserow.py:next_ready()` pulls the lowest-id ready row automatically, same pattern
   as `space-cluster/front/baserow.py`.
@@ -82,7 +82,7 @@ shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → Basero
 ## Pipeline stages
 
 ```
-1 BASEROW    src/baserow.py: next_ready() pulls the lowest-id "Heritage Decoded" row
+1 BASEROW    src/baserow.py: next_ready() pulls the lowest-id "Christian Story" row
              with script_status=done, voice_status=done, video_processed!=done.
 2 SCENES     src/scene_engine.py: LLM scene breakdown of the row's script — OpenAI
              gpt-5-mini, reasoning_effort=low. Three small calls, not one mega-call:
@@ -154,7 +154,7 @@ Table id `2` (shared instance, same one `space-cluster` uses). Fields this pipel
 
 | field              | type          | meaning                                              |
 |--------------------|---------------|-------------------------------------------------------|
-| `channel`          | single_select | must equal `"Heritage Decoded"`, option id `67`        |
+| `channel`          | single_select | must equal `"Christian Story"`, option id `67`        |
 | `script`           | text          | the script, verbatim — never edited by this pipeline   |
 | `script_status`    | single_select | gate: must be `"done"`                                 |
 | `voice_url`        | text          | narration audio url (mp3), narration ONLY, no SFX      |
@@ -173,7 +173,7 @@ Table id `2` (shared instance, same one `space-cluster` uses). Fields this pipel
 
 ## ClickUp
 
-- List: **"Heritage Decoded"**, id `901113620100`, in "Team Space", workspace "Karl's
+- List: **"Christian Story"**, id `901113620100`, in "Team Space", workspace "Karl's
   Workspace" — same ClickUp account/token as `space-cluster`.
 - `src/clickup.py:push_video(clickup_url, video_url)`: GET task -> prepend
   `"🎬 VIDEO: <url>"` to its description -> PUT task; falls back to POST-ing a comment if the

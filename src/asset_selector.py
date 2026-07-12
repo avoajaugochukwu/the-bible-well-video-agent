@@ -86,7 +86,7 @@ def _turso_blocked_domains() -> set:
         _TURSO_BLOCKED_CACHE = set()
     return _TURSO_BLOCKED_CACHE
 
-# All scenes for Bible app: delicate stick figure style with subtle color accents, no text.
+# All scenes for Christian story app: delicate stick figure style with subtle color accents, no text.
 STYLE_PREFIXES = {
     "historical_dramatic": "delicate thin-line stick figure drawing, subtle soft color accents, black ink on white background, no text, ",
     "geographic": "delicate thin-line stick figure drawing, subtle soft color accents, black ink on white background, no text, ",
@@ -426,7 +426,7 @@ def route(scene: dict, context: dict) -> dict:
     that produced it — attempted even when the lane failed, so a reviewer can see
     WHY nothing came back), and `basis_kind` ('search' or 'prompt').
 
-    TODO: Bible app currently forces KREA digital painting only (skips archival/stock).
+    TODO: Christian story app currently forces KREA digital painting only (skips archival/stock).
     Remove this workaround once hero_subject authoring consistently shows protagonist."""
     stype = scene.get("scene_type", "historical_dramatic")
     entity = (scene.get("named_entity") or "").strip()
@@ -456,7 +456,7 @@ def route(scene: dict, context: dict) -> dict:
         return {**scene, "image_url": url, "lane": "stock",
                 "image_basis": query, "basis_kind": "search"}
 
-    # Bible app: force KREA digital painting for all scenes. Skip archival/stock search.
+    # Christian story app: force KREA digital painting for all scenes. Skip archival/stock search.
     if stype in ("map", "document"):
         url, prompt = graphic_image(scene["image_prompt"], stype)
         return {**scene, "image_url": url, "lane": f"graphic-{stype}" if url else None,

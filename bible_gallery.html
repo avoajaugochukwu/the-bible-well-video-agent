@@ -1,0 +1,151 @@
+<!doctype html><meta charset=utf-8>
+<title>Bible Well — 30-Day God First — Digital Paintings</title>
+<style>
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:#1a1a1a;color:#fff;font-family:system-ui,Arial;padding:20px}
+ h1{font-size:28px;margin:20px 0;text-align:center}
+ .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:15px}
+ .card{cursor:pointer;border-radius:8px;overflow:hidden;background:#222;transition:transform 0.2s,box-shadow 0.2s}
+ .card:hover{transform:scale(1.05);box-shadow:0 8px 16px rgba(218,165,32,0.4)}
+ .card img{width:100%;height:200px;object-fit:cover;display:block}
+ .card-label{padding:8px;font-weight:bold;font-size:14px;background:#daa520}
+ .card-snippet{padding:8px;font-size:12px;color:#bbb;max-height:60px;overflow:hidden}
+ .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:1000;align-items:center;justify-content:center}
+ .modal.active{display:flex}
+ .modal-content{position:relative;max-width:90vw;max-height:90vh;background:#000;border-radius:12px;overflow:auto}
+ .modal img{width:100%;height:auto;display:block}
+ .modal-info{padding:15px;background:#111;border-top:1px solid #333}
+ .modal-title{font-size:18px;font-weight:bold;margin-bottom:5px}
+ .modal-close{position:absolute;top:10px;right:10px;background:#daa520;color:#000;border:none;border-radius:50%;width:40px;height:40px;font-size:24px;cursor:pointer;z-index:10;font-weight:bold}
+ .modal-close:hover{background:#ffd700}
+</style>
+<h1>Bible Well — 30-Day God First Challenge</h1>
+<p style="text-align:center;color:#aaa;margin-bottom:20px">20 scenes in high-quality digital painting style</p>
+<div class="gallery-grid">
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VWECDZZMQ9C59J884YSVG/0.png', 'Scene 1')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VWECDZZMQ9C59J884YSVG/0.png" alt="Scene 1">
+<div class="card-label">Scene 1</div>
+<div class="card-snippet">Have you ever wondered what would happen if you truly put God first in every part of your life for 30 days? [music] ...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VWEG3819QW1WSVCE4XGBY/0.png', 'Scene 2')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VWEG3819QW1WSVCE4XGBY/0.png" alt="Scene 2">
+<div class="card-label">Scene 2</div>
+<div class="card-snippet">Not halfway,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VWEH9N1D819K0KGBB3RGZ/0.png', 'Scene 3')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VWEH9N1D819K0KGBB3RGZ/0.png" alt="Scene 3">
+<div class="card-label">Scene 3</div>
+<div class="card-snippet"> not only on Sundays,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXQNTJ10JSG76WV89KPRS/0.png', 'Scene 4')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXQNTJ10JSG76WV89KPRS/0.png" alt="Scene 4">
+<div class="card-label">Scene 4</div>
+<div class="card-snippet"> but completely....</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXRG33HE4TSH8QB18TRRE/0.png', 'Scene 5')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXRG33HE4TSH8QB18TRRE/0.png" alt="Scene 5">
+<div class="card-label">Scene 5</div>
+<div class="card-snippet">Most people want peace,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXVWAD42AQGA3D7Z9D61X/0.png', 'Scene 6')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXVWAD42AQGA3D7Z9D61X/0.png" alt="Scene 6">
+<div class="card-label">Scene 6</div>
+<div class="card-snippet"> direction,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXYF3SDJXXCTN8GRYXW4V/0.png', 'Scene 7')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXYF3SDJXXCTN8GRYXW4V/0.png" alt="Scene 7">
+<div class="card-label">Scene 7</div>
+<div class="card-snippet"> joy,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXZG4K0JP0NDHCK7KHSEB/0.png', 'Scene 8')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VXZG4K0JP0NDHCK7KHSEB/0.png" alt="Scene 8">
+<div class="card-label">Scene 8</div>
+<div class="card-snippet"> and breakthrough, [music] ...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY2K01VKBC9136XKX6653/0.png', 'Scene 9')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY2K01VKBC9136XKX6653/0.png" alt="Scene 9">
+<div class="card-label">Scene 9</div>
+<div class="card-snippet">but they keep putting God second,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY5DR62NQQ1ZKZN7MHAXC/0.png', 'Scene 10')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY5DR62NQQ1ZKZN7MHAXC/0.png" alt="Scene 10">
+<div class="card-label">Scene 10</div>
+<div class="card-snippet"> third,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY6EAYHVMQRTKA1M1TCH3/0.png', 'Scene 11')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY6EAYHVMQRTKA1M1TCH3/0.png" alt="Scene 11">
+<div class="card-label">Scene 11</div>
+<div class="card-snippet"> or even last....</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY9FFH8KZCJ0JEHVZV12K/0.png', 'Scene 12')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VY9FFH8KZCJ0JEHVZV12K/0.png" alt="Scene 12">
+<div class="card-label">Scene 12</div>
+<div class="card-snippet">We wake up and check our phones before we pray....</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYCBVNQQ5D4YN5517QFGN/0.png', 'Scene 13')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYCBVNQQ5D4YN5517QFGN/0.png" alt="Scene 13">
+<div class="card-label">Scene 13</div>
+<div class="card-snippet">We trust our feelings more than God's word....</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYGBY95Y1SBTFCZGAPSSN/0.png', 'Scene 14')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYGBY95Y1SBTFCZGAPSSN/0.png" alt="Scene 14">
+<div class="card-label">Scene 14</div>
+<div class="card-snippet">We chase success,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYGHPXP3NM5NM6NF740ST/0.png', 'Scene 15')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYGHPXP3NM5NM6NF740ST/0.png" alt="Scene 15">
+<div class="card-label">Scene 15</div>
+<div class="card-snippet"> money,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYK7WG6V5ZCRZHCRRR8PG/0.png', 'Scene 16')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYK7WG6V5ZCRZHCRRR8PG/0.png" alt="Scene 16">
+<div class="card-label">Scene 16</div>
+<div class="card-snippet"> relationships,...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYQ2T02DX46J46P490DFZ/0.png', 'Scene 17')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYQ2T02DX46J46P490DFZ/0.png" alt="Scene 17">
+<div class="card-label">Scene 17</div>
+<div class="card-snippet"> and validation, [music] hoping those things will finally satisfy us....</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYQFF80D4VKVGB8EDAF9P/0.png', 'Scene 18')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYQFF80D4VKVGB8EDAF9P/0.png" alt="Scene 18">
+<div class="card-label">Scene 18</div>
+<div class="card-snippet">But Jesus said something powerful in Matthew 6:33: "Seek first the kingdom of God and his righteousness, and all these things shall be added to you."...</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYT3PJN9J45M49HQY2FEX/0.png', 'Scene 19')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYT3PJN9J45M49HQY2FEX/0.png" alt="Scene 19">
+<div class="card-label">Scene 19</div>
+<div class="card-snippet">[music] That verse changes everything....</div>
+</div>
+<div class="card" onclick="openModal('https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYXTV9S0T1HEKSMF8SAEA/0.png', 'Scene 20')">
+<img src="https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KX9VYXTV9S0T1HEKSMF8SAEA/0.png" alt="Scene 20">
+<div class="card-label">Scene 20</div>
+<div class="card-snippet">What would happen if for the next 30 days you made one decision every single day—God comes first?...</div>
+</div>
+</div>
+
+<div id="imageModal" class="modal">
+ <div class="modal-content">
+  <button class="modal-close" onclick="closeModal()">&times;</button>
+  <img id="modalImage" src="" alt="">
+  <div class="modal-info">
+   <div class="modal-title" id="modalTitle"></div>
+  </div>
+ </div>
+</div>
+
+<script>
+function openModal(src, title) {
+ const modal = document.getElementById('imageModal');
+ document.getElementById('modalImage').src = src;
+ document.getElementById('modalTitle').textContent = title;
+ modal.classList.add('active');
+}
+function closeModal() {
+ document.getElementById('imageModal').classList.remove('active');
+}
+document.getElementById('imageModal').addEventListener('click', e => {
+ if (e.target.id === 'imageModal') closeModal();
+});
+</script>
+</div>

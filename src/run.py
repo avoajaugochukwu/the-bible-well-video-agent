@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Heritage Decoded pipeline driver — one Baserow row -> finished video, pushed
+"""Christian Story pipeline driver — one Baserow row -> finished video, pushed
 to ClickUp, row flipped to done.
 
 Resumable: each stage writes an artifact into runs/<row_id>/ and SKIPS if that
@@ -71,7 +71,7 @@ def run_node(cmd: list[str], extra_env: dict | None = None, timeout: int = 3600)
 def run_pipeline() -> str | None:
     row = baserow.next_ready()
     if not row:
-        print("== no ready Heritage Decoded row (script_status=done, voice_status=done, "
+        print("== no ready Christian Story row (script_status=done, voice_status=done, "
               "video_processed!=done)")
         return None
 
