@@ -83,7 +83,7 @@ CHARACTER_SCHEMA = {
                 "type": "object",
                 "properties": {
                     "age_range": {"type": "string", "description": "e.g. '30s', '40s', 'middle-aged'"},
-                    "appearance": {"type": "string", "description": "visual features: clothing style, hair, build, distinctive features. NO NAME."},
+                    "appearance": {"type": "string", "description": "SPECIFIC modern-2020s clothing (e.g. 'grey hoodie', 'olive knit sweater over jeans') and a short, neat modern hairstyle. NO robes, tunics, sandals, staffs, or long biblical hair/beards on the protagonist — those read as Jesus, not the viewer. NO NAME."},
                 },
                 "required": ["age_range", "appearance"],
                 "additionalProperties": False,
@@ -299,8 +299,12 @@ def infer_characters(script: str) -> dict:
                 "The protagonist is the viewer/listener themselves — a real person in modern 2020s. "
                 "Define: (1) the protagonist — describe their VISUAL APPEARANCE for consistent "
                 "rendering: realistic age range (20s, 30s, 40s, 50s - pick ONE typical age for "
-                "this audience), clothing style (casual modern, jeans, t-shirt or similar), hair "
-                "style/color, build, any distinctive features. NO NAME. Must be a real person look. "
+                "this audience), a SPECIFIC modern clothing item (e.g. 'a grey hoodie', 'an olive "
+                "knit sweater'), short/neat modern hair, build, any distinctive features. This is a "
+                "faith-themed video, which strongly biases image generators toward rendering EVERYONE "
+                "as a robed, barefoot, biblical-looking figure — counter that explicitly: the "
+                "protagonist must read as a normal person in 2020s clothing, NEVER robes, tunics, "
+                "sandals, or long biblical hair/beard. NO NAME. Must be a real person look. "
                 "(2) Jesus — a specific artistic rendering consistent throughout (describe "
                 "appearance, bearing, spiritual light, how he looks visually - ONLY if mentioned "
                 "in script). (3) any recurring supporting characters mentioned by role and their "
@@ -316,7 +320,7 @@ def infer_characters(script: str) -> dict:
     if not result.get("protagonist"):
         result["protagonist"] = {
             "age_range": "30s-40s",
-            "appearance": "casual modern clothing, authentic everyday person, relatable presence"
+            "appearance": "a grey hoodie over jeans, short neat modern hair, authentic everyday person — no robes or biblical clothing"
         }
     return result
 
@@ -360,7 +364,14 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
     # Build character descriptions for the LLM — features only, no names
     char_context = "CHARACTERS (VISUAL FEATURES - EVERYONE LOOKS DIFFERENT):\n"
     if protagonist:
-        char_context += f"PROTAGONIST (appears in EVERY scene with these features): {protagonist.get('age_range', 'adult')}, {protagonist.get('appearance', 'modern casual appearance')}.\n"
+        char_context += (
+            f"PROTAGONIST (appears in EVERY scene with these features): {protagonist.get('age_range', 'adult')}, "
+            f"{protagonist.get('appearance', 'modern casual appearance')}. ANTI-BIBLICAL MANDATE: whenever the "
+            f"protagonist is shown or implied (hands, silhouette, POV), restate their SPECIFIC modern clothing "
+            f"item above — never leave it to 'a person' or 'a figure', which defaults to a robed biblical look "
+            f"in this generator. NEVER robes, tunics, sandals, staffs, or long biblical hair/beard on the "
+            f"protagonist.\n"
+        )
     if jesus:
         char_context += f"JESUS (ONLY when script explicitly says 'Jesus' or 'he' in teaching context. DISTINCTIVE appearance - no one else looks like this): {jesus.get('appearance', 'serene spiritual figure with distinctive presence')}.\n"
     if supporting:
@@ -451,10 +462,18 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "\"crane\") and pure mood words with no subject (\"tense\", \"ominous\", "
         "\"peaceful\") — describe the physical thing, not the feeling.\n\n"
         "## PILLAR 3: IMAGE PROMPT RULES\n\n"
+        "image_prompt IS THE ONLY TEXT SENT TO THE IMAGE GENERATOR — hero_subject is internal "
+        "planning only and is NEVER seen by it. Any detail that matters (especially the "
+        "protagonist's specific modern clothing) MUST be written into image_prompt itself, not "
+        "just hero_subject.\n"
         "image_prompt: a SHORT (8-15 words) plain description of the actual scene/"
         "activity happening, centered on the hero_subject. Say WHAT is shown (a real activity, place, or "
         "moment — a person doing something, a room, an object) and WHERE (modern, everyday setting) "
-        "so the image generator renders it correctly. Do NOT describe "
+        "so the image generator renders it correctly. WHENEVER the protagonist's body, face, or "
+        "silhouette is depicted (not just an isolated hands/object close-up), image_prompt MUST "
+        "name their specific modern clothing item verbatim from the CHARACTERS block above (e.g. "
+        "'a person in an olive utility jacket') — a bare word like 'a person' or 'a figure' with "
+        "no clothing named defaults this image generator to a robed, biblical look. Do NOT describe "
         "lighting, shadow, mood, or atmosphere (no 'moody', 'dark', 'dramatic', "
         "'chiaroscuro', 'candlelit', 'golden-hour', 'eerie', 'atmospheric') and do NOT "
         "prescribe a light source, texture, or camera angle — none of that; a style "
