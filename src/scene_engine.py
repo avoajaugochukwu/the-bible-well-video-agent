@@ -1,18 +1,18 @@
-"""Script -> scene breakdown -> per-scene Krea image. Two stages, both here
-since every caller needs both in sequence:
+"""Script -> scene breakdown -> per-scene gpt-image-2 flat 2D cartoon image. Two
+stages, both here since every caller needs both in sequence:
 
   break_into_scenes(script) -> OpenAI chat-completions calls (gpt-5-mini, raw urllib, this
                                 repo's house style). Returns
                                 [{scene_number, script_snippet, hero_subject,
                                 image_prompt, negative_prompt, scene_type}, ...] — every
-                                scene is a Krea illustrative painting, no lane routing.
+                                scene is a flat 2D cartoon illustration, no lane routing.
 
                                 Scene-splitting follows mechanical, LLM-free sentence chunking
                                 (chunk_script(), ~8 sentences/chunk) feeding ONE combined LLM call
                                 per chunk (author_chunk()) that cuts scenes (list-cut / staccato /
                                 merge-cap rules) and writes hero_subject + image_prompt together.
   generate_images(scenes)    -> asset_selector.py:route() per scene, IN PARALLEL
-                                (Krea generation is I/O-bound, scenes are independent).
+                                (gpt-image-2 generation is I/O-bound, scenes are independent).
                                 Returns each scene with an added image_url.
 """
 import json
@@ -53,7 +53,7 @@ BASE_NEGATIVE = (
 # character into a robed, bearded Jesus look without this.
 JESUS_NEGATIVE_BLOCK = "Jesus, biblical robes, bearded man, long hair, ancient tunic, halo"
 
-# Image models (Krea) routinely render an extra unrequested person in group scenes —
+# Image models (gpt-image-2) routinely render an extra unrequested person in group scenes —
 # same class of hallucination as the Jesus regression, just headcount instead of
 # identity. The LLM self-reports intended headcount via people_count; code then
 # force-appends a deterministic negative_prompt guard rather than trusting the
@@ -68,11 +68,11 @@ COUNT_NEGATIVE_BLOCKS = {
 # Story video must render the same Jesus, so this is a constant rather than
 # something infer_characters() invents fresh each run.
 JESUS_APPEARANCE = (
-    "a compassionate man in his early-to-mid 30s with warm olive skin, flowing "
-    "shoulder-length dark brown hair worn loose with no head covering of any kind "
-    "(no turban, no headscarf, no headgear), a short well-kept beard, gentle warm "
-    "eyes, wearing a simple flowing white garment with a red cloak draped over one "
-    "shoulder, calm reverent bearing, soft warm light around him"
+    "a compassionate 2D cartoon man in his early-to-mid 30s with warm olive skin, flowing "
+    "shoulder-length dark brown hair outline worn loose with no head covering of any kind "
+    "(no turban, no headscarf, no headgear), a short well-kept beard outline, gentle warm "
+    "eyes, wearing a simple flat white garment with a flat red cloak draped over one "
+    "shoulder, calm reverent bearing, a simple flat golden glow outline around him"
 )
 
 CONTEXT_SCHEMA = {
@@ -80,9 +80,9 @@ CONTEXT_SCHEMA = {
     "schema": {
         "type": "object",
         "properties": {
-            "setting": {"type": "string", "description": "contemporary setting for the spiritual journey, e.g. 'modern urban life, everyday struggles, personal spaces'"},
+            "setting": {"type": "string", "description": "contemporary setting for the spiritual journey, described in flat 2D whiteboard terms, e.g. 'plain light background with simple 2D outline props — home, workplace, everyday spaces'"},
             "spiritual_theme": {"type": "string", "description": "core spiritual transformation theme, e.g. 'faith, surrender, trust in God, putting God first'"},
-            "emotional_palette": {"type": "string", "description": "emotional tone and mood, e.g. 'hopeful, peaceful, transformative, divine light'"},
+            "emotional_palette": {"type": "string", "description": "flat color accent palette for the illustration's fills, e.g. 'warm yellow and blue accents, hopeful tones'"},
         },
         "required": ["setting", "spiritual_theme", "emotional_palette"],
         "additionalProperties": False,
@@ -100,8 +100,8 @@ CHARACTER_SCHEMA = {
                     "gender": {"type": "string", "description": "A single concrete choice: e.g., 'male' or 'female'."},
                     "ethnicity": {"type": "string", "description": "A single concrete choice: e.g., 'African American', 'East Asian', 'Hispanic', 'Caucasian'."},
                     "age_range": {"type": "string", "description": "e.g. '60s', '70s', 'mid-30s'"},
-                    "facial_features": {"type": "string", "description": "Specific friendly face details: e.g., 'gentle brown eyes, friendly expression, clean-shaven, neat short hair'."},
-                    "appearance": {"type": "string", "description": "SPECIFIC modern-2020s clothing (e.g. 'grey hoodie', 'olive knit sweater over jeans'). NO robes, tunics, sandals, staffs, or long biblical hair/beards on the protagonist — those read as Jesus, not the viewer. NO NAME."},
+                    "facial_features": {"type": "string", "description": "Simplified 2D cartoon face details: e.g., 'simple dot eyes, expressive thin mouth line, neat short hair outline, clean-shaven'."},
+                    "appearance": {"type": "string", "description": "SPECIFIC modern-2020s clothing in flat-color cartoon terms (e.g. 'solid grey hoodie with clean black outlines', 'flat olive sweater over blue jeans'). No gradients, patterns, or textures. NO robes, tunics, sandals, staffs, or long biblical hair/beards on the protagonist — those read as Jesus, not the viewer. NO NAME."},
                 },
                 "required": ["gender", "ethnicity", "age_range", "facial_features", "appearance"],
                 "additionalProperties": False,
@@ -119,8 +119,8 @@ CHARACTER_SCHEMA = {
                         "gender": {"type": "string", "description": "A single concrete choice: e.g., 'male' or 'female'."},
                         "ethnicity": {"type": "string", "description": "A single concrete choice: e.g., 'African American', 'East Asian', 'Hispanic', 'Caucasian'."},
                         "age_range": {"type": "string", "description": "e.g. '20s', 'mid-40s', '60s'"},
-                        "hairstyle": {"type": "string", "description": "SPECIFIC modern hairstyle, e.g. 'short cropped blonde hair', 'neatly styled black bob'. NO long biblical hair/beards — that reads as Jesus."},
-                        "clothing": {"type": "string", "description": "SPECIFIC modern-2020s clothing, e.g. 'a red puffer jacket over a black t-shirt', 'a blue business blazer'. Never generic ('casual clothes'). NO robes, tunics, or sandals."},
+                        "hairstyle": {"type": "string", "description": "SPECIFIC simple 2D hairstyle outline, e.g. 'short cropped blonde hair outline', 'neatly styled black bob outline'. NO long biblical hair/beards — that reads as Jesus."},
+                        "clothing": {"type": "string", "description": "SPECIFIC modern-2020s flat-color clothing, e.g. 'a solid red sweater with clean black outlines', 'a flat blue blazer'. Never generic ('casual clothes'). No gradients or folds. NO robes, tunics, or sandals."},
                     },
                     "required": ["role", "gender", "ethnicity", "age_range", "hairstyle", "clothing"],
                     "additionalProperties": False,
@@ -264,13 +264,14 @@ def infer_context(script: str) -> dict:
     return _chat(
         [
             {"role": "system", "content": (
-                "You are analyzing a spiritual transformation narrative for a Christian story app. "
-                "Extract the context: (1) setting — describe the contemporary, everyday "
-                "setting where this faith journey unfolds (modern homes, workplaces, daily life), "
-                "(2) spiritual_theme — the core transformation theme (e.g., faith, surrender, "
-                "trust, putting God first), (3) emotional_palette — the emotional and spiritual "
-                "tone (e.g., hopeful, peaceful, transformative, divine presence). Focus on the "
-                "spiritual journey, not locations or time periods. Return ONLY the JSON object."
+                "You are analyzing a spiritual transformation narrative for a Christian story app "
+                "rendered as a clean 2D vector whiteboard animation. Extract the context: (1) setting "
+                "— describe the contemporary, everyday setting where this faith journey unfolds (modern "
+                "homes, workplaces, daily life) in flat whiteboard terms — a plain light background with "
+                "simple 2D outline props, (2) spiritual_theme — the core transformation theme (e.g., "
+                "faith, surrender, trust, putting God first), (3) emotional_palette — the flat color "
+                "accent palette for the illustration (e.g., warm yellow accents, hopeful blue highlights). "
+                "Focus on the spiritual journey, not locations or time periods. Return ONLY the JSON object."
             )},
             {"role": "user", "content": script},
         ],
@@ -286,20 +287,22 @@ def infer_characters(script: str) -> dict:
     result = _chat(
         [
             {"role": "system", "content": (
-                "This is a modern explainer video where the protagonist ('you' in the script) "
-                "is the consistent visual anchor in every scene, experiencing a spiritual journey. "
-                "The protagonist is the viewer/listener themselves — a real person in modern 2020s. "
-                "Define: (1) the protagonist — describe their VISUAL APPEARANCE for consistent "
-                "rendering. You must choose a concrete gender, ethnicity, realistic age range (20s, "
-                "30s, 40s, 50s - pick ONE typical age for this audience), and friendly facial features "
-                "(e.g., clean-shaven, hair color/style, gentle/friendly eyes) so the image generator "
-                "renders the same identifiable face every scene — never a vague or generic look. Also "
-                "pick a SPECIFIC modern clothing item (e.g. 'a grey hoodie', 'an olive knit sweater') "
-                "worn consistently. This is a faith-themed video, which strongly biases image "
-                "generators toward rendering EVERYONE as a robed, barefoot, biblical-looking figure — "
-                "counter that explicitly: the protagonist must read as a normal person in 2020s "
-                "clothing, NEVER robes, tunics, sandals, or long biblical hair/beard. NO NAME. Must be "
-                "a real person look. "
+                "This is a modern explainer video styled as a clean 2D vector whiteboard animation, "
+                "where the protagonist ('you' in the script) is the consistent visual anchor in every "
+                "scene, experiencing a spiritual journey. The protagonist is the viewer/listener "
+                "themselves, drawn as a simple hand-drawn 2D cartoon figure with flat colors and clean "
+                "black ink outlines — not a realistic person. Define: (1) the protagonist — describe "
+                "their VISUAL APPEARANCE for consistent rendering. You must choose a concrete gender, "
+                "ethnicity, realistic age range (20s, 30s, 40s, 50s - pick ONE typical age for this "
+                "audience), and simplified cartoon facial features (e.g., simple dot eyes, an expressive "
+                "thin mouth line, a neat short hair outline) so the image generator renders the same "
+                "identifiable flat-cartoon face every scene — never a vague or generic look. Also pick a "
+                "SPECIFIC modern flat-color clothing item (e.g. 'a solid grey hoodie with clean outlines', "
+                "'a flat olive sweater') worn consistently, with no gradients, patterns, or textures. This "
+                "is a faith-themed video, which strongly biases image generators toward rendering EVERYONE "
+                "as a robed, barefoot, biblical-looking figure — counter that explicitly: the protagonist "
+                "must read as a normal person in simple 2020s cartoon clothing, NEVER robes, tunics, "
+                "sandals, or long biblical hair/beard. NO NAME. "
                 "(2) jesus_appears — true only if Jesus is mentioned or directly encountered "
                 "anywhere in the script. His visual design is fixed separately; do not describe "
                 "his appearance. "
@@ -307,12 +310,13 @@ def infer_characters(script: str) -> dict:
                 "with objects. Invent AT LEAST 2 recurring supporting characters tied to relationships, "
                 "community, guidance, or struggle implied by the script (e.g. a friend, a mentor, a "
                 "coworker, a family member) even if the script doesn't name them explicitly. For EACH "
-                "you MUST pick a concrete gender, ethnicity, age range, a SPECIFIC modern hairstyle "
-                "(e.g. 'short cropped blonde hair'), and SPECIFIC modern clothing (e.g. 'a red puffer "
-                "jacket over a black t-shirt') — never generic ('casual clothes', 'a person'). This is "
-                "CRITICAL: faith-themed image generators have an extreme bias toward rendering ANY "
-                "unspecified secondary character as a long-haired, bearded Jesus in robes — concrete "
-                "modern hairstyle + clothing on every supporting character is what prevents that. "
+                "you MUST pick a concrete gender, ethnicity, age range, a SPECIFIC simple 2D hairstyle "
+                "outline (e.g. 'short cropped blonde hair outline'), and SPECIFIC modern flat-color "
+                "clothing (e.g. 'a solid red sweater with clean black outlines') — never generic "
+                "('casual clothes', 'a person'), and never gradients or textures. This is CRITICAL: "
+                "faith-themed image generators have an extreme bias toward rendering ANY unspecified "
+                "secondary character as a long-haired, bearded Jesus in robes — concrete cartoon "
+                "hairstyle + clothing on every supporting character is what prevents that. "
                 "NO NAMES on anyone. Return ONLY JSON."
             )},
             {"role": "user", "content": script},
@@ -327,8 +331,8 @@ def infer_characters(script: str) -> dict:
             "gender": "male",
             "ethnicity": "Caucasian",
             "age_range": "60s-70s",
-            "facial_features": "short cropped dark hair, gentle brown eyes, a friendly expression",
-            "appearance": "a grey hoodie over jeans, authentic everyday person — no robes or biblical clothing"
+            "facial_features": "simple dot eyes, short cropped hair outline, a friendly expressive mouth line",
+            "appearance": "a solid grey hoodie with clean black outlines over flat blue jeans — no robes or biblical clothing"
         }
 
     # Jesus's look is a fixed constant, never LLM-invented — only whether he's in
@@ -339,9 +343,9 @@ def infer_characters(script: str) -> dict:
     supporting = result.get("supporting_characters") or []
     fallback_supporting = [
         {"role": "friend", "gender": "female", "ethnicity": "Hispanic", "age_range": "30s",
-         "hairstyle": "shoulder-length black hair", "clothing": "an olive knit sweater over jeans"},
+         "hairstyle": "shoulder-length black hair outline", "clothing": "a solid olive sweater with clean black outlines"},
         {"role": "mentor", "gender": "male", "ethnicity": "African American", "age_range": "50s",
-         "hairstyle": "short grey hair", "clothing": "a brown cardigan over a collared shirt"},
+         "hairstyle": "short grey hair outline", "clothing": "a solid brown cardigan over a flat collared shirt"},
     ]
     for fb in fallback_supporting:
         if len(supporting) >= 2:
@@ -469,12 +473,15 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         f"Spiritual Theme: {context.get('spiritual_theme', 'faith and transformation')}\n"
         f"Emotional Palette: {context.get('emotional_palette', 'peaceful and reflective')}\n\n"
         f"{char_context}\n"
-        "You are a visual director for a Christian story app that tells personal "
-        "transformation narratives through high-quality digital paintings. The protagonist "
-        "is the VISUAL ANCHOR in EVERY scene — they must appear in every scene showing "
-        "their spiritual journey, emotional state, and transformation. You are given one "
-        "chunk of script. Break it into visual beats, and author every field for each, "
-        "in one pass. Every scene's hero_subject MUST feature the protagonist.\n\n"
+        "You are a visual director designing a clean 2D vector cartoon storyboard for a "
+        "Christian story app — every scene features the protagonist as a simple, "
+        "hand-drawn character with bold black ink outlines, flat colors, and simplified "
+        "shapes on a plain, solid, light-colored background. The style must look like a "
+        "clean digital whiteboard doodle, never a photorealistic or 3D-rendered painting. "
+        "The protagonist is the VISUAL ANCHOR in EVERY scene — they must appear in every "
+        "scene showing their spiritual journey, emotional state, and transformation. You "
+        "are given one chunk of script. Break it into visual beats, and author every field "
+        "for each, in one pass. Every scene's hero_subject MUST feature the protagonist.\n\n"
         "## CRITICAL MANDATE: ANTI-JESUS REGRESSION DEFENSE\n"
         "Faith-based image generators have an extreme bias where ANY secondary character "
         "automatically regresses into a long-haired, bearded Jesus in robes — even a "
@@ -606,33 +613,36 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "planning only and is NEVER seen by it. Any detail that matters (especially the "
         "protagonist's specific ethnicity, gender, face, and clothing) MUST be written into "
         "image_prompt itself, not just hero_subject.\n"
-        "image_prompt: a SHORT (10-18 words) plain description of the physical visual metaphor "
-        "from hero_subject — the protagonist's head, face, and expressive eyes clearly visible as "
-        "they ACTIVELY engage with a concrete symbolic object or action, plus WHERE (modern or "
-        "metaphorical setting) so the image generator renders it correctly. Never a static/passive "
-        "composition (no sitting, staring out windows, holding a drink, standing in a doorway) and "
-        "never a headless/cropped/silhouetted figure. image_prompt MUST name the protagonist's "
-        "ethnicity, gender, facial features, and specific modern clothing verbatim from the "
-        "CHARACTERS block above (e.g. 'a friendly African American male in an olive utility jacket') "
-        "— a bare word like 'a person' or 'a figure' with no face/clothing named defaults this image "
-        "generator to a robed, biblical look or a hidden face. Do NOT describe lighting, shadow, "
-        "mood, or atmosphere (no 'moody', 'dark', 'dramatic', 'chiaroscuro', 'candlelit', "
+        "image_prompt: a SHORT (10-18 words) plain description of a simple, flat 2D composition — "
+        "the protagonist's head, face, and expressive simplified eyes clearly visible as they "
+        "ACTIVELY engage with a concrete symbolic object or action, plus WHERE (modern or "
+        "metaphorical setting, always a plain light background) so the image generator renders it "
+        "correctly. Never a static/passive composition (no sitting, staring out windows, holding a "
+        "drink, standing in a doorway) and never a headless/cropped/silhouetted figure. image_prompt "
+        "MUST name the protagonist's ethnicity, gender, facial features, and specific modern "
+        "flat-color clothing verbatim from the CHARACTERS block above (e.g. 'a friendly African "
+        "American male in a solid grey hoodie with clean outlines') — a bare word like 'a person' or "
+        "'a figure' with no face/clothing named defaults this image generator to a robed, biblical "
+        "look or a hidden face. Do NOT mention complex lighting, shadow depth, 3D rendering, "
+        "photorealism, or atmosphere (no 'moody', 'dark', 'dramatic', 'chiaroscuro', 'candlelit', "
         "'golden-hour', 'eerie', 'atmospheric') and do NOT prescribe a light source, texture, or "
-        "camera angle — none of that; a style prefix and the palette above already set the visual "
-        "treatment. Just the metaphor/action + setting cue, plainly.\n"
+        "camera angle — none of that; a style prefix already sets the flat 2D visual treatment. "
+        "Just the metaphor/action + setting cue, plainly.\n"
         "  EXAMPLES (STUDY AND CONFORM — for whatever metaphor THIS sentence actually calls for, "
-        "not necessarily these): 'A friendly African American male in a grey hoodie, face clearly "
-        "visible, running up a hill toward a floating golden crown.' 'A woman with a warm expression "
-        "in an olive jacket watching a massive scale balance a Bible against gold coins.' 'A man in "
-        "a denim jacket, determined expression, straining to carry a heavy, crumbling stone on his "
-        "shoulder.' 'A person's face lit with hope as chains shaped like phone icons shatter around "
-        "them.' 'A Hispanic female in an olive knit sweater, talking to an elderly male mentor with "
-        "short grey hair in a brown cardigan over an open Bible.' 'A Hispanic female in an olive knit "
-        "sweater, comforted by a female friend with a black bob in a blue blazer, hand on her shoulder.' "
-        "'A man in a grey hoodie walking beside a serene, robed Jesus figure under warm light.'\n"
+        "not necessarily these): 'A simple 2D cartoon of a friendly African American male in a solid "
+        "grey hoodie, clean black outlines, running up a yellow path toward a flat gold crown icon, "
+        "on a plain white background.' 'A 2D cartoon woman with a warm expression in a flat olive "
+        "jacket watching a simple scale icon balance a Bible against gold coin shapes.' 'A 2D cartoon "
+        "man in a flat denim jacket, determined expression, straining to carry a heavy stone icon on "
+        "his shoulder.' 'A 2D cartoon figure's face lit with hope as simple chain-link icons shaped "
+        "like phone outlines shatter around them.' 'A 2D cartoon Hispanic female in an olive sweater, "
+        "talking to an elderly male mentor with a grey hair outline in a brown cardigan over an open "
+        "Bible icon.' 'A 2D cartoon Hispanic female in an olive sweater, comforted by a female friend "
+        "with a black bob outline in a blue blazer, hand on her shoulder.' 'A 2D cartoon man in a grey "
+        "hoodie walking beside a simply-outlined, robed Jesus figure on a plain background.'\n"
         "  MODERN AND GROUNDED in the setting above — clothing, rooms, and objects should read "
-        "as present-day and everyday. Do NOT name an art style, medium, "
-        "camera, or lens — a style prefix is added automatically.\n"
+        "as present-day and everyday, simplified into flat 2D shapes and icons. Do NOT name an art "
+        "style, medium, camera, or lens — a style prefix is added automatically.\n"
         "  NO LEGIBLE TEXT, EVER: the image generator cannot render real words and always "
         "produces garbled gibberish when asked to — never a placeholder like 'XXX' "
         "either, it still renders as literal glyphs. Books, ledgers, letters, signposts, "
@@ -661,8 +671,8 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "bloodlessly and symbolically through the active metaphor itself (a crumbling stone, "
         "shattering chains, a collapsing crown) rather than graphic harm. This overrides "
         "everything else.\n"
-        "Keep the prompts highly illustrative, narrative, and engaging, with the character's face "
-        "fully visible as they act out the scene. Return ONLY the JSON object described by the schema."
+        "Keep the prompts simple, flat, and engaging 2D cartoon compositions, with the character's "
+        "face fully visible as they act out the scene. Return ONLY the JSON object described by the schema."
     )
     data = _chat(
         [
@@ -692,7 +702,7 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
                     s.get("negative_prompt", "").rstrip(", ") + ", " + JESUS_NEGATIVE_BLOCK
                 ).lstrip(", ")
 
-    # Deterministic safety net for phantom extra people (Krea hallucinates an
+    # Deterministic safety net for phantom extra people (gpt-image-2 hallucinates an
     # unrequested additional person in group scenes) — force the declared
     # people_count into both prompts rather than trust the image model to read
     # a bare number once. Same "code, not prompt-trust" pattern as the Jesus block.
@@ -718,7 +728,7 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
 
     Two-stage, all OpenAI gpt-5-mini at reasoning_effort=low (raw urllib, this repo's
     house style): infer_context() once (skipped if the caller already computed it —
-    run.py caches this in context.json for generate_images()'s Krea QA, so
+    run.py caches this in context.json for generate_images()'s image QA, so
     it's passed in here rather than re-billed), then chunk_script() (mechanical, no
     LLM) followed by author_chunk() per chunk IN PARALLEL — the scene cut and every
     per-scene field come out of that ONE call per chunk, see author_chunk()'s
@@ -774,9 +784,9 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
 
 def generate_images(scenes: list[dict], context: dict, workers: int = 8) -> list[dict]:
     """Each scene -> asset_selector.py:route(), IN PARALLEL (every lane — archival
-    search, stock search, graphic generation, Krea — is I/O-bound, scenes are
+    search, stock search, graphic generation, gpt-image-2 — is I/O-bound, scenes are
     independent). `context` is infer_context()'s output (spiritual context), needed by the
-    Krea's vision-QA prompts. A scene's image failure degrades to
+    the image model's vision-QA prompts. A scene's image failure degrades to
     image_url=None rather than aborting the batch. Adds `lane` to every scene
     (which lane actually produced the image, or None if every lane failed).
     """
