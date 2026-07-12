@@ -1,0 +1,1602 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "Have you ever wondered what would happen if you truly put God first in every part of your life for 30 days?",
+    "hero_subject": "Protagonist actively imagining a 30-day challenge: the Hispanic female (30s) pictured leaning over a wall of calendar pages, pulling a bright '30' page forward, face expressive and engaged, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, pulling forward a large calendar page labeled \"30\" in a modern apartment",
+    "negative_prompt": "cluttered background, headless, cut off face, robes, biblical costume, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "[music]",
+    "hero_subject": "Protagonist reacting to a musical pause: the Hispanic female (30s) shown pausing mid-step as floating musical notes drift around her, face turned upward in thoughtful attention, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, surrounded by soft floating musical notes in a living room",
+    "negative_prompt": "headless, cut off face, biblical clothing, harsh fluorescent light, busy clutter",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "Not halfway,",
+    "hero_subject": "Protagonist refusing half-measures: the Hispanic female (30s) shown cutting a large frayed rope labeled 'half' with pruning shears, face determined and clear, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, cutting a frayed rope labeled 'half' in a modern bedroom",
+    "negative_prompt": "cut off face, headless, biblical robe, gore, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": " not only on Sundays,",
+    "hero_subject": "Protagonist rejecting weekend-only faith: the Hispanic female (30s) shown snapping a calendar page marked 'Sunday' in two, face resolute, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, snapping a calendar page marked 'Sunday' in a bright kitchen",
+    "negative_prompt": "headless, cut off face, robes, crowded background, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": " but completely.",
+    "hero_subject": "Protagonist committing fully: the Hispanic female (30s) shown opening her arms toward a glowing, blank daily planner, face surrendered and hopeful, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, opening arms toward a blank daily planner on a table",
+    "negative_prompt": "cut off face, headless, biblical clothing, messy room, harsh lighting",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "Most people want peace,",
+    "hero_subject": "Protagonist holding a simple paper heart labeled 'peace' gently in both hands, the Hispanic female (30s) face soft and longing, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, holding a paper heart labeled peace in a cozy living room",
+    "negative_prompt": "headless, cut off face, biblical robe, busy clutter, visible text unrelated",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": " direction,",
+    "hero_subject": "Protagonist reaching toward a glowing compass suspended above a table, the Hispanic female (30s) with an intent expression, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, reaching toward a floating compass in a modern study",
+    "negative_prompt": "cut off face, headless, biblical clothing, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": " joy,",
+    "hero_subject": "Protagonist cradling a glowing small bundle of light as if it were joy, the Hispanic female (30s) smiling gently, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, cradling a small glowing orb of light in a bright living room",
+    "negative_prompt": "headless, cut off face, biblical robe, messy background, cartoonish",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": " and breakthrough,",
+    "hero_subject": "Protagonist pushing open a heavy symbolic door labeled with cracks of light, the Hispanic female (30s) straining forward with hopeful effort, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, pushing open a heavy door with light pouring through in a hallway",
+    "negative_prompt": "cut off face, headless, biblical costume, gore, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": " [music]",
+    "hero_subject": "Protagonist pausing as music underscores the message: the Hispanic female (30s) with a hand to her chest while faint musical notes circle, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, hand to chest surrounded by musical notes in a living room",
+    "negative_prompt": "headless, cut off face, biblical robe, crowded scene, harsh lighting",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 11,
+    "script_snippet": " but they keep putting God second,",
+    "hero_subject": "Protagonist illustrating misplaced priorities: the Hispanic female (30s) holding a small, bright Bible slightly behind a pile of glowing coins, face showing concern, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, holding a Bible slightly behind a pile of glowing coins on a table",
+    "negative_prompt": "cut off face, headless, biblical robe, legible text on objects, cluttered",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 12,
+    "script_snippet": " third,",
+    "hero_subject": "Protagonist showing further neglect: the Hispanic female (30s) placing the Bible lower on a shelf beneath a smartphone and briefcase, face troubled, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, placing a Bible lower on a shelf below a smartphone and briefcase in a modern office",
+    "negative_prompt": "headless, cut off face, biblical robes, legible text, messy background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 13,
+    "script_snippet": " or even last.",
+    "hero_subject": "Protagonist confronting the worst-case: the Hispanic female (30s) watching a small Bible sitting alone at the bottom of a stack of trophies and receipts, face solemn, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, looking at a Bible at the bottom of a stack of trophies and receipts on a desk",
+    "negative_prompt": "cut off face, headless, biblical robe, legible text, cluttered",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 14,
+    "script_snippet": "We wake up and check our phones before we pray.",
+    "hero_subject": "Protagonist caught in the morning routine: the Hispanic female (30s) sitting on bed, actively snatching a glowing smartphone from a nightstand while a closed Bible lies waiting, face conflicted, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, snatching a glowing smartphone from a nightstand while a closed Bible waits nearby in a modern bedroom",
+    "negative_prompt": "cut off face, headless, robes, messy background, visible text on phone",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 15,
+    "script_snippet": "We trust our feelings more than God's word.",
+    "hero_subject": "Protagonist weighing feelings vs scripture: the Hispanic female (30s) holding a glowing heart on one palm and a closed Bible on the other, face contemplative, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, holding a glowing heart in one hand and a closed Bible in the other in a modern living room",
+    "negative_prompt": "headless, cut off face, biblical robe, legible text, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 16,
+    "script_snippet": "We chase success,",
+    "hero_subject": "Protagonist lunging toward a floating golden trophy labeled 'success', the Hispanic female (30s) reaching with an eager expression, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, reaching eagerly toward a floating golden trophy labeled success in an urban office",
+    "negative_prompt": "cut off face, headless, biblical robe, cluttered background, legible text",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 17,
+    "script_snippet": " money,",
+    "hero_subject": "Protagonist grabbing at falling dollar icons, the Hispanic female (30s) stretching forward to catch them, face strained, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, stretching to catch falling stylized dollar icons in a contemporary apartment",
+    "negative_prompt": "headless, cut off face, biblical costume, realistic currency closeups, clutter",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 18,
+    "script_snippet": " relationships,",
+    "hero_subject": "Protagonist juggling glowing heart-shaped icons representing relationships, the Hispanic female (30s) with a juggling posture and focused face, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, juggling glowing heart icons in a cozy living room",
+    "negative_prompt": "cut off face, headless, robes, cluttered background, cartoonish",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 19,
+    "script_snippet": " and validation,",
+    "hero_subject": "Protagonist reaching for a floating like/thumb icon labeled 'validation' while looking uneasy, the Hispanic female (30s) wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, reaching for a floating like/thumb icon labeled validation in a modern caf\u00e9",
+    "negative_prompt": "headless, cut off face, biblical robe, visible social media text, clutter",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 20,
+    "script_snippet": " [music]",
+    "hero_subject": "Protagonist pausing as music swells around worldly pursuits: the Hispanic female (30s) shown stationary amid floating symbols (trophy, coins, hearts, like icon), face reflective, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "Friendly Hispanic female warm brown eyes freckles medium brown ponytail in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, standing amid floating symbols trophy coins hearts like icon with musical notes",
+    "negative_prompt": "cut off face, headless, biblical clothing, messy background, harsh lighting",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 21,
+    "script_snippet": "What would happen if for the next 30 days you made one decision every single day\u2014God comes first?",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively placing a small paper calendar on a kitchen counter and tapping a day while a simple wooden cross sits beside it; her head and face are fully visible, expressive, engaged in deciding to prioritize God.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, tapping a day on a paper calendar beside a small wooden cross in a modern kitchen.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cropped face, biblical robes, visible text on calendar",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 22,
+    "script_snippet": "Not religion,",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) actively pushing aside a stack of formal church pamphlets with a gentle, decisive expression, showing she rejects religion-as-rules while her face and eyes remain clearly visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, pushing aside a stack of church pamphlets on a living room table.",
+    "negative_prompt": "headless, cropped face, biblical robes, text legible on pamphlets, cluttered room",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 23,
+    "script_snippet": " not perfection,",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) tearing up a perfection checklist made of crumpled sticky notes while looking resolute and compassionate toward herself; head and face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, tearing a crumpled checklist of 'perfection' in a modern bedroom.",
+    "negative_prompt": "graphic tearing blood, cropped face, headless, visible text on checklist, messy background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 24,
+    "script_snippet": " just daily surrender.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) placing her hands lightly on an open, blank journal as a small ribboned Bible sits closed beside it, eyes lifted in a gentle daily surrender gesture with full face visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, placing hands on an open blank journal beside a closed small Bible on a bedside table.",
+    "negative_prompt": "headless, cropped face, visible text in journal, biblical robes, harsh studio props",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 25,
+    "script_snippet": "And by the end of this video, [music] you may realize that putting God first doesn't just change your schedule, it changes your entire life.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) standing before a modern wall calendar and a glowing symbolic life map (no legible text) unfolding, reaching out with an inviting, hopeful expression while her face is fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, reaching toward an unfolding life map beside a wall calendar in a living room.",
+    "negative_prompt": "legible text on map, headless, cropped face, biblical costumes, messy clutter",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 26,
+    "script_snippet": "Number one: Putting God first changes your priorities.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) actively rearranging items on a large balance scale\u2014placing a small Bible on one side and pulling down a shiny trophy from the other\u2014her face and thoughtful expression clearly visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, placing a small Bible on one side of a large scale and removing a trophy from the other in a modern living room.",
+    "negative_prompt": "headless, cropped face, biblical robes, legible text on trophy, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 27,
+    "script_snippet": "[music] One of the first things that happens when you put God first is this\u2014your priorities begin to change.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) shifting sticky-note priorities on a wall board, moving 'God' to the top while other notes slide downward; her head and face show focus and gentle conviction.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, moving sticky-note priorities on a wall board to place a blank 'God' note at the top in a home office.",
+    "negative_prompt": "legible text on notes, cropped face, headless, biblical robes, clutter",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 28,
+    "script_snippet": "Suddenly, things that once felt extremely important start losing their grip on you.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) pulling her hands away from a set of glowing golden strings attached to floating icons (phone, briefcase, medal) as the strings slacken; her face shows relief and determination.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, pulling hands away as golden strings attached to phone and briefcase icons slacken in a modern bedroom.",
+    "negative_prompt": "graphic injury, headless, cropped face, biblical robes, messy background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 29,
+    "script_snippet": "The need to impress people,",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) stepping away from a floating glossy smartphone screen showing approval 'likes' icons (no legible text) while turning her face toward a small Bible, fully visible and resolute.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, stepping away from a glossy smartphone with floating like icons toward a small Bible in a living room.",
+    "negative_prompt": "legible text on phone, headless, cropped face, cartoonish, biblical robes",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 30,
+    "script_snippet": " the constant comparison,",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) turning off a series of reflected mirrors showing edited 'perfect' images while looking directly at her unaltered reflection with acceptance; head and face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, turning away from mirrored edited images and looking at her natural reflection in a modern bedroom.",
+    "negative_prompt": "headless, cropped face, visible photo filters text, biblical robes, clutter",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 31,
+    "script_snippet": " the endless chasing after temporary things.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) pausing mid-stride while reaching toward a line of glossy, floating shopping bags and trophies that drift away like bubbles; her face shows calm release, fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, pausing as glossy shopping bags and trophies drift away like bubbles in a modern city apartment.",
+    "negative_prompt": "headless, cropped face, biblical robes, visible brand logos, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 32,
+    "script_snippet": "[music] You begin to see life differently.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, same appearance and clothing) lifting a translucent lens or prism that refracts a busy cityscape into a calm sunrise scene, gazing through it with a hopeful expression; head and face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, face clearly visible, holding a refracting lens that changes a cityscape into a calm sunrise in a modern balcony setting.",
+    "negative_prompt": "headless, cropped face, biblical robes, harsh neon signs, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 33,
+    "script_snippet": "Before Jesus called his disciples, many of them were obsessed with survival,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) is actively scrambling up a stack of canned goods and grocery bags like a steep pile, face determined and head fully visible, physically grasping for the top item as a metaphor for obsession with survival.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, climbing a towering pile of grocery bags in a modern kitchen.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, anachronistic props",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 34,
+    "script_snippet": "money,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaches out, arms straining toward floating, shiny coins and credit cards suspended in front of her in a modern city street, face intent and expressive.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, reaching for floating coins and credit cards on a city sidewalk.",
+    "negative_prompt": "cartoonish coins, text on cards, cut off face, busy advertisements, harsh studio lighting",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 35,
+    "script_snippet": "and status.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) climbs toward a glowing pedestal topped with an empty trophy and social media notification icons, stretching upward with focused expression.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, climbing toward a pedestal with an empty trophy and social media icons in an urban plaza.",
+    "negative_prompt": "legible text, cartoonish icons, blurred face, cut off head, modern religious robes",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 36,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pauses mid-action, hands on knees, head up and listening as subtle musical notes (visualized as small glowing musical shapes) float around her, face receptive and present.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pausing as small glowing musical notes float around her in a cozy living room.",
+    "negative_prompt": "loud neon, headless, cut off face, cluttered background, anachronistic instruments",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 37,
+    "script_snippet": "Peter was focused on fishing.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) is actively casting a heavy fishing net from a small modern boat onto a sea of glowing smartphone screens and notifications, face concentrated and hands working the net.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, casting a net onto a sea of glowing smartphone screens.",
+    "negative_prompt": "violent imagery, cut off face, headless, unrealistic phones with legible text, cartoonish",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 38,
+    "script_snippet": "Matthew was focused on collecting taxes.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stands at a modern desk stacking blank, faceless receipts and coins into a neat pile while a small ledger is turned away from view, face intent and slightly weary.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, stacking blank receipts and coins at a modern desk.",
+    "negative_prompt": "legible text, cut off face, cluttered office props, harsh fluorescent light",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 39,
+    "script_snippet": "But when they encountered Jesus, their priorities shifted completely.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) turns from grasping coins and trophies toward a gentle radiant figure (silhouetted as a warm presence), letting go of the objects as they slip from her hands, face relieved and open.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, letting go of coins and trophies as she turns toward a warm, gentle presence in a modern park.",
+    "negative_prompt": "distracting text, cut off face, dramatic gore, anachronistic clothing, harsh studio lighting",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 40,
+    "script_snippet": "Luke 9:23 says, \"If anyone desires to come after me, let him deny himself and take up his cross daily and follow me.\"",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively lifts a modest, non-graphic cross made of simple wood in a bustling modern street, shouldering it with a determined, peaceful expression while people pass by, face fully shown.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, shouldering a simple wooden cross on a city sidewalk.",
+    "negative_prompt": "graphic violence, cut off face, headless, legible scripture text, overly theatrical halo",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 41,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) breathes in with hands open toward the sky as small glowing musical notes drift around, face reflective and receptive.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, standing with open hands as musical notes float around in a quiet urban garden.",
+    "negative_prompt": "cut off face, headless, busy background, harsh fluorescent light, garish colors",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 42,
+    "script_snippet": "Notice that Jesus said daily.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) points to a simple calendar where each day has a small glowing cross sticker, face focused and instructive as she actively taps today's square.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, tapping a calendar with small glowing cross stickers on each day.",
+    "negative_prompt": "legible text, cut off face, cluttered desk, headless, fluorescent glare",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 43,
+    "script_snippet": "Putting God first is not a one-time emotional moment.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively places a Bible (pages angled away so text is unreadable) onto one side of a large modern scale while a single balloon labeled with a heart (no legible text) rises and falls, face teaching and resolved.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, placing a closed Bible angled away on one side of a modern balance scale.",
+    "negative_prompt": "legible text, cut off face, headless, cartoonish props, gore",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 44,
+    "script_snippet": "It's a daily choice.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively closes a small daily planner and taps a checkbox labeled with an untexted cross sticker, smiling with calm determination, face fully visible.",
+    "image_prompt": "Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, closing a daily planner and tapping a checkbox with a cross sticker.",
+    "negative_prompt": "legible text, cut off face, headless, cluttered desktop, harsh neon light",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 45,
+    "script_snippet": "And here's what many people discover during those 30 days: [music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stands in a cozy modern living room, holding an open blank journal toward the viewer as if revealing discoveries, face and eyes clearly visible and expressive.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, holding an open blank journal in a living room.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, robes, biblical costume",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 46,
+    "script_snippet": "Prayer becomes more important than entertainment.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively lifts a glowing small Bible/prayer symbol in one hand while turning away from a faded flat-screen TV with streaming icons swirling behind her; her face is resolved and inviting.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, holding a glowing small Bible while turning from a faded TV in a living room.",
+    "negative_prompt": "television clutter, cartoonish icons, cut off face, headless, robes, anachronistic props",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 47,
+    "script_snippet": "Peace becomes more valuable than popularity.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) holds a small glowing dove emblem close to her chest while letting a ring of faded social media like icons fall from her other hand; her face shows calm contentment.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, holding a glowing dove emblem while letting social media icons fall away.",
+    "negative_prompt": "visible text on icons, cluttered phone screens, cut off face, headless, robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 48,
+    "script_snippet": "Obedience becomes greater than comfort.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) steps off a plush cushioned sofa toward a simple path, leaving a soft pillow behind as she reaches toward a glowing compass; her face is determined and hopeful.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, stepping off a plush sofa toward a glowing compass on a path.",
+    "negative_prompt": "living room clutter, cut off face, headless, robes, obvious text or logos",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 49,
+    "script_snippet": "Imagine your life like a car. [music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stands beside a modern car in a driveway, holding a small toy car up at eye level as if imagining its journey, face expressive and engaged.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, holding a toy car at eye level beside a modern car in a driveway.",
+    "negative_prompt": "license plates, brand logos, cut off face, headless, robes, overly cinematic effects",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 50,
+    "script_snippet": "For years, maybe you've been asking God to sit in the passenger seat while you drive wherever you want.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) sits in the driver's seat of a modern car, hand on the wheel, placing a small glowing figurine representing God gently in the passenger seat, looking conflicted but earnest.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, in a car driver's seat placing a small glowing figurine in the passenger seat.",
+    "negative_prompt": "visible brand logos, cut off face, headless, robes, dashboard clutter",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 51,
+    "script_snippet": "But when you put God first, you finally let him take the wheel,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaches across the console and gently places her hands off the steering wheel as a glowing hand-shaped light (symbolizing God) rests on the wheel; her face shifts to peaceful surrender.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, removing hands from a steering wheel as a glowing hand-shaped light rests on it inside a car.",
+    "negative_prompt": "cut off face, headless, brand logos, robes, visible text on surfaces",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 52,
+    "script_snippet": "and that changes the destination. [music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) watches through the windshield as a distant road sign transforms into a glowing path of light leading toward a modest community scene; her face shows amazed expectation.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, watching a road ahead transform into a glowing path toward a community scene.",
+    "negative_prompt": "readable road signs, car brand logos, cut off face, headless, robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 53,
+    "script_snippet": "The world says, \"Follow your heart.\"",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stands amid floating glossy heart-shaped balloons labeled with shimmering but unreadable symbols for trends, watching them temptingly while she holds a small map turned away from the balloons; her face is contemplative.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, standing among floating heart-shaped balloons with unreadable symbols while holding a turned-away map.",
+    "negative_prompt": "legible text, logos, cut off face, headless, robes, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 54,
+    "script_snippet": "But Jeremiah 17:9 says the heart can be deceptive.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) places a hand over her chest while looking at a split mirror reflecting two hearts\u2014one glowing, one shadowed\u2014to show inner deception; her face is thoughtful and sober.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, placing a hand on her chest while looking at a mirror reflecting a glowing heart and a shadowed heart.",
+    "negative_prompt": "legible scripture text, cut off face, headless, robes, heavy props",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 55,
+    "script_snippet": "God doesn't call us to follow emotions.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively shields herself with clear transparent panels labeled with swirling emotion icons, face visible and determined, in a modest modern bedroom.",
+    "image_prompt": "Friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pushing away swirling emotion icons in a modern bedroom",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robes, visible text",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 56,
+    "script_snippet": "He calls us to follow him.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) steps forward toward a warm glowing cross-shaped path floating above a phone-lit city street, reaching out with hopeful expression.",
+    "image_prompt": "Friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, stepping toward a glowing cross-shaped path over a city street",
+    "negative_prompt": "cartoonish, anachronistic props, headless, cut off face, busy signage, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 57,
+    "script_snippet": "And the amazing thing is this: [music] when God becomes your highest priority, everything else starts falling into proper order.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) arranges floating translucent objects\u2014a phone, briefcase, calendar\u2014onto shelves while a bright Bible-shaped book rises to the central top shelf, face peacefully attentive.",
+    "image_prompt": "Friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, placing floating items onto shelves as a Bible-shaped book rises to center",
+    "negative_prompt": "legible text, cluttered background, cut off face, biblical robes, harsh fluorescent light",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 58,
+    "script_snippet": "Number two: Putting God first brings peace in the middle of chaos.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stands calmly in the eye of a literal swirl of paper, notifications, and city noise icons, palms open toward a small glowing Bible at her chest.",
+    "image_prompt": "Friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, standing calm in the eye of swirling chaos holding a small glowing Bible at chest",
+    "negative_prompt": "gore, nudity, cut off face, headless, busy signage, biblical robes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 59,
+    "script_snippet": "[music] Many people think peace comes from having a perfect life, but biblical peace comes from having God in the center of your life, even when everything around you feels messy.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) places a glowing Bible into the center of a cluttered round table while piles of bills, spilled coffee, and messy clothes orbit outward, face steady and compassionate.",
+    "image_prompt": "Friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, placing a glowing Bible at center of a messy table as objects orbit outward",
+    "negative_prompt": "legible text, gore, cut off face, headless, biblical robes, cluttered unreadable signage",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 60,
+    "script_snippet": "Look at Daniel.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) gestures toward a small tableau showing a steady man figure labeled 'Daniel' standing alone amid dark marketplace shadows, her face inviting viewers to observe.",
+    "image_prompt": "Friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pointing toward a small tableau of a steady man labeled Daniel amid marketplace shadows",
+    "negative_prompt": "legible text, cut off face, headless, biblical robes, modern brand logos",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 61,
+    "script_snippet": "Daniel lived in a corrupt culture surrounded by pressure and compromise. [music] Yet he continued putting God first daily.",
+    "hero_subject": "The protagonist (friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reenacts Daniel's resolve: carrying a worn but glowing Bible through a crowded modern marketplace filled with shadowy figures offering bribes and glowing compromise icons, face determined and resolute.",
+    "image_prompt": "Friendly Hispanic female, 30s, warm brown eyes, light freckles, medium brown ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, carrying a glowing Bible through a crowded marketplace of shadowy figures offering glowing compromise icons",
+    "negative_prompt": "graphic violence, gore, cut off face, headless, biblical robes, readable signage",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 62,
+    "script_snippet": "Daniel 6:10 says he prayed three times a day, even when it became illegal.",
+    "hero_subject": "The protagonist (Hispanic female, 30s) actively praying three times daily despite legal danger: she kneels and prays with urgency, holding a small, blank notebook (no legible text) that represents her devotion, while subtle closed courtroom doors or official papers float behind her as symbolic pressure; her head and face are fully visible, showing resolve and faith, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, actively kneeling in prayer while small floating official papers surround her in a modern apartment.",
+    "negative_prompt": "headless, cut off face, cluttered background, anachronistic robes, visible legible text",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 63,
+    "script_snippet": "Think about that.",
+    "hero_subject": "The protagonist (Hispanic female, 30s) pausing mid-action to reflect: she holds a small, blank journal close to her chest with one hand and touches her forehead with the other as if weighing the idea, face fully visible and thoughtful, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers; modern home background with soft, blurred living-room details.",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding a blank journal to her chest in a modern living room, thoughtful expression.",
+    "negative_prompt": "cut off face, headless, text on journal, harsh fluorescent light, biblical robes",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 64,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s) responding to an emotional musical pause: she presses a hand over her heart and breathes deeply, eyes soft and face fully visible, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers; a smartphone on the table shows a muted music app icon (screen angled away, no legible text).",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pressing a hand to her heart as soft music plays on a muted phone nearby.",
+    "negative_prompt": "visible song lyrics, cut off face, headless, cluttered background, biblical clothing",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 65,
+    "script_snippet": "He didn't pray only when life was easy. He stayed faithful under pressure. And because God was first in Daniel's life, fear didn't control him.",
+    "hero_subject": "The protagonist (Hispanic female, 30s) acting out faithful perseverance: she stands amid symbolic pressure\u2014shadowy, translucent clocks and news headlines (angled away so no words legible) swirl around her while she calmly holds an open, blank notebook like a compass, face fully visible showing steadiness and resolve, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, standing calmly as shadowy clocks and muted headlines swirl around her while she holds a blank notebook.",
+    "negative_prompt": "legible headlines, cut off face, headless, anachronistic robes, harsh neon",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 66,
+    "script_snippet": "That same thing begins happening when you put God first for 30 days.",
+    "hero_subject": "The protagonist (Hispanic female, 30s) initiating a 30-day devotion: she pins a small blank calendar page labeled only with tiny unlegible marks (no text) to a corkboard and steps back smiling with hopeful eyes, face fully visible, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers; modern bedroom desk setting.",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pinning a blank calendar page to a corkboard in a bedroom, hopeful expression.",
+    "negative_prompt": "legible calendar text, cut off face, headless, cluttered background, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 67,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s) breathing in the moment as music underscores commitment: she closes her eyes briefly with a small smile, one hand resting over the pinned blank calendar, face fully visible, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers; a soft lamp and framed photos blurred behind her.",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, eyes closed with a gentle smile, hand on a pinned calendar page in a cozy room.",
+    "negative_prompt": "lyrics visible, cut off face, headless, harsh fluorescent light, biblical clothing",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 68,
+    "script_snippet": "Your circumstances may not instantly change, but your heart begins to change.",
+    "hero_subject": "The protagonist (Hispanic female, 30s) experiencing inner change: she stands in a modern kitchen and symbolically opens a small glass jar labeled with a faded, unreadable tag that releases soft, glowing tokens shaped like tiny hearts which float upward while she watches, face fully visible and softened, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, opening a jar that releases glowing heart-shaped tokens in a modern kitchen.",
+    "negative_prompt": "legible label text, cut off face, headless, cluttered counter, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 69,
+    "script_snippet": "Philippians 4:6\u20137 says, \"Be anxious for nothing, but in everything by prayer and supplication with thanksgiving, let your requests be made known to God.\"",
+    "hero_subject": "The protagonist (Hispanic female, 30s) embodying Scripture's promise: she sits at a small table with hands folded over a blank, closed journal and a faintly glowing, unreadable folded note beside it; around her, translucent worry-forms dissolve into gentle light as she breathes out, face fully visible and peaceful, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, friendly face with warm brown eyes and light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, sitting with folded hands as translucent worry-forms dissolve around her in a modern kitchen.",
+    "negative_prompt": "legible scripture text, cut off face, headless, cluttered background, anachronistic robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 70,
+    "script_snippet": "Then it says, \"And the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus.\"",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) holding a bright, translucent shield of peace before her chest while looking directly forward, face visible and expressive.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, holding a glowing translucent shield labeled by symbol of peace in a modern living room.",
+    "negative_prompt": "headless, cut off face, cluttered background, biblical robes, sandals",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 71,
+    "script_snippet": "That kind of peace doesn't make sense to the world.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) turning toward a crowd of shadowy, confused silhouettes while she holds the shield calmly, face clearly visible.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, holding a glowing shield while shadowy puzzled silhouettes look on in a city street.",
+    "negative_prompt": "cartoonish, crowded signage, cut off face, harsh fluorescent light",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 72,
+    "script_snippet": "You may still have bills,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) physically balancing a stack of unpaid bills like heavy envelopes on one palm, face strained but determined.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, balancing a heavy stack of blank-faced bills in a modern kitchen.",
+    "negative_prompt": "legible text, messy background, headless, biblical props",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 73,
+    "script_snippet": "you may still have struggles,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pushing against a dark, abstract weight labeled by texture (not text) representing struggles while keeping her face visible and focused.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, pushing a heavy textured dark boulder representing struggles in a modern apartment hallway.",
+    "negative_prompt": "graphic injury, legible labels, cartoonish, cut off face",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 74,
+    "script_snippet": "you may still have unanswered prayers,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) holding a small, dimly glowing jar of folded blank slips that float but haven't opened, face hopeful yet honest.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, holding a dim jar of blank folded slips symbolizing unanswered prayers in a bedroom.",
+    "negative_prompt": "legible writing, gore, headless, biblical robes",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 75,
+    "script_snippet": "but now you're no longer carrying those burdens alone.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) handing the heavy symbolic burdens (bills, dark stone, dim jar) to a gentle, warm light presence off-frame while looking relieved.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, releasing symbolic burdens to a soft unseen light in a modern living room.",
+    "negative_prompt": "visible text, violent struggle, cut off face, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 76,
+    "script_snippet": "And many people discover that when they spend the first moments of their day with God, instead of stress, worry loses its power.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) kneeling at a bedside morning light, placing a small, glowing Bible-like book on the nightstand while shadowy worry-figures shrink away, face peaceful.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, placing a glowing book on a nightstand as shadowy worries recede in a bedroom.",
+    "negative_prompt": "legible text, headless, harsh fluorescent light, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 77,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) closing her eyes briefly with a gentle smile as faint musical notes transform into soft light around her, face fully visible.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, eyes closed as soft musical notes turn into light in a cozy living room.",
+    "negative_prompt": "text captions, cut off face, cluttered background, cartoonish",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 78,
+    "script_snippet": "The battle in your mind becomes quieter.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) gently placing both hands over her temples as chaotic thought-figures shrink and fade around her, face calm and present.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, pressing hands to temples as chaotic thought-figures shrink in a modern study.",
+    "negative_prompt": "graphic injury, headless, legible text, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 79,
+    "script_snippet": "Your spirit becomes stronger.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) standing upright with a soft glowing aura forming around her chest like a growing light-core, face resolute and uplifted.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, growing a soft glowing light-core at her chest in a modern living room.",
+    "negative_prompt": "harsh lighting, cut off face, biblical robes, gore",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 80,
+    "script_snippet": "And instead of panicking first, you begin praying first.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) folding hands in quiet prayer as a wave of panic freezes and falls away behind her, face peaceful and attentive.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, folding hands in prayer as a frozen panic-wave falls away in a kitchen.",
+    "negative_prompt": "legible signage, headless, cartoonish, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 81,
+    "script_snippet": "If this message is speaking to your heart so far, take a second to support the channel: like this video,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) smiling warmly at the viewer and tapping a modern phone's like button icon that emits a small heart-shaped glow, face inviting and clear.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, tapping a glowing like-heart on a smartphone in a living room.",
+    "negative_prompt": "visible brand logos, legible text on screen, headless, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 82,
+    "script_snippet": " subscribe to Bible Flix,",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pressing a subscribe-style button on her phone that radiates a soft glow, face encouraging and direct to camera.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, pressing a glowing subscribe-style button on a smartphone at a kitchen table.",
+    "negative_prompt": "brand logos, legible text, headless, theatrical costumes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 83,
+    "script_snippet": " and comment below, \"God first, always.\"",
+    "hero_subject": "The protagonist (Hispanic female, 30s, olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) typing on a phone with a hopeful smile as a small speech-bubble-like glow emerges (no legible text shown), face warm and inviting.",
+    "image_prompt": "A Hispanic female, 30s, medium brown shoulder-length hair in a neat low ponytail, warm brown eyes, light freckles, olive knit sweater layered over a white T-shirt, typing on a smartphone as a blank speech-bubble glow appears in a cozy living room.",
+    "negative_prompt": "legible text, logos, cut off face, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 84,
+    "script_snippet": "[music] And share this video with someone who needs encouragement today.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, friendly face, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) extends a glowing smartphone toward the viewer as if sharing encouragement, face clearly visible and inviting.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, actively offering a glowing phone to share encouragement in a modern living room.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, headless, cut off face",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 85,
+    "script_snippet": "Number three: Putting God first exposes what's been controlling you.",
+    "hero_subject": "The protagonist pulls aside a translucent curtain revealing shadowy puppet-strings attached to small modern symbols (coins, a tiny phone, a thumbs-up), her face determined and engaged.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, pulling back a curtain to reveal puppet-strings controlling small modern icons in a living room.",
+    "negative_prompt": "busy text, anachronistic props, headless, cut off face, cartoonish",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 86,
+    "script_snippet": "[music] This part is uncomfortable, but powerful.",
+    "hero_subject": "The protagonist reaches toward a tangled bundle of thorny, dark vines wrapping around shiny symbolic objects, wincing but resolute, face fully visible.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, reaching into thorny vines entangling modern symbols in a kitchen.",
+    "negative_prompt": "gore, explicit injury, cluttered background, cut off face, cartoonish",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 87,
+    "script_snippet": "When you truly put God first, hidden idols begin to surface.",
+    "hero_subject": "The protagonist places a hand over her heart as translucent idol-figures rise like mist from her chest\u2014each shaped like a modern object\u2014she watches them surface with sober hope.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, hands on chest as translucent modern idol-forms rise in a cozy bedroom.",
+    "negative_prompt": "legible text, cluttered background, headless, cut off face",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 88,
+    "script_snippet": "An idol is anything that takes God's place in your heart.",
+    "hero_subject": "The protagonist holds an empty heart-shaped frame while tiny representations of idols orbit it, explaining definition with an earnest, instructive expression.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, holding an empty heart frame as small idol-icons orbit it in a home office.",
+    "negative_prompt": "text on objects, cartoonish, cut off face, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 89,
+    "script_snippet": "For some people, it's money.",
+    "hero_subject": "The protagonist strains as she lifts a heavy, glowing sack of coins tied to her shoulder like a burden, face showing the weight but steady resolve.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, straining to carry a heavy sack of coins like a burden on a modern street.",
+    "negative_prompt": "rendered currency text, gore, headless, cut off face",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 90,
+    "script_snippet": "For others, it's relationships.",
+    "hero_subject": "The protagonist holds a cluster of tiny glowing portraits on strings that tug at her chest like marionette puppets; she gently unties one string, face hopeful.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, untangling portrait-strings that tug at her chest in a living room.",
+    "negative_prompt": "legible text in portraits, messy background, headless, cut off face",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 91,
+    "script_snippet": "For others, it's social media,",
+    "hero_subject": "The protagonist watches as chains formed from small glowing social media icons peel away from her wrists, her face looking up with cautious relief.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, having chains of social media icons peel from her wrists in a modern bedroom.",
+    "negative_prompt": "visible usernames, legible text, cluttered UI, headless, cut off face",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 92,
+    "script_snippet": "success,",
+    "hero_subject": "The protagonist reaches for a floating, hollow golden trophy that slips through her fingers, revealing it to be empty, her face registering disillusionment.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, reaching for a floating hollow golden trophy that slips through her fingers in an office.",
+    "negative_prompt": "corporate logos, legible text, headless, cut off face, cartoonish",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 93,
+    "script_snippet": "lust,",
+    "hero_subject": "The protagonist turns away from a shimmering mask of desire offered on a pedestal, removing the mask with a resolute expression, face fully visible.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, removing a shimmering mask of desire from a pedestal in a bedroom.",
+    "negative_prompt": "sexualized content, explicit nudity, headless, cut off face",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 94,
+    "script_snippet": "pride,",
+    "hero_subject": "The protagonist steps down from a tiny raised pedestal labeled with a cracked crown as she breathes out, face humbled and reflective.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, stepping down from a small pedestal with a cracked crown in a living room.",
+    "negative_prompt": "legible insignia, gaudy trophies, headless, cut off face",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 95,
+    "script_snippet": "or even approval from people.",
+    "hero_subject": "The protagonist lets go of a glowing string of heart-reaction icons that float upward and dissolve, her expression peaceful and free.",
+    "image_prompt": "A Hispanic female, 30s with warm brown eyes and freckles, low ponytail, in an olive knit sweater layered over a white T-shirt, dark slim jeans, simple white sneakers, releasing floating heart-reaction icons that dissolve in a modern park.",
+    "negative_prompt": "visible usernames, legible text, cartoonish, headless, cut off face",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 96,
+    "script_snippet": "[music] In Exodus 20:3, God said, \"You shall have no other gods before me.\"",
+    "hero_subject": "The protagonist stands in a modern living room, holding a large blank stone tablet like a commandment, head and face fully visible, actively lifting the tablet toward the viewer as if presenting God's first commandment; she is the Hispanic female protagonist (warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail) wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding a blank stone tablet labeled by gesture 'Exodus 20:3' in a contemporary living room.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robes, sandals, beards",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 97,
+    "script_snippet": "Notice he didn't say beside him.",
+    "hero_subject": "The protagonist, face fully visible, physically steps forward and places the stone tablet ahead of a small pile of coins and a glowing phone, actively pushing the tablet in front of them to occupy first position; she is the Hispanic female described above in the same modern clothes.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pushing a stone tablet in front of coins and a glowing smartphone in a living room.",
+    "negative_prompt": "cartoonish, blurred face, cut off head, anachronistic props, robes, sandals",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 98,
+    "script_snippet": "He said before him, because God refuses to compete for first place in our lives.",
+    "hero_subject": "The protagonist, head and face clear, actively arranging a giant scale so the stone tablet sits before a pile of gold and a trophy, physically moving the tablet to the higher/front position to show 'before', wearing the specified modern clothing.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, placing a stone tablet on a scale before a pile of gold and a trophy indoors.",
+    "negative_prompt": "text legible on objects, head cut off, biblical robes, sandals, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 99,
+    "script_snippet": "There's a story in the Bible about a rich young ruler in Mark 10:17\u201322.",
+    "hero_subject": "The protagonist, face visible and expressive, points toward a modern street scene diorama showing a well-dressed young man (supporting character) by a luxury car, she gestures as storyteller, wearing the specified clothing and leaning forward to introduce the scene.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pointing toward a diorama of a well-dressed young man beside a luxury car on a city street.",
+    "negative_prompt": "legible license plates or text, blurry face, headless, robes, sandals",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 100,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist, head and face shown, takes a steady breath and closes her eyes briefly while holding the diorama figure in one hand and a small Bible in the other, actively listening to the music as a reflective beat; dressed in the specified modern clothing.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding a small Bible and a miniature figure while listening to music in a cozy modern room.",
+    "negative_prompt": "visible text on pages, head cropped, cut off face, robes, sandals, cluttered background",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 101,
+    "script_snippet": "This man seemed morally good.",
+    "hero_subject": "The protagonist holds up a small figurine of the rich young ruler in one hand and a polished, empty medal in the other, showing his outward moral appearance while her face studies both objects intently; she is in the specified modern clothes with face visible.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, comparing a figurine and a shiny empty medal in a contemporary living room.",
+    "negative_prompt": "head cropped, blurred face, theatrical robes, sandals, text on medal",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 102,
+    "script_snippet": "He followed commandments.",
+    "hero_subject": "The protagonist actively arranges a line of small checklist cards labeled by gesture as 'commandments' and places the figurine next to the finished list, her face intent and clear as she demonstrates obedience visually; wearing the specified clothing.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, arranging checklist cards labeled as commandments on a table beside a figurine.",
+    "negative_prompt": "legible text on cards, headless, cut off face, robes, sandals, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 103,
+    "script_snippet": "He respected Jesus.",
+    "hero_subject": "The protagonist holds a softly glowing portrait-like symbol of Jesus at arm's length, her face turned toward it with respect but a questioning expression, clearly showing head and features while wearing the specified modern outfit.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding a glowing symbol of Jesus respectfully in a modern living room.",
+    "negative_prompt": "text on portrait, cut off face, robes on protagonist, sandals, messy background",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 104,
+    "script_snippet": "But when Jesus told him to give up his possessions and follow him, the man walked away sad.",
+    "hero_subject": "The protagonist reenacts the scene: she steps forward as if speaking as Jesus, placing a symbolic hand on the figurine and motioning toward an open path; then she watches the figurine turn away and walk off with tiny luggage, her face clearly visible, registering the man's sadness while wearing the specified modern clothing.",
+    "image_prompt": "A Hispanic female with warm brown eyes and light freckles in an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, placing a hand on a figurine while watching it walk away with tiny luggage on a city sidewalk diorama.",
+    "negative_prompt": "graphic injury, head cut off, robes, sandals, legible street signs, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 105,
+    "script_snippet": "[music] Why?",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaches toward a large floating question mark made of faint, translucent coins, face visible and searching, in a modern living room.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, reaching toward a floating question mark made of translucent coins in a modern living room",
+    "negative_prompt": "headless, cut off face, cluttered background, cartoonish, harsh fluorescent light",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 106,
+    "script_snippet": "Because money had become his true God.",
+    "hero_subject": "The protagonist shown holding a gilded, glowing wallet on a pedestal like an idol, pushing it away with a conflicted expression while her face remains clearly visible and engaged.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pushing away a gilded glowing wallet on a pedestal in a contemporary apartment",
+    "negative_prompt": "headless, cut off face, cluttered background, logos, legible text",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 107,
+    "script_snippet": "And sometimes during those 30 days of putting God first, God begins revealing the things we rely on more than him.",
+    "hero_subject": "The protagonist actively peeling back a translucent calendar page labeled '30' to reveal hidden shadowy icons (phone, trophy, briefcase) behind it, face determined and engaged.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, peeling back a translucent calendar page marked 30 to reveal shadowy icons like a phone, trophy, briefcase in a modern bedroom",
+    "negative_prompt": "headless, cut off face, logos, legible text, cluttered background",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 108,
+    "script_snippet": "[music] That can feel painful at first, but exposure leads to freedom.",
+    "hero_subject": "The protagonist wincing as she gently pulls away a cracked mask of money from her face, light pouring through the crack as she looks forward with a hopeful expression.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pulling off a cracked money-patterned mask from her face in a living room",
+    "negative_prompt": "headless, cut off face, gore, graphic injury, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 109,
+    "script_snippet": "Imagine a doctor finding a hidden disease early enough to heal it.",
+    "hero_subject": "The protagonist actively receiving a symbolic transparent medical scan held by a caring modern doctor-figure, the scan revealing a darkened spot shaped like a coin over her chest while she studies it intently.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding a transparent medical scan showing a dark coin-shaped spot over her chest with a modern doctor in a clinic",
+    "negative_prompt": "graphic wounds, gore, headless, cut off face, hospital clutter, legible text",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 110,
+    "script_snippet": "It may hurt to hear the diagnosis, but it saves your life.",
+    "hero_subject": "The protagonist reacting with a brief pained expression as she listens to the diagnosis, then taking a steadying breath and gripping the doctor's hand, face fully visible and resolute.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, listening to a doctor's diagnosis and gripping the doctor's hand in a modern clinic",
+    "negative_prompt": "graphic injury, gore, headless, cut off face, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 111,
+    "script_snippet": "[music] In the same way, God exposes unhealthy attachments because he wants to heal your heart.",
+    "hero_subject": "The protagonist standing as faint shadowy chains made of small icons (phone, money, applause) are peeled away by a gentle glowing hand from above, her face showing relief and openness.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, having shadowy chains made of small phone and money icons gently peeled away by a glowing hand in a modern living room",
+    "negative_prompt": "headless, cut off face, gore, cartoonish, logos, legible text",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 112,
+    "script_snippet": "And here's the beautiful part: [music] When God removes idols, he fills that empty space with his presence.",
+    "hero_subject": "The protagonist standing with arms slightly open as broken idol fragments (coins, crown) fall away and a warm, radiant, non-figurative light-like presence gently fills the space near her heart, her face uplifted and peaceful.",
+    "image_prompt": "A Hispanic female in her 30s with warm brown eyes and light freckles, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, standing as broken idol fragments fall away and a warm radiant presence fills the space near her heart in a modern living room",
+    "negative_prompt": "headless, cut off face, literal religious symbols, logos, legible text, gore",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 113,
+    "script_snippet": "Nothing in this world can satisfy the soul like God can.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaches forward with both hands toward a warm glowing, heart-shaped light hovering above her palms, face fully visible and filled with longing.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, reaching toward a glowing heart-shaped light in a modern living room.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 114,
+    "script_snippet": " [music]",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pauses mid-reach as faint musical notes take visible, ribbon-like form around her, expression contemplative and attentive.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, surrounded by ribbon-like musical notes in a cozy modern room.",
+    "negative_prompt": "cartoonish, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 115,
+    "script_snippet": " Not money,",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) energetically pushes away a floating stack of cash and coins with a decisive expression, face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, pushing away floating stacks of cash and coins in a contemporary apartment.",
+    "negative_prompt": "cartoonish money, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 116,
+    "script_snippet": " not fame,",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) turns away from a floating smartphone and spotlight icons representing fame, holding up a hand as if declining, face clearly visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, turning away from floating smartphone and spotlight icons on a city balcony.",
+    "negative_prompt": "neon clutter, headless, cut off face, biblical robes, cartoonish icons",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 117,
+    "script_snippet": " not relationships,",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) gently steps back from several translucent hands reaching toward her labeled as relationships, looking reflective and resolute with face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, stepping back from translucent reaching hands symbolizing relationships in a living room.",
+    "negative_prompt": "text on hands, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 118,
+    "script_snippet": " not achievements.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) steps away from a floating trophy and diploma that she lets drift down, watching them fall with a calm, determined expression and face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, letting a floating trophy and diploma drift downward in a modern office.",
+    "negative_prompt": "legible text on diploma, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 119,
+    "script_snippet": " Ecclesiastes 3:11 says God has placed eternity in the human heart.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) cradles a small glowing globe-sized heart against her chest, looking down with reverent wonder, face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, cradling a small glowing globe-like heart against her chest in a quiet bedroom.",
+    "negative_prompt": "legible text, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 120,
+    "script_snippet": " That emptiness people feel is often a spiritual hunger only God can satisfy.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) holds an empty bowl that slowly fills with soft light from above, her expression hopeful and expectant, face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, holding an empty bowl that fills with soft light in a modern kitchen.",
+    "negative_prompt": "cluttered background, headless, cut off face, biblical robes, legible text",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 121,
+    "script_snippet": "\nNumber four: Putting God first strengthens your faith.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stands steady as a glowing Bible on one palm outweighs a bag of coins on the other in a visible scale metaphor, face clearly visible and resolved.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, balancing a glowing Bible against a bag of coins on a hand-held scale in a living room.",
+    "negative_prompt": "legible text on Bible, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 122,
+    "script_snippet": " [music]",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) breathes in as soft musical ribbons swirl around the scale, expression focused and encouraged, face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, breathing in as ribbon-like musical notes swirl around a hand-held scale in a home study.",
+    "negative_prompt": "cartoonish music, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 123,
+    "script_snippet": " Faith grows when it is exercised, and one of the fastest ways your faith grows is by consistently choosing God even when feelings fluctuate.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) climbs a short indoor staircase toward a bright open doorway labeled only by light, each step marked by a small glowing Bible icon, face visible and determined.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, climbing indoor stairs toward a bright open doorway with glowing Bible icons on steps.",
+    "negative_prompt": "legible text, cluttered props, headless, cut off face, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 124,
+    "script_snippet": " Many people depend on emotions to stay close to God, ",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) watches a row of colorful mood-balloons drift by while holding a steady, unlit lantern labeled with a faint cross symbol, face contemplative and steady.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, watching colorful balloons pass while holding a steady unlit lantern with a faint cross symbol in a modern park.",
+    "negative_prompt": "text on lantern, cartoonish balloons, headless, cut off face, biblical robes",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 125,
+    "script_snippet": "[music]",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) closes her eyes briefly as musical ribbons pass through the scene, expression peaceful and attentive, face fully visible.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, closing her eyes as ribbon-like musical notes float through a quiet park.",
+    "negative_prompt": "cartoonish music, cluttered background, headless, cut off face, biblical robes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 126,
+    "script_snippet": " but mature faith continues obeying even on difficult days.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) kneels on a small rocky outcrop and steadies a glowing compass toward the bright horizon despite storm clouds, face visible and resolute.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, kneeling on rocks and steadying a glowing compass toward the horizon amid storm clouds.",
+    "negative_prompt": "graphic storm gore, headless, cut off face, biblical robes, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 127,
+    "script_snippet": " Think about Abraham.",
+    "hero_subject": "The Hispanic female protagonist (30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) looks contemplatively at a distant, faint silhouette of an ancient path made modern\u2014stone markers leading toward a single glowing promise, face fully visible and reflective.",
+    "image_prompt": "A friendly Hispanic female in an olive knit sweater layered over a white T-shirt, face clearly visible, looking toward a modernized stone path of markers leading to a single glowing promise in a twilight park.",
+    "negative_prompt": "biblical robes, headless, cut off face, legible text, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 128,
+    "script_snippet": "God told Abraham to leave his homeland without showing him the full plan immediately.",
+    "hero_subject": "The protagonist actively stepping away from a folded paper map she holds, face visible and determined as she walks toward a faint path disappearing into the distance, showing commitment to leave without a plan.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding a folded map and stepping toward a fading path in a modern living room.",
+    "negative_prompt": "headless, cut off face, robes, biblical clothing, cluttered background, harsh fluorescent light",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 129,
+    "script_snippet": "Hebrews 11:8 says, \"By faith, Abraham obeyed.\"",
+    "hero_subject": "The protagonist placing her hand on a closed Bible (pages turned away) on a kitchen table while looking up with a resolved expression, embodying obedient faith anchored in scripture.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, placing her hand on a closed Bible on a table in a modern kitchen.",
+    "negative_prompt": "legible text, headless, cut off face, robes, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 130,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist pausing mid-action to tap a smartphone music icon, eyes closed briefly as if the music underscores the moment, showing an internal beat between thoughts.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, tapping a smartphone with musical notes swirling in a living room.",
+    "negative_prompt": "headless, cut off face, cartoonish, cluttered background, harsh fluorescent light",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 131,
+    "script_snippet": "That's powerful.",
+    "hero_subject": "The protagonist with one hand over her heart and the other gently open, expressive face lifted as abstract gentle ribbons rise around her, showing conviction and awe.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, hand on heart as abstract ribbons rise around her in a cozy modern room.",
+    "negative_prompt": "headless, cut off face, robes, cluttered background, harsh fluorescent light",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 132,
+    "script_snippet": "He obeyed before seeing the outcome, and that's exactly what happens when you commit to putting God first.",
+    "hero_subject": "The protagonist stepping onto translucent stepping stones that fade into the distance while keeping a hand resting on a closed Bible at her side, face showing steady trust as she moves forward without knowing the end.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, stepping onto translucent stepping stones that fade forward while touching a closed Bible at her side.",
+    "negative_prompt": "headless, cut off face, robes, legible text, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 133,
+    "script_snippet": "You start trusting God beyond your emotions.",
+    "hero_subject": "The protagonist reaching past a swirling cluster of colorful emotion symbols (hearts, storm-cloud icons) toward a steady compass object on a shelf, face focused and resolute as she chooses steadiness over feeling.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, reaching past swirling emotion symbols toward a solid compass on a shelf in a modern room.",
+    "negative_prompt": "headless, cut off face, cartoonish, robes, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 134,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist pausing with earbuds in, one hand adjusting them as small musical notes orbit her, showing the recurring rhythm that supports daily discipline.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, adjusting earbuds with musical notes orbiting in a bedroom corner.",
+    "negative_prompt": "headless, cut off face, cartoonish, overly dramatic lighting, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 135,
+    "script_snippet": "Maybe during those 30 days, you wake up early to pray even when tired.",
+    "hero_subject": "The protagonist pulling open curtains with one hand and holding a small closed Bible in the other, eyes focused and tired but determined as she ushers in the morning ready to pray.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pulling open curtains while holding a closed Bible in a modern bedroom.",
+    "negative_prompt": "headless, cut off face, robes, legible text, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 136,
+    "script_snippet": "You forgive someone even when hurt.",
+    "hero_subject": "The protagonist releasing a folded paper heart into the air with a gentle, resolute expression, her face clearly visible as the small paper drifts away representing letting go of hurt.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, releasing a folded paper heart into the air in a modern park-like courtyard.",
+    "negative_prompt": "headless, cut off face, gore, robes, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 137,
+    "script_snippet": "You stop compromising even when tempted.",
+    "hero_subject": "The protagonist turning away from a shiny trophy on a small pedestal while stepping toward a simple closed Bible she holds, face firm and deliberate as she refuses compromise.",
+    "image_prompt": "A friendly Hispanic female, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, turning away from a shiny trophy on a pedestal while stepping toward a closed Bible in a modern office space.",
+    "negative_prompt": "headless, cut off face, robes, legible text, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 138,
+    "script_snippet": "You choose obedience even when nobody sees it.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively placing a small, glowing seed into cracked concrete with a determined expression\u2014symbolizing obedient choices hidden from view.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, placing a small glowing seed into cracked concrete",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 139,
+    "script_snippet": "Every small act of obedience strengthens spiritual muscles.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) lifting tiny, luminous dumbbells shaped like small crosses with effort, showing growth in spiritual 'muscles'.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, lifting small glowing cross-shaped dumbbells",
+    "negative_prompt": "cartoonish, cluttered background, cut off face, headless, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 140,
+    "script_snippet": "And over time, you begin noticing something incredible: [music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pausing mid-step as tiny glowing sprouts burst up around her feet, she leans forward noticing growth with wonder.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, noticing glowing sprouts bursting at her feet",
+    "negative_prompt": "busy background, harsh artificial light, headless, cut off face, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 141,
+    "script_snippet": "Your trust in God becomes stronger than your fear.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stepping confidently across a narrow planked bridge while a translucent, shrinking shadow labeled 'fear' recedes below, her face steady and trusting.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, stepping confidently across a plank bridge as a shadow labeled fear shrinks below",
+    "negative_prompt": "legible text, cluttered background, cut off face, headless, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 142,
+    "script_snippet": "Romans 10:17 says, \"Faith comes by hearing, and hearing by the word of God.\"",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) holding an open book whose pages glow and diffuse into floating musical notes and light, listening intently as the words form into sound rather than readable text.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, holding an open glowing book whose pages turn into floating musical notes",
+    "negative_prompt": "legible text, cluttered shelves, headless, cut off face, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 143,
+    "script_snippet": "That's why reading Scripture daily matters.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) setting a routine by placing the glowing book on a neatly kept nightstand beside a calendar with small habit-check marks, preparing to read.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, placing a glowing book on a nightstand with habit check marks",
+    "negative_prompt": "legible calendar text, cluttered room, cut off face, headless, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 144,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pausing with eyes closed as tiny musical notes swirl around her, a transitional beat of reflection.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, eyes closed as musical notes swirl around her",
+    "negative_prompt": "cartoonish notes, cluttered background, cut off face, headless, biblical robes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 145,
+    "script_snippet": "The more time you spend with God's word, the more your thinking changes.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) arranging glowing puzzle pieces (brain-shaped) that shift from dark to light as she fits Scripture-shaped pieces into place.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, fitting glowing Scripture-shaped puzzle pieces into a dark-to-light brain",
+    "negative_prompt": "legible text on pieces, cluttered background, cut off face, headless, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 146,
+    "script_snippet": "Fear begins shrinking.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) watching with hopeful expression as a dark, cloud-like shape labeled with shrinking jagged edges recedes and dissolves into small harmless flakes.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, watching a dark cloud-like fear shape shrink and dissolve",
+    "negative_prompt": "legible labels, gore, cluttered background, cut off face, headless, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 147,
+    "script_snippet": "Faith begins rising.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaching upward as a bright ribbon of light labeled 'faith' lifts from her chest, carrying her upward with a hopeful, peaceful expression.",
+    "image_prompt": "Hispanic female with warm brown eyes and light freckles, medium brown ponytail, in an olive knit sweater layered over a white T-shirt, reaching as a bright ribbon of faith rises from her chest",
+    "negative_prompt": "legible labels, violent imagery, cluttered background, cut off face, headless, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 148,
+    "script_snippet": "Hope begins returning.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaches out with a hopeful, active gesture toward a small glowing sprout pushing through cracked concrete on a kitchen countertop \u2014 face fully visible, eyes focused, expression of renewed hope.",
+    "image_prompt": "Hispanic female with light freckles, olive knit sweater layered over a white T-shirt, reaching toward glowing sprout",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robe, sandals",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 149,
+    "script_snippet": "You stop seeing problems as bigger than God. Instead, you start remembering how faithful God has always been.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively pushing aside a large, looming shadow labeled by abstract symbols of problems (blurred, illegible) as she turns to cradle a small, weathered Bible-like book (angled away so no legible text) with a remembering, peaceful expression; face fully visible.",
+    "image_prompt": "Hispanic female with light freckles, olive knit sweater layered over a white T-shirt, pushing aside shadowed problems and holding a blank-faced book",
+    "negative_prompt": "legible text, headless, cut off face, dramatic gore, biblical robes, sandals",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 150,
+    "script_snippet": "Number five: Putting God first can transform your entire life.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively standing in front of a life-sized puzzle of her daily world (home, work, phone icons) as she places a glowing Bible-piece into its center, face shown and determined.",
+    "image_prompt": "Hispanic female with light freckles, olive knit sweater layered over a white T-shirt, placing a glowing puzzle piece labeled faith into a life puzzle",
+    "negative_prompt": "textual labels legible, cluttered background, cut off face, headless, biblical robe",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 151,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) closing her eyes briefly while raising one hand toward a soft visual pulse of music notes made of light (non-legible shapes) that ripple through a modern living room, face visible and receptive.",
+    "image_prompt": "Hispanic female with light freckles, olive knit sweater layered over a white T-shirt, raising hand toward pulsing non-text musical shapes in living room",
+    "negative_prompt": "legible text, musical notation with words, cut off face, headless, biblical robe, sandals",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 152,
+    "script_snippet": "Here's the truth many people discover: Putting God first doesn't just improve one area of life. It impacts everything.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) standing at a modern home entryway as a series of translucent daily life icons (relationships, work, finances, health) ripple outward from a glowing center she holds, face fully visible, expression of quiet conviction.",
+    "image_prompt": "Hispanic female with light freckles, olive knit sweater layered over a white T-shirt, holding a glowing center that sends ripple icons through a modern home",
+    "negative_prompt": "legible text on icons, cluttered background, cut off face, headless, biblical robe",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 153,
+    "script_snippet": "Your relationships change.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively handing a glowing thread from her chest to a small diverse group of supportive friends, the thread connecting them while she smiles, face clearly visible and warm.",
+    "image_prompt": "Hispanic female with light freckles, olive knit sweater layered over a white T-shirt, handing a glowing thread to a small diverse group of friends",
+    "negative_prompt": "cut off face, headless, cluttered background, biblical robes, sandals, legible text",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 154,
+    "script_snippet": "Your mindset changes.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively swapping a heavy thought-bubble made of dark icons for a lighter, open sunrise-shaped idea that she releases upward, face fully visible and hopeful.",
+    "image_prompt": "Hispanic female with light freckles, olive knit sweater layered over a white T-shirt, exchanging a heavy dark thought-bubble for a lighter sunrise-shaped idea",
+    "negative_prompt": "cut off face, headless, cluttered background, biblical robe, sandals, legible text",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 155,
+    "script_snippet": "Your habits change.",
+    "hero_subject": "The protagonist actively swaps out a cluttered shelf of glossy magazines and shopping boxes for a neatly stacked Bible and journal, handing the first pile off-frame with a decisive, hopeful expression. Show her upper body and face clearly \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, replacing shopping boxes with a Bible",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, anachronistic props",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 156,
+    "script_snippet": "Your reactions change.",
+    "hero_subject": "The protagonist physically steps back from a glowing smartphone showing angry comments, holding up a transparent shield shaped like a heart and prayer hands that gently deflects the harsh icons; her face is calm but alert, eyes focused. Full head and expressive face visible \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, holding a heart-shaped shield deflecting angry phone icons",
+    "negative_prompt": "cartoonish, headless, cut off face, cluttered background, floating text",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 157,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist pauses mid-step, placing a hand over her chest while a subtle swirl of musical note-shaped lights transforms into gentle doves around her; her face shows receptive attention. Show upper body and face clearly \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, hand on chest as musical notes turn into doves",
+    "negative_prompt": "glaring neon, cut off face, headless, distracting props, legible text",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 158,
+    "script_snippet": "Even the way you speak begins changing.",
+    "hero_subject": "The protagonist stands before a small mirror in a modern bathroom, gently reshaping a glowing ribbon of words spilling from her mouth into kind, soft phrases that float away like paper cranes; her expression is intent and peaceful. Upper body and face clearly visible \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, shaping glowing words into paper-crane phrases in a mirror",
+    "negative_prompt": "bathroom clutter, headless, cut off face, legible text, harsh fluorescent light",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 159,
+    "script_snippet": "Second Corinthians 5:17 says, \"Therefore, if anyone is in Christ, he is a new creation.\"",
+    "hero_subject": "The protagonist holds an open, blank-faced book that blooms into a radiant new leaf-like silhouette above her palms, the pages transforming into a living sapling; her face reflects wonder and humility. Show head and face clearly \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, holding a book that blooms into a living sapling",
+    "negative_prompt": "legible text, headless, cut off face, cluttered background, modern logos",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 160,
+    "script_snippet": "God specializes in transformation.",
+    "hero_subject": "The protagonist actively molds a lump of dull clay on a table into a small, shining human figure that emits a soft glow; she looks focused and expectant, hands shaping the form. Upper body and face clearly shown \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, shaping dull clay into a shining human figure",
+    "negative_prompt": "cluttered tabletop, headless, cut off face, harsh fluorescent light, legible labels",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 161,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist closes her eyes briefly and exhales as a soft halo of musical ribbons circles her, each ribbon dissolving a tiny cracked mask she had been wearing; her face shows relief and surrender. Show full head and expressive face \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, musical ribbons dissolving cracked masks around her",
+    "negative_prompt": "cut off face, headless, messy background, legible text, overly dramatic props",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 162,
+    "script_snippet": "Look at Saul in the Bible.",
+    "hero_subject": "The protagonist points toward a distant shadowed figure shaped like an armored silhouette made of newspaper headlines and angry icons; she gestures as if telling the story, face engaged and teaching. Upper body and face clearly visible \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, pointing toward a shadowy armored silhouette of headlines",
+    "negative_prompt": "legible headlines, headless, cut off face, cluttered background, anachronistic props",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 163,
+    "script_snippet": "Saul persecuted Christians. He was violent and spiritually blind.",
+    "hero_subject": "The protagonist holds a heavy, rusted spear-shaped bundle of broken phones and angry social icons that suddenly crumble into harmless paper flowers as light touches them; she looks solemn but hopeful, face clearly shown. Show upper body and face \u2014 Hispanic female, 30s, friendly, warm brown eyes, light freckles across the nose, medium brown hair in a neat low ponytail, natural light makeup, relaxed smile, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes and freckles, olive knit sweater, holding a rusted spear of broken phones turning into paper flowers",
+    "negative_prompt": "graphic violence, gore, headless, cut off face, legible text, chaotic background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 164,
+    "script_snippet": "But after encountering Jesus, Saul became Paul, a man who helped spread the gospel across nations.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively holding a glowing, open map that sprouts tiny lighted pins across distant countries; her face (warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail) is turned toward the map with a determined, compassionate expression as she traces routes with her finger, embodying transformation and mission.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, tracing a glowing world map.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robe, sandals",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 165,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pausing mid-step as invisible musical notes form luminous threads around her hands; her face (warm brown eyes, light freckles, neat low ponytail) shows a quiet, receptive surprise as she reaches to feel the threads, a visual beat marking a spiritual transition.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, reaching to luminous musical threads in a modern living room.",
+    "negative_prompt": "musical instruments, headless, cut off face, grainy texture, anachronistic props",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 166,
+    "script_snippet": "That's the power of surrender.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) releasing a tightly clenched miniature steering wheel that dissolves into soft light; her face (warm brown eyes, light freckles, neat low ponytail) looks relieved and peaceful as she opens her hands, visually surrendering control to a higher presence.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, releasing a small steering wheel that dissolves into light.",
+    "negative_prompt": "headless, cut off face, dramatic gore, modern religious icons, distracting text",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 167,
+    "script_snippet": "God can transform anyone.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) holding a cracked clay pot that mends itself with golden seams; her face (warm brown eyes, light freckles, neat low ponytail) shows hopeful conviction as the pot becomes whole, symbolizing universal transformation.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, holding a cracked clay pot mending with golden seams.",
+    "negative_prompt": "broken glass gore, headless, cut off face, cluttered background, explicit text",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 168,
+    "script_snippet": "And maybe during these 30 days, you begin breaking addictions.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively snapping chains made of tiny cigarette butts, alcohol bottles, and phone icons; her face (warm brown eyes, light freckles, neat low ponytail) is resolute and determined as the chains fall away, symbolizing breaking addictions over 30 days.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, snapping chains made of phone icons and bottle shapes.",
+    "negative_prompt": "graphic injury, headless, cut off face, excessive clutter, dated clothing",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 169,
+    "script_snippet": "You develop discipline.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) setting and stacking neat, glowing tiles labeled with healthy habits (exercise, prayer, modest bank ledger as blank face) into a steady tower; her face (warm brown eyes, light freckles, neat low ponytail) is focused and purposeful as she places each tile, actively building discipline.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, stacking glowing habit tiles into a tower in a modern kitchen.",
+    "negative_prompt": "legible text, headless, cut off face, messy background, anachronisms",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 170,
+    "script_snippet": "You become kinder.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) offering a small glowing loaf of bread from her hands to a diverse group nearby; her face (warm brown eyes, light freckles, neat low ponytail) radiates gentle warmth as she leans forward, actively practicing kindness.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, offering a glowing loaf of bread to diverse people in a living room.",
+    "negative_prompt": "headless, cut off face, gore, modern religious costumes, cluttered props",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 171,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) closing her eyes mid-gesture as soft musical ribbons swirl and weave around open hands; her face (warm brown eyes, light freckles, neat low ponytail) expresses restful surrender and renewed focus.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, palms raised as musical ribbons swirl around her in a cozy living room.",
+    "negative_prompt": "headless, cut off face, harsh fluorescent light, chaotic clutter, explicit text",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 172,
+    "script_snippet": "You become more patient.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) gently watering a small, slow-growing sapling planted in a calendar-marked pot; her face (warm brown eyes, light freckles, neat low ponytail) shows calm expectancy as she tends it, embodying growing patience.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, gently watering a sapling in a calendar-marked pot indoors.",
+    "negative_prompt": "headless, cut off face, overripe plants, messy background, legible text",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 173,
+    "script_snippet": "You stop living only for yourself.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stepping forward to hand a glowing, shared key to another person while stepping away from a mirror that folds into darkness; her face (warm brown eyes, light freckles, neat low ponytail) is open and giving as she turns toward community.",
+    "image_prompt": "Hispanic female in an olive knit sweater layered over a white T-shirt, warm brown eyes, light freckles, handing a glowing shared key to another person in a modern living room.",
+    "negative_prompt": "headless, cut off face, mirrors with legible text, gore, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 174,
+    "script_snippet": "Not because you're trying harder alone, but because God changes people from the inside out.",
+    "hero_subject": "The Hispanic female protagonist (friendly, warm brown eyes, light freckles across the nose, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) actively peeling back a translucent skin layer from her chest to reveal a glowing heart-shaped core, face and eyes clearly engaged.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, actively peeling back a translucent skin layer to reveal a glowing heart core in a modern living room.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 175,
+    "script_snippet": "[music]",
+    "hero_subject": "The Hispanic female protagonist (wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pausing mid-step as faint musical note-shaped lights swirl around her hands, face visibly attentive and present.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding swirling musical-note lights in a modern living room.",
+    "negative_prompt": "cut off face, headless, text on notes, cartoonish, cluttered background",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 176,
+    "script_snippet": "John 15:5 says, \"Without me, you can do nothing.\"",
+    "hero_subject": "The Hispanic female protagonist (olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaching toward a suspended, empty steering wheel made of light labeled by no words, her face focused as she realizes dependence.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, reaching toward a suspended glowing steering wheel of light in a modern kitchen.",
+    "negative_prompt": "legible text, cut off face, biblical robes, cluttered props, harsh fluorescent light",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 177,
+    "script_snippet": "Notice Jesus didn't say some things.",
+    "hero_subject": "The Hispanic female protagonist (olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) pointing with a thoughtful expression at three dim, unlit doors labeled by implied ideas (not legible), her face clearly visible.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pointing at three dim unlit doors in a modern hallway.",
+    "negative_prompt": "legible labels, cut off face, headless, biblical clothing, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 178,
+    "script_snippet": "He said nothing.",
+    "hero_subject": "The Hispanic female protagonist (olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) holding up empty hands toward a plain open space where words would be, her face searching and attentive.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding empty hands toward an open blank space in a modern living room.",
+    "negative_prompt": "legible text, cut off face, headless, biblical robes, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 179,
+    "script_snippet": "Real transformation happens when we stay connected to him.",
+    "hero_subject": "The Hispanic female protagonist (olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) plugging a glowing cable from her chest into a gentle radiant figure of Jesus at arm's length, face showing trust and relief.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, plugging a glowing cable from her chest into a radiant figure of Jesus in a modern living room.",
+    "negative_prompt": "graphic injury, cut off face, headless, biblical crowd, legible text",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 180,
+    "script_snippet": "And sometimes the biggest miracle isn't external success.",
+    "hero_subject": "The Hispanic female protagonist (olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) stepping away from a distant pedestal with a shining trophy, turning inward with a thoughtful face toward a small seedling in her palm.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, stepping away from a pedestal with a trophy toward a seedling in her hand in a modern backyard.",
+    "negative_prompt": "cut off face, headless, dramatic gore, biblical robes, cluttered props",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 181,
+    "script_snippet": "Sometimes the biggest miracle is becoming the person God created you to be.",
+    "hero_subject": "The Hispanic female protagonist (olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) planting the seedling into soil that sprouts a translucent silhouette of her future self, her face hopeful and engaged.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, planting a seedling that sprouts a translucent future-self silhouette in a modern garden.",
+    "negative_prompt": "cut off face, headless, legible text, biblical robes, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 182,
+    "script_snippet": "And if you're serious about putting God first for the next 30 days, [music] I created a 30-day spiritual growth devotional journal to help guide you daily in prayer, Scripture, reflection, and spiritual discipline.",
+    "hero_subject": "The Hispanic female protagonist (olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) offering an open journal glowing with faint chapter tabs labeled by symbolic icons (prayer, Bible, reflection, discipline \u2014 no legible text), her face inviting and earnest as musical note lights hover nearby.",
+    "image_prompt": "A Hispanic female with warm brown eyes, light freckles, medium brown hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, offering an open glowing journal with symbolic icons in a modern cozy study.",
+    "negative_prompt": "legible text, cut off face, headless, cluttered background, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 183,
+    "script_snippet": "You can grab it through the link in the description below.",
+    "hero_subject": "Protagonist holding a smartphone, reaching forward to tap a glowing link card on the screen; face fully visible and engaged.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, tapping a glowing phone link in a modern living room.",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 184,
+    "script_snippet": "Putting God first for 30 days may not make your life instantly perfect, but it can completely change your direction.",
+    "hero_subject": "Protagonist striding forward on a sidewalk that splits into two paths, one smooth and bright, the other cluttered with small tempting icons; she points toward the bright path.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, stepping toward a bright clear path among two diverging roads.",
+    "negative_prompt": "cartoonish, headless, cut off face, anachronistic props, robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 185,
+    "script_snippet": "[music]",
+    "hero_subject": "Protagonist pausing mid-step, cupping an ear as soft musical notes (abstract shapes) float around her; face expressive and attentive.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, listening as floating abstract music notes drift around her in a living room.",
+    "negative_prompt": "cut off face, headless, cluttered background, literal sheet music with text",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 186,
+    "script_snippet": "You may discover greater peace,",
+    "hero_subject": "Protagonist gently releasing a heavy stone from her shoulders as a soft dove-shaped light rises; face relieved and peaceful.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, releasing a heavy stone while a dove-shaped glow lifts away in a quiet room.",
+    "negative_prompt": "blood, gore, cut off face, headless, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 187,
+    "script_snippet": "stronger faith,",
+    "hero_subject": "Protagonist reaching upward to grasp a glowing, growing sapling sprouting from an open Bible-shaped platform; face determined and hopeful.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, reaching for a glowing sapling growing from a book-shaped platform on a kitchen table.",
+    "negative_prompt": "legible text on book, cut off face, headless, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 188,
+    "script_snippet": "clearer purpose,",
+    "hero_subject": "Protagonist holding a small compass that shines a steady beam toward a distant city skyline; face focused and intent.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding a glowing compass pointing toward a city skyline from a balcony.",
+    "negative_prompt": "cut off face, headless, anachronistic compass designs, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 189,
+    "script_snippet": "freedom from hidden idols,",
+    "hero_subject": "Protagonist pulling apart chains formed from tiny icons (dollar signs, thumbs-up, briefcase) as they shatter; face determined and hopeful.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, breaking chains made of small money and phone icons in a contemporary apartment.",
+    "negative_prompt": "graphic violence, blood, cut off face, headless, robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 190,
+    "script_snippet": "and a deeper relationship with God.",
+    "hero_subject": "Protagonist clasping hands toward a warm, unseen presence represented by gentle light and a faint hand-shaped glow coming toward her; face intimate and receptive.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, reaching toward a gentle hand-shaped glow in a quiet modern living room.",
+    "negative_prompt": "cut off face, headless, overt religious costumes, cluttered background",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 191,
+    "script_snippet": "Because when God becomes first in your life, then everything else begins falling into its rightful place.",
+    "hero_subject": "Protagonist arranging scattered puzzle pieces that float and snap into place around a central glowing cross-shaped gap; face focused and peaceful.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, fitting floating puzzle pieces into a central glowing space in a cozy home office.",
+    "negative_prompt": "legible text on pieces, cut off face, headless, cluttered modern tech",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 192,
+    "script_snippet": "[music]",
+    "hero_subject": "Protagonist closing her eyes briefly while music-note shapes swirl gently around her; face calm and receptive.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, eyes closed as abstract musical shapes swirl around her in a living room.",
+    "negative_prompt": "cut off face, headless, cluttered background, literal sheet music with text",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 193,
+    "script_snippet": "Matthew 6:33 was never just a suggestion.",
+    "hero_subject": "Protagonist holding an open, blank-faced book turned slightly away so no text is readable, looking at it thoughtfully; face engaged and reflective.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, holding an open book angled away so pages are unreadable in a cozy study.",
+    "negative_prompt": "legible text, cut off face, headless, robes, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 194,
+    "script_snippet": "It was an invitation to experience life the way God intended.",
+    "hero_subject": "Protagonist reaching to open a small door of light in a wall where everyday items transform into gentle symbols (family photos, work tools reshaping into flowers); face hopeful.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, opening a small glowing door in a domestic hallway as household objects gently transform.",
+    "negative_prompt": "cut off face, headless, biblical robes, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 195,
+    "script_snippet": "And maybe today is the day you finally accept that invitation.",
+    "hero_subject": "Protagonist stepping forward through the small door of light with a calm, decisive expression; face full and visible as she crosses threshold.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, stepping through a doorway of warm light in a modern home hallway.",
+    "negative_prompt": "cut off face, headless, robes, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 196,
+    "script_snippet": "If this video blessed you, make sure to like this video,",
+    "hero_subject": "Protagonist smiling and tapping a visible, glowing thumbs-up icon on a floating translucent screen; face warm and inviting.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, tapping a glowing thumbs-up icon on a floating translucent screen in a living room.",
+    "negative_prompt": "legible UI text, cut off face, headless, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 197,
+    "script_snippet": "subscribe to Bible Flix for more faith-building biblical content,",
+    "hero_subject": "Protagonist pressing a glowing subscribe button on a tablet while a subtle playlist of faith images floats nearby; face encouraging.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, pressing a glowing subscribe button on a tablet in a tidy living room.",
+    "negative_prompt": "legible channel logos, cut off face, headless, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 198,
+    "script_snippet": "[music]",
+    "hero_subject": "Protagonist nodding along gently as soft abstract music symbols float near the tablet; face peaceful and content.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, nodding as abstract musical symbols float near a tablet on a couch.",
+    "negative_prompt": "cut off face, headless, cluttered background, literal sheet music",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 199,
+    "script_snippet": "and comment below: \"I will put God first.\"",
+    "hero_subject": "Protagonist typing on a smartphone with a determined smile as a translucent speech-bubble forms the words but remains unreadable; face confident and earnest.",
+    "image_prompt": "A friendly Hispanic female, 30s, with warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, typing on a phone as a translucent unreadable speech bubble appears in a cozy living room.",
+    "negative_prompt": "legible text in speech bubble, cut off face, headless, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 200,
+    "script_snippet": "Also, share this video with someone who needs encouragement and spiritual direction today.",
+    "hero_subject": "The protagonist (Hispanic female, 30s, warm brown eyes, light freckles, medium brown shoulder-length hair in a neat low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers) reaches forward offering her smartphone glowing like a small lantern toward an unseen friend across a cozy modern living room, her face hopeful and inviting as she actively encourages connection and spiritual direction.",
+    "image_prompt": "A Hispanic female, 30s, warm brown eyes, light freckles, medium brown low ponytail, wearing an olive knit sweater layered over a white T-shirt, dark slim jeans, and simple white sneakers, offering a glowing smartphone like a small lantern to someone across a modern living room",
+    "negative_prompt": "cluttered background, harsh fluorescent light, headless, cut off face, biblical robes, sandals, anachronistic props",
+    "scene_type": "decision"
+  }
+]

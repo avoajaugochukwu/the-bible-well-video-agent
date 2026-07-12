@@ -4,22 +4,16 @@ since every caller needs both in sequence:
   break_into_scenes(script) -> OpenAI chat-completions calls (gpt-5-mini, raw urllib, this
                                 repo's house style). Returns
                                 [{scene_number, script_snippet, hero_subject,
-                                image_prompt, negative_prompt, scene_type, named_entity,
-                                named_entity_kind}, ...] — scene_type/named_entity/
-                                named_entity_kind drive asset_selector.py's lane routing.
+                                image_prompt, negative_prompt, scene_type}, ...] — every
+                                scene is a Krea illustrative painting, no lane routing.
 
                                 Scene-splitting follows mechanical, LLM-free sentence chunking
                                 (chunk_script(), ~8 sentences/chunk) feeding ONE combined LLM call
                                 per chunk (author_chunk()) that cuts scenes (list-cut / staccato /
                                 merge-cap rules) and writes hero_subject + image_prompt together.
   generate_images(scenes)    -> asset_selector.py:route() per scene, IN PARALLEL
-                                (every lane is I/O-bound, scenes are independent).
-                                Returns each scene with an added image_url + lane.
-
-classify_batch()/classify_scenes() are a separate lighter pass for BACKFILLING scenes
-that already have search_terms/image_prompt/negative_prompt from an older run but lack
-scene_type/named_entity — used once to bring an existing runs/<row_id>/scenes.json up to
-the new contract without re-authoring prompts.
+                                (Krea generation is I/O-bound, scenes are independent).
+                                Returns each scene with an added image_url.
 """
 import json
 import os
@@ -51,14 +45,8 @@ BASE_NEGATIVE = (
     "legible text, written words, letters, lettering, typography, gibberish text, "
     "illegible writing, visible handwriting, book pages with text, newspaper print, "
     "map labels, street signs, blurry, lowres, deformed hands, extra fingers, "
-    "distorted anatomy, oversaturated, grainy"
+    "distorted anatomy, oversaturated, grainy, headless, neck crop, cut off head"
 )
-
-# classify_scenes()'s backfill batch size only — NOT used by the main
-# break_into_scenes()/author_chunk() path anymore (that batches by
-# SENTENCES_PER_CHUNK instead, see below). Kept for the older single-lane runs
-# classify_scenes() backfills onto the Krea contract.
-BATCH_SIZE = 8
 
 CONTEXT_SCHEMA = {
     "name": "story_context",
@@ -82,10 +70,13 @@ CHARACTER_SCHEMA = {
             "protagonist": {
                 "type": "object",
                 "properties": {
-                    "age_range": {"type": "string", "description": "e.g. '30s', '40s', 'middle-aged'"},
-                    "appearance": {"type": "string", "description": "SPECIFIC modern-2020s clothing (e.g. 'grey hoodie', 'olive knit sweater over jeans') and a short, neat modern hairstyle. NO robes, tunics, sandals, staffs, or long biblical hair/beards on the protagonist — those read as Jesus, not the viewer. NO NAME."},
+                    "gender": {"type": "string", "description": "A single concrete choice: e.g., 'male' or 'female'."},
+                    "ethnicity": {"type": "string", "description": "A single concrete choice: e.g., 'African American', 'East Asian', 'Hispanic', 'Caucasian'."},
+                    "age_range": {"type": "string", "description": "e.g. '60s', '70s', 'mid-30s'"},
+                    "facial_features": {"type": "string", "description": "Specific friendly face details: e.g., 'gentle brown eyes, friendly expression, clean-shaven, neat short hair'."},
+                    "appearance": {"type": "string", "description": "SPECIFIC modern-2020s clothing (e.g. 'grey hoodie', 'olive knit sweater over jeans'). NO robes, tunics, sandals, staffs, or long biblical hair/beards on the protagonist — those read as Jesus, not the viewer. NO NAME."},
                 },
-                "required": ["age_range", "appearance"],
+                "required": ["gender", "ethnicity", "age_range", "facial_features", "appearance"],
                 "additionalProperties": False,
             },
             "jesus": {
@@ -119,7 +110,6 @@ CHARACTER_SCHEMA = {
 
 # Scene types for spiritual journey — all scenes focus on faith transformation.
 SCENE_TYPES = ["spiritual_moment", "transformation", "revelation", "decision", "reflection"]
-NAMED_ENTITY_KINDS = [""]
 
 _CLASSIFICATION_PROPERTIES = {
     "scene_type": {
@@ -132,15 +122,6 @@ _CLASSIFICATION_PROPERTIES = {
             "decision: a choice point where the protagonist chooses faith/obedience. "
             "reflection: internal pondering, prayer, or spiritual contemplation."
         ),
-    },
-    "named_entity": {
-        "type": "string",
-        "description": "Empty string for all spiritual scenes — this field is not used in faith-focused narratives.",
-    },
-    "named_entity_kind": {
-        "type": "string",
-        "enum": NAMED_ENTITY_KINDS,
-        "description": "Always empty — not used in Christian Story.",
     },
 }
 
@@ -170,35 +151,7 @@ def _chunk_author_schema() -> dict:
                             **_CLASSIFICATION_PROPERTIES,
                         },
                         "required": ["script_snippet", "hero_subject",
-                                     "image_prompt", "negative_prompt",
-                                     "scene_type", "named_entity", "named_entity_kind"],
-                        "additionalProperties": False,
-                    },
-                }
-            },
-            "required": ["scenes"],
-            "additionalProperties": False,
-        },
-    }
-
-
-def _classify_batch_schema(n: int) -> dict:
-    """Same classification fields as _chunk_author_schema, WITHOUT search_terms/
-    image_prompt/negative_prompt — used by classify_batch() to backfill scenes that
-    already have an authored prompt from an older run."""
-    return {
-        "name": "classified_scenes",
-        "schema": {
-            "type": "object",
-            "properties": {
-                "scenes": {
-                    "type": "array",
-                    "minItems": n,
-                    "maxItems": n,
-                    "items": {
-                        "type": "object",
-                        "properties": _CLASSIFICATION_PROPERTIES,
-                        "required": ["scene_type", "named_entity", "named_entity_kind"],
+                                     "image_prompt", "negative_prompt", "scene_type"],
                         "additionalProperties": False,
                     },
                 }
@@ -298,13 +251,16 @@ def infer_characters(script: str) -> dict:
                 "is the consistent visual anchor in every scene, experiencing a spiritual journey. "
                 "The protagonist is the viewer/listener themselves — a real person in modern 2020s. "
                 "Define: (1) the protagonist — describe their VISUAL APPEARANCE for consistent "
-                "rendering: realistic age range (20s, 30s, 40s, 50s - pick ONE typical age for "
-                "this audience), a SPECIFIC modern clothing item (e.g. 'a grey hoodie', 'an olive "
-                "knit sweater'), short/neat modern hair, build, any distinctive features. This is a "
-                "faith-themed video, which strongly biases image generators toward rendering EVERYONE "
-                "as a robed, barefoot, biblical-looking figure — counter that explicitly: the "
-                "protagonist must read as a normal person in 2020s clothing, NEVER robes, tunics, "
-                "sandals, or long biblical hair/beard. NO NAME. Must be a real person look. "
+                "rendering. You must choose a concrete gender, ethnicity, realistic age range (20s, "
+                "30s, 40s, 50s - pick ONE typical age for this audience), and friendly facial features "
+                "(e.g., clean-shaven, hair color/style, gentle/friendly eyes) so the image generator "
+                "renders the same identifiable face every scene — never a vague or generic look. Also "
+                "pick a SPECIFIC modern clothing item (e.g. 'a grey hoodie', 'an olive knit sweater') "
+                "worn consistently. This is a faith-themed video, which strongly biases image "
+                "generators toward rendering EVERYONE as a robed, barefoot, biblical-looking figure — "
+                "counter that explicitly: the protagonist must read as a normal person in 2020s "
+                "clothing, NEVER robes, tunics, sandals, or long biblical hair/beard. NO NAME. Must be "
+                "a real person look. "
                 "(2) Jesus — a specific artistic rendering consistent throughout (describe "
                 "appearance, bearing, spiritual light, how he looks visually - ONLY if mentioned "
                 "in script). (3) any recurring supporting characters mentioned by role and their "
@@ -319,8 +275,11 @@ def infer_characters(script: str) -> dict:
     # Ensure protagonist always has features, even if LLM returns empty
     if not result.get("protagonist"):
         result["protagonist"] = {
-            "age_range": "30s-40s",
-            "appearance": "a grey hoodie over jeans, short neat modern hair, authentic everyday person — no robes or biblical clothing"
+            "gender": "male",
+            "ethnicity": "Caucasian",
+            "age_range": "60s-70s",
+            "facial_features": "short cropped dark hair, gentle brown eyes, a friendly expression",
+            "appearance": "a grey hoodie over jeans, authentic everyday person — no robes or biblical clothing"
         }
     return result
 
@@ -332,6 +291,16 @@ def infer_characters(script: str) -> dict:
 SENTENCES_PER_CHUNK = 8
 
 _SENTENCE_END = re.compile(r"[.!?]+(?:[\"'”’])?(?:\s+|$)")
+
+# Bracketed production cues (background music/SFX placeholders left in the script by
+# whoever prepped it) carry no visual content — left in, the staccato/negation-cut rule
+# in author_chunk() treats a bare "[music]" as its own scene beat and the LLM hallucinates
+# imagery for it (e.g. floating musical notes) since there's nothing else to draw on.
+_PRODUCTION_CUE = re.compile(r"\[(?:music|sfx|pause|sound)\]", re.IGNORECASE)
+
+
+def strip_production_cues(script: str) -> str:
+    return re.sub(r"[ \t]{2,}", " ", _PRODUCTION_CUE.sub("", script)).strip()
 
 
 def chunk_script(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUNK) -> list[str]:
@@ -365,12 +334,15 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
     char_context = "CHARACTERS (VISUAL FEATURES - EVERYONE LOOKS DIFFERENT):\n"
     if protagonist:
         char_context += (
-            f"PROTAGONIST (appears in EVERY scene with these features): {protagonist.get('age_range', 'adult')}, "
+            f"PROTAGONIST (appears in EVERY scene with these features): {protagonist.get('ethnicity', 'a')} "
+            f"{protagonist.get('gender', 'person')}, {protagonist.get('age_range', 'adult')}, with "
+            f"{protagonist.get('facial_features', 'a friendly expression')}, wearing "
             f"{protagonist.get('appearance', 'modern casual appearance')}. ANTI-BIBLICAL MANDATE: whenever the "
-            f"protagonist is shown or implied (hands, silhouette, POV), restate their SPECIFIC modern clothing "
-            f"item above — never leave it to 'a person' or 'a figure', which defaults to a robed biblical look "
-            f"in this generator. NEVER robes, tunics, sandals, staffs, or long biblical hair/beard on the "
-            f"protagonist.\n"
+            f"protagonist is shown, restate their SPECIFIC modern clothing item above — never leave it to "
+            f"'a person' or 'a figure', which defaults to a robed biblical look in this generator. NEVER "
+            f"robes, tunics, sandals, staffs, or long biblical hair/beard on the protagonist. FACE MANDATE: "
+            f"always show their head and face clearly and expressively — never crop out their head, never "
+            f"cut off their face at the neck, and never hide them behind a flat anonymous silhouette.\n"
         )
     if jesus:
         char_context += f"JESUS (ONLY when script explicitly says 'Jesus' or 'he' in teaching context. DISTINCTIVE appearance - no one else looks like this): {jesus.get('appearance', 'serene spiritual figure with distinctive presence')}.\n"
@@ -443,47 +415,60 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "Each script_snippet must be a contiguous substring of the chunk, and together "
         "the script_snippets must cover the ENTIRE chunk with no gaps or overlaps, in "
         "order.\n\n"
-        "## PILLAR 2: HERO_SUBJECT FORMULA (INTIMATE, FIRST-PERSON VIBE)\n\n"
-        "The script is an intimate, first-person call to reflection (\"you\"). Avoid repetitive "
-        "generic third-person shots of a person standing around — that reads clinical and distant. "
-        "Favor a mix of:\n"
-        "- First-person POV / close-up details: hands resting on an open Bible, a hand holding a "
-        "coffee mug at a kitchen table, looking at a glowing phone screen in a dark room, headlights "
-        "on a rain-streaked windshield.\n"
-        "- Emotional silhouette & atmosphere: when the protagonist IS shown, use soft lighting, side "
-        "profiles, or silhouettes against a window or doorway so the viewer can place themselves in "
-        "the scene, rather than a clear frontal portrait.\n"
-        "Use the protagonist's character description (age range, appearance) from above ONLY when a "
-        "silhouette/profile view is called for — never a name, never a clear frontal likeness. "
-        "Example: 'Silhouette of a person in their 30s standing in a doorway, arms loose at their "
-        "sides, facing a bright window at dawn.'\n"
+        "## PILLAR 2: HERO_SUBJECT FORMULA (ACTIVE VISUAL METAPHOR WITH SHOWN FACE)\n\n"
+        "The script is an intimate, first-person call to reflection (\"you\"), but the imagery must "
+        "be ACTIVE, not passive. BANNED HERO_SUBJECTS: sitting on a bed, staring/looking out a "
+        "window, holding a coffee mug, standing in a doorway looking sad, or any other static "
+        "person-standing-around composition — these are boring and fail to tell a story. ALSO "
+        "BANNED: cropping the protagonist's head out of frame, cutting off their face at the neck, "
+        "or hiding them in a flat anonymous silhouette — they are a real, emotionally expressive "
+        "protagonist whose face must be clearly seen. "
+        "MANDATED: every scene depicts the protagonist's upper body and face clearly as they "
+        "physically interact with a concrete, symbolic representation of their spiritual state — a "
+        "visual metaphor, not a mood shot. "
+        "Examples of the pattern (invent the specific metaphor from the actual sentence, don't "
+        "reuse these verbatim): chasing worldly success -> running up a steep hill toward a "
+        "floating, empty golden crown; weighing priorities -> looking at a massive scale balancing "
+        "a Bible against a pile of gold coins with a thoughtful expression; surrendering control -> "
+        "sitting in a car's driver seat, looking peacefully ahead as a radiant light takes the "
+        "steering wheel; carrying past guilt or worry -> straining with a determined expression to "
+        "carry a heavy, crumbling stone on their shoulder; hidden pressure or temptation -> standing "
+        "amid dark glowing eyes in the shadows while looking up at a shaft of light; breaking free -> "
+        "chains made of phone icons or dollar signs shattering around them while they look up with a "
+        "hopeful expression.\n"
+        "Always incorporate the protagonist's ethnicity, gender, age range, facial features, and "
+        "modern clothing from the CHARACTERS block above so the same identifiable person anchors "
+        "every scene — never a name, never a generic 'a person'.\n"
         "BANNED IN HERO_SUBJECT: camera/cinematography language (\"POV\", \"zoom\", "
         "\"push-in\", \"wide shot\", \"close-up\", \"tracking shot\", \"dolly\", "
         "\"crane\") and pure mood words with no subject (\"tense\", \"ominous\", "
-        "\"peaceful\") — describe the physical thing, not the feeling.\n\n"
+        "\"peaceful\") — describe the physical metaphor, not the feeling.\n\n"
         "## PILLAR 3: IMAGE PROMPT RULES\n\n"
         "image_prompt IS THE ONLY TEXT SENT TO THE IMAGE GENERATOR — hero_subject is internal "
         "planning only and is NEVER seen by it. Any detail that matters (especially the "
-        "protagonist's specific modern clothing) MUST be written into image_prompt itself, not "
-        "just hero_subject.\n"
-        "image_prompt: a SHORT (8-15 words) plain description of the actual scene/"
-        "activity happening, centered on the hero_subject. Say WHAT is shown (a real activity, place, or "
-        "moment — a person doing something, a room, an object) and WHERE (modern, everyday setting) "
-        "so the image generator renders it correctly. WHENEVER the protagonist's body, face, or "
-        "silhouette is depicted (not just an isolated hands/object close-up), image_prompt MUST "
-        "name their specific modern clothing item verbatim from the CHARACTERS block above (e.g. "
-        "'a person in an olive utility jacket') — a bare word like 'a person' or 'a figure' with "
-        "no clothing named defaults this image generator to a robed, biblical look. Do NOT describe "
-        "lighting, shadow, mood, or atmosphere (no 'moody', 'dark', 'dramatic', "
-        "'chiaroscuro', 'candlelit', 'golden-hour', 'eerie', 'atmospheric') and do NOT "
-        "prescribe a light source, texture, or camera angle — none of that; a style "
-        "prefix and the palette above already set the visual treatment. Just the "
-        "subject/activity + setting cue, plainly.\n"
-        "  EXAMPLES (STUDY AND CONFORM — for whatever setting THIS script actually is, "
-        "not necessarily these): 'Hands resting on an open Bible on a kitchen table.' "
-        "'Silhouette of a person looking out a bedroom window at dawn.' "
-        "'A phone screen glowing in a dark room, held loosely.' "
-        "'An empty park bench under bare autumn trees.'\n"
+        "protagonist's specific ethnicity, gender, face, and clothing) MUST be written into "
+        "image_prompt itself, not just hero_subject.\n"
+        "image_prompt: a SHORT (10-18 words) plain description of the physical visual metaphor "
+        "from hero_subject — the protagonist's head, face, and expressive eyes clearly visible as "
+        "they ACTIVELY engage with a concrete symbolic object or action, plus WHERE (modern or "
+        "metaphorical setting) so the image generator renders it correctly. Never a static/passive "
+        "composition (no sitting, staring out windows, holding a drink, standing in a doorway) and "
+        "never a headless/cropped/silhouetted figure. image_prompt MUST name the protagonist's "
+        "ethnicity, gender, facial features, and specific modern clothing verbatim from the "
+        "CHARACTERS block above (e.g. 'a friendly African American male in an olive utility jacket') "
+        "— a bare word like 'a person' or 'a figure' with no face/clothing named defaults this image "
+        "generator to a robed, biblical look or a hidden face. Do NOT describe lighting, shadow, "
+        "mood, or atmosphere (no 'moody', 'dark', 'dramatic', 'chiaroscuro', 'candlelit', "
+        "'golden-hour', 'eerie', 'atmospheric') and do NOT prescribe a light source, texture, or "
+        "camera angle — none of that; a style prefix and the palette above already set the visual "
+        "treatment. Just the metaphor/action + setting cue, plainly.\n"
+        "  EXAMPLES (STUDY AND CONFORM — for whatever metaphor THIS sentence actually calls for, "
+        "not necessarily these): 'A friendly African American male in a grey hoodie, face clearly "
+        "visible, running up a hill toward a floating golden crown.' 'A woman with a warm expression "
+        "in an olive jacket watching a massive scale balance a Bible against gold coins.' 'A man in "
+        "a denim jacket, determined expression, straining to carry a heavy, crumbling stone on his "
+        "shoulder.' 'A person's face lit with hope as chains shaped like phone icons shatter around "
+        "them.'\n"
         "  MODERN AND GROUNDED in the setting above — clothing, rooms, and objects should read "
         "as present-day and everyday. Do NOT name an art style, medium, "
         "camera, or lens — a style prefix is added automatically.\n"
@@ -499,20 +484,20 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "camera. Do NOT mention text, captions, watermarks, or logos.\n"
         "- negative_prompt: a short comma-separated list (under ~40 words) of modern "
         "clutter/anachronisms most likely to leak in for THIS exact scene (e.g. \"cluttered "
-        "background, harsh fluorescent light, cartoonish\"). Don't repeat generic quality "
-        "terms — those are added automatically.\n"
+        "background, harsh fluorescent light, cartoonish, headless, cut off face\"). Don't repeat "
+        "generic quality terms — those are added automatically.\n"
         "- scene_type: classify as ONE of spiritual_moment (a quiet personal encounter with "
         "faith or God's presence), transformation (a visible change or breakthrough in the "
         "protagonist's faith), revelation (understanding or realization about God or faith), "
         "decision (a choice point where the protagonist chooses faith/obedience), or "
         "reflection (internal pondering, prayer, or spiritual contemplation).\n"
-        "- named_entity: always empty string \"\" — not used in Christian Story.\n"
-        "- named_entity_kind: always empty string \"\" — not used in Christian Story.\n"
         "SFW MANDATE (ABSOLUTE): family-friendly only. No nudity, sexual content, gore, "
         "blood, wounds, corpses, or graphic violence. Depict any struggle or hardship "
-        "bloodlessly and symbolically (e.g., an extinguished candle on a rough windowsill, "
-        "a phone screen face-down on a table). This overrides everything else.\n"
-        "Return ONLY the JSON object described by the schema."
+        "bloodlessly and symbolically through the active metaphor itself (a crumbling stone, "
+        "shattering chains, a collapsing crown) rather than graphic harm. This overrides "
+        "everything else.\n"
+        "Keep the prompts highly illustrative, narrative, and engaging, with the character's face "
+        "fully visible as they act out the scene. Return ONLY the JSON object described by the schema."
     )
     data = _chat(
         [
@@ -528,80 +513,10 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
     return scenes
 
 
-def classify_batch(context: dict, scenes: list[dict]) -> list[dict]:
-    """One call per batch of already-authored scenes (each needs script_snippet +
-    image_prompt): classify scene_type/named_entity/named_entity_kind WITHOUT
-    re-authoring the prompt. For backfilling an older single-lane run onto the new
-    Krea contract — see classify_scenes()."""
-    system = (
-        f"GLOBAL VISUAL CONTEXT:\n"
-        f"Setting: {context.get('setting', 'spiritual journey')}\n\n"
-        "You are classifying already-written image prompts for a faith-based channel "
-        "(\"Christian Story\") so each scene can be categorized correctly. You are given a list "
-        "of {script_snippet, image_prompt} pairs, in order. For EACH ONE, in the SAME "
-        "order, output:\n"
-        "- scene_type: ONE of spiritual_moment (a quiet personal encounter with faith or "
-        "God's presence), transformation (a visible change or breakthrough in the "
-        "protagonist's faith), revelation (understanding or realization about God or "
-        "faith), decision (a choice point where the protagonist chooses faith/obedience), "
-        "or reflection (internal pondering, prayer, or spiritual contemplation).\n"
-        "- named_entity: always empty string \"\" — not used in Christian Story.\n"
-        "- named_entity_kind: always empty string \"\" — not used in Christian Story.\n"
-        "Return ONLY the JSON object described by the schema, with exactly one classification "
-        "per pair, in the SAME order as given."
-    )
-    payload = [{"script_snippet": s["script_snippet"], "image_prompt": s["image_prompt"]}
-               for s in scenes]
-    data = _chat(
-        [
-            {"role": "system", "content": system},
-            {"role": "user", "content": json.dumps(payload)},
-        ],
-        _classify_batch_schema(len(scenes)),
-        max_completion_tokens=4096,
-    )
-    classified = data.get("scenes", [])
-    if len(classified) != len(scenes):
-        print(f"  classify_batch: got {len(classified)} classifications for {len(scenes)} "
-              f"scenes — truncating/padding to match", flush=True)
-        if len(classified) > len(scenes):
-            classified = classified[:len(scenes)]
-        else:
-            classified = classified + [classified[-1]] * (len(scenes) - len(classified))
-    return classified
-
-
-def classify_scenes(context: dict, scenes: list[dict], batch_size: int = BATCH_SIZE,
-                     workers: int = 8) -> list[dict]:
-    """Backfill scene_type/named_entity/named_entity_kind onto scenes that already carry
-    image_prompt/negative_prompt from an older run — batched + parallel, same shape as
-    break_into_scenes()'s author_chunk chain. No-ops (returns scenes unchanged) for any
-    scene that already has a scene_type set, so re-running this on a partially-classified
-    list is safe/resumable."""
-    from concurrent.futures import ThreadPoolExecutor
-
-    todo_idx = [i for i, s in enumerate(scenes) if not s.get("scene_type")]
-    if not todo_idx:
-        return scenes
-    todo = [scenes[i] for i in todo_idx]
-
-    batches = [todo[i:i + batch_size] for i in range(0, len(todo), batch_size)]
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        classified_batches = list(ex.map(lambda b: classify_batch(context, b), batches))
-    flat = [c for batch in classified_batches for c in batch]
-
-    out = list(scenes)
-    for i, classification in zip(todo_idx, flat):
-        out[i] = {**out[i], "scene_type": classification.get("scene_type", "spiritual_moment"),
-                  "named_entity": classification.get("named_entity", ""),
-                  "named_entity_kind": classification.get("named_entity_kind", "")}
-    return out
-
-
 def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUNK,
                        workers: int = 8, context: dict | None = None) -> list[dict]:
-    """Script -> [{scene_number, script_snippet, hero_subject, search_terms,
-    image_prompt, negative_prompt, scene_type, named_entity, named_entity_kind}, ...].
+    """Script -> [{scene_number, script_snippet, hero_subject,
+    image_prompt, negative_prompt, scene_type}, ...].
 
     Two-stage, all OpenAI gpt-5-mini at reasoning_effort=low (raw urllib, this repo's
     house style): infer_context() once (skipped if the caller already computed it —
@@ -624,7 +539,8 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
     prot_appearance = characters.get('protagonist', {}).get('appearance', 'undefined')[:30] if characters.get('protagonist') else 'none'
     print(f"  characters: protagonist={prot_appearance}, jesus={'yes' if characters.get('jesus') else 'no'}, supporting={len(characters.get('supporting_characters', []))}", flush=True)
 
-    chunks = chunk_script(script, sentences_per_chunk)
+    clean_script = strip_production_cues(script)
+    chunks = chunk_script(clean_script, sentences_per_chunk)
     print(f"  -> {len(chunks)} chunks ({sentences_per_chunk} sentences each)", flush=True)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
@@ -640,8 +556,6 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
                 "image_prompt": a["image_prompt"],
                 "negative_prompt": a.get("negative_prompt", ""),
                 "scene_type": a.get("scene_type", "spiritual_moment"),
-                "named_entity": a.get("named_entity", ""),
-                "named_entity_kind": a.get("named_entity_kind", ""),
             })
     print(f"  -> {len(out)} scenes", flush=True)
 
@@ -649,9 +563,9 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
     # near-miss (whitespace/punctuation drift is common and harmless).
     joined = "".join(s["script_snippet"] for s in out)
     norm = lambda t: re.sub(r"\s+", " ", t).strip()  # noqa: E731
-    if norm(joined) != norm(script):
+    if norm(joined) != norm(clean_script):
         print(f"  warning: scene snippets don't exactly reconstruct the input script "
-              f"({len(norm(joined))} vs {len(norm(script))} chars) — proceeding anyway", flush=True)
+              f"({len(norm(joined))} vs {len(norm(clean_script))} chars) — proceeding anyway", flush=True)
 
     return out
 
@@ -793,7 +707,7 @@ if __name__ == "__main__":
     print(f"  -> {len(scenes)} scenes", flush=True)
     for s in scenes:
         print(f"  scene {s['scene_number']}: {s['script_snippet'][:60]!r}... "
-              f"[{s['scene_type']}{', ' + s['named_entity'] if s['named_entity'] else ''}]", flush=True)
+              f"[{s['scene_type']}]", flush=True)
 
     print("\n2/6 generate_images()...", flush=True)
     scenes = generate_images(scenes, context)

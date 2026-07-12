@@ -1,0 +1,1570 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "Have you ever wondered what would happen if you truly put God first in every part of your life for 30 days?",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) physically arranging a large 30-day calendar where each day is a small glowing Bible, placing the first day's Bible at the top with intentional care.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt arranging a 30-day calendar of glowing Bibles on a modern kitchen table",
+    "negative_prompt": "cluttered background, cartoonish, anachronistic objects, visible text on pages",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) pausing with headphones in hand while a small musical note icon hovers above a smartphone on the counter.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding headphones with a phone showing a floating music note in a modern apartment",
+    "negative_prompt": "visible app text, harsh fluorescent light, cluttered cables",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "Not halfway,",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) cutting a ribbon tied mid-air between a half-painted mural and a complete mural, severing the 'half' side.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt cutting a ribbon between a half-painted mural and a finished mural indoors",
+    "negative_prompt": "text on mural, excessive props, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": " not only on Sundays,",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) pulling down a wall calendar showing every day, not just Sunday boxes highlighted, revealing a continuous path of light across weekdays.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pulling down a full-week calendar revealing light across weekdays in a living room",
+    "negative_prompt": "visible dates or text, cluttered background, anachronistic items",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": " but completely.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) planting a flag labeled with a simple cross atop a modern apartment rooftop, thrusting it fully into the ground with resolve.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt planting a small cross-flag into a rooftop planter in a city setting",
+    "negative_prompt": "text on flag, religious caricature props, busy skyline",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "Most people want peace,",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) offering a glowing dove-shaped paper lantern toward a crowd of ordinary modern icons, holding it forward invitingly.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt offering a glowing dove-shaped lantern toward a busy city street",
+    "negative_prompt": "legible signs, crowded clutter, cartoonish figures",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": " direction,",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) holding an oversized compass that points toward a distant cross-shaped landmark on a skyline, turning it decisively.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a large compass pointing to a cross-shaped skyline landmark",
+    "negative_prompt": "visible map text, modern logos, busy background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": " joy,",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) releasing a cluster of balloons shaped like smiling faces that drift toward a sunlit city park.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt releasing smiling balloons in a modern city park",
+    "negative_prompt": "legible writing on balloons, cluttered props, cartoonish",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": " and breakthrough,",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) striking a crack in a concrete wall with a small hammer, light pouring through the fissure.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt striking a concrete wall cracking open with light pouring through in an urban alley",
+    "negative_prompt": "blood, debris, graffiti text, anachronistic tools",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": " [music] but they keep putting God second, third, or even last.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) arranging a tiered shelf where a small Bible sits on the top but they keep sliding it down to lower tiers while other items (phone, briefcase, ring) are raised above it.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt sliding a small Bible down a tiered shelf while phone and briefcase rise above in a modern apartment",
+    "negative_prompt": "legible book text, branded items, cluttered furniture",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 11,
+    "script_snippet": "We wake up and check our phones before we pray.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) reaching groggily for a glowing smartphone on a bedside table while a folded prayer journal sits untouched beside it.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt reaching for a glowing smartphone on a bedside table with an untouched prayer journal beside it",
+    "negative_prompt": "visible app text, alarm screen text, messy bed",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 12,
+    "script_snippet": "We trust our feelings more than God's word.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) holding a glowing, wavering emotion-meter heart in one hand while a closed, gently glowing Bible sits balanced but overlooked on a nearby pedestal.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a glowing heart-shaped emotion meter while a small Bible rests on a pedestal in a modern living room",
+    "negative_prompt": "legible text on Bible, cartoon hearts, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 13,
+    "script_snippet": "We chase success, money, relationships, and validation,",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) running on a treadmill toward four floating trophies labeled by icons: a briefcase (success), a stack of coins (money), linked rings (relationships), and a thumbs-up symbol (validation).",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt running on a treadmill toward floating icons of briefcase, coins, rings, and thumbs-up in a modern gym",
+    "negative_prompt": "legible logos, distracting gym equipment, cartoonish icons",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 14,
+    "script_snippet": " [music]",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) pausing mid-run as a small musical wave ripples from a nearby speaker, causing the floating icons to wobble.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pausing mid-run as a musical wave ripples toward floating icons in a modern apartment",
+    "negative_prompt": "visible song text, cluttered electronics, cartoonish effects",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 15,
+    "script_snippet": " hoping those things will finally satisfy us.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) reaching toward an empty plate where the floating icons dissolve into dust, showing their disappointment.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt reaching toward an empty plate as floating icons dissolve into dust in a modern dining room",
+    "negative_prompt": "visible brand text, gore, messy props",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 16,
+    "script_snippet": "But Jesus said something powerful in Matthew 6:33: \"Seek first the kingdom of God and his righteousness, and all these things shall be added to you.\"",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) looking up as a serene, compassionate Jesus appears slightly apart, extending a warm open hand while a soft, non-legible scroll of scripture-like light arches toward the protagonist.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt receiving an extended hand from a serene compassionate Jesus figure with a glowing non-legible scroll of light in a simple indoor setting",
+    "negative_prompt": "legible scripture text, modern logos, dramatic gore",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 17,
+    "script_snippet": " [music]",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) closing their eyes as a gentle musical motif visualized by floating notes settles around the offered hand from Jesus.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt closing eyes as floating musical notes surround an offered hand in a quiet interior",
+    "negative_prompt": "visible lyrics, harsh lighting, cluttered room",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 18,
+    "script_snippet": "That verse changes everything.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) standing at a modern intersection where one path is littered with shattered icons (phone, money, trophy) and the other path is paved with warm light and a small cross, stepping confidently onto the lighted path.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping from a path strewn with shattered icons onto a lighted path with a small cross at a modern intersection",
+    "negative_prompt": "visible brand logos, graphic damage, crowded background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 19,
+    "script_snippet": "What would happen if for the next 30 days you made one decision every single day\u2014God comes first?",
+    "hero_subject": "The protagonist (30s, short neat hair, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) actively placing a row of thirty small paper calendar squares on a wall, and pressing a glowing cross-shaped sticker onto the first day \u2014 committing to a daily decision to put God first.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a glowing cross sticker on a 30-day calendar on a kitchen wall",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, modern logos, visible brand text",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 20,
+    "script_snippet": "Not religion, not perfection, just daily surrender.",
+    "hero_subject": "The protagonist (same clothing) deliberately setting down two heavy symbolic objects \u2014 a closed ceremonial book and a polished trophy \u2014 onto a table and stepping forward with open hands toward a soft glowing doorway, representing surrender and renouncing religion-as-performance and perfection.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt setting down a ceremonial book and a trophy, stepping toward a glowing doorway in a living room",
+    "negative_prompt": "legible text, brand logos, cluttered background, harsh fluorescent light",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 21,
+    "script_snippet": "And by the end of this video, [music] you may realize that putting God first doesn't just change your schedule, it changes your entire life.",
+    "hero_subject": "The protagonist (same clothing) closing a heavy daily planner which unfolds into a wide path of light that transforms into a life-sized cross-shaped pathway leading out of a gray cityscape into a vibrant neighborhood, showing life transformed beyond mere schedule change.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt closing a planner that unfolds into a cross-shaped path of light across a city street",
+    "negative_prompt": "legible text, modern logos, gore, crowded scene, cartoonish",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 22,
+    "script_snippet": "Number one: Putting God first changes your priorities. [music] One of the first things that happens when you put God first is this\u2014your priorities begin to change. Suddenly, things that once felt extremely important start losing their grip on you.",
+    "hero_subject": "The protagonist (same clothing) standing before a giant balance scale and actively sliding down a heavy weight labeled visually as 'worldly clutter' (stacked phones, flashy watch, keys) as the Bible-shaped object on the other side rises, physically shifting priorities.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt sliding worldly clutter off a massive scale to let a Bible-shaped object rise in a modern living room",
+    "negative_prompt": "legible text, brand logos, crowded background, harsh studio lighting",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 23,
+    "script_snippet": "The need to impress people,",
+    "hero_subject": "The protagonist (same clothing) smashing through a parade of glossy mirrored masks on pedestals that once reflected flattering faces, each mask cracking and falling away as they step forward toward an open window of light.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt breaking mirrored masks on pedestals in a modern apartment",
+    "negative_prompt": "legible text, logos, gore, cartoonish props, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 24,
+    "script_snippet": " the constant comparison,",
+    "hero_subject": "The protagonist (same clothing) cutting through a tangled line of floating social-media-style comparison ribbons and stepping onto a plain, unadorned path while the ribbons fray and dissolve behind them.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt cutting through floating comparison ribbons in a city park",
+    "negative_prompt": "visible UI elements, legible text, brand logos, cartoonish",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 25,
+    "script_snippet": " the endless chasing after temporary things.",
+    "hero_subject": "The protagonist (same clothing) stopping mid-run and letting a trail of glittering disposable trinkets (tiny crowns, shopping bags, coins) slip through their fingers and scatter, turning to walk toward a simple cross-shaped light ahead.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt letting glittering trinkets fall from their hands on a busy sidewalk",
+    "negative_prompt": "legible text, brand logos, gore, cluttered background, cartoonish",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 26,
+    "script_snippet": "[music] You begin to see life differently.",
+    "hero_subject": "The protagonist (same clothing) lifting a translucent lens up to their eyes that immediately refracts the gray world into vivid colors and reveals small crosses and open Scriptures integrated into everyday scenes, symbolizing new perspective.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a translucent lens that turns a gray street into vivid life with subtle crosses",
+    "negative_prompt": "brand logos, legible text, harsh studio lighting, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 27,
+    "script_snippet": "Before Jesus called his disciples, many of them were obsessed with survival,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt frantically clutching a fraying life preserver made of bills and food cans, pulling it toward themselves in a cramped modern apartment kitchen as if fighting to survive.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt clutching a life preserver made of bills and cans in a small apartment kitchen.",
+    "negative_prompt": "cluttered background, cartoonish props, anachronistic clothing",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 28,
+    "script_snippet": " money,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt straining to drag a heavy sack of coins up a short flight of apartment stairs, coins spilling like a small avalanche.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt dragging a heavy sack of coins up apartment stairs.",
+    "negative_prompt": "oversaturated colors, cartoonish coins, modern logos",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 29,
+    "script_snippet": " and status.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt climbing a glossy ladder toward a floating, empty gold nameplate and trophy that keep sliding away, reaching for status.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt climbing a ladder toward a floating empty gold trophy and nameplate.",
+    "negative_prompt": "glossy corporate logos, crowd scenes, text legible",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 30,
+    "script_snippet": " [music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt pausing mid-step as faint musical notes take the shape of small distracting icons around them, hands reaching to steady a tangled strand.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt catching musical-note shaped icons tangling around them in a living room.",
+    "negative_prompt": "cartoonish music notes, neon clutter, harsh lighting",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 31,
+    "script_snippet": " Peter was focused on fishing.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt casting a heavy, overfull fishing net that snags glinting coins and notifications from a dock beside a modern city river, muscles straining.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt casting a net full of coins and notification icons at a city dock.",
+    "negative_prompt": "cartoon fish, anachronistic boats, text legible",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 32,
+    "script_snippet": " Matthew was focused on collecting taxes.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt balancing a ledger-like tablet brimming with receipts and small stamped coins while tallying under a streetlamp in a modern alley.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt balancing a ledger tablet full of receipts and coins under a streetlamp.",
+    "negative_prompt": "legible text, brand logos, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 33,
+    "script_snippet": " But when they encountered Jesus, their priorities shifted completely.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt releasing a collapsing pile of gold coins and a broken ladder as a gentle robed figure of Jesus stands nearby, a beam of simple light between them, priorities shifting.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt releasing coins as a robed Jesus figure stands nearby in a simple urban plaza.",
+    "negative_prompt": "modern logos, dramatic gore, text legible",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 34,
+    "script_snippet": " Luke 9:23 says, \"If anyone desires to come after me, let him deny himself and take up his cross daily and follow me.\"",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt lifting a cross made of everyday items\u2014a calendar spine and alarm clock\u2014onto their shoulder, stepping along a busy city sidewalk as small echoes of choice follow.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt carrying a cross made of a calendar spine and alarm clock along a city sidewalk.",
+    "negative_prompt": "legible calendar text, brand signage, gore",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 35,
+    "script_snippet": " [music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt walking briskly through a subway car as soft musical ribbons shaped like days of the week trail behind, marking rhythm of routine.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt walking through a subway with musical ribbon icons shaped like days trailing behind.",
+    "negative_prompt": "cartoonish elements, legible text, cluttered advertisements",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 36,
+    "script_snippet": " Notice that Jesus said daily.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stopping at a small kitchen table and placing a tiny folded cross beside a daily planner, touching it gently as a reminder.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a small folded cross beside a daily planner on a kitchen table.",
+    "negative_prompt": "legible planner text, brand logos, messy background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 37,
+    "script_snippet": " Putting God first is not a one-time emotional moment.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stepping away from a glowing ephemeral crown and instead setting a worn Bible-shaped object on a bedside shelf, turning their back on one-off emotion.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt putting a worn Bible-shaped object on a bedside shelf, stepping away from a glowing crown.",
+    "negative_prompt": "glossy commercial trophies, legible text, clutter",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 38,
+    "script_snippet": " It's a daily choice.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt at a commuter crosswalk choosing each day by placing a small token labeled by a faded sun (non-legible) into a jar marked 'daily', repeating the action.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a small faded-sun token into a jar at a crosswalk.",
+    "negative_prompt": "legible labels, brand logos, cartoonish props",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 39,
+    "script_snippet": "Prayer becomes more important than entertainment.",
+    "hero_subject": "The protagonist (30s, short neat hair, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) actively unplugging a glowing set of oversized headphones and lifting a small glowing prayer journal up high like a rescued beacon, in a modern living room stacked with screens and speakers.",
+    "image_prompt": "a person in a fitted navy bomber jacket unplugging oversized glowing headphones and holding up a small glowing prayer journal in a modern living room",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, visible text on objects",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 40,
+    "script_snippet": "Peace becomes more valuable than popularity.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) balancing a glowing dove on one palm while turning away from a pedestal of flashing smartphone screens and cheering silhouettes, in a city apartment balcony scene.",
+    "image_prompt": "a person in a fitted navy bomber jacket holding a glowing dove while turning away from flashing smartphone screens on a balcony",
+    "negative_prompt": "crowded crowd faces, legible text on screens, harsh studio lighting, logos",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 41,
+    "script_snippet": "Obedience becomes greater than comfort.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) stepping off a plush oversized cushion toward a narrow, sunlit path marked by simple stepping stones, leaving soft pillows behind in a cozy living room.",
+    "image_prompt": "a person in a fitted navy bomber jacket stepping off a plush cushion toward a narrow sunlit path of stepping stones in a modern living room",
+    "negative_prompt": "visible brand labels, cluttered background, people in antique clothing, readable text",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 42,
+    "script_snippet": "Imagine your life like a car. For years, maybe you've been asking God to sit in the passenger seat while you drive wherever you want.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) leaning into a metaphorical car interior, holding a steering wheel while gesturing toward an empty passenger seat with a faint outline of a presence, in a modern parked sedan on a city street.",
+    "image_prompt": "a person in a fitted navy bomber jacket holding a steering wheel in a parked modern car and gesturing toward an empty passenger seat with a faint outline of a presence",
+    "negative_prompt": "legible dashboard text, visible brand logos, distracting pedestrians, harsh fluorescent lighting",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 43,
+    "script_snippet": "But when you put God first, you finally let him take the wheel, and that changes the destination.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) releasing their hands from a steering wheel as a gentle glowing hand (symbolic of God) takes it, while outside the windshield a new road of light curves toward distant, different cityscapes.",
+    "image_prompt": "a person in a fitted navy bomber jacket releasing a steering wheel as a glowing hand takes it inside a car with a new road of light ahead",
+    "negative_prompt": "explicit religious icons, visible text on windshield, cartoonish effects, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 44,
+    "script_snippet": "The world says, \"Follow your heart.\"",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) being tugged toward a swirl of bright heart-shaped arrows and glossy influencer-style signage (no legible words) on a busy urban sidewalk, resisting the pull.",
+    "image_prompt": "a person in a fitted navy bomber jacket being tugged toward bright heart-shaped arrows and glossy signage on a busy urban sidewalk",
+    "negative_prompt": "legible billboard text, celebrity faces, modern clutter, harsh studio light",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 45,
+    "script_snippet": "But Jeremiah 17:9 says the heart can be deceptive.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) holding up a cracked, mirrored heart sculpture that reveals a distorted reflection, standing in a quiet city park at dusk.",
+    "image_prompt": "a person in a fitted navy bomber jacket holding a cracked mirrored heart sculpture revealing a distorted reflection in a quiet city park",
+    "negative_prompt": "visible scripture text, legible inscriptions, graphic damage, gore",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 46,
+    "script_snippet": "God doesn't call us to follow emotions.",
+    "hero_subject": "The protagonist (30s, short neat hair, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) actively ripping down large, colorful floating emotion masks (happy, angry, sad) that drift like balloons in a busy city plaza \u2014 symbolizing rejecting emotion-driven guidance and choosing a steady path forward.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt tearing down floating emotion masks in a modern plaza",
+    "negative_prompt": "crowded background clutter, cartoonish faces, fluorescent signage, smartphones in foreground",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 47,
+    "script_snippet": "He calls us to follow him.",
+    "hero_subject": "The protagonist (same outfit) stepping confidently toward a warm, gentle silhouette of Jesus on a distant rooftop garden while holding a small, glowing compass \u2014 actively choosing to follow Christ's path.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping toward a distant gentle silhouette on a rooftop garden holding a glowing compass",
+    "negative_prompt": "literal halos, modern logos, busy street clutter, harsh neon",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 48,
+    "script_snippet": "And the amazing thing is this: [music] when God becomes your highest priority, everything else starts falling into proper order.",
+    "hero_subject": "The protagonist (same outfit) arranging oversized floating objects (bills, phone, calendar, coffee cup) onto a large shelf where a Bible-shaped light sits at the top, watching objects settle into neat places as the top priority glows.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt placing floating everyday objects onto a shelf beneath a glowing Bible-shaped light",
+    "negative_prompt": "legible text, cluttered busy backgrounds, modern advertising, messy props",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 49,
+    "script_snippet": "Number two: Putting God first brings peace in the middle of chaos.",
+    "hero_subject": "The protagonist (same outfit) standing in the center of a chaotic street where papers and commotion swirl, calmly unfolding and placing a small Bible at chest level as the chaos circles around peacefully.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a small Bible at chest level amid swirling street chaos",
+    "negative_prompt": "graphic violence, crowds with visible phones, logos, modern clutter",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 50,
+    "script_snippet": "[music] Many people think peace comes from having a perfect life, but biblical peace comes from having God in the center of your life, even when everything around you feels messy.",
+    "hero_subject": "The protagonist (same outfit) painting a large circle on a messy apartment floor and placing a glowing Bible at its center while clutter and household chaos swirl outside the circle.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt painting a circle and placing a glowing Bible at its center in a messy apartment",
+    "negative_prompt": "legible text on papers, branded products, distracting bright signage, gore",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 51,
+    "script_snippet": "Look at Daniel.",
+    "hero_subject": "The protagonist (same outfit) pointing toward a mural-like vision of Daniel in exile on a distant wall while holding up a rolled-up journal, inviting attention to the example.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt pointing at a mural vision of an ancient exile on a city wall",
+    "negative_prompt": "biblical costume crowd, anachronistic props, modern logos, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 52,
+    "script_snippet": "Daniel lived in a corrupt culture surrounded by pressure and compromise.",
+    "hero_subject": "The protagonist (same outfit) navigating through a crowded corridor where shadowy business figures press forward with glowing briefcases and compromising contracts, the protagonist pushing through holding a small, dim notebook.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt pushing through shadowy figures with glowing briefcases in a crowded corporate corridor",
+    "negative_prompt": "graphic depictions, logos, readable text on documents, cluttered signage",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 53,
+    "script_snippet": "[music] Yet he continued putting God first daily.",
+    "hero_subject": "The protagonist (same outfit) kneeling each morning at a small, portable cross on a bedside table amid a messy apartment, placing a hand on it daily as the room's chaos pulses but does not disturb him.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt kneeling by a small portable cross on a bedside table in a messy bedroom",
+    "negative_prompt": "legible text, medical imagery, graphic content, branded items",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 54,
+    "script_snippet": "Daniel 6:10 says he prayed three times a day, even when it became illegal.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) actively praying despite a city law\u2014kneeling and praying before three glowing public clocks that loom like a silent authority, refusing to hide his devotion.",
+    "image_prompt": "A person in a fitted navy bomber jacket praying beneath three glowing clocks in a city plaza",
+    "negative_prompt": "cluttered background, cartoonish, modern logos, grainy, low-resolution",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 55,
+    "script_snippet": "Think about that.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) pausing mid-commute, holding a small reflective mirror that shows a faint cross-shaped light, prompting quiet reflection amid bustle.",
+    "image_prompt": "A person in a fitted navy bomber jacket pausing on a sidewalk holding a small mirror reflecting a cross-shaped light",
+    "negative_prompt": "busy crowd, signage, modern logos, cartoonish, clutter",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 56,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) pressing earbud controls as musical notes visually form a subtle halo, marking a contemplative beat in the day.",
+    "image_prompt": "A person in a fitted navy bomber jacket pressing earbuds as musical notes form a halo in a city street",
+    "negative_prompt": "loud colors, neon signs, logos, cartoonish, cluttered background",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 57,
+    "script_snippet": "He didn't pray only when life was easy.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) turning away from a floating plush 'easy' cushion and stepping toward a small open Bible held in both hands, choosing devotion over comfort.",
+    "image_prompt": "A person in a fitted navy bomber jacket turning from a floating plush cushion toward an open Bible on a bench",
+    "negative_prompt": "obvious text, modern logos, cartoonish elements, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 58,
+    "script_snippet": "He stayed faithful under pressure.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) straining to prop open massive grinding gears labeled by metaphorical weight, physically holding them back while clutching a small Bible.",
+    "image_prompt": "A person in a fitted navy bomber jacket straining to hold back heavy grinding gears while clutching a small Bible",
+    "negative_prompt": "graphic violence, blood, gore, logos, cartoonish",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 59,
+    "script_snippet": "And because God was first in Daniel's life, fear didn't control him.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) holding an open Bible like a shield as shadowy, faceless fear-forms recoil in an urban alley, refusing to overcome him.",
+    "image_prompt": "A person in a fitted navy bomber jacket holding an open Bible like a shield as shadowy fear-forms recoil",
+    "negative_prompt": "graphic horror, gore, explicit faces, logos, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 60,
+    "script_snippet": "That same thing begins happening when you put God first for 30 days.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) planting a row of small glowing seedlings along a path of thirty stepping stones, each seedling representing a day of surrender.",
+    "image_prompt": "A person in a fitted navy bomber jacket planting glowing seedlings along a thirty-step path in a backyard",
+    "negative_prompt": "modern logos, cartoonish props, cluttered background, low-resolution",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 61,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) pausing at a kitchen table with earbuds in as gentle musical notes circle an open Bible, marking another beat of spiritual practice.",
+    "image_prompt": "A person in a fitted navy bomber jacket wearing earbuds while musical notes circle an open Bible on a kitchen table",
+    "negative_prompt": "visible text, logos, cluttered kitchen, cartoonish, grainy",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 62,
+    "script_snippet": "Your circumstances may not instantly change, but your heart begins to change.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) walking past the same city skyline while a small glowing garden sprouts visibly within his chest area, symbolizing inner transformation despite unchanged surroundings.",
+    "image_prompt": "A person in a fitted navy bomber jacket walking past a city skyline while a glowing garden grows in his chest",
+    "negative_prompt": "cartoonish, modern logos, cluttered background, low-resolution",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 63,
+    "script_snippet": "Philippians 4:6\u20137 says, \"Be anxious for nothing, but in everything by prayer and supplication with thanksgiving, let your requests be made known to God.\"",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) releasing several blank folded papers upward like prayers as nearby gray anxious symbols dissolve, actively entrusting requests to God.",
+    "image_prompt": "A person in a fitted navy bomber jacket releasing blank folded papers into the sky as gray anxious symbols dissolve",
+    "negative_prompt": "legible text, modern logos, cartoonish, gore, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 64,
+    "script_snippet": "Then it says, \"And the peace of God, which surpasses all understanding, will guard your hearts and minds through Christ Jesus.\"",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt reaches out and cradles a glowing, translucent shield labeled by no words (symbolic), the shield hovering before their chest to guard a small, pulsing heart and mind-glyph.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a glowing shield guarding a small pulsing heart in a modern living room",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, text on objects, anachronistic props",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 65,
+    "script_snippet": "That kind of peace doesn't make sense to the world.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stands on a bustling city sidewalk pushing aside curious, confused shadow-figures shaped like question marks while holding a calm, luminescent dove.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pushing aside confused shadow figures while holding a luminescent dove on a busy sidewalk",
+    "negative_prompt": "busy signage, visible logos, exaggerated cartoon faces, messy background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 66,
+    "script_snippet": "You may still have bills,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt struggles to carry a teetering stack of blank, faceless envelopes and folded papers tied with a red string up a short flight of apartment stairs.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt carrying a teetering stack of blank envelopes up apartment stairs",
+    "negative_prompt": "visible text on papers, real brand logos, cluttered background, harsh fluorescent light",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 67,
+    "script_snippet": "you may still have struggles,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt pushing through a low, bristling wall made of crawling, dark ropes representing struggles inside a modern bedroom doorway.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pushing through dark rope-like barriers in a bedroom doorway",
+    "negative_prompt": "gore, explicit violence, messy room clutter, visible brand labels",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 68,
+    "script_snippet": "you may still have unanswered prayers,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt holding up a small, weathered lantern into a fog where dozens of blank, folded notes float unanswered.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a lantern toward floating blank folded notes in fog",
+    "negative_prompt": "legible text, logos, crowded background, cartoonish elements",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 69,
+    "script_snippet": "but now you're no longer carrying those burdens alone.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt breathes as a warm, unseen hand lifts a heavy, crumbling sack of symbolic burdens from their back, the sack dissolving into light.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt relieved as an unseen hand lifts a dissolving sack of burdens in a living room",
+    "negative_prompt": "visible hands with logos, gore, chaotic clutter, text on sack",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 70,
+    "script_snippet": "And many people discover that when they spend the first moments of their day with God, instead of stress, worry loses its power.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt kneels at a small bedside table placing a closed, blank Bible face-down as shadowy stress-icons around them deflate and dissipate.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt kneeling by a bedside table placing a closed blank Bible while stress icons fade",
+    "negative_prompt": "legible text on Bible, phone screens, cluttered bedroom, brand logos",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 71,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stands with headphones on as colorful, abstract soundwaves flow outward, calming the scene.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt wearing headphones with colorful abstract soundwaves flowing outward in a modern bedroom",
+    "negative_prompt": "visible brand logos, messy background, harsh lighting, cartoon characters",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 72,
+    "script_snippet": "The battle in your mind becomes quieter.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stands inside a shrinking, silencing battlefield of floating thought-bubbles as they place a hand over their temple, bubbles calming into soft light.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt calming floating thought bubbles around their head in a simple bedroom",
+    "negative_prompt": "text inside bubbles, loud neon colors, cluttered background, logos",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 73,
+    "script_snippet": "Your spirit becomes stronger.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt raises a small sapling growing from their chest like armor, roots glowing and wrapping their torso with gentle strength.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt growing a glowing sapling from their chest like protective armor in a living room",
+    "negative_prompt": "gore, explicit wounds, text on objects, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 74,
+    "script_snippet": "And instead of panicking first, you begin praying first.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt folds hands into prayer and a frantic, jagged storm of panic above them quiets as a soft line of light leads toward a small cross-shaped doorway.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt praying as a jagged panic storm calms and a light path leads to a small cross doorway",
+    "negative_prompt": "visible religious text, logos, overcrowded scene, harsh fluorescent lighting",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 75,
+    "script_snippet": "If this message is speaking to your heart so far, take a second to support the channel: like this video,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt reaches toward a modern phone screen, tapping a large, blank thumbs-up icon that brightens as a small heart rises from the screen.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt tapping a blank thumbs-up icon on a phone with a heart rising in a living room",
+    "negative_prompt": "legible UI text, brand logos, messy background, cartoonish overlays",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 76,
+    "script_snippet": " subscribe to Bible Flix,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt presses a modern subscribe button on a tablet, a subtle ribbon of light connecting them to a small community of silhouettes.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pressing a subscribe button on a tablet with a ribbon of light to silhouettes",
+    "negative_prompt": "legible text, platform logos, cluttered backgrounds, harsh lighting",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 77,
+    "script_snippet": " and comment below, \"God first, always.\"",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt typing on a phone as a glowing speech bubble without legible text lifts upward and disperses gentle sparkles into the air.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt typing on a phone sending a glowing speech bubble without legible text in a cozy living room",
+    "negative_prompt": "legible words, logos, clutter, harsh fluorescent lighting",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 78,
+    "script_snippet": "[music] And share this video with someone who needs encouragement today.",
+    "hero_subject": "The protagonist (30s, short neat hair, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) pressing 'share' on a glowing smartphone and handing it to a friend across a kitchen table, actively offering encouragement.",
+    "image_prompt": "a person in a fitted navy bomber jacket tapping send on a glowing phone and handing it to a friend in a modern kitchen",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish props, visible brand logos",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 79,
+    "script_snippet": "Number three: Putting God first exposes what's been controlling you.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) pulling aside a translucent curtain to reveal shadowy, pulsing objects shaped like chains labeled as 'control' around a silhouetted heart, actively uncovering them.",
+    "image_prompt": "a person in a fitted navy bomber jacket pulling aside a translucent curtain to reveal shadowy chain-like objects around a heart in a modern living room",
+    "negative_prompt": "anachronistic props, visible text on objects, harsh neon colors, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 80,
+    "script_snippet": "[music] This part is uncomfortable, but powerful.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) standing on a small platform and steadying themself as thorned vines made of small screens and coins press around their feet while they brace and hold a Bible aloft, actively enduring and drawing strength.",
+    "image_prompt": "a person in a fitted navy bomber jacket bracing against thorned vines made of phone icons and coins while holding a Bible in a living room",
+    "negative_prompt": "graphic injury, gore, visible text, cluttered background, cartoonish elements",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 81,
+    "script_snippet": "When you truly put God first, hidden idols begin to surface.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) reaching toward a shaft of light as small sculpted idol-objects (glowing but fragile) rise from a pool of murky water at their feet, actively reaching to confront them.",
+    "image_prompt": "a person in a fitted navy bomber jacket reaching toward light as small fragile idol objects emerge from murky water in a modern bedroom",
+    "negative_prompt": "visible text, modern logos, cluttered background, overtly dramatic lighting descriptions",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 82,
+    "script_snippet": "An idol is anything that takes God's place in your heart.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) holding a translucent anatomical heart in their hands while shadowy miniature objects orbit it, actively pointing to one and separating it from the heart.",
+    "image_prompt": "a person in a fitted navy bomber jacket holding a translucent heart while separating a small orbiting idol object in a modern study",
+    "negative_prompt": "legible text, cluttered desk, brand logos, cartoonish elements",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 83,
+    "script_snippet": "For some people, it's money.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) actively prying a heavy pile of glowing coins off a balance scale while the opposite pan holds a small Bible.",
+    "image_prompt": "a person in a fitted navy bomber jacket prying a heavy pile of glowing coins off a balance scale in a modern office",
+    "negative_prompt": "visible currency logos, cluttered office, cartoonish coins",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 84,
+    "script_snippet": "For others, it's relationships.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) gently unclasping a chain of miniature connected figures wrapped around their shoulders and placing it on a table, actively releasing dependency.",
+    "image_prompt": "a person in a fitted navy bomber jacket unclasping a chain of miniature connected figures from their shoulders in a modern living room",
+    "negative_prompt": "visible text, crowded background, logos, cartoonish figures",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 85,
+    "script_snippet": "For others, it's social media, success, lust, pride, or even approval from people.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) knocking down five distinct floating icons\u2014phone notification, trophy, glowing mask, mirror reflecting a proud pose, and a cluster of speech-bubble faces\u2014each shattering into harmless dust as they reach out, actively breaking idols.",
+    "image_prompt": "a person in a fitted navy bomber jacket knocking down floating icons: phone notification, trophy, mask, mirror reflection, and speech-bubble faces in a modern city rooftop",
+    "negative_prompt": "legible text, brand logos, cluttered skyline, cartoonish styling",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 86,
+    "script_snippet": "[music] In Exodus 20:3, God said, \"You shall have no other gods before me.\"",
+    "hero_subject": "The protagonist (30s, short neat hair, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) actively pushes several shiny symbolic idols (gold coins, a phone, a trophy) to the back of a low pedestal and places a plain closed Bible-like book at the foremost spot, signaling 'first place'.",
+    "image_prompt": "A person in a fitted navy bomber jacket placing a plain book at the front pedestal",
+    "negative_prompt": "cluttered background, cartoonish, modern logos, visible text, medieval robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 87,
+    "script_snippet": "Notice he didn't say beside him.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket over white crew-neck t-shirt, slim dark jeans, sneakers) physically moves a polished golden statue that had been beside a book and pushes it backward off the front step, insisting the front position belong only to the book.",
+    "image_prompt": "A person in a fitted navy bomber jacket pushing a golden statue from beside a book backward",
+    "negative_prompt": "hands off-frame, visible logos, theatrical robes, cluttered background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 88,
+    "script_snippet": "He said before him, because God refuses to compete for first place in our lives.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans) rearranges a row of pedestals, raising one with the plain book above others as small symbolic idols slump and slide from higher to lower positions.",
+    "image_prompt": "A person in a fitted navy bomber jacket raising a pedestal with a plain book above slid-down idols",
+    "negative_prompt": "legible words, cluttered room, modern brand logos, theatrical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 89,
+    "script_snippet": "There's a story in the Bible about a rich young ruler in Mark 10:17\u201322.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans) opens a blank-faced ledger-like book and points to a small staged figurine tableau representing a well-dressed young man and a teacher, preparing to tell the story.",
+    "image_prompt": "A person in a fitted navy bomber jacket opening a blank ledger pointing to a small tableau of a wealthy man",
+    "negative_prompt": "legible text, modern office clutter, brand logos, theatrical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 90,
+    "script_snippet": "[music] This man seemed morally good.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans) polishes a white ceremonial mask labeled by implication 'good' (mask face blank), holding it up to inspect the reflection without words visible.",
+    "image_prompt": "A person in a fitted navy bomber jacket polishing a blank white mask representing moral goodness",
+    "negative_prompt": "visible labels, text, logos, cluttered background, historic robes",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 91,
+    "script_snippet": "He followed commandments.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans) places smooth, blank stone tablets upright on a shelf in a tidy row, arranging them like checkboxes of obedience without any legible writing.",
+    "image_prompt": "A person in a fitted navy bomber jacket placing blank stone tablets upright on a shelf",
+    "negative_prompt": "visible inscriptions, modern brand logos, cluttered props, theatrical robes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 92,
+    "script_snippet": "He respected Jesus.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans) bows slightly and offers a simple folded token toward a serene Jesus figure standing apart, showing deference without interrupting the teacher.",
+    "image_prompt": "A person in a fitted navy bomber jacket bowing and offering a folded token toward a serene Jesus figure",
+    "negative_prompt": "modern logos, legible text, flashy effects, cluttered background",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 93,
+    "script_snippet": "But when Jesus told him to give up his possessions and follow him,",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans) watches as Jesus gently gestures toward a pile of physical possessions while a well-dressed wealthy man hesitates beside them, the protagonist holding a small lighted symbol between them.",
+    "image_prompt": "A person in a fitted navy bomber jacket watching Jesus gesture toward a pile of possessions beside a wealthy man",
+    "negative_prompt": "legible text, modern logos, crowded modern furniture, theatrical robes",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 94,
+    "script_snippet": "the man walked away sad.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans) steps forward reaching toward a well-dressed man who turns and walks away with shoulders slumped, leaving his possessions behind as they dim.",
+    "image_prompt": "A person in a fitted navy bomber jacket reaching toward a well-dressed man walking away with slumped shoulders",
+    "negative_prompt": "blood, gore, visible text, modern logos, theatrical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 95,
+    "script_snippet": "[music] Why?",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) stepping forward and asking a single, urgent question, fists loosely clenched toward a distant, glowing question mark made of faint coin icons.",
+    "image_prompt": "a person in a fitted navy bomber jacket stepping toward a glowing question mark made of coin icons in a modern living room",
+    "negative_prompt": "cluttered background, cartoonish, anachronistic props, biblical robes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 96,
+    "script_snippet": "Because money had become his true God.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) straining to lift a large golden crown made of stacked banknotes and credit cards, the weight bending his knees.",
+    "image_prompt": "a person in a fitted navy bomber jacket lifting a crown built from banknotes and credit cards in a small apartment",
+    "negative_prompt": "office clutter, modern logos, visible text on money, blood, gore",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 97,
+    "script_snippet": "And sometimes during those 30 days of putting God first, God begins revealing the things we rely on more than him.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) walking along a calendar path of thirty floating date tiles as shadowy objects (phone, briefcase, trophy) emerge from beneath each tile like seeds being revealed.",
+    "image_prompt": "a person in a fitted navy bomber jacket walking on floating calendar tiles with shadowy objects emerging beneath each tile in a modern city street",
+    "negative_prompt": "busy crowds, billboards with legible text, ancient clothing, harsh fluorescent light",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 98,
+    "script_snippet": "[music] That can feel painful at first, but exposure leads to freedom.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) wincing as thorn-like tags labeled with symbolic icons (dollar sign, thumbs-up, briefcase) are pulled out of his coat, leaving trails of light.",
+    "image_prompt": "a person in a fitted navy bomber jacket having thorn-like symbolic tags pulled from his coat leaving trails of light in a bedroom",
+    "negative_prompt": "graphic wounds, medical equipment, logos, messy background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 99,
+    "script_snippet": "Imagine a doctor finding a hidden disease early enough to heal it.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) sitting on an examination table as a symbolic doctor (not Jesus) shines a translucent scanner revealing dark, pulsing roots under his chest.",
+    "image_prompt": "a person in a fitted navy bomber jacket on an exam table with a translucent scanner revealing dark pulsing roots under his chest in a clinic-like room",
+    "negative_prompt": "real medical text, gore, hospital clutter, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 100,
+    "script_snippet": "It may hurt to hear the diagnosis, but it saves your life.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) covering his face briefly as a glowing bandage of light begins to seal the exposed roots, relief visible even through the pain.",
+    "image_prompt": "a person in a fitted navy bomber jacket covering his face while a glowing bandage of light seals dark roots in a small clinic room",
+    "negative_prompt": "graphic injury, visible text, hospital logos, anachronistic props",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 101,
+    "script_snippet": "[music] In the same way, God exposes unhealthy attachments because he wants to heal your heart.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) reaching toward a translucent hand of light that pulls away chains shaped like app icons and coin symbols from his chest.",
+    "image_prompt": "a person in a fitted navy bomber jacket reaching toward a translucent hand of light removing chains shaped like app icons and coin symbols in a living room",
+    "negative_prompt": "visible app logos, text, cluttered background, dramatic gore",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 102,
+    "script_snippet": "And here's the beautiful part: [music] When God removes idols, he fills that empty space with his presence.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) standing as broken chains dissolve and a warm, luminous presence shaped like soft light fills the hollow over his heart, causing his posture to relax.",
+    "image_prompt": "a person in a fitted navy bomber jacket standing as broken chains dissolve and warm light fills the hollow over his heart in a cozy modern living room",
+    "negative_prompt": "text, logos, crowded background, blood, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 103,
+    "script_snippet": "Nothing in this world can satisfy the soul like God can.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt reaching toward a glowing, unseen source while holding a translucent, empty bowl that refuses to fill \u2014 active search for true satisfaction.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding an empty translucent bowl reaching toward a distant light in a modern apartment",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, modern religious iconography",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 104,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt pausing mid-step as faint musical notes shaped like tiny question marks float away, signaling a beat of reflection.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt surrounded by floating musical-note question marks in a living room",
+    "negative_prompt": "crowded room, real musical notation, overt stage lighting, text on notes",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 105,
+    "script_snippet": "Not money, ",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt pushing away a hovering pile of gold coins that slide off an invisible scale.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pushing away a hovering pile of gold coins in a contemporary bedroom",
+    "negative_prompt": "currency symbols, cash registers, logos, cluttered background",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 106,
+    "script_snippet": "not fame, ",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt turning their back on a floating neon social media like-heart billboard.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt turning away from a floating neon social media heart billboard in a city street",
+    "negative_prompt": "real logos, celebrity faces, paparazzi cameras, text on billboard",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 107,
+    "script_snippet": "not relationships, ",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stepping away from multiple translucent masks reaching for them like hands.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping away from translucent masks reaching in a modern kitchen",
+    "negative_prompt": "party crowd, recognizable faces, text, cluttered scene",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 108,
+    "script_snippet": "not achievements.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt releasing a stack of shiny trophies that crumble into dust and blow away.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt releasing crumbling trophies in an office",
+    "negative_prompt": "brand logos, championship ribbons, harsh studio lighting, clutter",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 109,
+    "script_snippet": "Ecclesiastes 3:11 says God has placed eternity in the human heart.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt holding a small glowing seed that opens into a tiny galaxy hovering above their palm.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a small glowing seed opening into a tiny galaxy in a quiet living room",
+    "negative_prompt": "visible Bible text, scripture on screen, garish effects, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 110,
+    "script_snippet": "That emptiness people feel is often a spiritual hunger only God can satisfy.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt offering a cracked, empty plate that slowly fills with soft, warm light pouring from above.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt offering an empty cracked plate being filled with warm light in a kitchen",
+    "negative_prompt": "visible food labels, modern appliances in focus, messy background, cartoonish",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 111,
+    "script_snippet": "Number four: Putting God first strengthens your faith.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt planting a small, sturdy tree labeled by its roots with symbols of prayer and Scripture, while city buildings sit behind.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt planting a small tree with root symbols of prayer and Scripture in an urban courtyard",
+    "negative_prompt": "legible text on tree, brand signage, overly busy background, modern clutter",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 112,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt pausing as soft musical ripples form concentric circles around them, marking a steady rhythm of practice.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt surrounded by soft musical ripples in a city park",
+    "negative_prompt": "real music notation, crowd, loudstage elements, text",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 113,
+    "script_snippet": "Faith grows when it is exercised, and one of the fastest ways your faith grows is by consistently choosing God even when feelings fluctuate.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt climbing a steep urban stair where each step is labeled with small actions (prayer, obedience, worship) while weather shifts around them.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt climbing steep urban stairs with action-labeled steps as weather shifts",
+    "negative_prompt": "legible step text, modern advertising, traffic, cluttered skyline",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 114,
+    "script_snippet": "Many people depend on emotions to stay close to God, [music] but mature faith continues obeying even on difficult days.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt standing steady as two forces pull: one of colorful emotion-like ribbons and one of a calm, anchored rope labeled obedience; they hold the anchored rope.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding an anchored rope against colorful emotion ribbons in a living room",
+    "negative_prompt": "legible labels, real text, cluttered background, theatrical props",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 115,
+    "script_snippet": "Think about Abraham.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stepping onto a simple, symbolic path of faith marked by a single glowing footprint leading into the distance.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping onto a glowing footprint path in a quiet street at dusk",
+    "negative_prompt": "biblical robes, anachronistic props, crowds, text on path",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 116,
+    "script_snippet": "God told Abraham to leave his homeland without showing him the full plan immediately.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) strides away from a neatly packed suitcase while reaching toward a distant, faintly sketched map hovering like an unfinished blueprint \u2014 actively stepping off a familiar doorstep into unknown path.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping away from home toward a faint floating map",
+    "negative_prompt": "cluttered background, modern logos, smartphones visible, cartoony elements",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 117,
+    "script_snippet": " Hebrews 11:8 says, \"By faith, Abraham obeyed.\"",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) holds a small, closed blank scroll high while a shadowy path appears beneath their feet \u2014 symbolically accepting a command without seeing the full route.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a blank scroll as a shadow path appears",
+    "negative_prompt": "legible text, biblical robes, anachronistic props, bright neon signage",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 118,
+    "script_snippet": " [music] That's powerful.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) pauses mid-step as faint musical notes made of light lift around them, drawing their hand to their chest in a quiet, moved reaction.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt touched by floating musical-note lights in a living room",
+    "negative_prompt": "visible instruments, concert crowd, harsh fluorescent light, text overlays",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 119,
+    "script_snippet": " He obeyed before seeing the outcome, and that's exactly what happens when you commit to putting God first.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) releases a glowing compass into the air while a pile of indistinct, tempting icons (money, trophies, thumbs-up) fade behind them \u2014 actively choosing the compass instead of outcomes.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt releasing a glowing compass as tempting icons fade behind",
+    "negative_prompt": "literal money stacks, brand logos, crowded cityscape, gore",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 120,
+    "script_snippet": " You start trusting God beyond your emotions.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) untethers a heart-shaped balloon made of cloudy emotion icons and ties it to a steady anchor shaped like an open Bible silhouette, actively balancing feeling with trust.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt tying an emotional heart balloon to a Bible-shaped anchor",
+    "negative_prompt": "legible text on book, medical imagery, anachronistic clothing, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 121,
+    "script_snippet": " [music] Maybe during those 30 days, you wake up early to pray even when tired.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) climbs out of bed toward a small glowing prayer lamp on a bedside table while yawning, actively moving despite exhaustion.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt climbing out of bed toward a glowing prayer lamp",
+    "negative_prompt": "alarm clock close-ups, smartphone screens, visible brand names, messy room",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 122,
+    "script_snippet": " You forgive someone even when hurt.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) reaches across a broken, jagged glass wall to hand a mended shard back, the shard dissolving into soft light as an act of forgiveness.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt reaching across broken glass to return a mended shard",
+    "negative_prompt": "blood, graphic injury, violent confrontation, modern logos",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 123,
+    "script_snippet": " You stop compromising even when tempted.",
+    "hero_subject": "The protagonist (30s, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) steps away from a glowing pedestal piled with glittering temptations while planting a small seed that immediately sprouts a tiny cross-shaped sapling, actively refusing compromise.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping away from a glittering pedestal and planting a seed sprouting a cross-shaped sapling",
+    "negative_prompt": "overtly sexualized imagery, brand names, cluttered props, harsh fluorescent lighting",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 124,
+    "script_snippet": "You choose obedience even when nobody sees it.",
+    "hero_subject": "The protagonist (30s, short neat hair, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) slipping a small seed into a hidden indoor plant pot labeled 'quiet choices', intentionally planting it out of sight to symbolize unseen obedience.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt planting a seed in a hidden indoor pot",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, visible text on objects, modern logos",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 125,
+    "script_snippet": "Every small act of obedience strengthens spiritual muscles.",
+    "hero_subject": "The protagonist straining playfully at a small hand weight shaped like a Bible, doing repetitions to show tiny acts building strength, focused and determined.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt lifting a small Bible-shaped hand weight in a living room",
+    "negative_prompt": "gym equipment clutter, harsh fluorescent light, cartoonish, visible text on weight, brand logos",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 126,
+    "script_snippet": "And over time, you begin noticing something incredible:",
+    "hero_subject": "The protagonist pausing at a mirror and watching faint, growing light ripple across their reflection, noticing subtle change over time like an awakening.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt noticing light ripples across their reflection in a mirror",
+    "negative_prompt": "cluttered bathroom clutter, harsh fluorescent light, cartoonish, visible text, phone screens",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 127,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist pausing with earbuds in, reaching out to touch floating translucent musical notes that drift through a living room, visually marking a moment of transition.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt reaching toward floating translucent musical notes in a living room",
+    "negative_prompt": "cluttered background, cartoonish, visible music app UI, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 128,
+    "script_snippet": "Your trust in God becomes stronger than your fear.",
+    "hero_subject": "The protagonist stepping forward on a narrow glass bridge while a heavy dark fog of shadowy fear crumbles behind them, trust propelling the step forward.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping forward on a glass bridge as dark fog crumbles behind",
+    "negative_prompt": "cartoonish fog, gore, cluttered background, visible text or logos",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 129,
+    "script_snippet": "Romans 10:17 says, \"Faith comes by hearing, and hearing by the word of God.\"",
+    "hero_subject": "The protagonist holding a vintage radio that radiates soft waves which turn into book-like pages, illustrating hearing becoming the Word, listening intently.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a vintage radio emitting waves that become floating blank book pages",
+    "negative_prompt": "legible text on pages, modern logos, cluttered background, harsh fluorescent light",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 130,
+    "script_snippet": "That's why reading Scripture daily matters.",
+    "hero_subject": "The protagonist opening a well-worn Bible whose pages glow softly but show no legible text, deliberately turning pages each morning at a kitchen table.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt turning glowing blank Bible pages at a kitchen table",
+    "negative_prompt": "legible text, cluttered kitchen, bright studio lights, logos",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 131,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist walking through a city street while music notes float and guide their steps toward a small community Bible study sign angled away so no words are readable.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt walking as floating music notes guide them toward an angled community sign",
+    "negative_prompt": "legible signage, busy commercial logos, cartoonish, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 132,
+    "script_snippet": "The more time you spend with God's word, the more your thinking changes.",
+    "hero_subject": "The protagonist sitting at a desk arranging puzzle pieces that morph from chaotic currency and notification icons into calm page-like pieces representing Scripture, actively sorting them.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt sorting puzzle pieces that change from notification icons into blank page pieces at a desk",
+    "negative_prompt": "legible text, phone screens with visible apps, cluttered background, cartoonish",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 133,
+    "script_snippet": "Fear begins shrinking.",
+    "hero_subject": "The protagonist watching a shadowy balloon labeled by no words slowly deflate and shrink as they release a small steady breath, hands actively guiding it down.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt guiding a shadowy balloon to slowly deflate in a living room",
+    "negative_prompt": "legible labels, gore, cluttered background, cartoonish",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 134,
+    "script_snippet": "Faith begins rising.",
+    "hero_subject": "The protagonist releasing a cluster of small glowing seeds that float upward and bloom into translucent birds of light, lifting toward the sky.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt releasing glowing seeds that transform into birds of light and rise",
+    "negative_prompt": "cluttered sky, modern logos, cartoonish, harsh studio lights",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 135,
+    "script_snippet": "Hope begins returning.",
+    "hero_subject": "The protagonist (30s, short neat hair, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) reaching out and catching a small glowing sprout emerging from cracked concrete, actively cradling it in both hands.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt catching a small glowing sprout from cracked concrete",
+    "negative_prompt": "cluttered background, modern logos, phones, harsh fluorescent light",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 136,
+    "script_snippet": "You stop seeing problems as bigger than God.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers) physically stepping between towering jagged boulders of shadow and a small luminous symbolic cross, pushing the shadows back so the cross grows taller.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping between dark boulders and a small glowing cross, pushing shadows back",
+    "negative_prompt": "text on objects, smartphones, cluttered background, cartoonish",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 137,
+    "script_snippet": "Instead, you start remembering how faithful God has always been.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans) gently turning over a stack of blank, faded memory cards that emit soft light, each card revealing a bright silhouette of past help as the protagonist touches them.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt touching glowing blank memory cards revealing bright silhouettes",
+    "negative_prompt": "legible text, modern devices, harsh shadows, busy background",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 138,
+    "script_snippet": "Number five: Putting God first can transform your entire life.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans) placing a modest closed book with a blank cover at the center of a fragile house of cards, and the cards turning into solid stepping stones under their feet.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a blank-covered book at center of cards turning into stepping stones",
+    "negative_prompt": "visible text, modern logos, junk mail, cluttered room",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 139,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt) pausing as small glowing musical waves rise and transform into soft ribbons of light around them, indicating an invisible soundtrack becoming tangible.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt surrounded by rising glowing musical ribbons of light",
+    "negative_prompt": "visible musical notation, headphones, phones, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 140,
+    "script_snippet": "Here's the truth many people discover: Putting God first doesn't just improve one area of life.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt) placing the same modest closed book with blank cover on a table as radiating ripples spread out and touch miniature scenes of home, work, and friendships.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a blank-covered book as ripples touch miniature scenes of home and work",
+    "negative_prompt": "legible text, smartphones, modern logos, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 141,
+    "script_snippet": "It impacts everything.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt) standing as dozens of small glowing icons\u2014homes, briefcases, hearts, gears\u2014turn from dull to bright when touched by a stream from the book.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt touching a stream of light that brightens small icons of home, briefcase, and heart",
+    "negative_prompt": "text, logos, busy city clutter, phones in frame",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 142,
+    "script_snippet": "Your relationships change.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt) actively weaving glowing threads between two supporting characters, the threads knitting broken connections into strong woven bonds.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt weaving glowing threads between two people, mending connections",
+    "negative_prompt": "legible text, phones, modern ads, messy backgrounds",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 143,
+    "script_snippet": "Your mindset changes.",
+    "hero_subject": "The protagonist (30s, fitted navy bomber jacket over a white crew-neck t-shirt) replacing a heavy dark cloud above their head with a cluster of clear glowing lightbulb-like orbs that align into a bright path forward.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt lifting a dark cloud as glowing light orbs form a path above their head",
+    "negative_prompt": "text, harsh fluorescent lighting, phones, cluttered props",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 144,
+    "script_snippet": "Your habits change.",
+    "hero_subject": "The protagonist (30s, short neat hair, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers) actively reconfigures a wall of glowing mechanical switches and cogs labeled only with icon-like symbols for daily routines, physically turning a large cog until its teeth realign into a new pattern.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt turning large glowing habit cogs in a modern apartment.",
+    "negative_prompt": "busy cluttered background, anachronistic props, visible text, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 145,
+    "script_snippet": "Your reactions change.",
+    "hero_subject": "The protagonist (same clothing) stands in a modern street scene catching and redirecting dark, arrow-like impulses that fly toward them, physically pivoting a reflective shield to turn the arrows into harmless falling leaves.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt redirecting dark arrow impulses into falling leaves on a city sidewalk.",
+    "negative_prompt": "blood, gore, weapons, visible logos, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 146,
+    "script_snippet": "Even the way you speak begins changing.",
+    "hero_subject": "The protagonist (same clothing) actively untangles a bundle of knotted cords that transform into small white doves as they pull, releasing the doves into a living room doorway.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt pulling knotted cords that turn into small white doves in a living room.",
+    "negative_prompt": "legible text, phones, microphones, cluttered background, biblical robes",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 147,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (same clothing) pauses mid-action as translucent musical ribbons fill the air around them, and they reach out to catch a ribbon that gently lights their palm.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt catching translucent musical ribbons in a modern kitchen.",
+    "negative_prompt": "visible musical notes as text, cluttered background, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 148,
+    "script_snippet": "Second Corinthians 5:17 says, \"Therefore, if anyone is in Christ, he is a new creation.\"",
+    "hero_subject": "The protagonist (same clothing) opens a large blank book whose pages dissolve into a bright new seedling sprouting from the center, and they gently cup the seedling with both hands.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a blank book that transforms into a glowing sprouting seedling indoors.",
+    "negative_prompt": "legible scripture text, visible words, crowded background, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 149,
+    "script_snippet": "God specializes in transformation.",
+    "hero_subject": "The protagonist (same clothing) stands before a workshop bench where broken items \u2014 a cracked clock, frayed rope, and rusted chain \u2014 visibly reform into polished, whole pieces as the protagonist guides each one with their hands.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt guiding broken objects reforming on a modern workshop bench.",
+    "negative_prompt": "graphic violence, gore, visible text, cluttered tools, anachronistic items",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 150,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (same clothing) listens as soft harmonic waves ripple from an unseen source and they reach out, and the ripples wash a shadowed corner of the room into gentle light.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt reaching as harmonic waves wash a shadowed corner into light in a living room.",
+    "negative_prompt": "legible sound captions, cluttered background, harsh stage lights",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 151,
+    "script_snippet": "Look at Saul in the Bible.",
+    "hero_subject": "The protagonist (same clothing) stands beside a large silhouetted figure made of jagged, dark armor pieces and gestures toward it, placing a small mirrored shard at its feet to invite reflection into the shadowy form.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a mirrored shard before a jagged dark armor silhouette in a sparse room.",
+    "negative_prompt": "legible captions, biblical robes, cluttered backgrounds, visible text",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 152,
+    "script_snippet": "Saul persecuted Christians.",
+    "hero_subject": "The protagonist (same clothing) hefts a heavy, rusted banner-shaped weight carved with abstract spear-like motifs and sets it down heavily before the jagged armor silhouette as if showing the burden of past harm.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt setting down a rusted spear-patterned weight before a jagged armor silhouette indoors.",
+    "negative_prompt": "graphic violence, blood, legible symbols, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 153,
+    "script_snippet": "He was violent and spiritually blind.",
+    "hero_subject": "The protagonist (same clothing) removes a dark blindfold made of smoke from the armor silhouette and holds it up to reveal a cracked, dimmed inner lantern, symbolizing spiritual blindness being exposed.",
+    "image_prompt": "A person in a fitted navy bomber jacket over a white crew-neck t-shirt removing a smoky blindfold from a cracked lantern inside a jagged armor silhouette.",
+    "negative_prompt": "gore, blood, legible text, cluttered modern props, biblical robes",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 154,
+    "script_snippet": "But after encountering Jesus, Saul became Paul, a man who helped spread the gospel across nations.",
+    "hero_subject": "The protagonist (30s, short neat hair, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) kneeling before Jesus as a cracked soldier helmet in their hands transforms into a messenger's satchel and an unfolding world map \u2014 an active moment of conversion and commissioning.",
+    "image_prompt": "Person in a fitted navy bomber jacket kneeling by Jesus; helmet becomes satchel and map",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, modern logos, visible text",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 155,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (in the fitted navy bomber jacket, white crew-neck t-shirt, slim dark jeans, sneakers) pressing play on a pair of headphones, body leaning into the moment as subtle musical energy seems to move around them \u2014 a brief transitional beat.",
+    "image_prompt": "Person in a fitted navy bomber jacket pressing play on headphones at home",
+    "negative_prompt": "busy background, neon signage, cartoonish, visible text, harsh studio lighting",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 156,
+    "script_snippet": "That's the power of surrender.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white tee, dark jeans, sneakers) actively letting go of heavy chains made from phone icons and coins that shatter and fall from their hands \u2014 a visible act of surrender.",
+    "image_prompt": "Person in a fitted navy bomber jacket dropping chains made of phone icons and coins",
+    "negative_prompt": "cluttered background, cartoonish, visible text, harsh fluorescent light, anachronistic props",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 157,
+    "script_snippet": "God can transform anyone.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck tee, slim jeans) holding a cracked handheld mirror that reflects many different faces blending and smoothing into a single hopeful expression \u2014 a metaphor for universal transformation.",
+    "image_prompt": "Person in a fitted navy bomber jacket holding a cracked mirror reflecting many faces",
+    "negative_prompt": "busy patterns, harsh studio flash, visible text, cartoonish elements",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 158,
+    "script_snippet": "And maybe during these 30 days, you begin breaking addictions.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white tee, dark jeans) tearing pages off a 30-day calendar while chains made of app and pill icons break apart around them \u2014 an active image of breaking addictive cycles over time.",
+    "image_prompt": "Person in a fitted navy bomber jacket tearing a 30-day calendar as icon-chains shatter",
+    "negative_prompt": "cluttered background, visible text on calendar, cartoonish, harsh fluorescent light",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 159,
+    "script_snippet": "You develop discipline.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck tee, slim dark jeans) deliberately stacking plain wooden blocks into a steady tower, hands precise and focused \u2014 a physical metaphor for building disciplined habits.",
+    "image_prompt": "Person in a fitted navy bomber jacket stacking plain wooden blocks into a steady tower",
+    "negative_prompt": "cluttered workspace, visible text or labels, cartoonish, messy background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 160,
+    "script_snippet": "You become kinder.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white tee, dark jeans) offering a warm blanket to a weary neighbor, leaning forward with gentle care \u2014 an active expression of growing kindness.",
+    "image_prompt": "Person in a fitted navy bomber jacket offering a blanket to a weary neighbor",
+    "negative_prompt": "busy signage, visible text, cartoonish figures, harsh studio lighting",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 161,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (in the fitted navy bomber jacket, white tee, slim jeans) pressing play on a small speaker as simple music icons float outward, a soft transitional musical beat that underscores the next change.",
+    "image_prompt": "Person in a fitted navy bomber jacket pressing play on a speaker; music icons float",
+    "negative_prompt": "cluttered background, visible text, cartoonish, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 162,
+    "script_snippet": "You become more patient.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white crew-neck tee, dark jeans) planting and watering a small sapling at a bus stop, focused on slow, steady care \u2014 a literal practice of patience in public life.",
+    "image_prompt": "Person in a fitted navy bomber jacket planting and watering a sapling at bus stop",
+    "negative_prompt": "busy advertising, visible text, cartoonish props, harsh lighting",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 163,
+    "script_snippet": "You stop living only for yourself.",
+    "hero_subject": "The protagonist (fitted navy bomber jacket, white tee, slim dark jeans) handing a box of food to neighbors gathered on a stoop, turning outward in a clear act of generosity and communal living.",
+    "image_prompt": "Person in a fitted navy bomber jacket handing a box of food to neighbors",
+    "negative_prompt": "visible brand logos, overcrowded background, cartoonish, harsh studio light",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 164,
+    "script_snippet": "Not because you're trying harder alone, but because God changes people from the inside out.",
+    "hero_subject": "The protagonist (30s, short neat hair, wearing a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, simple sneakers, small wristwatch) actively opening their chest like a jacket to reveal warm, mechanical gears and light transforming inside, symbolizing God changing people from the inside out.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt opening their chest to reveal transforming glowing gears inside, modern living room",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, text on objects",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 165,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (30s, same clothing) mid-step as ambient musical notes (abstract glowing shapes) ripple around them, reacting to a change in their inner life.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt surrounded by abstract glowing musical shapes in a modern apartment",
+    "negative_prompt": "literal sheet music, cluttered background, harsh fluorescent light, cartoonish",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 166,
+    "script_snippet": "John 15:5 says, \"Without me, you can do nothing.\"",
+    "hero_subject": "The protagonist (30s, same clothing) grasping a living vine that grows from their hands and connects to a distant gentle figure of Jesus standing slightly apart, the vine pulsing with life.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a living vine that connects to Jesus standing slightly apart, urban rooftop",
+    "negative_prompt": "text on vine, modern logos, harsh fluorescent light, cluttered background",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 167,
+    "script_snippet": "Notice Jesus didn't say some things.",
+    "hero_subject": "The protagonist (30s, same clothing) actively pushing away a scatter of shiny worldly objects (a small trophy, a pile of coins, a glowing notification bubble) while keeping the vine connection in hand.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pushing away shiny worldly objects (trophy, coins, notification icons) in a modern bedroom",
+    "negative_prompt": "legible text, brand logos, cluttered background, cartoonish",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 168,
+    "script_snippet": "He said nothing.",
+    "hero_subject": "The protagonist (30s, same clothing) pointing toward an empty, calm void where all the pushed-away objects dissolve into soft, blank light, emphasizing 'nothing' as space.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pointing to an empty calm void where objects dissolve, contemporary living room",
+    "negative_prompt": "text, cluttered background, harsh fluorescent light, cartoonish",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 169,
+    "script_snippet": "Real transformation happens when we stay connected to him.",
+    "hero_subject": "The protagonist (30s, same clothing) holding the living vine firmly as it pulses and flows toward Jesus, who stands slightly apart offering a steady, warm presence.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding a pulsing vine that leads to Jesus standing slightly apart, city park",
+    "negative_prompt": "text on vine, brand logos, cluttered crowds, harsh fluorescent light",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 170,
+    "script_snippet": "And sometimes the biggest miracle isn't external success.",
+    "hero_subject": "The protagonist (30s, same clothing) deliberately turning away from a shiny pedestal with an empty trophy while stepping toward a simple path of light.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt turning away from a shiny trophy on a pedestal toward a simple lighted path, modern plaza",
+    "negative_prompt": "brand logos, legible text, cluttered background, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 171,
+    "script_snippet": "Sometimes the biggest miracle is becoming the person God created you to be.",
+    "hero_subject": "The protagonist (30s, same clothing) removing a glossy mask made of reflective social media icons to reveal their calm, authentic face beneath.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt removing a glossy mask made of social media icons, cozy apartment",
+    "negative_prompt": "legible text, brand logos, cluttered background, harsh lighting",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 172,
+    "script_snippet": "And if you're serious about putting God first for the next 30 days,",
+    "hero_subject": "The protagonist (30s, same clothing) taking a confident step onto a marked 30-day pathway made of simple numbered stepping stones leading toward a soft distant light, committing to the journey.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping onto a 30-day pathway of simple stepping stones toward distant light, modern sidewalk",
+    "negative_prompt": "legible numbers, brand logos, cluttered background, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 173,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist (30s, same clothing) pausing as subtle musical ripples underscore a moment of resolve while holding the pathway steady with one hand.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt paused with subtle musical ripples around them on a modern street",
+    "negative_prompt": "literal sheet music, cluttered background, harsh fluorescent light, cartoonish",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 174,
+    "script_snippet": "I created a 30-day spiritual growth devotional journal to help guide you daily in ",
+    "hero_subject": "The protagonist (30s, same clothing) presenting an elegant closed journal toward the viewer, the cover blank or angled away so no words are legible, offering it as a tool for daily guidance.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt offering a blank-faced closed journal toward the viewer on a kitchen table",
+    "negative_prompt": "legible text, brand logos, cluttered background, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 175,
+    "script_snippet": "prayer,",
+    "hero_subject": "The protagonist (30s, same clothing) actively releasing a small warm orb upward from cupped hands, symbolizing prayer rising, in a simple bedroom.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt releasing a warm glowing orb from cupped hands indoors",
+    "negative_prompt": "legible text, brand logos, cluttered background, cartoonish",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 176,
+    "script_snippet": " Scripture,",
+    "hero_subject": "The protagonist (30s, same clothing) opening a book whose pages glow but remain unreadable or turned away, studying its light as a symbol of Scripture.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt opening a glowing book with unreadable pages on a living room couch",
+    "negative_prompt": "legible text, brand logos, cluttered background, harsh fluorescent light",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 177,
+    "script_snippet": " reflection,",
+    "hero_subject": "The protagonist (30s, same clothing) gazing into a mirror that reflects a wiser, transformed version of themselves, actively reaching toward their reflection's hand.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt reaching toward a mirror reflecting a transformed version of themselves in a bedroom",
+    "negative_prompt": "legible text, brand logos, cluttered background, cartoonish",
+    "scene_type": "reflection"
+  },
+  {
+    "scene_number": 178,
+    "script_snippet": " and spiritual discipline.",
+    "hero_subject": "The protagonist (30s, same clothing) climbing a short stack of everyday habit-steps (a small clock block, a pen block, an exercise icon block) ascending toward a simple light, actively taking the final step.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt climbing habit-steps (clock, pen, exercise icons) toward light in a modern home",
+    "negative_prompt": "legible text, brand logos, cluttered background, cartoonish",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 179,
+    "script_snippet": "You can grab it through the link in the description below.",
+    "hero_subject": "The protagonist (30s, short neat hair, average build) in a fitted navy bomber jacket over a white crew-neck t-shirt, slim dark jeans, and simple sneakers, tapping a link on their smartphone at a small modern desk, leaning forward with intent.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt tapping a link on a smartphone at a modern desk",
+    "negative_prompt": "cluttered background, harsh fluorescent light, cartoonish, visible logos, legible text on screen",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 180,
+    "script_snippet": "Putting God first for 30 days may not make your life instantly perfect, but it can completely change your direction.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt turning a large compass dial toward a bright distant landmark, visibly redirecting a path map laid out on a table.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt turning a large compass dial on a table map",
+    "negative_prompt": "anachronistic props, cluttered background, cartoonish, visible text on map",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 181,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt pressing an earbud into their ear and tapping play on a phone, small smile of focus.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pressing an earbud and tapping play on a smartphone",
+    "negative_prompt": "visible music app text, logos, cluttered background, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 182,
+    "script_snippet": "You may discover greater peace,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt releasing a heavy stone from their back that dissolves into soft mist as it falls away.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt releasing a heavy stone from their back that dissolves",
+    "negative_prompt": "blood, gore, violent imagery, cluttered background, modern advertising logos",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 183,
+    "script_snippet": " stronger faith,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt climbing a sturdy ladder anchored to a large closed blank book, reaching upward with determination.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt climbing a ladder anchored to a large closed blank book",
+    "negative_prompt": "legible text on book, cluttered background, cartoonish, logos",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 184,
+    "script_snippet": " clearer purpose,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt wiping fog from a window to reveal a straight clear road stretching forward.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt wiping fog from a window to reveal a straight road",
+    "negative_prompt": "legible signs, cluttered interior, logos, harsh fluorescent light",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 185,
+    "script_snippet": " freedom from hidden idols,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt smashing chains shaped like phone icons and dollar signs that shatter into dust.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt breaking chains shaped like phone icons and dollar signs",
+    "negative_prompt": "graphic violence, gore, brand logos, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 186,
+    "script_snippet": " and a deeper relationship with God.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt reaching toward a tall blank book placed on a stand, the book's face turned away so no text is visible.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt reaching toward a tall blank book on a stand",
+    "negative_prompt": "legible text, logos, cluttered background, cartoonish",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 187,
+    "script_snippet": "Because when God becomes first in your life, then everything else begins falling into its rightful place.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt placing a large blank book at the center top of a shelf while scattered objects gently settle into organized spaces below.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt placing a large blank book on a shelf as scattered objects settle below",
+    "negative_prompt": "legible labels, cluttered background, logos, harsh fluorescent light",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 188,
+    "script_snippet": "[music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt closing their eyes briefly with earbuds in, a hand over their chest as music plays.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt with earbuds in and a hand on their chest",
+    "negative_prompt": "visible music app text, logos, cluttered background, cartoonish",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 189,
+    "script_snippet": "Matthew 6:33 was never just a suggestion.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt holding an open blank book reverently, the page angled so no words are visible.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt holding an open blank book angled away from view",
+    "negative_prompt": "legible text, logos, cluttered background, harsh lighting",
+    "scene_type": "revelation"
+  },
+  {
+    "scene_number": 190,
+    "script_snippet": "It was an invitation to experience life the way God intended.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt opening a simple doorway that leads into a lively modern street scene, reaching to step forward.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt opening a doorway into a lively modern street scene",
+    "negative_prompt": "visible signage with text, logos, cluttered background, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 191,
+    "script_snippet": "And maybe today is the day you finally accept that invitation.",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt stepping through the doorway, leaving behind a small pile of discarded chains and coins.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt stepping through a doorway leaving chains and coins behind",
+    "negative_prompt": "graphic violence, legible text, logos, cluttered background",
+    "scene_type": "transformation"
+  },
+  {
+    "scene_number": 192,
+    "script_snippet": "If this video blessed you, make sure to like this video,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt tapping the like/thumbs-up icon on a smartphone video player, leaning in with a focused gesture.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt tapping a like icon on a smartphone video player",
+    "negative_prompt": "visible app logos, legible text, cluttered background, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 193,
+    "script_snippet": " subscribe to Bible Flix for more faith-building biblical content,",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt pressing the subscribe button on a channel page, finger hovering confidently over the screen.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt pressing a subscribe button on a channel page",
+    "negative_prompt": "visible channel logos, legible text, cluttered background, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 194,
+    "script_snippet": " [music]",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt bobbing slightly to music with earbuds in while holding their phone.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt bobbing to music with earbuds while holding a phone",
+    "negative_prompt": "visible music app text, logos, cluttered background, harsh fluorescent light",
+    "scene_type": "spiritual_moment"
+  },
+  {
+    "scene_number": 195,
+    "script_snippet": " and comment below: \"I will put God first.\"",
+    "hero_subject": "The protagonist in a fitted navy bomber jacket over a white crew-neck t-shirt typing a comment on a smartphone with the screen angled away so the words are unreadable, finishing the action decisively.",
+    "image_prompt": "a person in a fitted navy bomber jacket over a white crew-neck t-shirt typing a comment on a smartphone with the screen angled away",
+    "negative_prompt": "legible text on screen, brand logos, cluttered background, cartoonish",
+    "scene_type": "decision"
+  },
+  {
+    "scene_number": 196,
+    "script_snippet": "Also, share this video with someone who needs encouragement and spiritual direction today.",
+    "hero_subject": "The protagonist (30s, short neat hair) in a fitted navy bomber jacket reaches forward, actively offering a glowing smartphone that projects a warm guiding path of light toward a small distant person-shaped silhouette, symbolizing sharing encouragement and spiritual direction.",
+    "image_prompt": "A person in a fitted navy bomber jacket offering a glowing phone with guiding light",
+    "negative_prompt": "cluttered background, harsh fluorescent light, modern logos, visible text on phone screen, cartoonish",
+    "scene_type": "decision"
+  }
+]

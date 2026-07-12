@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pixar-Style Krea Test</title>
+<style>
+  body { margin:0; padding:24px; background:#111; color:#eee; font-family:-apple-system,sans-serif; }
+  h1 { font-size:18px; font-weight:600; margin-bottom:16px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }
+  .card { background:#1c1c1c; border-radius:8px; overflow:hidden; cursor:pointer; }
+  .card img { width:100%; display:block; aspect-ratio:16/9; object-fit:cover; }
+  .card p { margin:0; padding:10px 12px; font-size:12px; color:#aaa; }
+  dialog { border:none; background:transparent; max-width:90vw; }
+  dialog img { max-width:90vw; max-height:90vh; border-radius:8px; }
+  dialog::backdrop { background:rgba(0,0,0,0.85); }
+</style>
+</head>
+<body>
+<h1>Pixar 3D-style render test — 10 images</h1>
+<div class="grid" id="grid"></div>
+<dialog id="modal"><img id="modal-img" src=""></dialog>
+<script>
+const images = [{"prompt": "a young woman in a cozy sunlit kitchen holding a fresh cup of coffee, smiling warmly", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAKXBVEF0X3F1A3CREEYA83/0.png"}, {"prompt": "a man reading a book on a park bench under autumn trees, golden hour light", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAKXC6MVWHR9S1FR8QBYK93/0.png"}, {"prompt": "a little girl planting flowers in a garden, sunlight streaming through leaves", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAKXBQQ3SB58FE5KBEKBSKN/0.png"}, {"prompt": "an elderly couple walking hand in hand along a quiet beach at sunset", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAKXBZKNP3S2ACDXPF8C84Q/0.png"}, {"prompt": "a teenage boy fixing his bicycle in a driveway on a bright summer morning", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAKXCCFCM439330YY1NABH5/0.png"}, {"prompt": "a woman journaling by a rain-streaked window with a warm mug of tea", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAKXC38J0QJDB86R4S615H4/0.png"}, {"prompt": "a family gathered around a dinner table laughing together, warm indoor lighting", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAM2MS0QGBP3DXEBN521MWP/0.png"}, {"prompt": "a hiker standing on a mountain overlook at sunrise, arms outstretched", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAM2PNKCNV8RGGX8V8R2K3C/0.png"}, {"prompt": "a child building a sandcastle on a beach with waves in the background", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAM2VEFH9ZCW6PHNMX3M894/0.png"}, {"prompt": "a young man praying quietly in a sunlit chapel, dust motes in the light beams", "url": "https://open-source-image-generation.s3.us-west-2.amazonaws.com/generations/open-source-image-gen/fc-01KXAM2XZT2D79YM56VSNK8J1F/0.png"}];
+const grid = document.getElementById('grid');
+const modal = document.getElementById('modal');
+const modalImg = document.getElementById('modal-img');
+images.forEach(img => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<img src="${img.url}" loading="lazy"><p>${img.prompt}</p>`;
+  card.onclick = () => { modalImg.src = img.url; modal.showModal(); };
+  grid.appendChild(card);
+});
+modal.onclick = () => modal.close();
+</script>
+</body>
+</html>

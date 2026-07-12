@@ -21,7 +21,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
         url = s.get("image_url")
         lane = s.get("lane")
         scene_type = s.get("scene_type")
-        named_entity = s.get("named_entity") or ""
         image_basis = s.get("image_basis") or ""
         basis_kind = s.get("basis_kind") or ""
         mood_designated = bool(s.get("mood_designated"))
@@ -32,7 +31,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
             "n": n,
             "lane": lane,
             "scene_type": scene_type,
-            "named_entity": named_entity,
             "image_basis": image_basis,
             "basis_kind": basis_kind,
             "mood_designated": mood_designated,
@@ -46,8 +44,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
         meta_html = ""
         if scene_type:
             meta_html += f'<div class="scene-type">{html.escape(scene_type)}</div>'
-        if named_entity:
-            meta_html += f'<div class="named-entity">{html.escape(named_entity)}</div>'
         if image_basis:
             basis_label = "Search" if basis_kind == "search" else "Prompt"
             meta_html += (f'<div class="basis basis-{basis_kind}">'
@@ -178,12 +174,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.03em;
-  }}
-  figcaption .named-entity {{
-    margin-top: 2px;
-    color: var(--muted);
-    font-size: 0.75rem;
-    font-style: italic;
   }}
   figcaption .basis {{
     margin-top: 8px;
@@ -352,7 +342,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
     modalMood.style.display = s.mood_designated ? '' : 'none';
     var metaParts = [];
     if (s.scene_type) metaParts.push(s.scene_type);
-    if (s.named_entity) metaParts.push(s.named_entity);
     modalMeta.textContent = metaParts.join(' · ');
     if (s.image_basis) {{
       var label = s.basis_kind === 'search' ? 'Search' : 'Prompt';
@@ -401,19 +390,19 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
 if __name__ == "__main__":
     import os
     sample = [
-        {"scene_number": 1, "script_snippet": "A sample opening line about a distant city.",
+        {"scene_number": 1, "script_snippet": "A sample opening line about carrying old worry.",
          "image_url": "https://picsum.photos/seed/1/1280/720",
-         "lane": "archival", "scene_type": "historical_dramatic", "named_entity": "Hagia Sophia",
-         "image_basis": "Hagia Sophia", "basis_kind": "search"},
-        {"scene_number": 2, "script_snippet": "A second scene where a caravan crosses the desert.",
+         "lane": "krea", "scene_type": "spiritual_moment",
+         "image_basis": "a person straining to carry a heavy, crumbling stone", "basis_kind": "prompt"},
+        {"scene_number": 2, "script_snippet": "A second scene about surrendering control.",
          "image_url": None,
-         "lane": "graphic-map", "scene_type": "geographic", "named_entity": "",
-         "image_basis": "dramatic close-up three-quarter angle of an antique parchment historical map...",
+         "lane": "krea", "scene_type": "transformation",
+         "image_basis": "a person in a car seat as a radiant light takes the wheel",
          "basis_kind": "prompt", "mood_designated": True},
-        {"scene_number": 3, "script_snippet": "A closing scene under a starlit sky.",
+        {"scene_number": 3, "script_snippet": "A closing scene about breaking free.",
          "image_url": "https://picsum.photos/seed/3/1280/720",
-         "lane": "krea", "scene_type": "modern_scientific", "named_entity": "",
-         "image_basis": "stark realistic documentary still, high-contrast laboratory photography...",
+         "lane": "krea", "scene_type": "revelation",
+         "image_basis": "chains shaped like dollar signs shattering around a person",
          "basis_kind": "prompt"},
     ]
     out = os.path.join(os.path.dirname(__file__), "gallery-selftest.html")
