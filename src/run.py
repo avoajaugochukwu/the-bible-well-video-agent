@@ -100,7 +100,7 @@ def run_pipeline() -> str | None:
     # duration_seconds) rather than writing separate files, so resume-checks below
     # inspect the keys already on each scene rather than a stage-specific filename.
     # context.json is small and cheap to recompute, but cached anyway so a rerun
-    # never re-pays for it and the archival lane's vision-QA prompts (era/place)
+    # never re-pays for it and the Krea's vision-QA prompts (era/place)
     # stay identical across a resumed run.
     context_path = os.path.join(rd, "context.json")
     if not os.path.exists(context_path):
@@ -118,7 +118,7 @@ def run_pipeline() -> str | None:
     else:
         scenes = json.load(open(scenes_path))
 
-    # 3 IMAGES — multi-lane per scene (archival/stock/graphic/Krea), in parallel.
+    # 3 IMAGES — Krea per scene (archival/stock/graphic/Krea), in parallel.
     # Skip if every scene already carries an image_url (i.e. this scenes.json
     # already went through generate_images()).
     if not scenes or "image_url" not in scenes[0]:

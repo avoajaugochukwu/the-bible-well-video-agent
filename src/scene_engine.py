@@ -1,4 +1,4 @@
-"""Script -> scene breakdown -> per-scene multi-lane image. Two stages, both here
+"""Script -> scene breakdown -> per-scene Krea image. Two stages, both here
 since every caller needs both in sequence:
 
   break_into_scenes(script) -> OpenAI chat-completions calls (gpt-5-mini, raw urllib, this
@@ -57,7 +57,7 @@ BASE_NEGATIVE = (
 # classify_scenes()'s backfill batch size only — NOT used by the main
 # break_into_scenes()/author_chunk() path anymore (that batches by
 # SENTENCES_PER_CHUNK instead, see below). Kept for the older single-lane runs
-# classify_scenes() backfills onto the multi-lane contract.
+# classify_scenes() backfills onto the Krea contract.
 BATCH_SIZE = 8
 
 CONTEXT_SCHEMA = {
@@ -375,7 +375,7 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         f"Cultural/Environmental Anchors: {context['cultural_anchors']}; "
         f"{context['environmental_anchors']}\n\n"
         f"{char_context}\n"
-        "You are a visual director for a Bible story app that tells personal "
+        "You are a visual director for a Christian story app that tells personal "
         "transformation narratives through high-quality digital paintings. The protagonist "
         "is the VISUAL ANCHOR in EVERY scene — they must appear in every scene showing "
         "their spiritual journey, emotional state, and transformation. You are given one "
@@ -527,7 +527,7 @@ def classify_batch(context: dict, scenes: list[dict]) -> list[dict]:
     """One call per batch of already-authored scenes (each needs script_snippet +
     image_prompt): classify scene_type/named_entity/named_entity_kind WITHOUT
     re-authoring the prompt. For backfilling an older single-lane run onto the new
-    multi-lane contract — see classify_scenes()."""
+    Krea contract — see classify_scenes()."""
     system = (
         f"GLOBAL VISUAL CONTEXT:\n"
         f"Era/Place: {context['spiritual context']}\n\n"
@@ -608,7 +608,7 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
 
     Two-stage, all OpenAI gpt-5-mini at reasoning_effort=low (raw urllib, this repo's
     house style): infer_context() once (skipped if the caller already computed it —
-    run.py caches this in context.json for generate_images()'s archival-lane QA, so
+    run.py caches this in context.json for generate_images()'s Krea QA, so
     it's passed in here rather than re-billed), then chunk_script() (mechanical, no
     LLM) followed by author_chunk() per chunk IN PARALLEL — the scene cut and every
     per-scene field come out of that ONE call per chunk, see author_chunk()'s
@@ -663,7 +663,7 @@ def generate_images(scenes: list[dict], context: dict, workers: int = 8) -> list
     """Each scene -> asset_selector.py:route(), IN PARALLEL (every lane — archival
     search, stock search, graphic generation, Krea — is I/O-bound, scenes are
     independent). `context` is infer_context()'s output (spiritual context), needed by the
-    archival lane's vision-QA prompts. A scene's image failure degrades to
+    Krea's vision-QA prompts. A scene's image failure degrades to
     image_url=None rather than aborting the batch. Adds `lane` to every scene
     (which lane actually produced the image, or None if every lane failed).
     """
