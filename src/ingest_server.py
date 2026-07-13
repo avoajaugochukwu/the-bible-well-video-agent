@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Minimal HTTP ingestion trigger for the Bible Well pipeline, deployed as its own
-Railway service. POST /ingest (x-ingest-secret header) kicks off run_pipeline()
-in a background thread and returns immediately — same as calling
-`python3 src/run.py` by hand, just reachable over HTTP so an outside system can
-trigger it. No body needed: run_pipeline() still pulls next_ready() off Baserow
-itself. Stdlib only (http.server + threading), no new dependency to deploy.
+Railway service. POST /ingest (x-ingest-secret header, JSON body {"row_id": ...})
+kicks off run_pipeline(row_id) in a background thread and returns immediately —
+same as calling `python3 src/run.py <row_id>` by hand, just reachable over HTTP
+so an outside system can trigger it. row_id is required: the caller (n8n) owns
+row selection and closes its own side of the job the moment it fires this
+request, so this pipeline never scans or writes Baserow itself, only reads the
+one row it's told to process. Stdlib only (http.server + threading), no new
+dependency to deploy.
 
 remotion/src/scenes.json is a single shared file (not per-row), so run_pipeline()
 is NOT safe to run concurrently with itself — a global lock serializes triggers;
@@ -29,10 +32,10 @@ _lock = threading.Lock()
 _busy = False
 
 
-def _run_in_background():
+def _run_in_background(row_id):
     global _busy
     try:
-        pipeline.run_pipeline()
+        pipeline.run_pipeline(row_id)
     except Exception:
         # Full traceback, not just str(e) — this runs unattended, Railway logs
         # are the only record of why a job died, a one-line message isn't
@@ -59,12 +62,20 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(404, {"error": "not found"})
         if self.headers.get("x-ingest-secret") != env.require("INGEST_SECRET"):
             return self._json(401, {"error": "bad secret"})
+        length = int(self.headers.get("Content-Length") or 0)
+        try:
+            body = json.loads(self.rfile.read(length) or b"{}")
+        except json.JSONDecodeError:
+            return self._json(400, {"error": "body must be JSON"})
+        row_id = body.get("row_id")
+        if not row_id:
+            return self._json(400, {"error": "row_id is required"})
         with _lock:
             if _busy:
                 return self._json(200, {"ok": True, "status": "busy"})
             _busy = True
-        threading.Thread(target=_run_in_background, daemon=True).start()
-        self._json(202, {"ok": True, "status": "queued"})
+        threading.Thread(target=_run_in_background, args=(row_id,), daemon=True).start()
+        self._json(202, {"ok": True, "status": "queued", "row_id": row_id})
 
     def do_GET(self):
         if self.path.rstrip("/") == "/health":

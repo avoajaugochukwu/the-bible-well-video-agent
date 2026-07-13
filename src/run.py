@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Christian Story pipeline driver — one Baserow row -> finished video, pushed
-to ClickUp, row flipped to done.
+to ClickUp.
 
 Resumable: each stage writes an artifact into runs/<row_id>/ and SKIPS if that
 artifact already exists, same pattern as true-crime-news/run.py and
@@ -8,26 +8,28 @@ cold-case/run.py (this file is a direct port of that design onto heritage's
 stage list). A failed stage raises immediately and stops the process — nothing
 retries silently, no paid API (OpenAI scene breakdown, Krea images, Remotion
 Lambda render) gets hit again without you seeing why it failed. Fix the cause,
-rerun `python3 run.py`; completed stages are skipped, so you resume exactly
-where it broke.
+rerun with the same row_id; completed stages are skipped, so you resume
+exactly where it broke.
 
-This pipeline NEVER writes scripts and NEVER generates its own narration audio
-— both already exist on the Baserow row (`script`, `voice_url`) by the time
-`next_ready()` picks it up. The alignment stage runs real Whisper+DTW against
-the row's OWN downloaded voice_url, never a freshly-TTS'd file (that only
-happens in scene_engine.py's __main__ self-test, which has no real row to test
-against).
+This pipeline NEVER writes scripts, NEVER generates its own narration audio,
+and NEVER writes back to Baserow — row selection is the caller's job (n8n
+picks the row_id and fires /ingest, already closing its own side of the job
+immediately). script/voice_url both already exist on the row by the time
+run_pipeline(row_id) reads it. The alignment stage runs real Whisper+DTW
+against the row's OWN downloaded voice_url, never a freshly-TTS'd file (that
+only happens in scene_engine.py's __main__ self-test, which has no real row
+to test against).
 
-  baserow(next_ready) -> scenes(break_into_scenes) -> images(generate_images)
+  baserow(get_row) -> scenes(break_into_scenes) -> images(generate_images)
   -> gallery(build_gallery, non-blocking review) -> download narration
   -> whisper_words (cached, computed ONCE) -> align(align_scene_durations,
   real Whisper+DTW) -> remotion/src/scenes.json (scenes + narrationUrl + the
   same whisper words, for <Captions>'s current-word highlight) -> Remotion
   Lambda render (deploy:site + render:remote — NEVER local `remotion render`,
-  that freezes the machine) -> S3 -> ClickUp -> Baserow mark_done -> prune_runs
+  that freezes the machine) -> S3 -> ClickUp -> prune_runs
 
 Usage:
-  python3 src/run.py   (from the repo root)
+  python3 src/run.py <baserow_row_id>   (from the repo root)
 """
 import json
 import os
@@ -67,14 +69,11 @@ def run_node(cmd: list[str], extra_env: dict | None = None, timeout: int = 3600)
     return r.stdout
 
 
-def run_pipeline() -> str | None:
-    row = baserow.next_ready()
-    if not row:
-        print("== no ready Christian Story row (script_status=done, voice_status=done, "
-              "video_processed!=done)")
-        return None
-
-    row_id = row["id"]
+def run_pipeline(row_id) -> str | None:
+    """row_id is handed to us explicitly (n8n picks it via /ingest, or a human
+    passes it on the CLI) — this pipeline never scans or writes Baserow itself,
+    only reads the one row it's told to process."""
+    row = baserow.get_row(row_id)
     rd = os.path.join(RUNS_DIR, str(row_id))
     os.makedirs(rd, exist_ok=True)
     print(f"== row {row_id}: {row.get('title')!r}\n== run dir: {rd}")
@@ -208,30 +207,25 @@ def run_pipeline() -> str | None:
 
     # 9 CLICKUP — update-existing-task only, never create. push_video() itself never
     # raises (falls back to a comment on a description-PUT failure) — but if BOTH
-    # routes fail it returns False, and we raise here so mark_done never fires on a
-    # video nobody can find. Gated so a rerun never double-prepends the video line.
-    clickup_marker = os.path.join(rd, "clickup-pushed.txt")
-    if not os.path.exists(clickup_marker):
+    # routes fail it returns False, and we raise here so this run isn't silently
+    # marked done with nowhere the video actually landed. Gated so a rerun never
+    # double-prepends the video line. This is the pipeline's last stage — Baserow
+    # is never written back to; the ingest trigger (n8n) already closed its own
+    # side of the job when it fired /ingest.
+    done_marker_path = os.path.join(rd, DONE_MARKER)
+    if not os.path.exists(done_marker_path):
         print("  clickup: push_video()...", flush=True)
         ok = heritage_clickup.push_video(clickup_url, video_url)
         if not ok:
             raise RuntimeError(f"clickup push_video failed for row {row_id} -> {clickup_url}")
-        open(clickup_marker, "w").write(video_url)
-        print("  clickup: done")
-
-    # 10 BASEROW — only after S3 + ClickUp both succeeded (checked above).
-    done_marker_path = os.path.join(rd, DONE_MARKER)
-    if not os.path.exists(done_marker_path):
-        print("  baserow: mark_done()...", flush=True)
-        baserow.mark_done(row_id)
         open(done_marker_path, "w").write(video_url)
-        print("  baserow: done")
+        print("  clickup: done")
 
     print(f"== DONE row {row_id} -> {video_url}")
 
-    # video's in S3 + ClickUp + Baserow now — local run artifacts (narration.mp3,
-    # output.mp4 backup, etc.) have nothing left to prove. Keeps the single most
-    # recent done run for 24h (debugging), prunes the rest.
+    # video's in S3 + ClickUp now — local run artifacts (narration.mp3, output.mp4
+    # backup, etc.) have nothing left to prove. Keeps the single most recent done
+    # run for 24h (debugging), prunes the rest.
     removed = cleanup.prune_runs(RUNS_DIR, DONE_MARKER)
     if removed:
         print(f"  cleanup: pruned {len(removed)} finished run dir(s)")
@@ -240,4 +234,6 @@ def run_pipeline() -> str | None:
 
 
 if __name__ == "__main__":
-    run_pipeline()
+    if len(sys.argv) < 2:
+        sys.exit("usage: run.py <baserow_row_id>")
+    run_pipeline(sys.argv[1])

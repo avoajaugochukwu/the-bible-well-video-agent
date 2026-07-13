@@ -17,17 +17,6 @@ import urllib.request
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "utils"))
 import env  # utils/
 
-CHANNEL = "The Bible Well"
-# select_options id on the "channel" single_select field (table id 2) — Baserow's
-# single_select_equal filter needs this numeric id, not the display string (passing
-# the string silently no-ops the filter: Baserow returns every row, unfiltered, no
-# error). Option ids are stable once created, so hardcode rather than re-resolving
-# it via /api/database/fields/ on every call. Confirmed via that endpoint 2026-07-12:
-# {"id": 218, "value": "The Bible Well", ...}. If this table's channel field is ever
-# rebuilt from scratch, re-check the id there before trusting this constant again.
-CHANNEL_OPTION_ID = 218
-
-
 def _base() -> tuple[str, str]:
     return env.require("BASE_ROW_URL").rstrip("/"), env.get("BASEROW_TABLE_ID", "2")
 
@@ -54,46 +43,12 @@ def _sel(x):
     return x["value"] if isinstance(x, dict) else x
 
 
-def _rows(token: str) -> list[dict]:
-    _, table = _base()
-    q = urllib.parse.urlencode({"user_field_names": "true",
-                                "filter__channel__single_select_equal": CHANNEL_OPTION_ID,
-                                "size": 50})
-    # ponytail: order_by=-id errors on this table; sort client-side instead.
-    return _req(f"/api/database/rows/table/{table}/?{q}", token=token)["results"]
-
-
-def next_ready() -> dict | None:
-    """Lowest-id Bible Well row with script+voice done, not yet video_processed,
-    AND a clickup_url set. That last check matters because of how this pipeline
-    gets triggered: an outside caller (n8n) fires /ingest and moves on without
-    waiting for the run to finish, marking its own side done immediately so it
-    never re-fires on the same task. If we picked a row with no clickup_url,
-    run_pipeline() would raise before ever reaching Baserow's mark_done() —
-    and since the caller already considers that task handled, it would never
-    retry, orphaning the row silently. Skipping it here instead leaves it
-    eligible again the moment someone fills in clickup_url."""
-    rows = sorted(_rows(_token()), key=lambda r: r["id"])
-    for row in rows:
-        if (_sel(row.get("script_status")) == "done"
-                and _sel(row.get("voice_status")) == "done"
-                and _sel(row.get("video_processed")) != "done"):
-            if not row.get("clickup_url"):
-                print(f"baserow: row {row['id']} otherwise ready but has no clickup_url — skipping", flush=True)
-                continue
-            return row
-    return None
-
-
 def get_row(row_id) -> dict:
+    """Read-only. This pipeline never writes back to Baserow — the ingest trigger
+    (n8n) owns row_id selection and closes its own side of the job immediately;
+    this is just a lookup for script/voice_url/clickup_url."""
     _, table = _base()
     return _req(f"/api/database/rows/table/{table}/{row_id}/?user_field_names=true", token=_token())
-
-
-def mark_done(row_id) -> dict:
-    _, table = _base()
-    return _req(f"/api/database/rows/table/{table}/{row_id}/?user_field_names=true",
-                method="PATCH", token=_token(), body={"video_processed": "done"})
 
 
 def download(url: str, path: str) -> None:
@@ -104,13 +59,12 @@ def download(url: str, path: str) -> None:
 
 
 if __name__ == "__main__":
+    import sys
     try:
         assert _token(), "no token returned"
         print("auth: ok")
-        row = next_ready()
-        if row:
-            print(f"next_ready: id={row['id']} title={row.get('title')!r}")
-        else:
-            print("next_ready: none")
+        if len(sys.argv) > 1:
+            row = get_row(sys.argv[1])
+            print(f"get_row({sys.argv[1]}): title={row.get('title')!r}")
     except Exception as e:  # ponytail: don't crash the self-test suite when offline
         print(f"baserow self-test skipped (network?): {e}")

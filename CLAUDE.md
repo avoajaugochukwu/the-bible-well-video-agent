@@ -10,42 +10,43 @@ sub-folder for the pipeline and no cross-pipeline `shared/` folder to keep in sy
 
 Generate a scene-by-scene spiritual transformation video for the Christian Story channel (faith-based,
 character-driven narratives focused on personal transformation and God's work in daily life)
-from a script that already exists in Baserow. **This pipeline never writes scripts.** Script, narration
-audio, and sound all come from a Baserow row that's already been marked `script_status=done`
-and `voice_status=done` by an upstream writing process (not this repo). This project's job
-starts after that: break the script into scenes, generate a spiritual image per scene
-(Krea, high-quality digital painting), assemble/render, then push the finished video url back to ClickUp and mark the Baserow
-row `video_processed=done`.
+from a script that already exists in Baserow. **This pipeline never writes scripts, and never
+writes back to Baserow at all** — an outside trigger (n8n) owns row selection and closes its
+own side of the job the moment it fires the ingest request; this pipeline only reads the row
+it's told to process. Script, narration audio, and sound all come from a Baserow row that's
+already been marked `script_status=done` and `voice_status=done` by an upstream writing process
+(not this repo). This project's job starts after that: break the script into scenes, generate a
+spiritual image per scene (Krea, high-quality digital painting), assemble/render, then push the
+finished video url back to ClickUp.
 
-Output per run → one rendered video, one ClickUp task updated with the video url, one Baserow
-row flipped to done.
+Output per run → one rendered video, one ClickUp task updated with the video url.
 
 ## Current status
 
-Full pipeline is wired end-to-end via `src/run.py` — one command, no CLI args: each stage
-writes an artifact into `runs/<row_id>/` and is skipped on rerun if that artifact already
-exists, so a failure mid-run resumes exactly where it broke instead of re-paying for completed
-stages.
+Full pipeline is wired end-to-end via `src/run.py <row_id>` — row_id is a required arg (or the
+`row_id` field of an `/ingest` POST body when triggered over HTTP): each stage writes an
+artifact into `runs/<row_id>/` and is skipped on rerun if that artifact already exists, so a
+failure mid-run resumes exactly where it broke instead of re-paying for completed stages.
 `src/asset_selector.py`'s archival lane checks a Turso-backed `blocked_domains` list
 (read-only; `TURSO_DATABASE_URL`/`TURSO_AUTH_TOKEN` in root `.env`, table shared with
 `military`/`footage-collector`) before attempting a vision-QA fetch, in addition to the static
 `BLOCKED_HOST_SUBSTRINGS` list. This pipeline only reads that table — it never flags a domain
 onto it.
 
-Stage order: Baserow pull → scene breakdown → multi-lane images (archival/stock/graphic/Krea)
-→ gallery (non-blocking review) →
+Stage order: Baserow read (given row_id) → scene breakdown → multi-lane images (archival/stock/
+graphic/Krea) → gallery (non-blocking review) →
 download the row's own narration → Whisper+DTW alignment against that real audio → Remotion
 Lambda render (narration muxed in via `<Audio>`) → upload the finished mp4 to S3
 (`src/s3.py:put_file()`, RAW public link — **never presigned, always S3, that's what gets
-shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → Baserow `mark_done`
-(`src/baserow.py`) → `prune_runs()` cleanup.
+shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → `prune_runs()` cleanup.
+Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)` only.
 
 ## Inputs
 
-- **A Baserow row**, channel = `"Christian Story"` (single_select value on the shared Baserow
-  instance/table, id `2` — same instance space-cluster uses). No CLI args, no manual brief —
-  `src/baserow.py:next_ready()` pulls the lowest-id ready row automatically, same pattern
-  as `space-cluster/front/baserow.py`.
+- **A Baserow row id**, handed in explicitly — by `src/run.py <row_id>` on the CLI, or the
+  `row_id` field of a POST to `/ingest` (`src/ingest_server.py`) when triggered by n8n. This
+  pipeline never scans Baserow for "the next ready row"; the caller already knows which row it
+  means and has already closed its own side of the job by the time the request lands.
 - Row fields consumed: `title`, `script`, `voice_url` (narration audio — see note below on
   sound), `clickup_url` (the task to push the finished video url onto).
 - **Sound**: `voice_url` is narration ONLY — confirmed against a real row, no separate SFX/
@@ -73,8 +74,8 @@ shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → Basero
   real). Map/document graphics get their own parchment/aged-paper prompt style
   (`asset_selector.py:GRAPHIC_STYLE`), matching the reference app (`ui/stories/sleep-stories`)
   only for the Krea lane specifically.
-- Pull-only until render succeeds: `baserow.py` never calls `mark_done()` speculatively — only
-  after a finished video is actually in S3 and pushed to ClickUp (once that stage is built).
+- **Baserow is read-only.** `baserow.py` has no write/PATCH function at all — row_id selection
+  and "is this job done" bookkeeping both live on the caller's side (n8n), not here.
 - ClickUp push is update-existing-task, never create-task — the task already exists (created
   by the same upstream process that writes the script), we're just appending the video url to
   it, same as `space-cluster/front/clickup.py`'s `push_video()`.
@@ -82,8 +83,8 @@ shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → Basero
 ## Pipeline stages
 
 ```
-1 BASEROW    src/baserow.py: next_ready() pulls the lowest-id "Christian Story" row
-             with script_status=done, voice_status=done, video_processed!=done.
+1 BASEROW    src/baserow.py: get_row(row_id) reads the one row the caller specified —
+             no scanning, no gating on video_processed. Read-only.
 2 SCENES     src/scene_engine.py: LLM scene breakdown of the row's script — OpenAI
              gpt-5-mini, reasoning_effort=low. Three small calls, not one mega-call:
              infer_context() once (pins era/place/palette so every batch stays consistent)
@@ -114,13 +115,13 @@ shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → Basero
              a presigned link or a local-only file path.
 8 CLICKUP    src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
              clickup_url task description (falls back to a comment on failure), same
-             update-existing-task pattern as space-cluster.
-9 BASEROW    src/baserow.py: mark_done(row_id) flips video_processed=done, once the
-             video is actually live in S3 + pushed to ClickUp.
+             update-existing-task pattern as space-cluster. Last stage — nothing
+             writes back to Baserow after this.
 ```
 
-Steps 1-9 are wired into one `run.py` command (`src/run.py`, Phase 5 in
-`HERITAGE_PLAN.md`) — run it with `python3 src/run.py` from the repo root, no args.
+Steps 1-8 are wired into one `run.py` command (`src/run.py`, Phase 5 in
+`HERITAGE_PLAN.md`) — run it with `python3 src/run.py <row_id>` from the repo root, or trigger
+it over HTTP via `POST /ingest` (`src/ingest_server.py`, JSON body `{"row_id": ...}`).
 
 ## Credentials
 
@@ -150,26 +151,21 @@ Steps 1-9 are wired into one `run.py` command (`src/run.py`, Phase 5 in
 
 ## Baserow
 
-Table id `2` (shared instance, same one `space-cluster` uses). Fields this pipeline reads/writes:
+Table id `2` (shared instance, same one `space-cluster` uses). Read-only from this pipeline's
+side — `src/baserow.py` has exactly one call, `get_row(row_id)`, no write/PATCH function exists.
+Fields consumed:
 
 | field              | type          | meaning                                              |
 |--------------------|---------------|-------------------------------------------------------|
-| `channel`          | single_select | must equal `"Christian Story"`, option id `67`        |
 | `script`           | text          | the script, verbatim — never edited by this pipeline   |
-| `script_status`    | single_select | gate: must be `"done"`                                 |
 | `voice_url`        | text          | narration audio url (mp3), narration ONLY, no SFX      |
-| `voice_status`     | single_select | gate: must be `"done"`                                 |
 | `clickup_url`      | text          | ClickUp task to push the finished video url onto       |
-| `video_processed`  | single_select | gate: must NOT be `"done"`; this pipeline sets it       |
 
-- `src/baserow.py:CHANNEL_OPTION_ID = 67` is hardcoded. This Baserow instance's
-  `single_select_equal` filter takes the select option's numeric **id**, not its display
-  string — passing the string silently no-ops the filter (returns rows from every channel,
-  unfiltered, no error). Option ids are stable once created; re-check
-  `/api/database/fields/table/2/` if this field is ever rebuilt from scratch.
-- `next_ready()` returns the lowest-id row matching all three gates.
-- `mark_done(row_id)` PATCHes `video_processed="done"` — only call this after the video is
-  genuinely in S3 and the ClickUp task updated, never speculatively.
+- `channel`/`script_status`/`voice_status`/`video_processed` are read by nobody here — this
+  pipeline doesn't scan or gate on them, since the caller (n8n) already picked the row_id it
+  hands us. Whatever process owns those fields upstream is out of this repo's scope.
+- If `run.py`/`get_row(row_id)` is handed a row whose `script` or `voice_url` is actually empty,
+  it raises immediately rather than silently no-op'ing — there's no other row to fall back to.
 
 ## ClickUp
 
