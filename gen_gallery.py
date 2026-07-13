@@ -12,7 +12,7 @@ import scene_engine
 import gallery
 
 # Read cleaned script
-script_path = os.path.join(HERE, "script_cleaned.txt")
+script_path = os.path.join(HERE, "take_up_your_cross_daily.txt")
 with open(script_path) as f:
     script = f.read()
 
