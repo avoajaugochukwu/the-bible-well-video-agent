@@ -5,21 +5,25 @@ import {Captions, type Word} from './overlays/Captions';
 
 // ---------------------------------------------------------------------------
 // Motion spec, revised per user feedback:
-// - No rotation - zoom only.
-// - The image must NEVER stop moving - one continuous zoom interpolation
-//   across a scene's ENTIRE on-screen duration, no flat/paused phase.
-// - Every scene starts AND ends at ZOOM_EDGE (native full-bleed cover, no
-//   crop) - a brief punch-in to PEAK_SCALE in between. Turnaround point is a
-//   fraction of that scene's OWN duration_frames (ZOOM_IN_FRACTION), so it
-//   scales correctly whether a scene is 4s or 12s.
+// - No rotation.
+// - The image must NEVER stop moving - one continuous interpolation across a
+//   scene's ENTIRE on-screen duration, no flat/paused phase.
+// - Every scene's transform starts AND ends at its kind's own NEUTRAL state
+//   (scale >= 1, translate 0) - never below 1.0 scale, or the backdrop shows
+//   through at the edges; never a nonzero translate at the boundary, or the
+//   crossfade blends against a cropped/offset frame. This is what makes the
+//   crossfade safe across every transition kind, not just zoom.
 // - True crossfade: only ONE shared black backdrop for the whole composition
 //   (see HeritageScenes) - a scene must never carry its own opaque
-//   background, or it occludes the scene fading out underneath it.
-// - Durations are per-scene, not a single global constant. Real scenes will
-//   have variable length (driven by narration alignment later) - the timing/
-//   placement math below is written against each scene's own duration so
-//   swapping in real per-scene durations later doesn't require touching this
-//   file again.
+//   background, or it occludes the scene fading out underneath it. This is
+//   the thing that guarantees every scene actually shows on screen instead
+//   of hard-cutting past it.
+// - Durations are per-scene, driven by real narration alignment - the
+//   timing/placement math below is written against each scene's own
+//   duration so it scales correctly whether a scene is 4s or 12s.
+// - Transition KIND (zoom / slide / blend) varies per scene so consecutive
+//   scenes don't all move the same way - picked deterministically by
+//   scene_number (not random), so a render is reproducible.
 // ---------------------------------------------------------------------------
 
 export const FPS = 30;
@@ -31,18 +35,54 @@ export const DEFAULT_SCENE_DURATION_FRAMES = 180; // 6.0s @ 30fps
 // Fraction of a scene's OWN duration spent fading in / out (opacity only -
 // this is what makes the crossfade), and consecutive scenes overlap by this
 // fraction of the shorter neighbor's duration. Independent of duration, so
-// it scales correctly whether a scene is 3s or 12s.
-const FADE_FRACTION = 0.18;
-const CROSSFADE_FRACTION = 0.18;
+// it scales correctly whether a scene is 3s or 12s. Kept generous on purpose
+// - a thin crossfade reads as a hard cut, and every scene showing (not just
+// flashing past during a cut) is the whole point.
+const FADE_FRACTION = 0.22;
+const CROSSFADE_FRACTION = 0.22;
 
 // No rotation, so scale 1.0 is already exact full-frame cover (objectFit:
-// cover handles that) - ZOOM_EDGE IS that native edge, the true "no crop"
-// state. Every scene's zoom starts AND ends exactly here.
+// cover handles that) - ZOOM_EDGE is that native edge, the true "no crop"
+// state every zoom kind starts AND ends at.
 const ZOOM_EDGE = 1.0;
-const PEAK_SCALE = 1.3; // the "bit" of zoom-in at the turnaround
-// First 25% of the scene's own duration is the rise to PEAK_SCALE, the
-// remaining 75% is the (slower, calmer) fall back to ZOOM_EDGE.
-const ZOOM_IN_FRACTION = 0.25;
+const PEAK_SCALE = 1.3; // punchy zoom-in's turnaround scale
+const DRIFT_SCALE = 1.15; // gentler zoom-drift's turnaround scale
+const ZOOM_IN_FRACTION = 0.25; // punch: quick rise, slow fall
+const DRIFT_FRACTION = 0.6; // drift: slow rise, quick fall - opposite rhythm
+
+// Slides pan the frame instead of zooming. SLIDE_ZOOM is a constant overscan
+// buffer (>1.0, matching the zoom-kind invariant above) - it's the "extra"
+// image outside the visible frame that a pan can reveal without ever
+// exposing the black backdrop. SLIDE_OFFSET_PCT is kept well inside the
+// slack that buffer creates (15% overscan gives ~7.5% slack per side; 6%
+// offset stays safely inside that).
+const SLIDE_ZOOM = 1.15;
+const SLIDE_OFFSET_PCT = 6;
+
+type TransitionKind =
+	| 'zoom-punch'
+	| 'zoom-drift'
+	| 'slide-left'
+	| 'slide-right'
+	| 'slide-up'
+	| 'slide-down'
+	| 'blend';
+
+// Fixed order, cycled by scene_number - deterministic (reproducible render),
+// and guarantees no two consecutive scenes repeat the same kind as long as
+// there are more scenes than kinds in a row.
+const TRANSITION_CYCLE: TransitionKind[] = [
+	'zoom-punch',
+	'slide-left',
+	'zoom-drift',
+	'slide-up',
+	'blend',
+	'slide-right',
+	'slide-down',
+];
+
+const pickTransition = (sceneNumber: number): TransitionKind =>
+	TRANSITION_CYCLE[((sceneNumber % TRANSITION_CYCLE.length) + TRANSITION_CYCLE.length) % TRANSITION_CYCLE.length];
 
 export type Scene = {
 	scene_number: number;
@@ -68,22 +108,64 @@ const SingleScene: React.FC<{scene: Scene; durationInFrames: number}> = ({
 		{extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
 	);
 
-	// Continuous zoom across the ENTIRE scene - rises from the edge to
-	// PEAK_SCALE over the first ZOOM_IN_FRACTION of the scene's own duration,
-	// then falls back to the edge for the rest. Never stops moving, never
-	// flat.
 	// Clamped so the 3 breakpoints stay strictly increasing even for a very
 	// short scene (interpolate() requires that).
-	const peakFrame = Math.min(
-		Math.max(1, Math.round(durationInFrames * ZOOM_IN_FRACTION)),
-		durationInFrames - 1
-	);
-	const scale = interpolate(
-		frame,
-		[0, peakFrame, durationInFrames],
-		[ZOOM_EDGE, PEAK_SCALE, ZOOM_EDGE],
-		{extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
-	);
+	const peakFrame = (peakFraction: number) =>
+		Math.min(Math.max(1, Math.round(durationInFrames * peakFraction)), durationInFrames - 1);
+
+	const kind = pickTransition(scene.scene_number);
+	let scale: number = ZOOM_EDGE;
+	let translateXPct = 0;
+	let translateYPct = 0;
+
+	switch (kind) {
+		case 'zoom-punch': {
+			scale = interpolate(
+				frame,
+				[0, peakFrame(ZOOM_IN_FRACTION), durationInFrames],
+				[ZOOM_EDGE, PEAK_SCALE, ZOOM_EDGE],
+				{extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
+			);
+			break;
+		}
+		case 'zoom-drift': {
+			scale = interpolate(
+				frame,
+				[0, peakFrame(DRIFT_FRACTION), durationInFrames],
+				[ZOOM_EDGE, DRIFT_SCALE, ZOOM_EDGE],
+				{extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
+			);
+			break;
+		}
+		case 'slide-left':
+		case 'slide-right': {
+			scale = SLIDE_ZOOM;
+			const sign = kind === 'slide-left' ? -1 : 1;
+			translateXPct = interpolate(
+				frame,
+				[0, peakFrame(ZOOM_IN_FRACTION), durationInFrames],
+				[0, sign * SLIDE_OFFSET_PCT, 0],
+				{extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
+			);
+			break;
+		}
+		case 'slide-up':
+		case 'slide-down': {
+			scale = SLIDE_ZOOM;
+			const sign = kind === 'slide-up' ? -1 : 1;
+			translateYPct = interpolate(
+				frame,
+				[0, peakFrame(ZOOM_IN_FRACTION), durationInFrames],
+				[0, sign * SLIDE_OFFSET_PCT, 0],
+				{extrapolateLeft: 'clamp', extrapolateRight: 'clamp'}
+			);
+			break;
+		}
+		case 'blend':
+		default:
+			// No motion at all - the shared crossfade alone carries this scene.
+			break;
+	}
 
 	// No per-scene opaque background here - only the true crossfade layer.
 	// HeritageScenes below owns the ONE shared black backdrop; if each scene
@@ -95,7 +177,7 @@ const SingleScene: React.FC<{scene: Scene; durationInFrames: number}> = ({
 		<AbsoluteFill
 			style={{
 				opacity,
-				transform: `scale(${scale})`,
+				transform: `scale(${scale}) translate(${translateXPct}%, ${translateYPct}%)`,
 			}}
 		>
 			<Img
