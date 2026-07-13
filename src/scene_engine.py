@@ -753,10 +753,26 @@ def generate_images(scenes: list[dict], context: dict, workers: int = 8) -> list
     miss = [s["scene_number"] for s in results if not s["image_url"]]
     if miss:
         print(f"  images: {len(results) - len(miss)}/{len(results)} generated, "
-              f"{len(miss)} MISSING: {miss}", flush=True)
+              f"{len(miss)} MISSING, backfilling from neighbor: {miss}", flush=True)
+        _backfill_missing_images(results)
     else:
         print(f"  images: {len(results)}/{len(results)} generated", flush=True)
     return results
+
+
+def _backfill_missing_images(scenes: list[dict]) -> None:
+    """Hands-off run, no human review — a blank scene is worse than a repeated one.
+    Fill any scene['image_url'] left None with the nearest neighbor's image_url
+    (previous scene preferred, else next), in place. No-op if every lane failed
+    for every scene (nothing to borrow from)."""
+    for i, s in enumerate(scenes):
+        if s["image_url"]:
+            continue
+        for j in list(range(i - 1, -1, -1)) + list(range(i + 1, len(scenes))):
+            if scenes[j]["image_url"]:
+                s["image_url"] = scenes[j]["image_url"]
+                s["lane"] = f"neighbor:{scenes[j]['scene_number']}"
+                break
 
 
 def whisper_words(narration_path: str) -> tuple[list[dict], float]:
@@ -766,8 +782,8 @@ def whisper_words(narration_path: str) -> tuple[list[dict], float]:
     senior-finance/finance/remotion project's lib/alignment/whisper.ts calls, ported
     from TS fetch/FormData to urllib. No local model, no GPU/CPU transcription cost
     here. Public (no leading underscore) because run.py calls this ONCE per pipeline
-    run and feeds the result into both align_scene_durations() and
-    director.plan_cards()."""
+    run and feeds the result into both align_scene_durations() and the remotion
+    payload's caption words (build_remotion_payload())."""
     url = env.require("REMOTION_WHISPER_SERVICE_URL").rstrip("/") + "/v1/transcribe"
     audio = open(narration_path, "rb").read()
 
@@ -832,19 +848,18 @@ def to_remotion_scenes(scenes: list[dict], fps: int = 30) -> list[dict]:
 
 
 def build_remotion_payload(scenes: list[dict], narration_url: str | None, fps: int = 30,
-                            cards: list[dict] | None = None) -> dict:
-    """{scenes, narrationUrl, cards} — remotion/src/Root.tsx's scenes.json shape.
+                            words: list[dict] | None = None) -> dict:
+    """{scenes, narrationUrl, words} — remotion/src/Root.tsx's scenes.json shape.
     `narration_url` must be a URL Lambda can fetch (e.g. the row's own voice_url,
     or an S3 rehost) — a local file path won't work for a Lambda render.
-    `cards` is director.plan_cards()'s output (text-overlay timeline); omit or
-    pass None when there are none yet."""
-    return {"scenes": to_remotion_scenes(scenes, fps), "narrationUrl": narration_url, "cards": cards or []}
+    `words` is whisper_words()'s [{word, start, end}, ...] — remotion's
+    <Captions> highlights whichever word is currently being spoken."""
+    return {"scenes": to_remotion_scenes(scenes, fps), "narrationUrl": narration_url, "words": words or []}
 
 
 if __name__ == "__main__":
     import gallery as heritage_gallery  # local module, self-test only
     import tts                          # utils: Voice Generator Service  # noqa
-    import director as heritage_director  # local module, self-test only
 
     SAMPLE_SCRIPT = (
         "In the 8th century, the city of Chang'an stood as the beating heart of Tang Dynasty "
@@ -858,10 +873,10 @@ if __name__ == "__main__":
         "scent of woodsmoke and distant lands."
     )
 
-    print("Heritage scene_engine self-test: script -> scenes -> images -> narration -> align -> cards -> gallery")
+    print("Heritage scene_engine self-test: script -> scenes -> images -> narration -> align -> gallery")
     print(f"sample script: {len(SAMPLE_SCRIPT.split())} words", flush=True)
 
-    print("\n1/6 break_into_scenes()...", flush=True)
+    print("\n1/5 break_into_scenes()...", flush=True)
     context = infer_context(SAMPLE_SCRIPT)
     scenes = break_into_scenes(SAMPLE_SCRIPT, context=context)
     print(f"  -> {len(scenes)} scenes", flush=True)
@@ -869,14 +884,14 @@ if __name__ == "__main__":
         print(f"  scene {s['scene_number']}: {s['script_snippet'][:60]!r}... "
               f"[{s['scene_type']}]", flush=True)
 
-    print("\n2/6 generate_images()...", flush=True)
+    print("\n2/5 generate_images()...", flush=True)
     scenes = generate_images(scenes, context)
 
     narration_path = os.path.join(HERE, "test-narration.mp3")
-    print(f"\n3/6 tts.synthesize() -> {narration_path}...", flush=True)
+    print(f"\n3/5 tts.synthesize() -> {narration_path}...", flush=True)
     tts.synthesize(SAMPLE_SCRIPT, narration_path)
 
-    print("\n4/6 whisper_words() + align_scene_durations() (hosted whisper service + utils/align.py DTW)...",
+    print("\n4/5 whisper_words() + align_scene_durations() (hosted whisper service + utils/align.py DTW)...",
           flush=True)
     words, total_duration = whisper_words(narration_path)
     scenes = align_scene_durations(scenes, words, total_duration)
@@ -884,22 +899,15 @@ if __name__ == "__main__":
         print(f"  scene {s['scene_number']}: {s['duration_seconds']:.2f}s "
               f"(matched={s['matched']})", flush=True)
 
-    print("\n5/6 director.plan_cards()...", flush=True)
-    cards = heritage_director.plan_cards(SAMPLE_SCRIPT, "", scenes, words, total_duration)
-    card_kinds = {}
-    for c in cards:
-        card_kinds[c["kind"]] = card_kinds.get(c["kind"], 0) + 1
-    print(f"  -> {len(cards)} cards: " + ", ".join(f"{k}x{n}" for k, n in card_kinds.items()), flush=True)
-
     gallery_path = os.path.join(HERE, "test-gallery.html")
-    print(f"\n6/6 build_gallery() -> {gallery_path}", flush=True)
+    print(f"\n5/5 build_gallery() -> {gallery_path}", flush=True)
     heritage_gallery.build_gallery(scenes, gallery_path)
 
     remotion_scenes_path = os.path.join(HERE, "..", "remotion", "src", "scenes.json")
-    payload = build_remotion_payload(scenes, narration_url=None, cards=cards)  # local mp3 path, unusable by Lambda
+    payload = build_remotion_payload(scenes, narration_url=None, words=words)  # local mp3 path, unusable by Lambda
     json.dump(payload, open(remotion_scenes_path, "w"), indent=2)
     print(f"      -> {remotion_scenes_path} ({sum(s['duration_frames'] for s in payload['scenes'])} "
-          f"total frames @ 30fps, {len(cards)} cards)")
+          f"total frames @ 30fps, {len(words)} caption words)")
 
     print(f"\nok  {len(scenes)} scenes, real narration-aligned durations, gallery + "
           f"render scenes.json written")

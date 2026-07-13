@@ -6,13 +6,13 @@ import {
 	Scene,
 	computeTotalDurationInFrames,
 } from './HeritageScenes';
-import type {PlacedCard} from './cardTypes';
+import type {Word} from './overlays/Captions';
 import payload from './scenes.json';
 
-const {scenes, narrationUrl, cards} = payload as {
+const {scenes, narrationUrl, words} = payload as {
 	scenes: Scene[];
 	narrationUrl?: string;
-	cards?: PlacedCard[];
+	words?: Word[];
 };
 
 export const RemotionRoot: React.FC = () => {
@@ -24,7 +24,7 @@ export const RemotionRoot: React.FC = () => {
 			fps={FPS}
 			width={1920}
 			height={1080}
-			defaultProps={{scenes, narrationUrl, cards}}
+			defaultProps={{scenes, narrationUrl, words}}
 		/>
 	);
 };

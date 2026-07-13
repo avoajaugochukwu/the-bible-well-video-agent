@@ -9,9 +9,13 @@ for personal tokens).
     GET  /api/v2/task/{id}                       -> current description
     PUT  /api/v2/task/{id}  {"description": ...}  -> prepend "🎬 VIDEO: <url>"
   Falls back to POST /api/v2/task/{id}/comment if the description PUT fails.
+  Then PUTs {"status": "fc done"} so the task visibly moves out of "in progress"
+  in the list view — a hands-off run has no human doing that click.
 Never raises into the caller — returns True/False.
 
-List: "Christian Story", id 901113620100, Team Space, Karl's Workspace.
+List: "The Bible Well", id 901114103835, Team Space, Karl's Workspace. Statuses on
+that list (confirmed via GET /api/v2/list/901114103835): to do / in progress /
+fc done / complete.
 """
 import json
 import os
@@ -22,7 +26,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import env  # utils/
 
 API = "https://api.clickup.com/api/v2"
-LIST_ID = "901113620100"
+LIST_ID = "901114103835"
+DONE_STATUS = "fc done"
 
 
 def _task_id(clickup_url: str) -> str:
@@ -42,8 +47,11 @@ def _req(path: str, method: str = "GET", body: dict | None = None) -> dict:
 
 
 def push_video(clickup_url: str, video_url: str) -> bool:
-    """Prepend '🎬 VIDEO: <video_url>' to the task description so it sits at the top.
-    On any failure, fall back to posting a comment. Returns True on success."""
+    """Prepend '🎬 VIDEO: <video_url>' to the task description so it sits at the top,
+    then move the task to DONE_STATUS ("fc done") so it's visibly finished with no
+    human clicking anything. On any description failure, fall back to posting a
+    comment. Returns True on success (status-move failure doesn't count against
+    that — the video's findable either way, which is the part that must not fail)."""
     line = f"🎬 VIDEO: {video_url}"
     try:
         tid = _task_id(clickup_url)
@@ -51,11 +59,14 @@ def push_video(clickup_url: str, video_url: str) -> bool:
             desc = _req(f"/task/{tid}").get("description") or ""
             new = line if not desc else f"{line}\n\n{desc}"
             _req(f"/task/{tid}", method="PUT", body={"description": new})
-            return True
         except Exception as e:                 # description route failed -> comment fallback
             print(f"clickup: description PUT failed ({e}); falling back to comment")
             _req(f"/task/{tid}/comment", method="POST", body={"comment_text": line})
-            return True
+        try:
+            _req(f"/task/{tid}", method="PUT", body={"status": DONE_STATUS})
+        except Exception as e:                 # status move is a nice-to-have, not load-bearing
+            print(f"clickup: status PUT to {DONE_STATUS!r} failed ({e})")
+        return True
     except Exception as e:                      # never block the pipeline on ClickUp
         print(f"clickup: push_video failed ({e})")
         return False

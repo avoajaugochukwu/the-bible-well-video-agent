@@ -21,10 +21,10 @@ against).
   baserow(next_ready) -> scenes(break_into_scenes) -> images(generate_images)
   -> gallery(build_gallery, non-blocking review) -> download narration
   -> whisper_words (cached, computed ONCE) -> align(align_scene_durations,
-  real Whisper+DTW) -> cards(director.plan_cards, text-overlay timeline)
-  -> remotion/src/scenes.json -> Remotion Lambda render (deploy:site +
-  render:remote — NEVER local `remotion render`, that freezes the machine)
-  -> S3 -> ClickUp -> Baserow mark_done -> prune_runs
+  real Whisper+DTW) -> remotion/src/scenes.json (scenes + narrationUrl + the
+  same whisper words, for <Captions>'s current-word highlight) -> Remotion
+  Lambda render (deploy:site + render:remote — NEVER local `remotion render`,
+  that freezes the machine) -> S3 -> ClickUp -> Baserow mark_done -> prune_runs
 
 Usage:
   python3 src/run.py   (from the repo root)
@@ -50,7 +50,6 @@ import clickup as heritage_clickup      # src/: push_video()
 import s3 as heritage_s3                # src/: put_file()
 import gallery as heritage_gallery      # src/
 import scene_engine                     # src/
-import director as heritage_director    # src/: plan_cards()
 import cleanup                          # utils/
 
 DONE_MARKER = "done.marker"
@@ -142,9 +141,10 @@ def run_pipeline() -> str | None:
         print("  narration: done")
 
     # Whisper words are cached once and reused by BOTH align_scene_durations()
-    # below and director.plan_cards() further down — transcribing the same
-    # narration.mp3 twice would double the (CPU-bound, non-trivial) whisper cost
-    # for no reason. Same resumable-artifact pattern as every other stage here.
+    # below and the remotion payload's caption words further down —
+    # transcribing the same narration.mp3 twice would double the (CPU-bound,
+    # non-trivial) whisper cost for no reason. Same resumable-artifact pattern
+    # as every other stage here.
     whisper_words_path = os.path.join(rd, "whisper-words.json")
     if not os.path.exists(whisper_words_path):
         print("  whisper: whisper_words()...", flush=True)
@@ -162,28 +162,17 @@ def run_pipeline() -> str | None:
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  align: done")
 
-    # 6 CARDS — LLM "director" planning pass: text-overlay cards (checklist,
-    # photo-title, big-stat, etc.) laid over the rendered scenes. Reuses the
-    # same whisper words + total_duration computed above rather than re-deriving
-    # timing from scratch.
-    cards_path = os.path.join(rd, "cards.json")
-    if not os.path.exists(cards_path):
-        print("  cards: director.plan_cards()...", flush=True)
-        cards = heritage_director.plan_cards(script, row.get("title") or "", scenes, words, total_duration)
-        json.dump(cards, open(cards_path, "w"), indent=2)
-        print(f"  cards: done ({len(cards)} cards)")
-    else:
-        cards = json.load(open(cards_path))
-
-    # 7/8 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, cards}),
-    # narrationUrl = the row's OWN voice_url (already public, no rehost), then
-    # Remotion Lambda (deploy:site + render:remote). NEVER local `remotion render`
-    # — freezes the machine, banned per root CLAUDE.md. Gated on video-url.txt so
-    # a rerun after a successful render never re-deploys/re-renders (real Lambda $).
+    # 6/7 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
+    # narrationUrl = the row's OWN voice_url (already public, no rehost), words =
+    # the same whisper words computed above (remotion's <Captions> highlights
+    # whichever word is currently being spoken). Then Remotion Lambda (deploy:site
+    # + render:remote). NEVER local `remotion render` — freezes the machine,
+    # banned per root CLAUDE.md. Gated on video-url.txt so a rerun after a
+    # successful render never re-deploys/re-renders (real Lambda $).
     video_url_path = os.path.join(rd, "video-url.txt")
     if not os.path.exists(video_url_path):
         remotion_scenes_path = os.path.join(RENDER_DIR, "src", "scenes.json")
-        payload = scene_engine.build_remotion_payload(scenes, narration_url=voice_url, cards=cards)
+        payload = scene_engine.build_remotion_payload(scenes, narration_url=voice_url, words=words)
         json.dump(payload, open(remotion_scenes_path, "w"), indent=2)
         total_frames = sum(s["duration_frames"] for s in payload["scenes"])
         print(f"  render: wrote {remotion_scenes_path} ({total_frames} frames @ 30fps)")
@@ -208,16 +197,16 @@ def run_pipeline() -> str | None:
         with open(rendered_mp4, "rb") as src, open(local_copy, "wb") as dst:
             dst.write(src.read())
 
-        # 9 S3 — raw public url, NEVER presigned (that's what gets shared for review).
+        # 8 S3 — raw public url, NEVER presigned (that's what gets shared for review).
         print("  s3: uploading rendered mp4...", flush=True)
-        video_url = heritage_s3.put_file(local_copy, f"heritage/renders/{row_id}.mp4")
+        video_url = heritage_s3.put_file(local_copy, f"bible-well/renders/{row_id}.mp4")
         if not video_url:
             raise RuntimeError("s3 put_file failed — rendered mp4 not uploaded")
         open(video_url_path, "w").write(video_url)
         print(f"  s3: {video_url}")
     video_url = open(video_url_path).read().strip()
 
-    # 10 CLICKUP — update-existing-task only, never create. push_video() itself never
+    # 9 CLICKUP — update-existing-task only, never create. push_video() itself never
     # raises (falls back to a comment on a description-PUT failure) — but if BOTH
     # routes fail it returns False, and we raise here so mark_done never fires on a
     # video nobody can find. Gated so a rerun never double-prepends the video line.
@@ -230,7 +219,7 @@ def run_pipeline() -> str | None:
         open(clickup_marker, "w").write(video_url)
         print("  clickup: done")
 
-    # 11 BASEROW — only after S3 + ClickUp both succeeded (checked above).
+    # 10 BASEROW — only after S3 + ClickUp both succeeded (checked above).
     done_marker_path = os.path.join(rd, DONE_MARKER)
     if not os.path.exists(done_marker_path):
         print("  baserow: mark_done()...", flush=True)

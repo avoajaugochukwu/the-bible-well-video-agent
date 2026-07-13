@@ -1,6 +1,6 @@
 """Baserow ingest for the heritage pipeline.
 
-Pull a Christian Story row that already has a finished script + voice, feed those into
+Pull a Bible Well row that already has a finished script + voice, feed those into
 the pipeline, and flip `video_processed=done` after a successful render. Stdlib urllib
 only — mirrors space-cluster's front/baserow.py. Config comes from `utils/env.py` (checks
 os.environ, then the root `.env` file) rather than raw os.environ, per this repo's
@@ -17,15 +17,15 @@ import urllib.request
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "utils"))
 import env  # utils/
 
-CHANNEL = "Christian Story"
+CHANNEL = "The Bible Well"
 # select_options id on the "channel" single_select field (table id 2) — Baserow's
 # single_select_equal filter needs this numeric id, not the display string (passing
 # the string silently no-ops the filter: Baserow returns every row, unfiltered, no
 # error). Option ids are stable once created, so hardcode rather than re-resolving
-# it via /api/database/fields/ on every call. Confirmed via that endpoint 2026-07-08:
-# {"id": 67, "value": "Christian Story", ...}. If this table's channel field is ever
+# it via /api/database/fields/ on every call. Confirmed via that endpoint 2026-07-12:
+# {"id": 218, "value": "The Bible Well", ...}. If this table's channel field is ever
 # rebuilt from scratch, re-check the id there before trusting this constant again.
-CHANNEL_OPTION_ID = 67
+CHANNEL_OPTION_ID = 218
 
 
 def _base() -> tuple[str, str]:
@@ -64,7 +64,7 @@ def _rows(token: str) -> list[dict]:
 
 
 def next_ready() -> dict | None:
-    """Lowest-id Christian Story row with script+voice done and not yet video_processed."""
+    """Lowest-id Bible Well row with script+voice done and not yet video_processed."""
     rows = sorted(_rows(_token()), key=lambda r: r["id"])
     for row in rows:
         if (_sel(row.get("script_status")) == "done"

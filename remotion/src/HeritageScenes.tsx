@@ -1,9 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, interpolate, useCurrentFrame} from 'remotion';
-import type {PlacedCard} from './cardTypes';
-import {CARDS} from './cardRegistry';
-import {CARD_COMPONENTS} from './cards/registry';
 import {SubscribeOverlay, computeSubscribePlacements} from './overlays/SubscribeOverlay';
+import {Captions, type Word} from './overlays/Captions';
 
 // ---------------------------------------------------------------------------
 // Motion spec, revised per user feedback:
@@ -152,10 +150,10 @@ export const computeTotalDurationInFrames = (scenes: Scene[]): number => {
 	return last.from + last.durationInFrames;
 };
 
-export const HeritageScenes: React.FC<{scenes: Scene[]; narrationUrl?: string; cards?: PlacedCard[]}> = ({
+export const HeritageScenes: React.FC<{scenes: Scene[]; narrationUrl?: string; words?: Word[]}> = ({
 	scenes,
 	narrationUrl,
-	cards,
+	words,
 }) => {
 	const timings = computeSceneTimings(scenes);
 	const totalDurationSec = computeTotalDurationInFrames(scenes) / FPS;
@@ -172,34 +170,7 @@ export const HeritageScenes: React.FC<{scenes: Scene[]; narrationUrl?: string; c
 					<SingleScene scene={scene} durationInFrames={timings[index].durationInFrames} />
 				</Sequence>
 			))}
-			{/* Cards are a pure additive overlay on top of the scene crossfade layer
-			    above - they never touch scene Sequence timing. Rendered in two passes
-			    (summary then moment) so moment cards visually stack ABOVE summary
-			    cards, same layering the reference project uses. */}
-			{(cards ?? [])
-				.filter((card) => CARDS[card.kind].family === 'summary')
-				.map((card) => (
-					<Sequence
-						key={card.id}
-						from={Math.round(card.startSec * FPS)}
-						durationInFrames={Math.max(1, Math.round(CARDS[card.kind].duration(card) * FPS))}
-						layout="none"
-					>
-						{React.createElement(CARD_COMPONENTS[card.kind], {card})}
-					</Sequence>
-				))}
-			{(cards ?? [])
-				.filter((card) => CARDS[card.kind].family === 'moment')
-				.map((card) => (
-					<Sequence
-						key={card.id}
-						from={Math.round(card.startSec * FPS)}
-						durationInFrames={Math.max(1, Math.round(CARDS[card.kind].duration(card) * FPS))}
-						layout="none"
-					>
-						{React.createElement(CARD_COMPONENTS[card.kind], {card})}
-					</Sequence>
-				))}
+			<Captions words={words ?? []} />
 			<SubscribeOverlay placementsSec={subscribePlacementsSec} />
 		</AbsoluteFill>
 	);

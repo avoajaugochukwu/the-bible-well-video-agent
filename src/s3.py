@@ -1,6 +1,6 @@
 """Re-host a finicky image URL to our S3 bucket -> stable RAW public URL.
 
-Copied from the old `shared/s3.py` almost verbatim for the heritage pipeline — own
+Copied from the old `shared/s3.py` almost verbatim for the Bible Well pipeline — own
 bucket, own key prefix. News/Google (Serper) images 403 / hotlink-block at render
 time. We fetch them with a browser UA, verify they're real images, upload to S3, and
 hand back a RAW public url (bucket is public-read, matches the 7-day lifecycle). Our
@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 from images import ImageFetcher  # utils/
 import env  # utils/
 
-BUCKET = "yt-heritage-media"
+BUCKET = "yt-bible-well-media"
 _TTL = "604800"   # 7 days, matches the bucket lifecycle
 _CTYPE = {"jpg": "image/jpeg", "png": "image/png", "gif": "image/gif",
           "webp": "image/webp", "bmp": "image/bmp"}
@@ -47,7 +47,7 @@ def _img_ext(head: bytes) -> str | None:
     return None
 
 
-def upload_bytes(data: bytes, key_seed: str, prefix: str = "heritage") -> str | None:
+def upload_bytes(data: bytes, key_seed: str, prefix: str = "bible-well") -> str | None:
     """Upload already-fetched image bytes to S3, return the RAW public url. `key_seed`
     is just hashed into the S3 key (typically the source url) — not re-fetched.
     None if the bytes aren't a decodable image or the upload fails."""
@@ -76,7 +76,7 @@ def upload_bytes(data: bytes, key_seed: str, prefix: str = "heritage") -> str | 
         os.path.exists(tmp) and os.unlink(tmp)
 
 
-def upload_from_url(url: str, prefix: str = "heritage") -> str | None:
+def upload_from_url(url: str, prefix: str = "bible-well") -> str | None:
     """Fetch (direct, then browser-fallback if blocked), validate as image, upload
     to S3, return the RAW public url. None on any failure. Single-shot — for
     rehosting many urls at once (e.g. a whole sheet), use ImageFetcher.fetch_many()
@@ -96,7 +96,7 @@ def put_file(local: str, key: str) -> str | None:
     return f"https://{BUCKET}.s3.{region}.amazonaws.com/{key}" if cp.returncode == 0 else None
 
 
-def first_uploadable(urls: list[str], prefix: str = "heritage") -> str | None:
+def first_uploadable(urls: list[str], prefix: str = "bible-well") -> str | None:
     """Re-host the first url that fetches+uploads cleanly (the 'replace if it can't be uploaded' rule)."""
     for u in urls:
         s3 = upload_from_url(u, prefix)

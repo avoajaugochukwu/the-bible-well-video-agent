@@ -47,7 +47,7 @@ def generate_image(prompt: str, negative_prompt: str = "", retries: int = 4) -> 
     try:
         with open(tmp, "wb") as f:
             f.write(base64.b64decode(res.data[0].b64_json))
-        url = s3.put_file(tmp, f"heritage/{os.path.basename(tmp)}")
+        url = s3.put_file(tmp, f"bible-well/{os.path.basename(tmp)}")
         if not url:
             raise RuntimeError("gpt-image-2: S3 upload failed")
         return url
