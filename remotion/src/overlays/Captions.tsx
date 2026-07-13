@@ -5,7 +5,8 @@ import {DISPLAY_FONT} from '../typography';
 export type Word = {word: string; start: number; end: number};
 
 const CHUNK_SIZE = 6;
-const HIGHLIGHT_COLOR = '#ff3b30';
+const HIGHLIGHT_BG = '#ffe600';
+const HIGHLIGHT_TEXT = '#000000';
 const TEXT_COLOR = '#ffffff';
 
 const chunkWords = (words: Word[]): Word[][] => {
@@ -48,7 +49,17 @@ export const Captions: React.FC<{words: Word[]}> = ({words}) => {
 				{activeChunk.map((w, i) => {
 					const isActive = tSec >= w.start && tSec < w.end;
 					return (
-						<span key={i} style={{color: isActive ? HIGHLIGHT_COLOR : TEXT_COLOR}}>
+						<span
+							key={i}
+							style={{
+								color: isActive ? HIGHLIGHT_TEXT : TEXT_COLOR,
+								backgroundColor: isActive ? HIGHLIGHT_BG : 'transparent',
+								borderRadius: isActive ? 6 : 0,
+								padding: isActive ? '2px 6px' : 0,
+								boxDecorationBreak: 'clone',
+								WebkitBoxDecorationBreak: 'clone',
+							}}
+						>
 							{w.word}{' '}
 						</span>
 					);

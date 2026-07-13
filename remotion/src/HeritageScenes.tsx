@@ -45,8 +45,11 @@ const CROSSFADE_FRACTION = 0.22;
 // cover handles that) - ZOOM_EDGE is that native edge, the true "no crop"
 // state every zoom kind starts AND ends at.
 const ZOOM_EDGE = 1.0;
-const PEAK_SCALE = 1.3; // punchy zoom-in's turnaround scale
-const DRIFT_SCALE = 1.15; // gentler zoom-drift's turnaround scale
+// Motion amplitude cut hard (was 1.3 / 1.15 / 6%) - same scene duration, much
+// smaller travel distance = much slower-reading motion, per user feedback
+// that the effects read as too fast/jarring.
+const PEAK_SCALE = 1.1; // punchy zoom-in's turnaround scale
+const DRIFT_SCALE = 1.05; // gentler zoom-drift's turnaround scale
 const ZOOM_IN_FRACTION = 0.25; // punch: quick rise, slow fall
 const DRIFT_FRACTION = 0.6; // drift: slow rise, quick fall - opposite rhythm
 
@@ -54,10 +57,9 @@ const DRIFT_FRACTION = 0.6; // drift: slow rise, quick fall - opposite rhythm
 // buffer (>1.0, matching the zoom-kind invariant above) - it's the "extra"
 // image outside the visible frame that a pan can reveal without ever
 // exposing the black backdrop. SLIDE_OFFSET_PCT is kept well inside the
-// slack that buffer creates (15% overscan gives ~7.5% slack per side; 6%
-// offset stays safely inside that).
-const SLIDE_ZOOM = 1.15;
-const SLIDE_OFFSET_PCT = 6;
+// slack that buffer creates.
+const SLIDE_ZOOM = 1.08;
+const SLIDE_OFFSET_PCT = 2.5;
 
 type TransitionKind =
 	| 'zoom-punch'
