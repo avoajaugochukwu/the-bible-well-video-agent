@@ -64,12 +64,23 @@ def _rows(token: str) -> list[dict]:
 
 
 def next_ready() -> dict | None:
-    """Lowest-id Bible Well row with script+voice done and not yet video_processed."""
+    """Lowest-id Bible Well row with script+voice done, not yet video_processed,
+    AND a clickup_url set. That last check matters because of how this pipeline
+    gets triggered: an outside caller (n8n) fires /ingest and moves on without
+    waiting for the run to finish, marking its own side done immediately so it
+    never re-fires on the same task. If we picked a row with no clickup_url,
+    run_pipeline() would raise before ever reaching Baserow's mark_done() —
+    and since the caller already considers that task handled, it would never
+    retry, orphaning the row silently. Skipping it here instead leaves it
+    eligible again the moment someone fills in clickup_url."""
     rows = sorted(_rows(_token()), key=lambda r: r["id"])
     for row in rows:
         if (_sel(row.get("script_status")) == "done"
                 and _sel(row.get("voice_status")) == "done"
                 and _sel(row.get("video_processed")) != "done"):
+            if not row.get("clickup_url"):
+                print(f"baserow: row {row['id']} otherwise ready but has no clickup_url — skipping", flush=True)
+                continue
             return row
     return None
 
