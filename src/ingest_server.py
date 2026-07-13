@@ -15,6 +15,7 @@ import json
 import os
 import sys
 import threading
+import traceback
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -32,8 +33,12 @@ def _run_in_background():
     global _busy
     try:
         pipeline.run_pipeline()
-    except Exception as e:
-        print(f"ingest: run_pipeline() raised: {e}", flush=True)
+    except Exception:
+        # Full traceback, not just str(e) — this runs unattended, Railway logs
+        # are the only record of why a job died, a one-line message isn't
+        # enough to find which stage/line actually raised.
+        print("ingest: run_pipeline() raised:", flush=True)
+        traceback.print_exc()
     finally:
         with _lock:
             _busy = False
