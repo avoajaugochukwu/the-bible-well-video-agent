@@ -1,11 +1,11 @@
-"""Script -> scene breakdown -> per-scene gpt-image-2 flat 2D cartoon image. Two
-stages, both here since every caller needs both in sequence:
+"""Script -> scene breakdown -> per-scene gpt-image-2 monochrome stick-figure image.
+Two stages, both here since every caller needs both in sequence:
 
   break_into_scenes(script) -> OpenAI chat-completions calls (gpt-5-mini, raw urllib, this
                                 repo's house style). Returns
                                 [{scene_number, script_snippet, hero_subject,
                                 image_prompt, negative_prompt, scene_type}, ...] — every
-                                scene is a flat 2D cartoon illustration, no lane routing.
+                                scene is a monochrome stick-figure illustration, no lane routing.
 
                                 Scene-splitting follows mechanical, LLM-free sentence chunking
                                 (chunk_script(), ~8 sentences/chunk) feeding ONE combined LLM call
@@ -64,73 +64,132 @@ COUNT_NEGATIVE_BLOCKS = {
     3: "fourth person, extra person, additional figure, crowd, group of four or more",
 }
 
-# Fixed, channel-wide Jesus design — NOT LLM-generated per script. Every Christian
-# Story video must render the same Jesus, so this is a constant rather than
-# something infer_characters() invents fresh each run.
+# Fixed, channel-wide Jesus design — NOT LLM-generated per script, NOT drawn as the
+# monochrome stick figure. Distinct on purpose: fuller color/detail so he visually
+# stands apart from the anonymous protagonist, matching the reference style (a
+# muted-sketch monochrome everyman contrasted with a warmer, fuller-color Jesus).
 JESUS_APPEARANCE = (
-    "a compassionate 2D cartoon man in his early-to-mid 30s with warm olive skin, flowing "
-    "shoulder-length dark brown hair outline worn loose with no head covering of any kind "
-    "(no turban, no headscarf, no headgear), a short well-kept beard outline, gentle warm "
-    "eyes, wearing a simple flat white garment with a flat red cloak draped over one "
-    "shoulder, calm reverent bearing, a simple flat golden glow outline around him"
+    "a compassionate hand-drawn ink-sketch man in his early-to-mid 30s with warm olive "
+    "skin, flowing shoulder-length dark brown hair worn loose with no head covering of any "
+    "kind (no turban, no headscarf, no headgear), a short well-kept beard, gentle warm "
+    "eyes, wearing a simple flat tan garment with a flat blue-grey sash draped over one "
+    "shoulder, calm reverent bearing, a soft flat golden glow outline around him — "
+    "rendered in muted flat color, not the monochrome stick-figure style"
 )
+
+# Fixed, channel-wide protagonist design — a single anonymous stick figure that looks
+# IDENTICAL in every scene of every video, never LLM-invented or varied per script.
+# This is the one deliberate deviation from the old per-script character system: the
+# story follows ONE person, drawn so plainly (no ethnicity, no wardrobe, no named
+# supporting cast) that "consistency" is free — there's nothing left to drift.
+PROTAGONIST_APPEARANCE = (
+    "a simple black-ink hand-drawn stick figure: a plain round head outline with two "
+    "small dot eyes and a thin simple mouth line (no hair detail beyond a small simple "
+    "hairline squiggle), a thin single-stroke neck and torso, thin single-stroke arms and "
+    "legs, loose sketchy hand-drawn crosshatch texture on the linework, absolutely no "
+    "color fill and no clothing detail on the figure itself — gender-neutral, ageless, "
+    "identical in every scene"
+)
+
+# Anonymous background/crowd figures (society, a biblical-era village, disciples,
+# onlookers) — NOT a named supporting cast. Flat, faceless, interchangeable; the
+# camera and story never lingers on them as individuals.
+CROWD_APPEARANCE = (
+    "flat solid grey-silhouette figures with no facial detail, simplified and "
+    "interchangeable, rendered smaller/further back than the protagonist"
+)
+
+# Intent-to-visual reference bank, compiled from studying one real Christian-content
+# explainer video (frame-by-frame) plus general faith-content visual grammar. This is
+# DIRECTIONAL, not a template — see the "INTENT OVER LITERALISM" instruction in
+# author_chunk() for the explicit don't-overfit rule given to the model.
+CHURCH_GLOSSARY = """
+CHURCH-CONTENT INTENT -> VISUAL METAPHOR REFERENCE (a director's mood board, not a
+menu — invent freely beyond this list using the same visual grammar: forking paths,
+floating icon clusters, light vs. shadow, growth, doors/gates, water, seeds/harvest,
+armor, storms/anchors, lamps, shepherd/flock, tables/altars, scales, chains):
+
+- Sunday-only / compartmentalized faith -> a path forking toward a small church/cross
+  icon on one side, ordinary errands (shops, a phone) on the other — NOT a literal
+  calendar page.
+- Prayer / talking to God -> figure kneeling or hands cupped together, a soft warm
+  glow rising from the hands or a faint upward light shaft.
+- Scripture / "the Word" -> a simple open book glowing softly, or light spilling from
+  its pages — never legible text on the page.
+- Checking phone before praying -> figure reaching for a glowing phone icon beside
+  the bed, phone brighter/closer than everything else in frame.
+- The enemy / temptation / sin's pull -> a shadow-silhouette version of the
+  protagonist looming behind or reaching toward them.
+- Carrying guilt, shame, or burden -> figure straining under a heavy stone or
+  sack icon on their back.
+- Breakthrough / freedom -> chain-link icons shattering around the figure as they
+  look upward.
+- Surrender / giving God control -> figure in a car's passenger seat while Jesus
+  (or a radiant light) holds the steering wheel.
+- Obedience before understanding -> figure taking a single step onto a lit path that
+  only illuminates one step ahead, the rest in shadow.
+- Chasing money / status / validation -> figure running toward a floating cluster of
+  coins, cash, and a trophy icon.
+- Chasing approval / social media -> figure surrounded by floating thumbs-up / heart
+  / like-button icons.
+- Peace vs. anxiety -> figure standing calmly at the center of a storm, swirling
+  dark clouds and debris held back at a clear boundary around them.
+- Faith as an anchor -> figure holding a simple anchor icon while waves/wind icons
+  swirl past them.
+- Small, faithful beginnings -> figure planting a single glowing seed into open
+  ground.
+- Spiritual growth over time -> a small glowing sprout growing into a full tree
+  across a sequence, or rings on a tree stump.
+- Harvest / reward for faithfulness -> figure holding a basket overflowing with
+  glowing fruit or grain.
+- Being called / purpose -> figure standing at a crossroads where one path glows and
+  the others stay dim.
+- Wilderness / hard season -> figure walking alone across a bare, muted-color desert
+  or empty plain, one small light on the horizon.
+- Community / fellowship -> a small circle of anonymous grey-silhouette figures
+  seated or standing around the protagonist, no individual faces.
+- Shepherd and flock -> a shepherd-icon figure with a staff beside a small cluster of
+  simple sheep icons.
+- Armor of God / spiritual protection -> figure with simple flat icon pieces (shield,
+  helmet outline) floating into place around them.
+- Light vs. darkness -> a hard visual split down the frame, warm light filling one
+  half and cool shadow filling the other, the figure standing at the boundary.
+- Narrow path vs. wide path -> two forking roads, one narrow and softly lit, one wide
+  and crowded with anonymous grey-silhouette figures.
+- Grace / undeserved gift -> a glowing gift or open hand extended toward the figure
+  from off-frame or from Jesus.
+- Forgiveness -> a heavy dark icon (stone, chain, weight) dissolving into light
+  particles near the figure's chest.
+- Identity in God vs. the world's labels -> figure standing between a cracked mirror
+  showing a distorted reflection and a calm, plain reflection.
+- Doubt / fear -> figure small in frame, surrounded by looming oversized shadow
+  shapes that don't quite touch them.
+- Joy / peace / patience (fruit of the Spirit) -> soft glowing particles or blossoms
+  drifting around a calm, still figure.
+- Testimony / sharing faith -> figure with a small glowing light stepping toward a
+  cluster of anonymous grey-silhouette figures, offering it outward.
+- Baptism / new life -> figure emerging from a simple flat-color water shape, old
+  shadow self left behind at the water's edge.
+- Fasting / self-denial -> figure turning away from a table of food icons toward a
+  single light source.
+- Legacy / generational faith -> a small line of progressively smaller anonymous
+  silhouette figures walking the same lit path.
+- Rest / sabbath -> figure seated still while a cluster of clock/task/notification
+  icons hover just out of reach, unanswered.
+- Idols of comfort/success -> figure bowing toward a small floating icon (a house,
+  a trophy, a screen) as if it were an altar.
+"""
 
 CONTEXT_SCHEMA = {
     "name": "story_context",
     "schema": {
         "type": "object",
         "properties": {
-            "setting": {"type": "string", "description": "contemporary setting for the spiritual journey, described in flat 2D whiteboard terms, e.g. 'plain light background with simple 2D outline props — home, workplace, everyday spaces'"},
-            "spiritual_theme": {"type": "string", "description": "core spiritual transformation theme, e.g. 'faith, surrender, trust in God, putting God first'"},
-            "emotional_palette": {"type": "string", "description": "flat color accent palette for the illustration's fills, e.g. 'warm yellow and blue accents, hopeful tones'"},
+            "setting": {"type": "string", "description": "the faith-practice setting this script actually lives in — could be everyday daily-life scenes (home, commute, workplace), church/worship-life scenes, or scripture-era scenes, whatever this specific script calls for. Described in flat muted-background whiteboard terms, e.g. 'plain muted-color background with simple 2D outline props'. Do not default to generic 'modern lifestyle' framing — read what THIS script is actually about."},
+            "spiritual_theme": {"type": "string", "description": "core spiritual transformation theme, e.g. 'faith, surrender, obedience, forgiveness' — read from THIS script, don't default to any one theme"},
+            "emotional_palette": {"type": "string", "description": "muted flat color accent palette for the illustration's fills, e.g. 'warm sepia and dusty blue accents, hopeful tones'"},
         },
         "required": ["setting", "spiritual_theme", "emotional_palette"],
-        "additionalProperties": False,
-    },
-}
-
-CHARACTER_SCHEMA = {
-    "name": "story_characters",
-    "schema": {
-        "type": "object",
-        "properties": {
-            "protagonist": {
-                "type": "object",
-                "properties": {
-                    "gender": {"type": "string", "description": "A single concrete choice: e.g., 'male' or 'female'."},
-                    "ethnicity": {"type": "string", "description": "A single concrete choice: e.g., 'African American', 'East Asian', 'Hispanic', 'Caucasian'."},
-                    "age_range": {"type": "string", "description": "e.g. '60s', '70s', 'mid-30s'"},
-                    "facial_features": {"type": "string", "description": "Simplified 2D cartoon face details: e.g., 'simple dot eyes, expressive thin mouth line, neat short hair outline, clean-shaven'."},
-                    "appearance": {"type": "string", "description": "SPECIFIC modern-2020s clothing in flat-color cartoon terms (e.g. 'solid grey hoodie with clean black outlines', 'flat olive sweater over blue jeans'). No gradients, patterns, or textures. NO robes, tunics, sandals, staffs, or long biblical hair/beards on the protagonist — those read as Jesus, not the viewer. NO NAME."},
-                },
-                "required": ["gender", "ethnicity", "age_range", "facial_features", "appearance"],
-                "additionalProperties": False,
-            },
-            "jesus_appears": {
-                "type": "boolean",
-                "description": "true if Jesus is mentioned or directly encountered anywhere in the script, false otherwise. His visual appearance is fixed separately — not something you invent.",
-            },
-            "supporting_characters": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "role": {"type": "string", "description": "their role in the story (e.g. 'friend', 'mentor', 'coworker', 'family member')"},
-                        "gender": {"type": "string", "description": "A single concrete choice: e.g., 'male' or 'female'."},
-                        "ethnicity": {"type": "string", "description": "A single concrete choice: e.g., 'African American', 'East Asian', 'Hispanic', 'Caucasian'."},
-                        "age_range": {"type": "string", "description": "e.g. '20s', 'mid-40s', '60s'"},
-                        "hairstyle": {"type": "string", "description": "SPECIFIC simple 2D hairstyle outline, e.g. 'short cropped blonde hair outline', 'neatly styled black bob outline'. NO long biblical hair/beards — that reads as Jesus."},
-                        "clothing": {"type": "string", "description": "SPECIFIC modern-2020s flat-color clothing, e.g. 'a solid red sweater with clean black outlines', 'a flat blue blazer'. Never generic ('casual clothes'). No gradients or folds. NO robes, tunics, or sandals."},
-                    },
-                    "required": ["role", "gender", "ethnicity", "age_range", "hairstyle", "clothing"],
-                    "additionalProperties": False,
-                },
-                "minItems": 2,
-                "maxItems": 5,
-                "description": "recurring supporting characters (beyond protagonist and Jesus) who share the protagonist's journey — friends, mentors, coworkers, family. The story needs people, not just the protagonist alone with objects.",
-            },
-        },
-        "required": ["protagonist", "jesus_appears", "supporting_characters"],
         "additionalProperties": False,
     },
 }
@@ -264,95 +323,24 @@ def infer_context(script: str) -> dict:
     return _chat(
         [
             {"role": "system", "content": (
-                "You are analyzing a spiritual transformation narrative for a Christian story app "
-                "rendered as a clean 2D vector whiteboard animation. Extract the context: (1) setting "
-                "— describe the contemporary, everyday setting where this faith journey unfolds (modern "
-                "homes, workplaces, daily life) in flat whiteboard terms — a plain light background with "
-                "simple 2D outline props, (2) spiritual_theme — the core transformation theme (e.g., "
-                "faith, surrender, trust, putting God first), (3) emotional_palette — the flat color "
-                "accent palette for the illustration (e.g., warm yellow accents, hopeful blue highlights). "
-                "Focus on the spiritual journey, not locations or time periods. Return ONLY the JSON object."
+                "You are analyzing a Christian faith narrative for a Christian story app rendered as a "
+                "muted, hand-drawn whiteboard-doodle animation — a churchy vibe, not a generic modern-"
+                "lifestyle explainer. Extract the context: (1) setting — read what THIS script is actually "
+                "about and describe where its beats unfold (could be daily life at home/work/commute, "
+                "church and worship life, or scripture-era scenes — don't default to 'modern lifestyle' if "
+                "the script leans churchy or scriptural) in flat whiteboard terms — a plain muted-color "
+                "background with simple 2D outline props, (2) spiritual_theme — the core transformation "
+                "theme (e.g., faith, surrender, obedience, forgiveness — read from THIS script, don't "
+                "default to any one theme), (3) emotional_palette — the "
+                "muted flat color accent palette for the illustration (e.g., warm sepia accents, dusty "
+                "blue highlights). Focus on the spiritual journey, not locations or time periods. Return "
+                "ONLY the JSON object."
             )},
             {"role": "user", "content": script},
         ],
         CONTEXT_SCHEMA,
         max_completion_tokens=1024,
     )
-
-
-def infer_characters(script: str) -> dict:
-    """Define protagonist, Jesus, and supporting characters for consistent visual rendering
-    throughout the story. Protagonist appears in every scene; Jesus/supporting chars only
-    when mentioned in the script. Focus on VISUAL FEATURES, not names."""
-    result = _chat(
-        [
-            {"role": "system", "content": (
-                "This is a modern explainer video styled as a clean 2D vector whiteboard animation, "
-                "where the protagonist ('you' in the script) is the consistent visual anchor in every "
-                "scene, experiencing a spiritual journey. The protagonist is the viewer/listener "
-                "themselves, drawn as a simple hand-drawn 2D cartoon figure with flat colors and clean "
-                "black ink outlines — not a realistic person. Define: (1) the protagonist — describe "
-                "their VISUAL APPEARANCE for consistent rendering. You must choose a concrete gender, "
-                "ethnicity, realistic age range (20s, 30s, 40s, 50s - pick ONE typical age for this "
-                "audience), and simplified cartoon facial features (e.g., simple dot eyes, an expressive "
-                "thin mouth line, a neat short hair outline) so the image generator renders the same "
-                "identifiable flat-cartoon face every scene — never a vague or generic look. Also pick a "
-                "SPECIFIC modern flat-color clothing item (e.g. 'a solid grey hoodie with clean outlines', "
-                "'a flat olive sweater') worn consistently, with no gradients, patterns, or textures. This "
-                "is a faith-themed video, which strongly biases image generators toward rendering EVERYONE "
-                "as a robed, barefoot, biblical-looking figure — counter that explicitly: the protagonist "
-                "must read as a normal person in simple 2020s cartoon clothing, NEVER robes, tunics, "
-                "sandals, or long biblical hair/beard. NO NAME. "
-                "(2) jesus_appears — true only if Jesus is mentioned or directly encountered "
-                "anywhere in the script. His visual design is fixed separately; do not describe "
-                "his appearance. "
-                "(3) supporting characters — the story needs PEOPLE, not just the protagonist alone "
-                "with objects. Invent AT LEAST 2 recurring supporting characters tied to relationships, "
-                "community, guidance, or struggle implied by the script (e.g. a friend, a mentor, a "
-                "coworker, a family member) even if the script doesn't name them explicitly. For EACH "
-                "you MUST pick a concrete gender, ethnicity, age range, a SPECIFIC simple 2D hairstyle "
-                "outline (e.g. 'short cropped blonde hair outline'), and SPECIFIC modern flat-color "
-                "clothing (e.g. 'a solid red sweater with clean black outlines') — never generic "
-                "('casual clothes', 'a person'), and never gradients or textures. This is CRITICAL: "
-                "faith-themed image generators have an extreme bias toward rendering ANY unspecified "
-                "secondary character as a long-haired, bearded Jesus in robes — concrete cartoon "
-                "hairstyle + clothing on every supporting character is what prevents that. "
-                "NO NAMES on anyone. Return ONLY JSON."
-            )},
-            {"role": "user", "content": script},
-        ],
-        CHARACTER_SCHEMA,
-        max_completion_tokens=2048,
-    )
-
-    # Ensure protagonist always has features, even if LLM returns empty
-    if not result.get("protagonist"):
-        result["protagonist"] = {
-            "gender": "male",
-            "ethnicity": "Caucasian",
-            "age_range": "60s-70s",
-            "facial_features": "simple dot eyes, short cropped hair outline, a friendly expressive mouth line",
-            "appearance": "a solid grey hoodie with clean black outlines over flat blue jeans — no robes or biblical clothing"
-        }
-
-    # Jesus's look is a fixed constant, never LLM-invented — only whether he's in
-    # this story at all is decided per script.
-    result["jesus"] = {"appearance": JESUS_APPEARANCE} if result.pop("jesus_appears", False) else None
-
-    # Ensure at least 2 supporting characters, even if the LLM returns too few
-    supporting = result.get("supporting_characters") or []
-    fallback_supporting = [
-        {"role": "friend", "gender": "female", "ethnicity": "Hispanic", "age_range": "30s",
-         "hairstyle": "shoulder-length black hair outline", "clothing": "a solid olive sweater with clean black outlines"},
-        {"role": "mentor", "gender": "male", "ethnicity": "African American", "age_range": "50s",
-         "hairstyle": "short grey hair outline", "clothing": "a solid brown cardigan over a flat collared shirt"},
-    ]
-    for fb in fallback_supporting:
-        if len(supporting) >= 2:
-            break
-        supporting.append(fb)
-    result["supporting_characters"] = supporting
-    return result
 
 
 # Sentences per mechanical chunk fed to author_chunk() — matches breakdown-pro's
@@ -432,68 +420,50 @@ def _slice_by_snippets(chunk: str, scenes: list[dict]) -> list[dict]:
     return kept
 
 
-def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> list[dict]:
+def author_chunk(context: dict, chunk: str) -> list[dict]:
     """ONE combined call, ~SENTENCES_PER_CHUNK sentences: cut this chunk into
     visual-beat scenes AND author every per-scene field for each, together.
-    Characters dict (protagonist, Jesus, supporting) is passed in for consistent
-    visual rendering — protagonist appears in EVERY scene as the story's anchor."""
-    characters = characters or {}
-    protagonist = characters.get("protagonist") or {}
-    jesus = characters.get("jesus") or {}
-    supporting = characters.get("supporting_characters", []) or []
-
-    # Build character descriptions for the LLM — features only, no names
-    char_context = "CHARACTERS (VISUAL FEATURES - EVERYONE LOOKS DIFFERENT):\n"
-    if protagonist:
-        char_context += (
-            f"PROTAGONIST (appears in EVERY scene with these features): {protagonist.get('ethnicity', 'a')} "
-            f"{protagonist.get('gender', 'person')}, {protagonist.get('age_range', 'adult')}, with "
-            f"{protagonist.get('facial_features', 'a friendly expression')}, wearing "
-            f"{protagonist.get('appearance', 'modern casual appearance')}. ANTI-BIBLICAL MANDATE: whenever the "
-            f"protagonist is shown, restate their SPECIFIC modern clothing item above — never leave it to "
-            f"'a person' or 'a figure', which defaults to a robed biblical look in this generator. NEVER "
-            f"robes, tunics, sandals, staffs, or long biblical hair/beard on the protagonist. FACE MANDATE: "
-            f"always show their head and face clearly and expressively — never crop out their head, never "
-            f"cut off their face at the neck, and never hide them behind a flat anonymous silhouette.\n"
-        )
-    if jesus:
-        char_context += f"JESUS (ONLY when script explicitly says 'Jesus' or 'he' in teaching context. DISTINCTIVE appearance - no one else looks like this): {jesus.get('appearance', 'serene spiritual figure with distinctive presence')}.\n"
-    if supporting:
-        char_context += "SUPPORTING CHARACTERS (USE THESE PRE-PLANNED PEOPLE VERBATIM — never invent a new character, never change their features):\n"
-        for i, c in enumerate(supporting):
-            char_context += (
-                f"- {c.get('role', f'character_{i}')}: {c.get('ethnicity', 'a')} {c.get('gender', 'person')}, "
-                f"{c.get('age_range', 'adult')}, {c.get('hairstyle', 'modern hairstyle')}, wearing "
-                f"{c.get('clothing', 'modern clothing')}.\n"
-            )
+    Protagonist and Jesus are FIXED constants (PROTAGONIST_APPEARANCE,
+    JESUS_APPEARANCE) — never LLM-invented per script — so there's no per-script
+    character-inference call feeding this anymore; consistency is structural, not
+    prompted. This is the one deliberate deviation from the earlier per-script
+    wardrobe system: the story follows ONE anonymous person, driven by metaphor,
+    not a cast of named supporting characters."""
+    char_context = (
+        "CHARACTERS (fixed designs — identical in every scene of every script, never vary these):\n"
+        f"PROTAGONIST (appears in EVERY scene — the story's sole anchor): {PROTAGONIST_APPEARANCE}.\n"
+        f"JESUS (ONLY when the script explicitly names or directly depicts him): {JESUS_APPEARANCE}.\n"
+        f"ANONYMOUS OTHERS/CROWD (society, onlookers, a biblical-era crowd — never a named recurring "
+        f"character, never individually distinct): {CROWD_APPEARANCE}. This story follows ONE person; "
+        "any other figure is background texture, not a companion character.\n"
+    )
 
     system = (
         f"GLOBAL VISUAL CONTEXT (Christian Story App):\n"
-        f"Setting: {context.get('setting', 'modern times')}\n"
+        f"Setting: {context.get('setting', 'a churchy, faith-practice setting')}\n"
         f"Spiritual Theme: {context.get('spiritual_theme', 'faith and transformation')}\n"
-        f"Emotional Palette: {context.get('emotional_palette', 'peaceful and reflective')}\n\n"
+        f"Emotional Palette: {context.get('emotional_palette', 'muted, peaceful and reflective')}\n\n"
         f"{char_context}\n"
-        "You are a visual director designing a clean 2D vector cartoon storyboard for a "
-        "Christian story app — every scene features the protagonist as a simple, "
-        "hand-drawn character with bold black ink outlines, flat colors, and simplified "
-        "shapes on a plain, solid, light-colored background. The style must look like a "
-        "clean digital whiteboard doodle, never a photorealistic or 3D-rendered painting. "
+        "You are a visual director designing a muted, hand-drawn monochrome stick-figure "
+        "storyboard for a Christian story app — a churchy, whiteboard-doodle vibe, not a "
+        "generic modern-lifestyle explainer. The protagonist is drawn as a plain black-ink "
+        "stick figure (see fixed design above) on a muted flat-color background; symbolic "
+        "objects/icons in the scene may carry color (a glowing phone, gold coins, a cross) "
+        "to carry the metaphor, but the figure itself never gets color fill or realistic "
+        "detail. Jesus is the one exception — fuller color/detail, deliberately distinct. "
         "The protagonist is the VISUAL ANCHOR in EVERY scene — they must appear in every "
         "scene showing their spiritual journey, emotional state, and transformation. You "
         "are given one chunk of script. Break it into visual beats, and author every field "
         "for each, in one pass. Every scene's hero_subject MUST feature the protagonist.\n\n"
-        "## CRITICAL MANDATE: ANTI-JESUS REGRESSION DEFENSE\n"
-        "Faith-based image generators have an extreme bias where ANY secondary character "
-        "automatically regresses into a long-haired, bearded Jesus in robes — even a "
-        "planned modern friend or coworker. Defend against this:\n"
-        "1. Never write a generic secondary term ('another person', 'a man', 'a helper', "
-        "or a bare role word like 'the mentor'/'a friend' with nothing else). EVERY TIME "
-        "a supporting character appears — not just their first scene — restate their "
-        "planned gender, ethnicity, hairstyle, and clothing verbatim from the CHARACTERS "
-        "block, in every single image_prompt they're in.\n"
-        "2. Never invent a new character. Use ONLY the protagonist, Jesus, and the "
-        "pre-planned supporting characters listed above — do not add anyone else.\n"
-        f"3. In any scene with a supporting character but NOT Jesus, append "
+        "## ANTI-JESUS REGRESSION DEFENSE\n"
+        "Faith-based image generators have an extreme bias where ANY other figure "
+        "automatically regresses into a long-haired, bearded, robed Jesus look — even a "
+        "plain anonymous crowd figure. Defend against this:\n"
+        "1. Never write a generic secondary term with no design pinned to it beyond what's "
+        "in the CHARACTERS block. Any other figure is either explicitly Jesus (use his fixed "
+        "design) or an anonymous crowd/onlooker (use the flat grey-silhouette design) — "
+        "nothing in between, no invented named character.\n"
+        f"2. In any scene with another figure but NOT Jesus, append "
         f"'{JESUS_NEGATIVE_BLOCK}' to that scene's negative_prompt.\n\n"
         "## PILLAR 1: SCENE BREAKING (CUT ON VISUAL CHANGE)\n\n"
         "### CUT ON VISUAL CHANGE, NOT PER SENTENCE (CORE RULE)\n"
@@ -549,100 +519,77 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "Each script_snippet must be a contiguous substring of the chunk, and together "
         "the script_snippets must cover the ENTIRE chunk with no gaps or overlaps, in "
         "order.\n\n"
-        "## PILLAR 2: HERO_SUBJECT FORMULA (ACTIVE VISUAL METAPHOR WITH SHOWN FACE)\n\n"
+        "## PILLAR 2: HERO_SUBJECT FORMULA (INTENT-DRIVEN VISUAL METAPHOR)\n\n"
         "The script is an intimate, first-person call to reflection (\"you\"), but the imagery must "
         "be ACTIVE, not passive. BANNED HERO_SUBJECTS: sitting on a bed, staring/looking out a "
         "window, holding a coffee mug, standing in a doorway looking sad, or any other static "
         "person-standing-around composition — these are boring and fail to tell a story. ALSO "
-        "BANNED: cropping the protagonist's head out of frame, cutting off their face at the neck, "
-        "or hiding them in a flat anonymous silhouette — they are a real, emotionally expressive "
-        "protagonist whose face must be clearly seen.\n\n"
-        "### INTERACTION MANDATE (PRIORITIZE PEOPLE OVER OBJECTS)\n"
-        "The story must not be just the protagonist alone with objects — that reads as bland, and "
-        "you may NOT wait for the literal script words to say 'friend' or 'relationship' before "
-        "using a supporting character. Supporting characters and Jesus are DIRECTORIAL choices you "
-        "make even for inward/reflective beats — e.g. a mentor can be shown physically present, "
-        "watching with concern, WHILE the protagonist reaches for a symbolic object; that still "
-        "satisfies the object-metaphor beat AND adds a person. TARGET RATIO: of ALL the scenes you "
-        "output for this chunk, roughly HALF TO TWO-THIRDS should physically include a supporting "
-        "character or Jesus alongside the protagonist — NOT every single scene. Genuinely solitary "
-        "beats still matter for pacing contrast, so deliberately leave some scenes with the "
-        "protagonist alone with a symbolic object, especially private/inward temptation beats. "
-        "Before finalizing, COUNT your own scenes with a person: if under half, add one to more of "
-        "them; if it's all or nearly all of them, remove the companion from a few and let the "
-        "protagonist face those beats alone instead. Also never let more than 2 scenes in a row "
-        "pass with the protagonist alone. Prioritize, in this order:\n"
-        "1. If the beat touches relationships, community, sharing a burden, learning, or everyday "
-        "support, depict the protagonist physically interacting with ONE of the pre-planned "
-        "supporting characters: sitting together, a hand of comfort on the shoulder, walking "
-        "side by side, studying an object together.\n"
-        "2. If the beat is a direct divine encounter, surrender, or mercy moment, depict the "
-        "protagonist physically interacting with Jesus: a hand on the shoulder, walking alongside, "
-        "reaching out a hand to help them up.\n"
-        "3. If the beat is an inward struggle (temptation, doubt, distraction, chasing something "
-        "empty) but the frequency floor above isn't yet satisfied, still place a pre-planned "
-        "supporting character in the scene as a present witness or companion beside the "
-        "protagonist's symbolic action — don't force them into a role the text doesn't support, "
-        "just have them physically present and reactive.\n"
-        "4. ONLY when the frequency floor is already satisfied by nearby scenes, fall back to the "
-        "protagonist alone physically interacting with a concrete, symbolic object — a visual "
-        "metaphor, not a mood shot. "
-        "Examples of the pattern (invent the specific metaphor from the actual sentence, don't "
-        "reuse these verbatim): chasing worldly success -> running up a steep hill toward a "
-        "floating, empty golden crown; weighing priorities -> looking at a massive scale balancing "
-        "a Bible against a pile of gold coins with a thoughtful expression; surrendering control -> "
-        "sitting in a car's driver seat, looking peacefully ahead as a radiant light takes the "
-        "steering wheel; carrying past guilt or worry -> straining with a determined expression to "
-        "carry a heavy, crumbling stone on their shoulder; hidden pressure or temptation -> standing "
-        "amid dark glowing eyes in the shadows while looking up at a shaft of light; breaking free -> "
-        "chains made of phone icons or dollar signs shattering around them while they look up with a "
-        "hopeful expression. Examples of the people-interaction pattern (rule 1/2 above, invent from "
-        "the actual sentence): sharing a burden -> sitting side by side with a supporting character "
-        "who has a comforting hand on their shoulder; seeking guidance -> a mentor character pointing "
-        "something out while the protagonist listens intently; surrender/mercy -> Jesus placing a hand "
-        "on the protagonist's shoulder as they look up with relief.\n"
-        "Always incorporate the protagonist's ethnicity, gender, age range, facial features, and "
-        "modern clothing from the CHARACTERS block above so the same identifiable person anchors "
-        "every scene — never a name, never a generic 'a person'.\n"
+        "BANNED: cropping the protagonist's head out of frame or cutting off their face at the neck "
+        "— they are the emotionally expressive anchor and must stay legible.\n\n"
+        "### INTENT OVER LITERALISM (CORE RULE)\n"
+        "This is churchy, faith-content material — read what a line MEANS, not just what it "
+        "SAYS, and visualize the meaning. Never illustrate the literal surface word when the "
+        "underlying intent points somewhere else.\n"
+        "  WRONG (literal): \"not only on Sundays\" -> a weekly calendar page. RIGHT (intent): a path "
+        "forking toward a small church/cross icon versus everyday errands — Sunday-only faith is "
+        "the target, not the day itself.\n"
+        "  WRONG (literal): \"the Word\" -> a library or a stack of books. RIGHT (intent): a single "
+        "glowing open book, light spilling from its pages.\n"
+        "  WRONG (literal): \"the enemy\" -> a monster or villain. RIGHT (intent): a shadow-silhouette "
+        "version of the protagonist looming behind them.\n"
+        f"{CHURCH_GLOSSARY}\n"
+        "The reference bank above is a director's mood board from studying real faith-content "
+        "videos, NOT a menu to copy verbatim and NOT exhaustive — most scripts you're given will "
+        "say things this bank never anticipated. When a line doesn't match anything listed, invent "
+        "a fitting metaphor using the SAME visual grammar (forking paths, floating icon clusters, "
+        "light vs. shadow, growth, doors/gates, water, seeds/harvest, armor, storms/anchors, lamps, "
+        "shepherd/flock, tables/altars, scales, chains) rather than falling back to a literal, "
+        "static illustration of the sentence. One reference video informed this bank and is a "
+        "strong indicator of the target style, but DO NOT overfit to it — these prompts must work "
+        "for any Christian-content script, not just the one that inspired the bank.\n\n"
+        "### ONE PERSON, RARE COMPANY\n"
+        "This story follows ONE anonymous protagonist — it is not an ensemble cast. Default to the "
+        "protagonist alone with a symbolic object/environment for most beats. Only bring in another "
+        "figure when the beat is genuinely a divine encounter (Jesus, using his fixed design) or "
+        "needs a crowd/society contrast (anonymous grey-silhouette figures, e.g. a wide crowded path, "
+        "a biblical-era village, onlookers) — never a recurring named companion (no 'friend', "
+        "'mentor', 'coworker' with a persistent design). When other figures do appear, they are "
+        "background texture the camera doesn't linger on individually.\n"
         "BANNED IN HERO_SUBJECT: camera/cinematography language (\"POV\", \"zoom\", "
         "\"push-in\", \"wide shot\", \"close-up\", \"tracking shot\", \"dolly\", "
         "\"crane\") and pure mood words with no subject (\"tense\", \"ominous\", "
         "\"peaceful\") — describe the physical metaphor, not the feeling.\n\n"
         "## PILLAR 3: IMAGE PROMPT RULES\n\n"
         "image_prompt IS THE ONLY TEXT SENT TO THE IMAGE GENERATOR — hero_subject is internal "
-        "planning only and is NEVER seen by it. Any detail that matters (especially the "
-        "protagonist's specific ethnicity, gender, face, and clothing) MUST be written into "
+        "planning only and is NEVER seen by it. Any detail that matters MUST be written into "
         "image_prompt itself, not just hero_subject.\n"
-        "image_prompt: a SHORT (10-18 words) plain description of a simple, flat 2D composition — "
-        "the protagonist's head, face, and expressive simplified eyes clearly visible as they "
-        "ACTIVELY engage with a concrete symbolic object or action, plus WHERE (modern or "
-        "metaphorical setting, always a plain light background) so the image generator renders it "
-        "correctly. Never a static/passive composition (no sitting, staring out windows, holding a "
-        "drink, standing in a doorway) and never a headless/cropped/silhouetted figure. image_prompt "
-        "MUST name the protagonist's ethnicity, gender, facial features, and specific modern "
-        "flat-color clothing verbatim from the CHARACTERS block above (e.g. 'a friendly African "
-        "American male in a solid grey hoodie with clean outlines') — a bare word like 'a person' or "
-        "'a figure' with no face/clothing named defaults this image generator to a robed, biblical "
-        "look or a hidden face. Do NOT mention complex lighting, shadow depth, 3D rendering, "
-        "photorealism, or atmosphere (no 'moody', 'dark', 'dramatic', 'chiaroscuro', 'candlelit', "
-        "'golden-hour', 'eerie', 'atmospheric') and do NOT prescribe a light source, texture, or "
-        "camera angle — none of that; a style prefix already sets the flat 2D visual treatment. "
-        "Just the metaphor/action + setting cue, plainly.\n"
+        "image_prompt: a SHORT (10-18 words) plain description of a simple monochrome stick-figure "
+        "composition — refer to the protagonist simply as 'the stick figure' or 'a simple black-ink "
+        "stick figure' (their fixed design is applied automatically by a style prefix, so do NOT "
+        "restate ethnicity/wardrobe/hair — they have none) as they ACTIVELY engage with a concrete "
+        "symbolic object or action, plus WHERE (a muted-color background, plus whatever setting/prop "
+        "the metaphor calls for) so the image generator renders it correctly. Never a static/passive "
+        "composition (no sitting, staring out windows, holding a drink, standing in a doorway) and "
+        "never a headless/cropped figure. If Jesus appears, name him explicitly ('Jesus') so his "
+        "fixed fuller-color design applies instead of the stick figure's. Do NOT mention complex "
+        "lighting, shadow depth, 3D rendering, photorealism, or atmosphere (no 'moody', 'dark', "
+        "'dramatic', 'chiaroscuro', 'candlelit', 'golden-hour', 'eerie', 'atmospheric') and do NOT "
+        "prescribe a light source, texture, or camera angle — none of that; a style prefix already "
+        "sets the monochrome-figure/muted-background visual treatment. Just the metaphor/action + "
+        "setting cue, plainly.\n"
         "  EXAMPLES (STUDY AND CONFORM — for whatever metaphor THIS sentence actually calls for, "
-        "not necessarily these): 'A simple 2D cartoon of a friendly African American male in a solid "
-        "grey hoodie, clean black outlines, running up a yellow path toward a flat gold crown icon, "
-        "on a plain white background.' 'A 2D cartoon woman with a warm expression in a flat olive "
-        "jacket watching a simple scale icon balance a Bible against gold coin shapes.' 'A 2D cartoon "
-        "man in a flat denim jacket, determined expression, straining to carry a heavy stone icon on "
-        "his shoulder.' 'A 2D cartoon figure's face lit with hope as simple chain-link icons shaped "
-        "like phone outlines shatter around them.' 'A 2D cartoon Hispanic female in an olive sweater, "
-        "talking to an elderly male mentor with a grey hair outline in a brown cardigan over an open "
-        "Bible icon.' 'A 2D cartoon Hispanic female in an olive sweater, comforted by a female friend "
-        "with a black bob outline in a blue blazer, hand on her shoulder.' 'A 2D cartoon man in a grey "
-        "hoodie walking beside a simply-outlined, robed Jesus figure on a plain background.'\n"
-        "  MODERN AND GROUNDED in the setting above — clothing, rooms, and objects should read "
-        "as present-day and everyday, simplified into flat 2D shapes and icons. Do NOT name an art "
-        "style, medium, camera, or lens — a style prefix is added automatically.\n"
+        "not necessarily these): 'A simple black-ink stick figure running up a path toward a floating "
+        "gold crown icon, on a muted tan background.' 'A stick figure watching a simple scale icon "
+        "balance a glowing book against gold coin shapes.' 'A stick figure straining to carry a heavy "
+        "stone icon on its shoulder, muted background.' 'A stick figure's posture lifting with hope as "
+        "chain-link icons shatter around it.' 'A stick figure kneeling with hands cupped together, a "
+        "soft warm glow rising from its hands.' 'A stick figure standing at a forking path, one side "
+        "lit toward a small cross icon, the other leading into a crowd of flat grey-silhouette "
+        "figures.' 'A stick figure in a car's passenger seat while Jesus holds the steering wheel, "
+        "muted background.'\n"
+        "  Rooms/props/objects should read as simple flat 2D shapes and icons, not detailed or "
+        "textured. Do NOT name an art style, medium, camera, or lens — a style prefix is added "
+        "automatically.\n"
         "  NO LEGIBLE TEXT, EVER: the image generator cannot render real words and always "
         "produces garbled gibberish when asked to — never a placeholder like 'XXX' "
         "either, it still renders as literal glyphs. Books, ledgers, letters, signposts, "
@@ -653,10 +600,11 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "brightness, fog/moss swallowing a signpost's face, an extreme close crop on the "
         "object's texture/edge/binding, or the text-bearing face angled fully away from "
         "camera. Do NOT mention text, captions, watermarks, or logos.\n"
-        "- negative_prompt: a short comma-separated list (under ~40 words) of modern "
-        "clutter/anachronisms most likely to leak in for THIS exact scene (e.g. \"cluttered "
-        "background, harsh fluorescent light, cartoonish, headless, cut off face\"). Don't repeat "
-        "generic quality terms — those are added automatically.\n"
+        "- negative_prompt: a short comma-separated list (under ~40 words) of clutter/anachronisms "
+        "most likely to leak in for THIS exact scene, matched to whichever era it depicts — modern "
+        "clutter (phones, cars, fluorescent light) for present-day beats, or modern intrusions "
+        "(cars, electronics, modern clothing) for scripture-era beats. Don't repeat generic quality "
+        "terms — those are added automatically.\n"
         "- people_count: the exact number of people image_prompt depicts (protagonist "
         "included) — 1 alone, 2 with one companion/Jesus, 3 with two others. Image models "
         "routinely render an extra unrequested person in group scenes, so this count is "
@@ -671,8 +619,8 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
         "bloodlessly and symbolically through the active metaphor itself (a crumbling stone, "
         "shattering chains, a collapsing crown) rather than graphic harm. This overrides "
         "everything else.\n"
-        "Keep the prompts simple, flat, and engaging 2D cartoon compositions, with the character's "
-        "face fully visible as they act out the scene. Return ONLY the JSON object described by the schema."
+        "Keep the prompts simple, monochrome stick-figure compositions driven by intent and metaphor, "
+        "not literal illustration. Return ONLY the JSON object described by the schema."
     )
     data = _chat(
         [
@@ -692,9 +640,11 @@ def author_chunk(context: dict, chunk: str, characters: dict | None = None) -> l
 
     # Deterministic safety net for the anti-Jesus-regression negative_prompt rule —
     # the LLM follows it most but not all of the time (observed ~1/16 misses), so
-    # enforce it in code rather than trust every call to comply.
-    if supporting and jesus:
-        for s in scenes:
+    # enforce it in code rather than trust every call to comply. Any scene with more
+    # than one figure but no explicit Jesus mention risks the "other figure" regressing
+    # into a robed Jesus look.
+    for s in scenes:
+        if s.get("people_count", 1) > 1:
             prompt_l = s.get("image_prompt", "").lower()
             neg_l = s.get("negative_prompt", "").lower()
             if "jesus" not in prompt_l and "jesus" not in neg_l:
@@ -726,33 +676,31 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
     """Script -> [{scene_number, script_snippet, hero_subject,
     image_prompt, negative_prompt, scene_type}, ...].
 
-    Two-stage, all OpenAI gpt-5-mini at reasoning_effort=low (raw urllib, this repo's
-    house style): infer_context() once (skipped if the caller already computed it —
-    run.py caches this in context.json for generate_images()'s image QA, so
-    it's passed in here rather than re-billed), then chunk_script() (mechanical, no
-    LLM) followed by author_chunk() per chunk IN PARALLEL — the scene cut and every
-    per-scene field come out of that ONE call per chunk, see author_chunk()'s
-    docstring for why splitting and authoring are no longer separate calls. Warns
-    (does not raise) if the concatenated snippets don't reconstruct the input
-    closely — LLM verbatim-copy mandates are usually but not always followed
-    exactly. Per-scene duration is NOT decided here — it comes from real
-    narration-audio alignment, see align_scene_durations().
+    One-stage character setup: protagonist and Jesus are FIXED designs
+    (PROTAGONIST_APPEARANCE, JESUS_APPEARANCE) — no per-script character-inference
+    call anymore, see author_chunk()'s docstring. Otherwise all OpenAI gpt-5-mini at
+    reasoning_effort=low (raw urllib, this repo's house style): infer_context() once
+    (skipped if the caller already computed it — run.py caches this in context.json
+    for generate_images()'s image QA, so it's passed in here rather than re-billed),
+    then chunk_script() (mechanical, no LLM) followed by author_chunk() per chunk IN
+    PARALLEL — the scene cut and every per-scene field come out of that ONE call per
+    chunk, see author_chunk()'s docstring for why splitting and authoring are no
+    longer separate calls. Warns (does not raise) if the concatenated snippets don't
+    reconstruct the input closely — LLM verbatim-copy mandates are usually but not
+    always followed exactly. Per-scene duration is NOT decided here — it comes from
+    real narration-audio alignment, see align_scene_durations().
     """
     from concurrent.futures import ThreadPoolExecutor
 
     context = context or infer_context(script)
-    print(f"  context: {context.get('setting', 'modern times')}", flush=True)
-
-    characters = infer_characters(script)
-    prot_appearance = characters.get('protagonist', {}).get('appearance', 'undefined')[:30] if characters.get('protagonist') else 'none'
-    print(f"  characters: protagonist={prot_appearance}, jesus={'yes' if characters.get('jesus') else 'no'}, supporting={len(characters.get('supporting_characters', []))}", flush=True)
+    print(f"  context: {context.get('setting', 'a churchy, faith-practice setting')}", flush=True)
 
     clean_script = strip_production_cues(script)
     chunks = chunk_script(clean_script, sentences_per_chunk)
     print(f"  -> {len(chunks)} chunks ({sentences_per_chunk} sentences each)", flush=True)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        authored_chunks = list(ex.map(lambda c: author_chunk(context, c, characters), chunks))
+        authored_chunks = list(ex.map(lambda c: author_chunk(context, c), chunks))
 
     out = []
     for authored in authored_chunks:
