@@ -15,9 +15,11 @@ writes back to Baserow at all** — an outside trigger (n8n) owns row selection 
 own side of the job the moment it fires the ingest request; this pipeline only reads the row
 it's told to process. Script, narration audio, and sound all come from a Baserow row that's
 already been marked `script_status=done` and `voice_status=done` by an upstream writing process
-(not this repo). This project's job starts after that: break the script into scenes, generate a
-spiritual image per scene (Krea, high-quality digital painting), assemble/render, then push the
-finished video url back to ClickUp.
+(not this repo). This project's job starts after that: break the script into scenes, figure out
+which characters recur and are worth tracking across the video, generate one full-figured
+reference image per tracked character, generate a spiritual image per scene (gpt-image-2,
+full-figured digital painting, referencing whichever tracked characters that scene calls for),
+assemble/render, then push the finished video url back to ClickUp.
 
 Output per run → one rendered video, one ClickUp task updated with the video url.
 
@@ -27,14 +29,17 @@ Full pipeline is wired end-to-end via `src/run.py <row_id>` — row_id is a requ
 `row_id` field of an `/ingest` POST body when triggered over HTTP): each stage writes an
 artifact into `runs/<row_id>/` and is skipped on rerun if that artifact already exists, so a
 failure mid-run resumes exactly where it broke instead of re-paying for completed stages.
-`src/asset_selector.py`'s archival lane checks a Turso-backed `blocked_domains` list
-(read-only; `TURSO_DATABASE_URL`/`TURSO_AUTH_TOKEN` in root `.env`, table shared with
-`military`/`footage-collector`) before attempting a vision-QA fetch, in addition to the static
-`BLOCKED_HOST_SUBSTRINGS` list. This pipeline only reads that table — it never flags a domain
-onto it.
+`agents/` (character_ledger, character_sheet, scene_compositor — plain importable Python
+packages, no subprocess bridge needed since this whole repo is already Python) is where the
+character-consistency work lives, separate from `src/scene_engine.py`'s scene-breakdown LLM
+calls. There is **no vision-QA anywhere in this pipeline** — whether a generated image actually
+matches its character(s) is a human call made off the gallery review, not an automated gate.
 
-Stage order: Baserow read (given row_id) → scene breakdown → multi-lane images (archival/stock/
-graphic/Krea) → gallery (non-blocking review) →
+Stage order: Baserow read (given row_id) → context → character ledger + one full-figured
+reference image per tracked character (`agents/character_ledger`, `agents/character_sheet`) →
+character-aware scene breakdown → per-scene images (`agents/scene_compositor`, gpt-image-2 t2i
+only for now — i2i against a character's reference sheet is cut, bring it back if t2i-only
+consistency doesn't hold up in testing) → gallery (non-blocking review) →
 download the row's own narration → Whisper+DTW alignment against that real audio → Remotion
 Lambda render (narration muxed in via `<Audio>`) → upload the finished mp4 to S3
 (`src/s3.py:put_file()`, RAW public link — **never presigned, always S3, that's what gets
@@ -57,23 +62,23 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
 
 - **Never write or edit the script.** If a row's `script` field looks wrong, thin, or
   off-topic, stop and flag it — do not rewrite it here. That's the upstream writer's job.
-- **Multi-lane assets, routed by `src/asset_selector.py:route()`.** Each scene is classified
-  (`scene_type` + `named_entity`, authored alongside `visual_context`/`negative_prompt` in
-  `scene_engine.py`) and routed to the lane that fits it — real archival photo/painting/map/
-  document (Google Images via Serper + GPT-4o vision QA gate, ported from the sibling
-  `military/` repo's `lib/collect/{serper,identify}.ts`), modern stock photo (Pexels, no
-  vision QA), an OpenAI-generated map/document graphic (`gpt-image-1`/`gpt-image-2`, same
-  `1536x864`/`quality:low` the military repo uses — legible text is the whole point of this
-  lane), or Krea AI painting as the fallback when no real/generated asset applies. There is no
-  identity-verification bar for real people (no case photos here) — the vision QA judges
-  era/nation/rendering-type only, same stance as military's `identify.ts`.
-- **Art style is NOT fixed globally anymore.** Krea-lane prompts get a `scene_type`-keyed style
-  prefix (`asset_selector.py:STYLE_PREFIXES`) — dramatic digital painting for
-  historical/geographic scenes, clean modern photography for `modern_scientific` ones — never
-  one blanket prefix over every scene. Archival/stock photos get no style prefix (they're
-  real). Map/document graphics get their own parchment/aged-paper prompt style
-  (`asset_selector.py:GRAPHIC_STYLE`), matching the reference app (`ui/stories/sleep-stories`)
-  only for the Krea lane specifically.
+- **Recurring, full-figured characters — not a stock-figure default.** Every script gets its
+  own character ledger, built once up front by `agents/character_ledger:build(script, context)`:
+  the protagonist is always tracked, Jesus only if he actually appears, any other character
+  only if they recur across multiple beats (never a one-off mention). Each tracked character
+  gets one full-figured reference image (`agents/character_sheet:generate_all()`, gpt-image-2
+  t2i, `quality=low`). `src/scene_engine.py`'s scene authoring then tags every scene with which
+  tracked characters (`character_ids`) are visually present, and `agents/scene_compositor`
+  generates that scene's image referencing them by name/appearance. No fixed per-channel
+  design and no stick figures — that was the old model, fully retired.
+- **No automated vision-QA, anywhere.** Whether a generated image matches its expected
+  character(s) is a human call made off the gallery review (`src/gallery.py`), not a gpt-4o
+  vision gate — keeps cost down; this is a story pipeline, not a verification pipeline.
+- **t2i only, for now.** `agents/scene_compositor` generates every scene via gpt-image-2
+  text-to-image — `src/krea.py`'s img2img (`krea_edit_photo()`, conditioned on a character's
+  reference sheet) is cut from the pipeline on purpose. Testing methodology: run a batch,
+  look at `gallery.html`, judge whether t2i-only character consistency holds up. If it
+  doesn't, i2i comes back as a whole-pipeline direction (not a per-scene fix) — not before.
 - **Baserow is read-only.** `baserow.py` has no write/PATCH function at all — row_id selection
   and "is this job done" bookkeeping both live on the caller's side (n8n), not here.
 - ClickUp push is update-existing-task, never create-task — the task already exists (created
@@ -85,41 +90,54 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
 ```
 1 BASEROW    src/baserow.py: get_row(row_id) reads the one row the caller specified —
              no scanning, no gating on video_processed. Read-only.
-2 SCENES     src/scene_engine.py: LLM scene breakdown of the row's script — OpenAI
-             gpt-5-mini, reasoning_effort=low. Three small calls, not one mega-call:
-             infer_context() once (pins era/place/palette so every batch stays consistent)
-             -> propose_snippets() once over the whole script (pure text-splitting, one
-             scene per VISUAL CHANGE, ~4-12s/~10-30 words each, list-cut + staccato rules,
-             merge cap ~25 words/12s — same density model as the sibling
-             `service/scene-generation-service`'s `breakdown-pro` endpoint) -> author_batch()
-             per 8-snippet batch IN PARALLEL (visual_context + negative_prompt, strict
-             json_schema structured output). See scene_engine.py for the current contract.
-3 IMAGES     Each scene's visual_context -> src/krea.py:krea_photo(), with "highly
-             detailed digital painting, " prepended to the prompt (extracted from the old
-             `shared/assets.py` — same Krea-calling machinery, no new image client here).
-4 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
+2 CONTEXT    scene_engine.py:infer_context() — OpenAI gpt-5-mini, reasoning_effort=low.
+             Setting/spiritual_theme/emotional_palette for the script, cached in
+             context.json and reused by every later stage.
+3 CHARACTERS agents/character_ledger:build(script, context) reads the whole script once
+             and decides which characters are worth tracking as a recurring visual
+             identity — protagonist always, Jesus only if he actually appears, any other
+             character only if they recur across multiple beats. Generate -> deterministic
+             validate -> retry-with-feedback loop. Then agents/character_sheet:
+             generate_all() makes one full-figured reference image per tracked character
+             (gpt-image-2 t2i, quality=low). characters.json.
+4 SCENES     src/scene_engine.py: LLM scene breakdown of the row's script, character-aware
+             — OpenAI gpt-5-mini, reasoning_effort=low. chunk_script() (mechanical, no LLM,
+             ~8 sentences/chunk, one scene per VISUAL CHANGE) feeds author_chunk() per chunk
+             IN PARALLEL (image_prompt + negative_prompt + character_ids — which tracked
+             characters from step 3 are visually present in that scene — strict json_schema
+             structured output, character_ids enum-constrained to the real ledger). See
+             scene_engine.py for the current contract.
+5 IMAGES     agents/scene_compositor:compose_all() — per scene, IN PARALLEL, gpt-image-2 t2i
+             only (for now) referencing whichever tracked characters that scene's
+             character_ids call for by name/appearance. NO automated vision-QA anywhere in
+             this pipeline — a human reviews the gallery (step 6) and judges consistency.
+             i2i (src/krea.py:krea_edit_photo(), reference_images = a character's reference
+             sheet) is cut from the pipeline — a future whole-pipeline direction if t2i-only
+             consistency doesn't hold up, not a per-scene fix.
+6 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
              click-to-expand modal, vanilla JS/CSS) for manual review. See that file.
-5 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
+7 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
              hosted Modal whisper service (REMOTION_WHISPER_SERVICE_URL, same one
              senior-finance/finance/remotion calls) + utils/align.py DTW mapped onto each
              scene's verbatim script_snippet. NOT a word-count estimate (tried and
              explicitly rejected — doesn't actually align). NOT local faster-whisper —
              that package was never installed in this repo's .venv.
-6 RENDER     remotion/ (standalone Remotion project) on Remotion Lambda (local
+8 RENDER     remotion/ (standalone Remotion project) on Remotion Lambda (local
              `remotion render` freezes the machine — banned, always deploy:site + render:
              remote). scenes.json is `{scenes, narrationUrl}` — narrationUrl is the row's
              OWN voice_url (already a public S3 url, no rehost needed) muxed in via a plain
-             `<Audio src={narrationUrl}>` in HeritageScenes.tsx.
-7 S3         src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
+             `<Audio src={narrationUrl}>` in HeritageScenes.tsx. Remotion has no character/
+             style awareness at all — it just renders whatever image_url each scene carries.
+9 S3         src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
              public-read) — ALWAYS push the finished video here for review, never hand back
              a presigned link or a local-only file path.
-8 CLICKUP    src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
+10 CLICKUP   src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
              clickup_url task description (falls back to a comment on failure), same
              update-existing-task pattern as space-cluster. Last stage — nothing
              writes back to Baserow after this.
 ```
 
-Steps 1-8 are wired into one `run.py` command (`src/run.py`, Phase 5 in
+Steps 1-10 are wired into one `run.py` command (`src/run.py`, Phase 5 in
 `HERITAGE_PLAN.md`) — run it with `python3 src/run.py <row_id>` from the repo root, or trigger
 it over HTTP via `POST /ingest` (`src/ingest_server.py`, JSON body `{"row_id": ...}`).
 
@@ -138,9 +156,10 @@ it over HTTP via `POST /ingest` (`src/ingest_server.py`, JSON body `{"row_id": .
     Same service `senior-finance/finance/remotion` calls; no local model/GPU needed.
   - `PERPLEXITY_API_KEY`, `APIFY_TOKEN`, `TTS_ENDPOINT`, `TTS_VOICE` — pre-existing keys,
     not all currently consumed by this pipeline.
-- **Krea image-gen token** (`IMAGE_API_TOKEN`) is read by `src/krea.py:krea_photo()` from
+- **Krea image-gen token** (`IMAGE_API_TOKEN`) is read by `src/krea.py:krea_edit_photo()` from
   its own hardcoded path in `sleep-stories/.env.local` — unaffected by this repo's layout,
-  don't duplicate it into the root `.env`.
+  don't duplicate it into the root `.env`. Currently unused (i2i is cut from the pipeline for
+  now, see "Hard rules" above) — this stays here for when it comes back.
 - **AWS/S3 — bucket is ours, creds are this pipeline's own copy.** The `yt-heritage-media`
   bucket (see `## S3` below) was created fresh for this pipeline and is NOT shared with
   `yt-cold-case-media` or any other bucket. `src/s3.py`'s `_cfg()` reads
@@ -192,32 +211,40 @@ Fields consumed:
 - **7-day lifecycle** — once render is built, the pushed video url goes dead after a week;
   pull it promptly or re-render.
 
-## Scene generation (owned elsewhere — read, don't edit here)
+## Scene generation + character agents (owned elsewhere — read, don't edit here)
 
-`src/scene_engine.py` (scene breakdown + classification), `src/asset_selector.py` (multi-lane
-image routing) and `src/gallery.py` (review HTML) are built and maintained as their own unit —
-this doc deliberately doesn't duplicate their internals since they're still evolving. Read
-those files directly for the current contract.
+`src/scene_engine.py` (scene breakdown + classification) and `src/gallery.py` (review HTML)
+are built and maintained as their own unit. `agents/character_ledger`, `agents/character_sheet`,
+and `agents/scene_compositor` (character-consistency work — see "Hard rules" above) are their
+own unit too. This doc deliberately doesn't duplicate their internals since they're still
+evolving — read those files directly for the current contract.
 
-**Anti-Jesus regression bias (known Krea failure mode):** faith-themed image generators default
-ANY unspecified secondary character into a long-haired, bearded Jesus in robes. Every non-Jesus
-character (protagonist and supporting cast) must carry an explicit concrete gender, ethnicity,
-modern hairstyle, and modern clothing in both `infer_characters()`'s planning stage and every
-`image_prompt` — a bare "a person"/"a figure" is what triggers the regression. Scenes with a
-supporting character but no Jesus get `Jesus, biblical robes, bearded man, long hair, ancient
-tunic, halo` appended to `negative_prompt`. See `CHARACTER_SCHEMA` / `author_chunk()` in
-`src/scene_engine.py`.
+**Anti-Jesus regression bias (known gpt-image-2 failure mode):** faith-themed image generators
+default ANY unspecified secondary character into a long-haired, bearded Jesus in robes. Every
+non-Jesus character must carry an explicit concrete gender, ethnicity, hairstyle, and clothing
+appropriate to the story's era in `agents/character_ledger`'s per-character `appearance` field —
+a bare "a person"/"a figure" is what triggers the regression. Scenes with a tracked character
+but not Jesus get `Jesus, biblical robes, bearded man, long hair, ancient tunic, halo` appended
+to `negative_prompt` at generation time (`agents/scene_compositor:_build_negative()`, code, not
+prompt-trust).
 
 ## Layout
 
 ```
 heritage-decoded/
 ├── src/            pipeline code: run.py (entrypoint), baserow.py, clickup.py, s3.py,
-│                   scene_engine.py, asset_selector.py, krea.py, gallery.py
+│                   scene_engine.py, gpt_image.py, krea.py, gallery.py
+├── agents/         character-consistency agents (plain importable Python packages, no
+│                   subprocess bridge — this repo has no cross-language boundary):
+│                   character_ledger/ (which characters are worth tracking), character_sheet/
+│                   (one full-figured reference image per tracked character),
+│                   scene_compositor/ (per-scene t2i; i2i is cut for now)
 ├── utils/          stdlib-only / low-dependency helpers: env.py (env-var lookup),
-│                   align.py (DTW aligner), images.py (image fetcher), tts.py (TTS
-│                   client), cleanup.py (prune_runs)
-├── remotion/       standalone Remotion project (Lambda render), incl. node_modules/
+│                   llm.py (shared OpenAI structured-JSON caller, used by scene_engine.py
+│                   and agents/), align.py (DTW aligner), images.py (image fetcher),
+│                   tts.py (TTS client), cleanup.py (prune_runs)
+├── remotion/       standalone Remotion project (Lambda render), incl. node_modules/ — no
+│                   character/style awareness, just renders each scene's image_url
 ├── runs/           per-row run artifacts (runs/<row_id>/), pruned after 24h once done
 ├── .env            all credentials (Baserow, OpenAI, AWS, ClickUp, etc.), one file
 ├── .venv/          one virtualenv, referenced by src/run.py via a PROJECT_ROOT-style

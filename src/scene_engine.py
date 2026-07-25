@@ -1,19 +1,20 @@
-"""Script -> scene breakdown -> per-scene gpt-image-2 monochrome stick-figure image.
-Two stages, both here since every caller needs both in sequence:
+"""Script -> scene breakdown, authored against a recurring full-figured character
+ledger (agents/character_ledger, agents/character_sheet — built and run by run.py
+BEFORE this module's break_into_scenes(), then passed in as `characters`).
 
-  break_into_scenes(script) -> OpenAI chat-completions calls (gpt-5-mini, raw urllib, this
-                                repo's house style). Returns
-                                [{scene_number, script_snippet, hero_subject,
-                                image_prompt, negative_prompt, scene_type}, ...] — every
-                                scene is a monochrome stick-figure illustration, no lane routing.
+  break_into_scenes(script, context, characters) -> OpenAI chat-completions calls
+                                (gpt-5-mini, raw urllib, this repo's house style).
+                                Returns [{scene_number, script_snippet, hero_subject,
+                                image_prompt, negative_prompt, scene_type,
+                                character_ids}, ...] — character_ids is the subset of
+                                `characters`' ids visually present in that scene (image
+                                generation/consistency itself is agents/scene_compositor's
+                                job, not this module's).
 
                                 Scene-splitting follows mechanical, LLM-free sentence chunking
                                 (chunk_script(), ~8 sentences/chunk) feeding ONE combined LLM call
                                 per chunk (author_chunk()) that cuts scenes (list-cut / staccato /
                                 merge-cap rules) and writes hero_subject + image_prompt together.
-  generate_images(scenes)    -> asset_selector.py:route() per scene, IN PARALLEL
-                                (gpt-image-2 generation is I/O-bound, scenes are independent).
-                                Returns each scene with an added image_url.
 """
 import json
 import os
@@ -27,9 +28,7 @@ sys.path.insert(0, os.path.join(HERE, "..", "utils"))
 
 import env                     # utils: one .env lookup (checks root .env)
 import align                    # utils: Whisper-word <-> verbatim-scene DTW aligner
-
-MODEL = "gpt-5-mini"
-OPENAI_API = "https://api.openai.com/v1/chat/completions"
+from llm import call_llm_json   # utils: shared OpenAI structured-JSON caller
 
 # Fixed quality/SFW negatives appended to every scene's period-specific
 # negative — ported verbatim from sleep-stories' scene-image.ts BASE_NEGATIVE
@@ -55,48 +54,24 @@ JESUS_NEGATIVE_BLOCK = "Jesus, biblical robes, bearded man, long hair, ancient t
 
 # Image models (gpt-image-2) routinely render an extra unrequested person in group scenes —
 # same class of hallucination as the Jesus regression, just headcount instead of
-# identity. The LLM self-reports intended headcount via people_count; code then
-# force-appends a deterministic negative_prompt guard rather than trusting the
-# image model to respect a bare number mentioned once in the prompt.
+# identity. The LLM self-reports intended headcount via len(character_ids); code
+# (agents/scene_compositor) then force-appends a deterministic negative_prompt guard
+# rather than trusting the image model to respect a bare number mentioned once.
 COUNT_NEGATIVE_BLOCKS = {
     1: "second person, another person, additional figure, extra man, extra woman, companion, crowd, group of people",
     2: "third person, extra person, additional man, additional woman, additional figure, crowd, group of three or more",
     3: "fourth person, extra person, additional figure, crowd, group of four or more",
 }
 
-# Fixed, channel-wide Jesus design — NOT LLM-generated per script, NOT drawn as the
-# monochrome stick figure. Distinct on purpose: fuller color/detail so he visually
-# stands apart from the anonymous protagonist, matching the reference style (a
-# muted-sketch monochrome everyman contrasted with a warmer, fuller-color Jesus).
-JESUS_APPEARANCE = (
-    "a compassionate hand-drawn ink-sketch man in his early-to-mid 30s with warm olive "
-    "skin, flowing shoulder-length dark brown hair worn loose with no head covering of any "
-    "kind (no turban, no headscarf, no headgear), a short well-kept beard, gentle warm "
-    "eyes, wearing a simple flat tan garment with a flat blue-grey sash draped over one "
-    "shoulder, calm reverent bearing, a soft flat golden glow outline around him — "
-    "rendered in muted flat color, not the monochrome stick-figure style"
-)
-
-# Fixed, channel-wide protagonist design — a single anonymous stick figure that looks
-# IDENTICAL in every scene of every video, never LLM-invented or varied per script.
-# This is the one deliberate deviation from the old per-script character system: the
-# story follows ONE person, drawn so plainly (no ethnicity, no wardrobe, no named
-# supporting cast) that "consistency" is free — there's nothing left to drift.
-PROTAGONIST_APPEARANCE = (
-    "a simple black-ink hand-drawn stick figure: a plain round head outline with two "
-    "small dot eyes and a thin simple mouth line (no hair detail beyond a small simple "
-    "hairline squiggle), a thin single-stroke neck and torso, thin single-stroke arms and "
-    "legs, loose sketchy hand-drawn crosshatch texture on the linework, absolutely no "
-    "color fill and no clothing detail on the figure itself — gender-neutral, ageless, "
-    "identical in every scene"
-)
-
 # Anonymous background/crowd figures (society, a biblical-era village, disciples,
-# onlookers) — NOT a named supporting cast. Flat, faceless, interchangeable; the
-# camera and story never lingers on them as individuals.
+# onlookers) — NOT a tracked character. Generic and interchangeable on purpose; the
+# camera and story never lingers on them as individuals. Every NAMED/recurring
+# character's actual appearance comes from the character ledger (agents/character_ledger,
+# built once per script from the real cast) and is injected dynamically per chunk by
+# author_chunk() below — there's no fixed per-channel design anymore.
 CROWD_APPEARANCE = (
-    "flat solid grey-silhouette figures with no facial detail, simplified and "
-    "interchangeable, rendered smaller/further back than the protagonist"
+    "generic full-figured background people rendered with minimal individual detail, "
+    "interchangeable, smaller/further back than any tracked character in the scene"
 )
 
 # Intent-to-visual reference bank, compiled from studying one real Christian-content
@@ -122,8 +97,9 @@ armor, storms/anchors, lamps, shepherd/flock, tables/altars, scales, chains):
   protagonist looming behind or reaching toward them.
 - Carrying guilt, shame, or burden -> figure straining under a heavy stone or
   sack icon on their back.
-- Breakthrough / freedom -> chain-link icons shattering around the figure as they
-  look upward.
+- Breakthrough / freedom -> a heavy stone wall crumbling away in front of the figure
+  as they step forward into open light (NOT chains/ropes on the figure's body —
+  restraint imagery directly on a person is a known image-safety-filter trigger).
 - Surrender / giving God control -> figure in a car's passenger seat while Jesus
   (or a radiant light) holds the steering wheel.
 - Obedience before understanding -> figure taking a single step onto a lit path that
@@ -212,12 +188,15 @@ _CLASSIFICATION_PROPERTIES = {
 }
 
 
-def _chunk_author_schema() -> dict:
+def _chunk_author_schema(character_ids: list[str]) -> dict:
     """Scene COUNT is decided by the model per chunk (list-cut/staccato rules mean
     an 8-sentence chunk can yield anywhere from 1 to ~15 scenes) — unlike the old
     fixed-batch schema, there's no known n up front to pin minItems=maxItems to.
     maxItems=20 is a sanity guardrail (an 8-sentence chunk producing more than that
-    would mean the split rules broke down), not a real target."""
+    would mean the split rules broke down), not a real target.
+
+    character_ids is enum-constrained to the real ledger for this script — the model
+    can only tag a scene with a character that actually exists, never invent one."""
     return {
         "name": "authored_scenes",
         "schema": {
@@ -234,22 +213,21 @@ def _chunk_author_schema() -> dict:
                             "hero_subject": {"type": "string"},
                             "image_prompt": {"type": "string"},
                             "negative_prompt": {"type": "string"},
-                            "people_count": {
-                                "type": "integer",
-                                "enum": [1, 2, 3],
+                            "character_ids": {
+                                "type": "array",
+                                "items": {"type": "string", "enum": character_ids} if character_ids else {"type": "string"},
                                 "description": (
-                                    "Exact number of people (including the protagonist) "
-                                    "depicted in image_prompt for this scene — 1 if the "
-                                    "protagonist is alone, 2 if with one supporting character "
-                                    "or Jesus, 3 if with two others. Must match image_prompt "
-                                    "exactly, no more, no fewer."
+                                    "ids of tracked characters (from the CHARACTERS list) "
+                                    "visually depicted in this scene's image_prompt. Empty "
+                                    "array if no tracked character appears (a pure landscape/"
+                                    "establishing/symbolic-object shot)."
                                 ),
                             },
                             **_CLASSIFICATION_PROPERTIES,
                         },
                         "required": ["script_snippet", "hero_subject",
                                      "image_prompt", "negative_prompt", "scene_type",
-                                     "people_count"],
+                                     "character_ids"],
                         "additionalProperties": False,
                     },
                 }
@@ -260,67 +238,9 @@ def _chunk_author_schema() -> dict:
     }
 
 
-def _post_openai(body: dict) -> dict:
-    token = env.require("OPENAI_API_KEY")
-    req = urllib.request.Request(
-        OPENAI_API,
-        data=json.dumps(body).encode(),
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {token}",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=180) as r:
-            return json.load(r)
-    except urllib.error.HTTPError as e:
-        raise RuntimeError(f"OpenAI API {e.code}: {e.read().decode()[:800]}")
-
-
-def _extract_json(text: str) -> dict:
-    """Strip ```json fences if the model added them, then parse — with an outer-brace
-    salvage fallback for the rare truncated/chatty response that slips past the
-    strict json_schema constraint."""
-    t = text.strip()
-    m = re.match(r"^```(?:json)?\s*(.*?)\s*```$", t, re.DOTALL)
-    if m:
-        t = m.group(1)
-    try:
-        return json.loads(t)
-    except json.JSONDecodeError:
-        i, j = t.find("{"), t.rfind("}")
-        if i >= 0 and i < j:
-            return json.loads(t[i:j + 1])
-        raise
-
-
-def _chat(messages: list[dict], schema: dict, max_completion_tokens: int = 4096) -> dict:
-    """One low-reasoning-effort OpenAI call, strict json_schema structured output
-    (grammar-constrained — far more reliable than response_format=json_object for
-    getting the exact shape we asked for). Raises on refusal/empty/malformed."""
-    body = {
-        "model": MODEL,
-        "max_completion_tokens": max_completion_tokens,
-        "reasoning_effort": "low",
-        "response_format": {"type": "json_schema", "json_schema": {**schema, "strict": True}},
-        "messages": messages,
-    }
-    resp = _post_openai(body)
-    if resp.get("error"):
-        raise RuntimeError(f"OpenAI API error: {resp['error']}")
-    choice = (resp.get("choices") or [{}])[0]
-    if choice.get("finish_reason") == "content_filter":
-        raise RuntimeError(f"OpenAI refused the request (content_filter): {resp}")
-    text = (choice.get("message") or {}).get("content") or ""
-    if not text.strip():
-        raise RuntimeError(f"OpenAI returned no text content: {resp}")
-    return _extract_json(text)
-
-
 def infer_context(script: str) -> dict:
     """Extract spiritual context from the script — setting, theme, emotional tone."""
-    return _chat(
+    return call_llm_json(
         [
             {"role": "system", "content": (
                 "You are analyzing a Christian faith narrative for a Christian story app rendered as a "
@@ -420,51 +340,51 @@ def _slice_by_snippets(chunk: str, scenes: list[dict]) -> list[dict]:
     return kept
 
 
-def author_chunk(context: dict, chunk: str) -> list[dict]:
+def author_chunk(context: dict, chunk: str, characters: list[dict]) -> list[dict]:
     """ONE combined call, ~SENTENCES_PER_CHUNK sentences: cut this chunk into
     visual-beat scenes AND author every per-scene field for each, together.
-    Protagonist and Jesus are FIXED constants (PROTAGONIST_APPEARANCE,
-    JESUS_APPEARANCE) — never LLM-invented per script — so there's no per-script
-    character-inference call feeding this anymore; consistency is structural, not
-    prompted. This is the one deliberate deviation from the earlier per-script
-    wardrobe system: the story follows ONE anonymous person, driven by metaphor,
-    not a cast of named supporting characters."""
-    char_context = (
-        "CHARACTERS (fixed designs — identical in every scene of every script, never vary these):\n"
-        f"PROTAGONIST (appears in EVERY scene — the story's sole anchor): {PROTAGONIST_APPEARANCE}.\n"
-        f"JESUS (ONLY when the script explicitly names or directly depicts him): {JESUS_APPEARANCE}.\n"
-        f"ANONYMOUS OTHERS/CROWD (society, onlookers, a biblical-era crowd — never a named recurring "
-        f"character, never individually distinct): {CROWD_APPEARANCE}. This story follows ONE person; "
-        "any other figure is background texture, not a companion character.\n"
+    `characters` is agents/character_ledger's output for this script (built once,
+    up front, by run.py) — every recurring character's appearance is dynamic per
+    script now, not a fixed per-channel constant. This call also tags each scene
+    with which of those characters are visually present (character_ids); actual
+    image generation/consistency enforcement happens later in
+    agents/scene_compositor, not here."""
+    char_lines = [
+        "CHARACTERS (recurring, full-figured — keep each visually IDENTICAL to their "
+        "description below in every scene they appear; this is the ENTIRE cast, never "
+        "invent a new recurring character beyond this list):"
+    ]
+    for c in characters:
+        char_lines.append(f'- {c["name"]} (id: "{c["id"]}"): {c["appearance"]}')
+    char_lines.append(
+        f"Any other figure in a scene (crowd, onlookers, background society) is NOT a "
+        f"tracked character: {CROWD_APPEARANCE}. Never assign a background figure a "
+        f"character id."
     )
+    char_context = "\n".join(char_lines)
+    character_ids = [c["id"] for c in characters]
 
     system = (
         f"GLOBAL VISUAL CONTEXT (Christian Story App):\n"
         f"Setting: {context.get('setting', 'a churchy, faith-practice setting')}\n"
         f"Spiritual Theme: {context.get('spiritual_theme', 'faith and transformation')}\n"
         f"Emotional Palette: {context.get('emotional_palette', 'muted, peaceful and reflective')}\n\n"
-        f"{char_context}\n"
-        "You are a visual director designing a muted, hand-drawn monochrome stick-figure "
-        "storyboard for a Christian story app — a churchy, whiteboard-doodle vibe, not a "
-        "generic modern-lifestyle explainer. The protagonist is drawn as a plain black-ink "
-        "stick figure (see fixed design above) on a muted flat-color background; symbolic "
-        "objects/icons in the scene may carry color (a glowing phone, gold coins, a cross) "
-        "to carry the metaphor, but the figure itself never gets color fill or realistic "
-        "detail. Jesus is the one exception — fuller color/detail, deliberately distinct. "
-        "The protagonist is the VISUAL ANCHOR in EVERY scene — they must appear in every "
-        "scene showing their spiritual journey, emotional state, and transformation. You "
-        "are given one chunk of script. Break it into visual beats, and author every field "
-        "for each, in one pass. Every scene's hero_subject MUST feature the protagonist.\n\n"
-        "## ANTI-JESUS REGRESSION DEFENSE\n"
-        "Faith-based image generators have an extreme bias where ANY other figure "
-        "automatically regresses into a long-haired, bearded, robed Jesus look — even a "
-        "plain anonymous crowd figure. Defend against this:\n"
-        "1. Never write a generic secondary term with no design pinned to it beyond what's "
-        "in the CHARACTERS block. Any other figure is either explicitly Jesus (use his fixed "
-        "design) or an anonymous crowd/onlooker (use the flat grey-silhouette design) — "
-        "nothing in between, no invented named character.\n"
-        f"2. In any scene with another figure but NOT Jesus, append "
-        f"'{JESUS_NEGATIVE_BLOCK}' to that scene's negative_prompt.\n\n"
+        f"{char_context}\n\n"
+        "You are a visual director designing a full-figured illustrated storyboard for a "
+        "Christian story app — a churchy vibe, not a generic modern-lifestyle explainer. "
+        "Characters are rendered as full-figured people (their exact look comes from their "
+        "reference design above, applied automatically — you never restate their "
+        "ethnicity/wardrobe/hair in image_prompt, just their name and what they're doing). "
+        "You are given one chunk of script. Break it into visual beats, and author every "
+        "field for each, in one pass. Most scenes should feature at least one tracked "
+        "character (usually the protagonist) as the visual anchor of their spiritual "
+        "journey; a scene may have zero tracked characters only for a genuine "
+        "establishing/landscape/symbolic-object shot.\n\n"
+        "## CAST DISCIPLINE\n"
+        "The CHARACTERS list above is the entire recurring cast — never invent a new named "
+        "or visually-distinct supporting character. Any figure not in that list is "
+        "anonymous background texture (crowd/onlookers), never individually distinct and "
+        "never assigned a character id.\n\n"
         "## PILLAR 1: SCENE BREAKING (CUT ON VISUAL CHANGE)\n\n"
         "### CUT ON VISUAL CHANGE, NOT PER SENTENCE (CORE RULE)\n"
         "A new scene is required ONLY when the visual changes. A visual change is ANY "
@@ -547,14 +467,13 @@ def author_chunk(context: dict, chunk: str) -> list[dict]:
         "static illustration of the sentence. One reference video informed this bank and is a "
         "strong indicator of the target style, but DO NOT overfit to it — these prompts must work "
         "for any Christian-content script, not just the one that inspired the bank.\n\n"
-        "### ONE PERSON, RARE COMPANY\n"
-        "This story follows ONE anonymous protagonist — it is not an ensemble cast. Default to the "
-        "protagonist alone with a symbolic object/environment for most beats. Only bring in another "
-        "figure when the beat is genuinely a divine encounter (Jesus, using his fixed design) or "
-        "needs a crowd/society contrast (anonymous grey-silhouette figures, e.g. a wide crowded path, "
-        "a biblical-era village, onlookers) — never a recurring named companion (no 'friend', "
-        "'mentor', 'coworker' with a persistent design). When other figures do appear, they are "
-        "background texture the camera doesn't linger on individually.\n"
+        "### CAST STAYS TO THE LEDGER\n"
+        "Default to the protagonist alone with a symbolic object/environment for most beats. "
+        "Only bring in another tracked character when the beat genuinely involves them, or a "
+        "crowd/society contrast (anonymous background figures, e.g. a wide crowded path, a "
+        "village, onlookers) — never a new recurring companion beyond the CHARACTERS list. "
+        "When background figures do appear, they are texture the camera doesn't linger on "
+        "individually.\n"
         "BANNED IN HERO_SUBJECT: camera/cinematography language (\"POV\", \"zoom\", "
         "\"push-in\", \"wide shot\", \"close-up\", \"tracking shot\", \"dolly\", "
         "\"crane\") and pure mood words with no subject (\"tense\", \"ominous\", "
@@ -563,33 +482,42 @@ def author_chunk(context: dict, chunk: str) -> list[dict]:
         "image_prompt IS THE ONLY TEXT SENT TO THE IMAGE GENERATOR — hero_subject is internal "
         "planning only and is NEVER seen by it. Any detail that matters MUST be written into "
         "image_prompt itself, not just hero_subject.\n"
-        "image_prompt: a SHORT (10-18 words) plain description of a simple monochrome stick-figure "
-        "composition — refer to the protagonist simply as 'the stick figure' or 'a simple black-ink "
-        "stick figure' (their fixed design is applied automatically by a style prefix, so do NOT "
-        "restate ethnicity/wardrobe/hair — they have none) as they ACTIVELY engage with a concrete "
-        "symbolic object or action, plus WHERE (a muted-color background, plus whatever setting/prop "
-        "the metaphor calls for) so the image generator renders it correctly. Never a static/passive "
-        "composition (no sitting, staring out windows, holding a drink, standing in a doorway) and "
-        "never a headless/cropped figure. If Jesus appears, name him explicitly ('Jesus') so his "
-        "fixed fuller-color design applies instead of the stick figure's. Do NOT mention complex "
-        "lighting, shadow depth, 3D rendering, photorealism, or atmosphere (no 'moody', 'dark', "
-        "'dramatic', 'chiaroscuro', 'candlelit', 'golden-hour', 'eerie', 'atmospheric') and do NOT "
-        "prescribe a light source, texture, or camera angle — none of that; a style prefix already "
-        "sets the monochrome-figure/muted-background visual treatment. Just the metaphor/action + "
-        "setting cue, plainly.\n"
+        "image_prompt: a SHORT (10-25 words) plain description of the scene composition. If a "
+        "tracked character appears, refer to them by their ROLE (e.g. 'the protagonist', 'the "
+        "sister-in-law', 'the pastor') — NEVER their given name. Real given names routinely "
+        "trigger gpt-image-2's public-figure safety filter and get the whole image blocked "
+        "(a common first name can false-positive-match a real person), even though their "
+        "full-figured look is applied automatically from their reference design (so also do "
+        "NOT restate ethnicity/wardrobe/hair). Show them ACTIVELY engaging with a concrete "
+        "symbolic object or action, plus WHERE (the setting/background, plus whatever prop the "
+        "metaphor calls for) so the image generator renders it correctly. Never a static/passive "
+        "composition (no sitting, staring out windows, holding a drink, standing in a doorway) "
+        "and never a headless/cropped figure. If a scene has NO tracked character (a pure "
+        "landscape/establishing/symbolic-object shot), describe the setting/object alone. Do NOT "
+        "mention complex lighting, shadow depth, camera angle, or atmosphere (no 'moody', "
+        "'dramatic', 'chiaroscuro', 'candlelit', 'golden-hour', 'eerie') — a consistent "
+        "art-style prefix is applied automatically at generation time.\n"
+        "  SOFTER LANGUAGE (image-safety filters routinely false-positive on these, even for "
+        "completely innocent scenes): NEVER describe restraints, ropes, chains, or ties on or "
+        "around a person's body, even symbolically (say 'a wall crumbles away' or 'a door bursts "
+        "open', not 'chains break off her'). NEVER describe an object moving toward a specific "
+        "body part (chest, waist, throat) — say it moves 'toward her'/'toward him', not toward "
+        "a body part. Avoid framing a lone character privately handling clothing in a bedroom/"
+        "closet as the whole scene (e.g. 'holding up her dress, studying it alone in the "
+        "closet') — if clothing matters to the beat, show it as a background/memory object in a "
+        "more public or active moment instead, not a private solo moment focused on the "
+        "garment. Just the metaphor/action "
+        "+ setting cue, plainly.\n"
         "  EXAMPLES (STUDY AND CONFORM — for whatever metaphor THIS sentence actually calls for, "
-        "not necessarily these): 'A simple black-ink stick figure running up a path toward a floating "
-        "gold crown icon, on a muted tan background.' 'A stick figure watching a simple scale icon "
-        "balance a glowing book against gold coin shapes.' 'A stick figure straining to carry a heavy "
-        "stone icon on its shoulder, muted background.' 'A stick figure's posture lifting with hope as "
-        "chain-link icons shatter around it.' 'A stick figure kneeling with hands cupped together, a "
-        "soft warm glow rising from its hands.' 'A stick figure standing at a forking path, one side "
-        "lit toward a small cross icon, the other leading into a crowd of flat grey-silhouette "
-        "figures.' 'A stick figure in a car's passenger seat while Jesus holds the steering wheel, "
-        "muted background.'\n"
-        "  Rooms/props/objects should read as simple flat 2D shapes and icons, not detailed or "
-        "textured. Do NOT name an art style, medium, camera, or lens — a style prefix is added "
-        "automatically.\n"
+        "not necessarily these): 'The protagonist running up a path toward a floating gold crown "
+        "icon.' 'The protagonist watching a simple scale icon balance a glowing book against gold "
+        "coin shapes.' 'The pastor resting a hand on the protagonist's shoulder outside a small "
+        "church doorway.' 'The protagonist's posture lifting with hope as chain-link icons "
+        "shatter around her.' 'The protagonist kneeling with hands cupped together, a soft warm "
+        "glow rising from her hands.' 'A quiet sunrise over a small town, empty street, warm "
+        "light on rooftops.'\n"
+        "  Rooms/props/objects should read as clean, simple shapes, not cluttered or busy. Do "
+        "NOT name an art style, medium, or lens — a style prefix is added automatically.\n"
         "  NO LEGIBLE TEXT, EVER: the image generator cannot render real words and always "
         "produces garbled gibberish when asked to — never a placeholder like 'XXX' "
         "either, it still renders as literal glyphs. Books, ledgers, letters, signposts, "
@@ -605,10 +533,10 @@ def author_chunk(context: dict, chunk: str) -> list[dict]:
         "clutter (phones, cars, fluorescent light) for present-day beats, or modern intrusions "
         "(cars, electronics, modern clothing) for scripture-era beats. Don't repeat generic quality "
         "terms — those are added automatically.\n"
-        "- people_count: the exact number of people image_prompt depicts (protagonist "
-        "included) — 1 alone, 2 with one companion/Jesus, 3 with two others. Image models "
-        "routinely render an extra unrequested person in group scenes, so this count is "
-        "enforced in code afterward — it MUST match what image_prompt actually describes.\n"
+        "- character_ids: the ids (from the CHARACTERS list) of every tracked character "
+        "visually depicted in image_prompt for this scene. Empty array if none. Image models "
+        "routinely render an extra unrequested person in group scenes — the exact count here is "
+        "enforced in code afterward, so this MUST match what image_prompt actually describes.\n"
         "- scene_type: classify as ONE of spiritual_moment (a quiet personal encounter with "
         "faith or God's presence), transformation (a visible change or breakthrough in the "
         "protagonist's faith), revelation (understanding or realization about God or faith), "
@@ -619,15 +547,15 @@ def author_chunk(context: dict, chunk: str) -> list[dict]:
         "bloodlessly and symbolically through the active metaphor itself (a crumbling stone, "
         "shattering chains, a collapsing crown) rather than graphic harm. This overrides "
         "everything else.\n"
-        "Keep the prompts simple, monochrome stick-figure compositions driven by intent and metaphor, "
-        "not literal illustration. Return ONLY the JSON object described by the schema."
+        "Keep the prompts simple compositions driven by intent and metaphor, not literal "
+        "illustration. Return ONLY the JSON object described by the schema."
     )
-    data = _chat(
+    data = call_llm_json(
         [
             {"role": "system", "content": system},
             {"role": "user", "content": chunk},
         ],
-        _chunk_author_schema(),
+        _chunk_author_schema(character_ids),
         max_completion_tokens=8192,
     )
     scenes = [s for s in data.get("scenes", []) if s.get("script_snippet", "").strip()]
@@ -638,32 +566,16 @@ def author_chunk(context: dict, chunk: str) -> list[dict]:
     if not scenes:
         raise RuntimeError(f"author_chunk: no scene snippets anchored in chunk {chunk[:80]!r}...")
 
-    # Deterministic safety net for the anti-Jesus-regression negative_prompt rule —
-    # the LLM follows it most but not all of the time (observed ~1/16 misses), so
-    # enforce it in code rather than trust every call to comply. Any scene with more
-    # than one figure but no explicit Jesus mention risks the "other figure" regressing
-    # into a robed Jesus look.
-    for s in scenes:
-        if s.get("people_count", 1) > 1:
-            prompt_l = s.get("image_prompt", "").lower()
-            neg_l = s.get("negative_prompt", "").lower()
-            if "jesus" not in prompt_l and "jesus" not in neg_l:
-                s["negative_prompt"] = (
-                    s.get("negative_prompt", "").rstrip(", ") + ", " + JESUS_NEGATIVE_BLOCK
-                ).lstrip(", ")
-
     # Deterministic safety net for phantom extra people (gpt-image-2 hallucinates an
-    # unrequested additional person in group scenes) — force the declared
-    # people_count into both prompts rather than trust the image model to read
-    # a bare number once. Same "code, not prompt-trust" pattern as the Jesus block.
+    # unrequested additional person in group scenes) — force the declared character
+    # count into image_prompt rather than trust the image model to read a bare
+    # number once. Negative-prompt guards (Jesus regression, headcount) are applied
+    # later, at generation time, by agents/scene_compositor — not here.
     for s in scenes:
-        count = s.get("people_count", 1)
-        block = COUNT_NEGATIVE_BLOCKS.get(count)
-        if block:
-            s["negative_prompt"] = (
-                s.get("negative_prompt", "").rstrip(", ") + ", " + block
-            ).lstrip(", ")
-        word = {1: "one person", 2: "two people", 3: "three people"}.get(count, "one person")
+        ids = s.get("character_ids") or []
+        if not ids:
+            continue
+        word = {1: "one person", 2: "two people", 3: "three people"}.get(len(ids), f"{len(ids)} people")
         s["image_prompt"] = (
             s.get("image_prompt", "").rstrip(". ") + f", exactly {word} total, no additional figures"
         )
@@ -671,24 +583,25 @@ def author_chunk(context: dict, chunk: str) -> list[dict]:
     return scenes
 
 
-def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUNK,
+def break_into_scenes(script: str, characters: list[dict], sentences_per_chunk: int = SENTENCES_PER_CHUNK,
                        workers: int = 8, context: dict | None = None) -> list[dict]:
     """Script -> [{scene_number, script_snippet, hero_subject,
-    image_prompt, negative_prompt, scene_type}, ...].
+    image_prompt, negative_prompt, scene_type, character_ids}, ...].
 
-    One-stage character setup: protagonist and Jesus are FIXED designs
-    (PROTAGONIST_APPEARANCE, JESUS_APPEARANCE) — no per-script character-inference
-    call anymore, see author_chunk()'s docstring. Otherwise all OpenAI gpt-5-mini at
-    reasoning_effort=low (raw urllib, this repo's house style): infer_context() once
-    (skipped if the caller already computed it — run.py caches this in context.json
-    for generate_images()'s image QA, so it's passed in here rather than re-billed),
-    then chunk_script() (mechanical, no LLM) followed by author_chunk() per chunk IN
+    `characters` is agents/character_ledger's output for this script — built once, up
+    front, by run.py (a per-script character-inference call now feeds this, unlike the
+    old fixed-constant design; see author_chunk()'s docstring). Otherwise all OpenAI
+    gpt-5-mini at reasoning_effort=low (raw urllib, this repo's house style):
+    infer_context() once (skipped if the caller already computed it — run.py caches
+    this in context.json, so it's passed in here rather than re-billed), then
+    chunk_script() (mechanical, no LLM) followed by author_chunk() per chunk IN
     PARALLEL — the scene cut and every per-scene field come out of that ONE call per
     chunk, see author_chunk()'s docstring for why splitting and authoring are no
     longer separate calls. Warns (does not raise) if the concatenated snippets don't
     reconstruct the input closely — LLM verbatim-copy mandates are usually but not
     always followed exactly. Per-scene duration is NOT decided here — it comes from
-    real narration-audio alignment, see align_scene_durations().
+    real narration-audio alignment, see align_scene_durations(). Image
+    generation/consistency is NOT decided here either — see agents/scene_compositor.
     """
     from concurrent.futures import ThreadPoolExecutor
 
@@ -700,7 +613,7 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
     print(f"  -> {len(chunks)} chunks ({sentences_per_chunk} sentences each)", flush=True)
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        authored_chunks = list(ex.map(lambda c: author_chunk(context, c), chunks))
+        authored_chunks = list(ex.map(lambda c: author_chunk(context, c, characters), chunks))
 
     out = []
     for authored in authored_chunks:
@@ -712,6 +625,7 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
                 "image_prompt": a["image_prompt"],
                 "negative_prompt": a.get("negative_prompt", ""),
                 "scene_type": a.get("scene_type", "spiritual_moment"),
+                "character_ids": a.get("character_ids", []),
             })
     print(f"  -> {len(out)} scenes", flush=True)
 
@@ -728,51 +642,6 @@ def break_into_scenes(script: str, sentences_per_chunk: int = SENTENCES_PER_CHUN
         )
 
     return out
-
-
-def generate_images(scenes: list[dict], context: dict, workers: int = 8) -> list[dict]:
-    """Each scene -> asset_selector.py:route(), IN PARALLEL (every lane — archival
-    search, stock search, graphic generation, gpt-image-2 — is I/O-bound, scenes are
-    independent). `context` is infer_context()'s output (spiritual context), needed by the
-    the image model's vision-QA prompts. A scene's image failure degrades to
-    image_url=None rather than aborting the batch. Adds `lane` to every scene
-    (which lane actually produced the image, or None if every lane failed).
-    """
-    from concurrent.futures import ThreadPoolExecutor, as_completed
-    import asset_selector  # src/ — deferred import, see that module's docstring
-
-    results: list = [None] * len(scenes)
-    done = 0
-    with ThreadPoolExecutor(max_workers=workers) as ex:
-        futs = {ex.submit(asset_selector.route, s, context): i for i, s in enumerate(scenes)}
-        for fut in as_completed(futs):
-            results[futs[fut]] = fut.result()
-            done += 1
-            print(f"  ... generated {done}/{len(scenes)} images", flush=True)
-
-    miss = [s["scene_number"] for s in results if not s["image_url"]]
-    if miss:
-        print(f"  images: {len(results) - len(miss)}/{len(results)} generated, "
-              f"{len(miss)} MISSING, backfilling from neighbor: {miss}", flush=True)
-        _backfill_missing_images(results)
-    else:
-        print(f"  images: {len(results)}/{len(results)} generated", flush=True)
-    return results
-
-
-def _backfill_missing_images(scenes: list[dict]) -> None:
-    """Hands-off run, no human review — a blank scene is worse than a repeated one.
-    Fill any scene['image_url'] left None with the nearest neighbor's image_url
-    (previous scene preferred, else next), in place. No-op if every lane failed
-    for every scene (nothing to borrow from)."""
-    for i, s in enumerate(scenes):
-        if s["image_url"]:
-            continue
-        for j in list(range(i - 1, -1, -1)) + list(range(i + 1, len(scenes))):
-            if scenes[j]["image_url"]:
-                s["image_url"] = scenes[j]["image_url"]
-                s["lane"] = f"neighbor:{scenes[j]['scene_number']}"
-                break
 
 
 def whisper_words(narration_path: str) -> tuple[list[dict], float]:
@@ -861,6 +730,11 @@ if __name__ == "__main__":
     import gallery as heritage_gallery  # local module, self-test only
     import tts                          # utils: Voice Generator Service  # noqa
 
+    sys.path.insert(0, os.path.join(HERE, ".."))  # repo root, for agents/ below
+    from agents.character_ledger import client as character_ledger
+    from agents.character_sheet import client as character_sheet
+    from agents.scene_compositor import client as scene_compositor
+
     SAMPLE_SCRIPT = (
         "In the 8th century, the city of Chang'an stood as the beating heart of Tang Dynasty "
         "China, its wide avenues thronged with silk merchants, Buddhist monks, and travelers "
@@ -873,25 +747,34 @@ if __name__ == "__main__":
         "scent of woodsmoke and distant lands."
     )
 
-    print("Heritage scene_engine self-test: script -> scenes -> images -> narration -> align -> gallery")
+    print("Heritage scene_engine self-test: script -> characters -> scenes -> images -> narration -> align -> gallery")
     print(f"sample script: {len(SAMPLE_SCRIPT.split())} words", flush=True)
 
-    print("\n1/5 break_into_scenes()...", flush=True)
+    print("\n1/7 infer_context()...", flush=True)
     context = infer_context(SAMPLE_SCRIPT)
-    scenes = break_into_scenes(SAMPLE_SCRIPT, context=context)
+
+    print("\n2/7 character_ledger.build()...", flush=True)
+    characters = character_ledger.build(SAMPLE_SCRIPT, context)["characters"]
+    print(f"  -> {len(characters)} tracked character(s): {[c['id'] for c in characters]}", flush=True)
+
+    print("\n3/7 character_sheet.generate_all()...", flush=True)
+    characters = character_sheet.generate_all(characters)
+
+    print("\n4/7 break_into_scenes()...", flush=True)
+    scenes = break_into_scenes(SAMPLE_SCRIPT, characters, context=context)
     print(f"  -> {len(scenes)} scenes", flush=True)
     for s in scenes:
         print(f"  scene {s['scene_number']}: {s['script_snippet'][:60]!r}... "
-              f"[{s['scene_type']}]", flush=True)
+              f"[{s['scene_type']}] chars={s['character_ids']}", flush=True)
 
-    print("\n2/5 generate_images()...", flush=True)
-    scenes = generate_images(scenes, context)
+    print("\n5/7 scene_compositor.compose_all()...", flush=True)
+    scenes = scene_compositor.compose_all(scenes, characters)
 
     narration_path = os.path.join(HERE, "test-narration.mp3")
-    print(f"\n3/5 tts.synthesize() -> {narration_path}...", flush=True)
+    print(f"\n6/7 tts.synthesize() -> {narration_path}...", flush=True)
     tts.synthesize(SAMPLE_SCRIPT, narration_path)
 
-    print("\n4/5 whisper_words() + align_scene_durations() (hosted whisper service + utils/align.py DTW)...",
+    print("\n6b/7 whisper_words() + align_scene_durations() (hosted whisper service + utils/align.py DTW)...",
           flush=True)
     words, total_duration = whisper_words(narration_path)
     scenes = align_scene_durations(scenes, words, total_duration)
@@ -900,7 +783,7 @@ if __name__ == "__main__":
               f"(matched={s['matched']})", flush=True)
 
     gallery_path = os.path.join(HERE, "test-gallery.html")
-    print(f"\n5/5 build_gallery() -> {gallery_path}", flush=True)
+    print(f"\n7/7 build_gallery() -> {gallery_path}", flush=True)
     heritage_gallery.build_gallery(scenes, gallery_path)
 
     remotion_scenes_path = os.path.join(HERE, "..", "remotion", "src", "scenes.json")

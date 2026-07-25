@@ -20,13 +20,17 @@ against the row's OWN downloaded voice_url, never a freshly-TTS'd file (that
 only happens in scene_engine.py's __main__ self-test, which has no real row
 to test against).
 
-  baserow(get_row) -> scenes(break_into_scenes) -> images(generate_images)
-  -> gallery(build_gallery, non-blocking review) -> download narration
-  -> whisper_words (cached, computed ONCE) -> align(align_scene_durations,
-  real Whisper+DTW) -> remotion/src/scenes.json (scenes + narrationUrl + the
-  same whisper words, for <Captions>'s current-word highlight) -> Remotion
-  Lambda render (deploy:site + render:remote — NEVER local `remotion render`,
-  that freezes the machine) -> S3 -> ClickUp -> prune_runs
+  baserow(get_row) -> context(infer_context) -> characters(agents/character_ledger
+  + agents/character_sheet — who's worth tracking, one full-figured reference image
+  each) -> scenes(break_into_scenes, characters-aware) -> images
+  (agents/scene_compositor, gpt-image-2 t2i per scene using the tracked characters
+  present — no vision-QA anywhere in this pipeline, match/no-match is a human call
+  off the gallery) -> gallery(build_gallery, non-blocking review) -> download
+  narration -> whisper_words (cached, computed ONCE) ->
+  align(align_scene_durations, real Whisper+DTW) -> remotion/src/scenes.json
+  (scenes + narrationUrl + the same whisper words, for <Captions>'s current-word
+  highlight) -> Remotion Lambda render (deploy:site + render:remote — NEVER local
+  `remotion render`, that freezes the machine) -> S3 -> ClickUp -> prune_runs
 
 Usage:
   python3 src/run.py <baserow_row_id>   (from the repo root)
@@ -46,6 +50,8 @@ if HERE not in sys.path:
 UTILS_DIR = os.path.join(PROJECT_ROOT, "utils")
 if UTILS_DIR not in sys.path:
     sys.path.insert(0, UTILS_DIR)
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 import baserow                          # src/
 import clickup as heritage_clickup      # src/: push_video()
@@ -53,6 +59,9 @@ import s3 as heritage_s3                # src/: put_file()
 import gallery as heritage_gallery      # src/
 import scene_engine                     # src/
 import cleanup                          # utils/
+from agents.character_ledger import client as character_ledger
+from agents.character_sheet import client as character_sheet
+from agents.scene_compositor import client as scene_compositor
 
 DONE_MARKER = "done.marker"
 
@@ -67,6 +76,21 @@ def run_node(cmd: list[str], extra_env: dict | None = None, timeout: int = 3600)
         raise RuntimeError(f"{cmd[0]} {' '.join(cmd[1:3])} exit {r.returncode}: "
                             f"{(r.stderr or r.stdout)[-2000:]}")
     return r.stdout
+
+
+def _backfill_missing_images(scenes: list[dict]) -> None:
+    """Hands-off run, no human review — a blank scene is worse than a repeated one.
+    Fill any scene['image_url'] left None with the nearest neighbor's image_url
+    (previous scene preferred, else next), in place. No-op if every scene failed
+    (nothing to borrow from)."""
+    for i, s in enumerate(scenes):
+        if s["image_url"]:
+            continue
+        for j in list(range(i - 1, -1, -1)) + list(range(i + 1, len(scenes))):
+            if scenes[j]["image_url"]:
+                s["image_url"] = scenes[j]["image_url"]
+                s["generation_method"] = f"neighbor:{scenes[j]['scene_number']}"
+                break
 
 
 def run_pipeline(row_id) -> str | None:
@@ -91,15 +115,8 @@ def run_pipeline(row_id) -> str | None:
     if not clickup_url:
         raise RuntimeError(f"row {row_id} has no clickup_url — nowhere to push the finished video")
 
-    # 1/2 SCENES — LLM breakdown (context -> snippets -> per-batch authoring), same
-    # chain scene_engine.py's own __main__ self-test uses. scenes.json is a single
-    # evolving artifact (same shape the manual runs in runs/1027, runs/1947 already
-    # produced) — later stages add keys to it (image_url, then start/end/
-    # duration_seconds) rather than writing separate files, so resume-checks below
-    # inspect the keys already on each scene rather than a stage-specific filename.
-    # context.json is small and cheap to recompute, but cached anyway so a rerun
-    # never re-pays for it and the Krea's vision-QA prompts (era/place)
-    # stay identical across a resumed run.
+    # 1 CONTEXT — cheap to recompute, but cached anyway so a rerun never re-pays for
+    # it and stays identical across a resumed run.
     context_path = os.path.join(rd, "context.json")
     if not os.path.exists(context_path):
         context = scene_engine.infer_context(script)
@@ -107,21 +124,50 @@ def run_pipeline(row_id) -> str | None:
     else:
         context = json.load(open(context_path))
 
+    # 2 CHARACTERS — agents/character_ledger decides which characters are worth
+    # tracking (protagonist always, Jesus only if he appears, supporting cast only
+    # if recurring), then agents/character_sheet generates one full-figured
+    # reference image per tracked character. characters.json is a single evolving
+    # artifact, same resumable pattern as scenes.json below.
+    characters_path = os.path.join(rd, "characters.json")
+    if not os.path.exists(characters_path):
+        print("  characters: character_ledger.build()...", flush=True)
+        characters = character_ledger.build(script, context)["characters"]
+        print(f"  characters: {len(characters)} tracked -> {[c['id'] for c in characters]}", flush=True)
+        print("  characters: character_sheet.generate_all()...", flush=True)
+        characters = character_sheet.generate_all(characters)
+        json.dump(characters, open(characters_path, "w"), indent=2)
+        print("  characters: done")
+    else:
+        characters = json.load(open(characters_path))
+
+    # 3 SCENES — LLM breakdown (context + characters -> snippets -> per-batch
+    # authoring), same chain scene_engine.py's own __main__ self-test uses.
+    # scenes.json is a single evolving artifact — later stages add keys to it
+    # (image_url, then start/end/duration_seconds) rather than writing separate
+    # files, so resume-checks below inspect the keys already on each scene rather
+    # than a stage-specific filename.
     scenes_path = os.path.join(rd, "scenes.json")
     if not os.path.exists(scenes_path):
         print("  scenes: break_into_scenes()...", flush=True)
-        scenes = scene_engine.break_into_scenes(script, context=context)
+        scenes = scene_engine.break_into_scenes(script, characters, context=context)
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print(f"  scenes: done ({len(scenes)} scenes)")
     else:
         scenes = json.load(open(scenes_path))
 
-    # 3 IMAGES — Krea per scene (archival/stock/graphic/Krea), in parallel.
-    # Skip if every scene already carries an image_url (i.e. this scenes.json
-    # already went through generate_images()).
+    # 4 IMAGES — agents/scene_compositor, t2i per scene using whichever tracked
+    # characters that scene calls for, in parallel. No vision-QA anywhere — a human
+    # reviews the gallery and judges consistency. Skip if every scene already
+    # carries an image_url (i.e. this scenes.json already went through compose_all()).
     if not scenes or "image_url" not in scenes[0]:
-        print("  images: generate_images()...", flush=True)
-        scenes = scene_engine.generate_images(scenes, context)
+        print("  images: scene_compositor.compose_all()...", flush=True)
+        scenes = scene_compositor.compose_all(scenes, characters)
+        miss = [s["scene_number"] for s in scenes if not s["image_url"]]
+        if miss:
+            print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
+                  f"{len(miss)} MISSING, backfilling from neighbor: {miss}", flush=True)
+            _backfill_missing_images(scenes)
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  images: done")
 
