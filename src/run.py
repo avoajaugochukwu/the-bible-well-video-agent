@@ -21,7 +21,7 @@ only happens in scene_engine.py's __main__ self-test, which has no real row
 to test against).
 
   baserow(get_row) -> context(infer_context) -> characters(agents/character_ledger
-  + agents/character_sheet — who's worth tracking, one full-figured reference image
+  + agents/character_sheet — who's worth tracking, one full-body reference image
   each) -> scenes(break_into_scenes, characters-aware) -> images
   (agents/scene_compositor, gpt-image-2 t2i per scene using the tracked characters
   present — no vision-QA anywhere in this pipeline, match/no-match is a human call
@@ -62,6 +62,8 @@ import cleanup                          # utils/
 from agents.character_ledger import client as character_ledger
 from agents.character_sheet import client as character_sheet
 from agents.scene_compositor import client as scene_compositor
+from agents.story_dossier import client as story_dossier_agent
+from agents.visual_director import client as visual_director
 
 DONE_MARKER = "done.marker"
 
@@ -118,51 +120,139 @@ def run_pipeline(row_id) -> str | None:
     # 1 CONTEXT — cheap to recompute, but cached anyway so a rerun never re-pays for
     # it and stays identical across a resumed run.
     context_path = os.path.join(rd, "context.json")
-    if not os.path.exists(context_path):
+    context_current = False
+    if os.path.exists(context_path):
+        context = json.load(open(context_path))
+        context_current = (
+            context.get("context_contract_version")
+            == scene_engine.CONTEXT_CONTRACT_VERSION
+        )
+    if not context_current:
+        if os.path.exists(context_path):
+            print("  context: cached contract is outdated; re-analyzing story meaning", flush=True)
         context = scene_engine.infer_context(script)
         json.dump(context, open(context_path, "w"), indent=2)
-    else:
-        context = json.load(open(context_path))
 
-    # 2 CHARACTERS — agents/character_ledger decides which characters are worth
+    # 2 DOSSIER — read the whole script before casting or directing. Source facts
+    # remain evidence-backed; unspecified production details are inferred from the
+    # full story's professional, social, and wardrobe vibe.
+    dossier_path = os.path.join(rd, "story-dossier.json")
+    dossier_current = False
+    if os.path.exists(dossier_path):
+        story_dossier = json.load(open(dossier_path))
+        dossier_current = (
+            story_dossier.get("story_dossier_contract_version")
+            == story_dossier_agent.STORY_DOSSIER_CONTRACT_VERSION
+        )
+    if not dossier_current:
+        print("  dossier: story_dossier.build()...", flush=True)
+        story_dossier = story_dossier_agent.build(script)
+        json.dump(story_dossier, open(dossier_path, "w"), indent=2)
+        print(
+            "  dossier: "
+            f"{story_dossier['whole_script_vibe']['primary_visual_vibe']}",
+            flush=True,
+        )
+
+    # 3 CHARACTERS — agents/character_ledger decides which characters are worth
     # tracking (protagonist always, Jesus only if he appears, supporting cast only
-    # if recurring), then agents/character_sheet generates one full-figured
+    # if recurring), then agents/character_sheet generates one full-body
     # reference image per tracked character. characters.json is a single evolving
     # artifact, same resumable pattern as scenes.json below.
     characters_path = os.path.join(rd, "characters.json")
-    if not os.path.exists(characters_path):
+    characters_current = False
+    if os.path.exists(characters_path):
+        characters = json.load(open(characters_path))
+        characters_current = bool(characters) and all(
+            c.get("character_contract_version") == character_ledger.CHARACTER_CONTRACT_VERSION
+            and c.get("character_sheet_contract_version")
+            == character_sheet.CHARACTER_SHEET_CONTRACT_VERSION
+            for c in characters
+        )
+    if not characters_current:
+        if os.path.exists(characters_path):
+            print("  characters: cached contract is outdated; regenerating visual identities", flush=True)
         print("  characters: character_ledger.build()...", flush=True)
-        characters = character_ledger.build(script, context)["characters"]
+        characters = character_ledger.build(
+            script,
+            context,
+            story_dossier=story_dossier,
+        )["characters"]
         print(f"  characters: {len(characters)} tracked -> {[c['id'] for c in characters]}", flush=True)
         print("  characters: character_sheet.generate_all()...", flush=True)
         characters = character_sheet.generate_all(characters)
         json.dump(characters, open(characters_path, "w"), indent=2)
         print("  characters: done")
-    else:
-        characters = json.load(open(characters_path))
+    # 4 DIRECTOR — narration and visuals are separate lanes. The director sees
+    # the categorical emotional score and production dossier, not narration events.
+    visual_story_path = os.path.join(rd, "visual-story.json")
+    visual_story_current = False
+    if os.path.exists(visual_story_path):
+        visual_story = json.load(open(visual_story_path))
+        visual_story_current = (
+            visual_story.get("visual_story_contract_version")
+            == visual_director.VISUAL_STORY_CONTRACT_VERSION
+        )
+    if not visual_story_current:
+        print("  director: visual_director.build()...", flush=True)
+        visual_story = visual_director.build(
+            script,
+            context,
+            characters,
+            story_dossier=story_dossier,
+        )
+        json.dump(visual_story, open(visual_story_path, "w"), indent=2)
+        print(
+            f"  director: {visual_story['film_title']!r}, "
+            f"{len(visual_story['story_beats'])} story beats",
+            flush=True,
+        )
 
-    # 3 SCENES — LLM breakdown (context + characters -> snippets -> per-batch
-    # authoring), same chain scene_engine.py's own __main__ self-test uses.
+    # 5 SCENES — verbatim narration cuts mapped onto the director's parallel
+    # story. Chunk authors choose shots inside the locked film plan.
     # scenes.json is a single evolving artifact — later stages add keys to it
     # (image_url, then start/end/duration_seconds) rather than writing separate
     # files, so resume-checks below inspect the keys already on each scene rather
     # than a stage-specific filename.
     scenes_path = os.path.join(rd, "scenes.json")
-    if not os.path.exists(scenes_path):
+    scenes_current = False
+    if os.path.exists(scenes_path):
+        scenes = json.load(open(scenes_path))
+        scenes_current = bool(scenes) and all(
+            s.get("prompt_contract_version") == scene_engine.PROMPT_CONTRACT_VERSION
+            and s.get("visual_story_contract_version")
+            == visual_director.VISUAL_STORY_CONTRACT_VERSION
+            for s in scenes
+        )
+    scenes_regenerated = not scenes_current
+    if scenes_regenerated:
+        if os.path.exists(scenes_path):
+            print("  scenes: cached prompt contract is outdated; redesigning visual metaphors", flush=True)
         print("  scenes: break_into_scenes()...", flush=True)
-        scenes = scene_engine.break_into_scenes(script, characters, context=context)
+        scenes = scene_engine.break_into_scenes(
+            script,
+            characters,
+            context=context,
+            visual_story=visual_story,
+        )
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print(f"  scenes: done ({len(scenes)} scenes)")
-    else:
-        scenes = json.load(open(scenes_path))
-
-    # 4 IMAGES — agents/scene_compositor, t2i per scene using whichever tracked
+    # 5 IMAGES — agents/scene_compositor, t2i per scene using whichever tracked
     # characters that scene calls for, in parallel. No vision-QA anywhere — a human
-    # reviews the gallery and judges consistency. Skip if every scene already
-    # carries an image_url (i.e. this scenes.json already went through compose_all()).
-    if not scenes or "image_url" not in scenes[0]:
+    # reviews the gallery and judges consistency. The compositor has its own cache
+    # contract because final prompt construction can change without changing shot plans.
+    images_current = bool(scenes) and all(
+        s.get("image_url")
+        and s.get("compositor_contract_version")
+        == scene_compositor.COMPOSITOR_CONTRACT_VERSION
+        for s in scenes
+    )
+    images_regenerated = not images_current
+    if images_regenerated:
+        if scenes and any(s.get("image_url") for s in scenes):
+            print("  images: cached compositor contract is outdated; regenerating", flush=True)
         print("  images: scene_compositor.compose_all()...", flush=True)
-        scenes = scene_compositor.compose_all(scenes, characters)
+        scenes = scene_compositor.compose_all(scenes, characters, visual_story)
         miss = [s["scene_number"] for s in scenes if not s["image_url"]]
         if miss:
             print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
@@ -173,7 +263,7 @@ def run_pipeline(row_id) -> str | None:
 
     # 4 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
     gallery_path = os.path.join(rd, "gallery.html")
-    if not os.path.exists(gallery_path):
+    if scenes_regenerated or images_regenerated or not os.path.exists(gallery_path):
         heritage_gallery.build_gallery(scenes, gallery_path)
         print(f"  gallery: {gallery_path}")
 

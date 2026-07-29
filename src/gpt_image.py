@@ -1,10 +1,10 @@
-"""gpt-image-2 client: prompt -> flat 2D cartoon PNG -> S3 public URL.
+"""gpt-image-2 client: prompt -> PNG -> S3 public URL.
 
-Swapped in for Krea (src/krea.py) on the flat-cartoon/whiteboard style pivot.
-OpenAI's images API has no negative_prompt param (unlike Krea) — callers fold
-negatives into the prompt itself as a trailing "Avoid:" clause. gpt-image-2
-only returns b64_json (no hosted url), so the PNG is saved locally then
-re-hosted via src/s3.py:put_file() same as every other image in this pipeline.
+OpenAI's Images API has no negative-prompt channel. Callers must express safe,
+positive composition constraints in the main prompt; explicit comma-separated
+negative lists are intentionally not appended because they can themselves trip
+input moderation. gpt-image-2 only returns b64_json (no hosted URL), so the PNG
+is saved locally and re-hosted via src/s3.py:put_file().
 """
 import base64
 import os
@@ -24,13 +24,15 @@ QUALITY = "low"
 
 
 def generate_image(prompt: str, negative_prompt: str = "", retries: int = 4) -> str:
-    """One flat 2D cartoon still -> S3 RAW public url. Retries the whole call —
-    gpt-image's moderation block is stochastic, a fresh call often clears it."""
+    """Generate one still and return its raw public S3 URL.
+
+    ``negative_prompt`` remains for compatibility with old callers but is ignored:
+    the API does not support it, and folding explicit safety terms into the ordinary
+    prompt was a source of moderation false positives.
+    """
     from openai import OpenAI
 
-    full_prompt = prompt[:4000]
-    if negative_prompt:
-        full_prompt += f". Avoid: {negative_prompt[:1000]}"
+    full_prompt = prompt[:5000]
 
     client = OpenAI(api_key=env.require("OPENAI_API_KEY"))
     res = None
@@ -38,7 +40,12 @@ def generate_image(prompt: str, negative_prompt: str = "", retries: int = 4) -> 
         try:
             res = client.images.generate(model=MODEL, prompt=full_prompt, size=SIZE, quality=QUALITY)
             break
-        except Exception:
+        except Exception as ex:
+            status = getattr(ex, "status_code", None)
+            # Repeating the identical prompt cannot repair a moderation or other
+            # client-side rejection. Let the compositor change prompt strategy.
+            if status is not None and status < 500 and status != 429:
+                raise
             if attempt == retries - 1:
                 raise
             time.sleep(3 * 2 ** attempt)

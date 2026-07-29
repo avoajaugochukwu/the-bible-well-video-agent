@@ -1,0 +1,318 @@
+{
+  "film_title": "Rootline",
+  "parallel_story": "A steady municipal landscape planner races to deliver a modest streetscape retrofit\u2014a planting and stormwater swale\u2014on a tight timeline after a contractor threatens to pull out and neighbors voice fear about change. Through site measuring, quiet visits with skeptical homeowners, a tense town-hall confrontation, and recruiting a small crew of volunteers, she must prove the plan is maintainable and rebuild trust so the project can be planted before the first heavy rains.",
+  "movie_style": "3D animated, warm earth-tones and tactile surfaces. Composition favors medium and wide frames showing people in environmental context: rows of modest houses, narrow sidewalks, and folded construction plans. Lenses: slight anamorphic squeeze for streetscapes to emphasize linear movement; close-ups with shallow depth highlight hands, callused knuckles, and small gestures (folded plans, a tape measure clicking). Production design is lived-in\u2014waxed jackets, rolled-up plans, seed catalogs, folding chairs at town hall, and a battered municipal pickup. Lighting shifts with the seasons: cool gray overcast for unease, soft golden rim light for moments of trust. Textures are detailed\u2014wet pavement, crisp paper, knitted cardigans, rough bark. Color progression moves from muted winter greens and browns toward saturated spring greens as the protagonist moves from fear to trust. Camera frames center her in compositional thirds during decisive moments; when she doubts, the frame pulls slightly off-center. Public scenes use medium-wide staging to show multiple people and consequences; intimate beats use close two-shots to reveal relational nuance.",
+  "external_goal": "Complete and plant a neighborhood streetscape retrofit (curb-level bioswale and coordinated front-yard street trees) on a tight schedule by keeping the contractor engaged, securing volunteer maintenance, and convincing key homeowners to sign a simple care agreement\u2014all visibly realized through measuring, planting, directing crews, and hands-in-soil community work.",
+  "protagonist_arc": "Beginning: Methodical planner respected for steady judgment but privately anxious about the project failing and community opposition. Pressure: Contractor Walt threatens to withdraw after a dispute; homeowners (led by an elderly resident) fear maintenance burden and Sharon pushes a faster alternative. Choice: She decides to open her process\u2014visit homes, adjust the plan to reduce maintenance, and recruit neighbors to share upkeep. Changed ending: The project is planted on time, she accepts help, and trust replaces fear as neighbors visibly commit to joint care and the streetscape takes root.",
+  "recurring_locations": [
+    {
+      "id": "town_hall",
+      "name": "Linden Town Hall Meeting Room",
+      "setting_type": "shared_public",
+      "social_domain": "municipal/governance",
+      "institution_type": "small-town municipal meeting room",
+      "visual_identity": "folding metal chairs, a community bulletin board with local flyers, a long wooden table with rolled plans and a portable projector, fluorescent ceiling light softened by evening warmth",
+      "story_function": "public forum for the planner to present designs, face opposition, and negotiate with council and residents"
+    },
+    {
+      "id": "maple_row",
+      "name": "Maple Row Residential Streetscape",
+      "setting_type": "shared_public",
+      "social_domain": "neighborhood",
+      "institution_type": "residential street with narrow sidewalks and mature maples",
+      "visual_identity": "two rows of modest bungalows with small front porches, narrow concrete sidewalks edged by grassy strips, mature maple canopy, visible driveways and curb cuts, seasonal puddles after rain",
+      "story_function": "primary site work location where measurements, planting, and neighbor interactions occur"
+    },
+    {
+      "id": "maintenance_yard",
+      "name": "Municipal Maintenance Yard and Workshop",
+      "setting_type": "shared_public",
+      "social_domain": "public works",
+      "institution_type": "town maintenance depot with tools, a pickup, and planting supplies",
+      "visual_identity": "weathered tool racks, buckets of soil and seedlings, a battered municipal pickup, concrete pad with painted parking lines, a wall of laminated work orders",
+      "story_function": "operational hub where she checks supplies, negotiates with contractor Walt, and organizes crews"
+    },
+    {
+      "id": "protagonist_home",
+      "name": "Protagonist's Bungalow Porch",
+      "setting_type": "private",
+      "social_domain": "family/home",
+      "institution_type": "modest suburban bungalow porch and kitchen nook",
+      "visual_identity": "small wooden porch with a single chair and potted plant, a table with seed catalogs and a folding tape measure, warm lamplight through curtains in the evening",
+      "story_function": "private space for reflective moments, sketching adjustments, and a reconciliatory conversation with sister-in-law Sharon"
+    }
+  ],
+  "story_beats": [
+    {
+      "beat_number": 1,
+      "location_id": "town_hall",
+      "activity_type": "public presentation and Q&A",
+      "setting_logic": "Town Hall is the official place where the planner presents the streetscape design and neighbors bring concerns; the municipal planner is expected to attend evening meetings to seek input and approval.",
+      "character_ids": [
+        "protagonist",
+        "thomas"
+      ],
+      "visible_action": "She stands beside a simple projected streetscape diagram, pointing with a wooden pointer to curbs, bioswale lines, and tree placements while Thomas, a council member, watches with folded arms; she quietly hands out a printed maintenance schedule and gestures to the plan\u2019s low-maintenance choices.",
+      "emotional_turn": "stability \u2014 mixed; she appears steady but guarded, measured distance maintains public calm",
+      "narration_anchor": "I did everything right,"
+    },
+    {
+      "beat_number": 2,
+      "location_id": "maple_row",
+      "activity_type": "doorstep visits and measurements",
+      "setting_logic": "As neighborhood planner she visits homeowners to discuss specifics and take measurements so plans reflect property realities and residents\u2019 daily use.",
+      "character_ids": [
+        "protagonist",
+        "old_woman"
+      ],
+      "visible_action": "She kneels at the curb with a folding tape measure, the scrape on her right knuckle visible as she clicks the blade; the old woman watches from a stooped porch, worried, and the planner traces a small sketch that reduces turf and shows a shallow swale, then holds the sketch out for the woman to inspect.",
+      "emotional_turn": "unease \u2014 mixed; close proximity reveals personal doubts as the neighbor\u2019s worry registers",
+      "narration_anchor": "she had waited well."
+    },
+    {
+      "beat_number": 3,
+      "location_id": "maintenance_yard",
+      "activity_type": "project logistical check and contractor confrontation",
+      "setting_logic": "The yard stores equipment and is where the planner must coordinate with the contractor and confirm plant deliveries and crew schedules.",
+      "character_ids": [
+        "protagonist",
+        "walt"
+      ],
+      "visible_action": "She inspects seedling flats and a truckbed of soil amendments while Walt explains, hands on hips, that unforeseen utility trenching increased costs; she opens her notebook, compares measurements, and offers a technical adjustment to reduce excavation\u2014Walt\u2019s jaw tightens but he does not commit.",
+      "emotional_turn": "exposure \u2014 negative; measured close-up shows project vulnerability as contractor doubts emerge",
+      "narration_anchor": "Her waiting was not faith."
+    },
+    {
+      "beat_number": 4,
+      "location_id": "town_hall",
+      "activity_type": "heated public hearing where opposition grows",
+      "setting_logic": "When neighbors learn of potential extra costs and maintenance burden they raise the issue at a scheduled town hearing where the planner must defend the plan before public officials and residents.",
+      "character_ids": [
+        "protagonist",
+        "sister_in_law_sharon",
+        "thomas",
+        "old_woman"
+      ],
+      "visible_action": "A medium-frame of the meeting shows the old woman pressing a cane against her kneecap as she stands to speak; Sharon, seated in the second row, asks for a faster, cheaper asphalt fix; Thomas moderates; the planner responds with measured gestures and a quickly unfolded larger sketch that reveals phased planting to reduce immediate costs\u2014the room murmurs and some faces harden.",
+      "emotional_turn": "rupture \u2014 negative; active confrontation raises the stakes and social pressure",
+      "narration_anchor": "invitation came in the mail"
+    },
+    {
+      "beat_number": 5,
+      "location_id": "protagonist_home",
+      "activity_type": "private reflection and sketching adjustments",
+      "setting_logic": "After a stressful public meeting, returning home is credible for the planner to revise drawings and prepare a new approach in a calming domestic setting.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Sitting at her small kitchen table, she props her glasses on a cord, spreads revised plan overlays and seed catalog pages, rubs her knuckle where the old scar shows, and slowly erases a bold line\u2014her shoulders slump; a single lamp pool of light frames this quiet low point.",
+      "emotional_turn": "low_point \u2014 negative; close, still shot shows her internal doubt and waning agency",
+      "narration_anchor": "She put it on."
+    },
+    {
+      "beat_number": 6,
+      "location_id": "maple_row",
+      "activity_type": "morning site check after rain where planted test trench shows erosion worry",
+      "setting_logic": "A post-rain inspection is a routine, necessary check for a streetscape project to assess drainage performance and reassure residents.",
+      "character_ids": [
+        "protagonist",
+        "walt"
+      ],
+      "visible_action": "Kneeling in a shallow muddy test trench, she brushes wet soil with gloved hands revealing a small collapse; Walt looks away, arms folded; she straightens slowly, the rain-soaked street and vacant equipment hint the crew might leave.",
+      "emotional_turn": "low_point \u2014 negative; reduced agency as the field evidence deepens fear",
+      "narration_anchor": "Did you forget me?"
+    },
+    {
+      "beat_number": 7,
+      "location_id": "protagonist_home",
+      "activity_type": "reconciliation visit from sister-in-law Sharon",
+      "setting_logic": "Being family and a community advocate, Sharon visiting the planner\u2019s home to discuss alternatives is believable and provides relational opportunity to shift perspective.",
+      "character_ids": [
+        "protagonist",
+        "sister_in_law_sharon"
+      ],
+      "visible_action": "On the small porch, Sharon stands in her blazer holding a thermos; they exchange a quiet, tense two-shot. Sharon admits she was blunt at the meeting but reveals her own fear about upkeep for elderly neighbors; the planner gently unfolds a revised maintenance rota sketched on a napkin\u2014Sharon\u2019s expression softens and she nods, offering to canvass neighbors for volunteer shifts.",
+      "emotional_turn": "recognition \u2014 mixed; measured regain of agency and expanding social openness",
+      "narration_anchor": "You have been waiting a long time,"
+    },
+    {
+      "beat_number": 8,
+      "location_id": "maintenance_yard",
+      "activity_type": "coordinating a scaled crew and shared maintenance plan",
+      "setting_logic": "Organizer logistics, tool pickup, and a last-minute crew briefing naturally occur at the municipal yard before mobilizing onto streets.",
+      "character_ids": [
+        "protagonist",
+        "walt",
+        "thomas"
+      ],
+      "visible_action": "She stands between Walt and Thomas with a clipboard, proposing a phased scope that reduces excavation, uses smaller crews, and sets neighbor-led weekly care; Thomas taps a pen approvingly and Walt, after a long beat, closes his hand to shake hers\u2014she accepts the handshake and signs a small work order on the clipboard.",
+      "emotional_turn": "choice \u2014 positive; decisive outward action where she claims authority and forges practical trust",
+      "narration_anchor": "The door is open."
+    },
+    {
+      "beat_number": 9,
+      "location_id": "maple_row",
+      "activity_type": "active planting day with volunteers and contractors",
+      "setting_logic": "Physical planting and bioswale work are the visible culmination of mobilization; neighbors and crews working together is the visual proof of progress.",
+      "character_ids": [
+        "protagonist",
+        "old_woman",
+        "walt",
+        "sister_in_law_sharon"
+      ],
+      "visible_action": "Close-in active frames: she directs a small crew placing root balls into a shallow swale while Sharon hands out gloves to neighbors; the old woman carefully pours water around a sapling with a small watering can; Walt racks a shovel and nods; the protagonist wipes soil from her hands and, for the first time, smiles as neighbors shoulder tools together.",
+      "emotional_turn": "effort \u2014 positive; active, tactile collaboration that visually advances the goal",
+      "narration_anchor": "She opened it."
+    },
+    {
+      "beat_number": 10,
+      "location_id": "maple_row",
+      "activity_type": "finished streetscape reveal and inspection",
+      "setting_logic": "Once planting and minor grading are complete, a final inspection and quiet arrival of a new streetscape occurs on-site where neighbors can experience the outcome.",
+      "character_ids": [
+        "protagonist",
+        "old_woman",
+        "sister_in_law_sharon",
+        "thomas",
+        "walt"
+      ],
+      "visible_action": "A wide peaceful frame shows the planted bioswales, young trees in a neat row, and neighbors standing on porches; puddles now drain into green swales. She walks the curb with Thomas and Walt, who exchange a small, satisfied nod; the protagonist slows to place a hand briefly on a sapling trunk\u2014light is warmer, greens richer.",
+      "emotional_turn": "arrival \u2014 positive; still, wide-frame resolution where the visible goal is achieved",
+      "narration_anchor": "You never forgot me,"
+    },
+    {
+      "beat_number": 11,
+      "location_id": "town_hall",
+      "activity_type": "follow-up community check-in and shared maintenance sign-up",
+      "setting_logic": "A follow-up session at Town Hall completes the municipal loop and publicly secures neighbor commitments to maintenance and shared stewardship.",
+      "character_ids": [
+        "protagonist",
+        "sister_in_law_sharon",
+        "old_woman",
+        "thomas"
+      ],
+      "visible_action": "In a medium-frame, she pins a simple laminated calendar of volunteer maintenance shifts to the bulletin board as neighbors initial beside their names; the old woman signs with a careful hand; Sharon clasps the planner\u2019s forearm in thanks; the planner exhales, then folds her hands calmly, looking toward the assembled community with a trusting, quiet smile.",
+      "emotional_turn": "reconnection \u2014 positive; measured social openness and relational trust close the story",
+      "narration_anchor": "You were making me ready to be found."
+    }
+  ],
+  "emotional_spine": {
+    "core_transformation": {
+      "from_state": "fear",
+      "to_state": "trust"
+    },
+    "emotional_beats": [
+      {
+        "beat_number": 1,
+        "narration_anchor": "I did everything right,",
+        "story_pressure": "stability",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 2,
+        "tempo": "still",
+        "camera_distance": "medium"
+      },
+      {
+        "beat_number": 2,
+        "narration_anchor": "she had waited well.",
+        "story_pressure": "unease",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "close"
+      },
+      {
+        "beat_number": 3,
+        "narration_anchor": "Her waiting was not faith.",
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 3,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "close"
+      },
+      {
+        "beat_number": 4,
+        "narration_anchor": "invitation came in the mail",
+        "story_pressure": "rupture",
+        "emotional_valence": "negative",
+        "agency": 3,
+        "social_openness": 3,
+        "tempo": "active",
+        "camera_distance": "medium"
+      },
+      {
+        "beat_number": 5,
+        "narration_anchor": "She put it on.",
+        "story_pressure": "low_point",
+        "emotional_valence": "negative",
+        "agency": 2,
+        "social_openness": 2,
+        "tempo": "still",
+        "camera_distance": "close"
+      },
+      {
+        "beat_number": 6,
+        "narration_anchor": "Did you forget me?",
+        "story_pressure": "low_point",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close"
+      },
+      {
+        "beat_number": 7,
+        "narration_anchor": "You have been waiting a long time,",
+        "story_pressure": "recognition",
+        "emotional_valence": "mixed",
+        "agency": 3,
+        "social_openness": 4,
+        "tempo": "measured",
+        "camera_distance": "medium"
+      },
+      {
+        "beat_number": 8,
+        "narration_anchor": "The door is open.",
+        "story_pressure": "choice",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "measured",
+        "camera_distance": "medium"
+      },
+      {
+        "beat_number": 9,
+        "narration_anchor": "She opened it.",
+        "story_pressure": "effort",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "active",
+        "camera_distance": "close"
+      },
+      {
+        "beat_number": 10,
+        "narration_anchor": "You never forgot me,",
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 2,
+        "social_openness": 5,
+        "tempo": "still",
+        "camera_distance": "wide"
+      },
+      {
+        "beat_number": 11,
+        "narration_anchor": "You were making me ready to be found.",
+        "story_pressure": "reconnection",
+        "emotional_valence": "positive",
+        "agency": 2,
+        "social_openness": 5,
+        "tempo": "measured",
+        "camera_distance": "medium"
+      }
+    ]
+  },
+  "visual_story_contract_version": 7
+}

@@ -1,0 +1,149 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "\"\"\"I did everything right,\"\" she whispered to the empty room. \"\"So why am I the one still waiting?\"\"\n\nIf you have ever turned fifty with no ring on your hand, ",
+    "hero_subject": "An intimate concrete image of unmet expectation: Ellen noticing the absence of a ring as a personal marker.",
+    "image_prompt": "the protagonist holding an open, empty ring box at her bedroom closet with a saved dress visible, exactly one person total, no additional figures",
+    "negative_prompt": "phones, cars, televisions, laptops, neon signs, modern jewelry displays",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpj8cln83e.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist holding an open, empty ring box at her bedroom closet with a saved dress visible, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt",
+    "generation_method": "neighbor:2"
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "and lain awake wondering if God simply forgot to write your name in the book where He wrote everybody else's, ",
+    "hero_subject": "Fear of being omitted visualized as a distant ledger; Ellen reaching toward it from a place of sleeplessness.",
+    "image_prompt": "the protagonist lying awake in bed, reaching toward a faded open book on a bedside table with one blank name slot, exactly one person total, no additional figures",
+    "negative_prompt": "phones, alarm clocks with digital displays, cars, televisions, modern electronics",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpj8cln83e.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist lying awake in bed, reaching toward a faded open book on a bedside table with one blank name slot, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt"
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "then stay with Ellen to the very end. ",
+    "hero_subject": "An invitation to follow Ellen's journey visualized as offering and reception of a small guiding light.",
+    "image_prompt": "the protagonist stepping forward, offering a small glowing light toward a cluster of anonymous grey-silhouette figures, exactly one person total, no additional figures",
+    "negative_prompt": "phones, cars, televisions, laptops, neon advertising",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpg07pio8m.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist stepping forward, offering a small glowing light toward a cluster of anonymous grey-silhouette figures, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt"
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": "This story is for you. ",
+    "hero_subject": "Assurance of belonging shown as an undeserved gift or open hand extended toward the protagonist.",
+    "image_prompt": "the protagonist receiving a glowing open hand-shaped light offered from off-frame in a quiet living room, exactly one person total, no additional figures",
+    "negative_prompt": "phones, cars, televisions, laptops, modern logos",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpg07pio8m.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist receiving a glowing open hand-shaped light offered from off-frame in a quiet living room, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt",
+    "generation_method": "neighbor:3"
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": "Subscribe now, so you never miss a story that finds you right where you hurt. ",
+    "hero_subject": "A call-to-action represented by stories as small envelopes that find the hurting place in Ellen's chest.",
+    "image_prompt": "the protagonist at a kitchen table as a small glowing story-envelope icon floats toward her chest, exactly one person total, no additional figures",
+    "negative_prompt": "phones, social media icons, cars, televisions, modern gadgetry",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpg07pio8m.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist at a kitchen table as a small glowing story-envelope icon floats toward her chest, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt",
+    "generation_method": "neighbor:4"
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "Because what Ellen learned in one long, quiet night changed the whole shape of her life. ",
+    "hero_subject": "A transformational turning point visualized as chains dissolving and a path re-forming ahead of Ellen.",
+    "image_prompt": "the protagonist standing as chain-link icons shatter around her and a new lit path appears ahead, exactly one person total, no additional figures",
+    "negative_prompt": "phones, cars, televisions, neon signs, modern advertising",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpg07pio8m.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist standing as chain-link icons shatter around her and a new lit path appears ahead, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt",
+    "generation_method": "neighbor:5"
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": "And it started with a wedding she did not want to go to.\n\n",
+    "hero_subject": "The reluctant beginning visualized as a hesitant step toward a small wedding altar icon down a lit aisle.",
+    "image_prompt": "the protagonist taking a hesitant step onto a lit path toward a small wedding altar icon by a seaside venue, exactly one person total, no additional figures",
+    "negative_prompt": "cars, modern bridal signage, phones, televisions, urban clutter",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp1oknv3wy.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist taking a hesitant step onto a lit path toward a small wedding altar icon by a seaside venue, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt"
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": "Ellen was forty-nine years old, and she liked to say she had waited well.\n\n",
+    "hero_subject": "A quiet self-description shown through Ellen and her saved dress\u2014memory and identity folded together.",
+    "image_prompt": "the protagonist holding up her saved dress in a bedroom closet, smiling gently as she studies it, exactly one person total, no additional figures",
+    "negative_prompt": "phones, cars, televisions, modern shopping bags, neon logos",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp1oknv3wy.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist holding up her saved dress in a bedroom closet, smiling gently as she studies it, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt",
+    "generation_method": "neighbor:7"
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": "That was her word for it. ",
+    "hero_subject": "The label she gives herself visualized as a simple ribbon or tag being tied to the dress then dissolving into light.",
+    "image_prompt": "the protagonist tying a plain ribbon on the dress, the ribbon dissolving into soft light in a spare bedroom, exactly one person total, no additional figures",
+    "negative_prompt": "phones, cars, televisions, bright advertisements, modern electronics",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp1oknv3wy.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist tying a plain ribbon on the dress, the ribbon dissolving into soft light in a spare bedroom, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt",
+    "generation_method": "neighbor:8"
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": "Waiting. ",
+    "hero_subject": "Ellen's self-described 'waiting' shown as an internal posture of patient endurance\u2014waiting framed as an achieved virtue, not passivity.",
+    "image_prompt": "the protagonist holding a dim glowing hourglass at a simple kitchen table, exactly one person total, no additional figures",
+    "negative_prompt": "smartphone,TV remote,car,key fob,fluorescent light,cluttered countertops",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp1oknv3wy.png",
+    "image_basis": "stylized 3D-rendered animated scene, Pixar/animated-film style, smooth toon-shaded materials, clearly a 3D animated render and not a real photograph, the protagonist holding a dim glowing hourglass at a simple kitchen table, exactly one person total, no additional figures. Characters in this scene: protagonist; woman who learns to stop waiting and begin living: Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee..",
+    "basis_kind": "prompt",
+    "generation_method": "neighbor:9"
+  }
+]

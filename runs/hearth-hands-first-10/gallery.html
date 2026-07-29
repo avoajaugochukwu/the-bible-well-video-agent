@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Christian Story — Scene Gallery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #14110f;
+    --card-bg: #1e1a17;
+    --border: #33291f;
+    --text: #f0e6d8;
+    --muted: #b8a88f;
+    --accent: #c9973f;
+    --lane-archival: #c9973f;
+    --lane-stock: #4fa8a0;
+    --lane-graphic: #8b7cc9;
+    --lane-krea: #c0654a;
+    --mood: #5fb26a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+    padding: 32px 24px 64px;
+  }
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--accent);
+  }
+  p.sub {
+    margin: 0 0 28px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    margin: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+  .card.mood-designated {
+    border-color: var(--mood);
+    box-shadow: 0 0 0 1px var(--mood);
+  }
+  .mood-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: var(--mood);
+    color: #0d1a0f;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #0c0a08;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .thumb .missing {
+    color: #8a5a4a;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+  .badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0,0,0,0.65);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  figcaption {
+    padding: 12px 14px 16px;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--text);
+  }
+  figcaption .scene-type {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  figcaption .basis {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-style: italic;
+    line-height: 1.4;
+  }
+  figcaption .basis-label {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+  }
+  .lane-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #14110f;
+    background: var(--muted);
+  }
+  .thumb .lane-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+  .lane-badge.lane-archival { background: var(--lane-archival); }
+  .lane-badge.lane-stock { background: var(--lane-stock); }
+  .lane-badge.lane-graphic-map { background: var(--lane-graphic); }
+  .lane-badge.lane-graphic-document { background: var(--lane-graphic); }
+  .lane-badge.lane-krea { background: var(--lane-krea); }
+  .lane-badge.lane-none { background: var(--muted); color: var(--bg); }
+
+  /* Modal / lightbox */
+  #modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 5vh 4vw;
+  }
+  #modal.open { display: flex; }
+  #modal .modal-inner {
+    max-width: 1100px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  #modal img {
+    max-width: 100%;
+    max-height: 68vh;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  #modal .caption {
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 800px;
+    text-align: center;
+  }
+  #modal .scene-num {
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+  #modal .modal-meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  #modal .modal-basis {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 800px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  #modal .modal-basis .basis-label {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.75rem;
+  }
+  #modal .close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    color: var(--text);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+  #modal .close:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+  <h1>Christian Story — Scene Gallery</h1>
+  <p class="sub">10 scenes, 0 marked
+    <span style="color: var(--mood); font-weight: 700;">CULTURAL ANCHOR</span>
+    (code-picked mood/establishing scenes). Click any image to view full size.</p>
+  <div class="grid">
+        <figure class="card" data-idx="0">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpu1n9p_aq.png" alt="Scene 1" loading="lazy"><span class="badge">1</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>&quot;&quot;&quot;I did everything right,&quot;&quot; she whispered to the empty room. &quot;&quot;So why am I the one still waiting?&quot;&quot;
+
+If you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book where He wrote everybody else&#x27;s, then stay with Ellen to the very end. <div class="scene-type">reflection</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. In a cool blue climate-controlled museum archive aisle in the morning, the two women wheel a large plain wooden donation crate between tall metal shelves. The older woman steadies it with white cotton-gloved hands while the younger woman guides the opposite side. Warm window light highlights unmarked acid-free cardboard boxes and folded gloves on a nearby wooden bench. The older woman is a 54-year-old Latina, 5 feet 10 inches tall, with a medium sturdy build, warm medium-olive skin, a long oval face, defined cheekbones, dark-brown almond-shaped eyes, a straight nose, medium lips, faint smile lines, and thin rectangular dark-brown glasses. Her deep-brown straight hair is a jaw-length blunt pageboy cut with a precise left-side part, smooth inward-curved ends, and both sides tucked behind her ears. She wears a white round-neck cotton T-shirt, a fully unbuttoned dusty-teal knitted cardigan, straight black trousers, and plain black leather loafers, with no jewelry. The younger woman is a 26-year-old Caucasian, 5 feet 5 inches tall, with a slender build, fair warm-toned skin, light freckles across her nose, a round face, soft cheekbones, green almond-shaped eyes, a small straight nose, and medium lips. Her deep chestnut-brown straight hair has a precise center part and a smooth low ponytail secured at the nape with a plain brown band. She wears a closed pale-yellow round-neck knitted pullover with no visible inner layer, straight dark-blue jeans, cream canvas flats, and small round silver stud earrings with no other jewelry.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="1">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp3f8k8fph.png" alt="Scene 2" loading="lazy"><span class="badge">2</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>This story is for you. Subscribe now, so you never miss a story that finds you right where you hurt. Because what Ellen learned in one long, quiet night changed the whole shape of her life. <div class="scene-type">revelation</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. At a wooden conservation bench beside the open crate in the same archive, the older woman uses both white cotton-gloved hands to lift a brittle hand-stitched quilt from blank archival tissue while the younger woman supports its far edge. A black task lamp casts cool light across the frayed stitching, padded support board, and small conservation tools; warm morning rim light touches both faces. The older woman is a 54-year-old Latina, 5 feet 10 inches tall, with a medium sturdy build, warm medium-olive skin, a long oval face, defined cheekbones, dark-brown almond-shaped eyes, a straight nose, medium lips, faint smile lines, and thin rectangular dark-brown glasses. Her deep-brown straight hair is a jaw-length blunt pageboy cut with a precise left-side part, smooth inward-curved ends, and both sides tucked behind her ears. She wears a white round-neck cotton T-shirt, a fully unbuttoned dusty-teal knitted cardigan, straight black trousers, and plain black leather loafers, with no jewelry. The younger woman is a 26-year-old Caucasian, 5 feet 5 inches tall, with a slender build, fair warm-toned skin, light freckles across her nose, a round face, soft cheekbones, green almond-shaped eyes, a small straight nose, and medium lips. Her deep chestnut-brown straight hair has a precise center part and a smooth low ponytail secured at the nape with a plain brown band. She wears a closed pale-yellow round-neck knitted pullover with no visible inner layer, straight dark-blue jeans, cream canvas flats, and small round silver stud earrings with no other jewelry.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="2">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp_5zspe0g.png" alt="Scene 3" loading="lazy"><span class="badge">3</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>And it started with a wedding she did not want to go to.
+
+Ellen was forty-nine years old, and she liked to say she had waited well.
+
+That was her word for it. Waiting. She said it the way other women said they had raised good children or built a good business. <div class="scene-type">reflection</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. At the same conservation bench, the older woman pauses over the unraveling quilt with one white cotton-gloved hand hovering above a damaged seam. Concern settles across her face. The quilt and small conservation tools fill the foreground, with unmarked archive boxes and a black task lamp softly blurred behind her. Cool blue room light mixes with soft amber light on her face. The older woman is a 54-year-old Latina, 5 feet 10 inches tall, with a medium sturdy build, warm medium-olive skin, a long oval face, defined cheekbones, dark-brown almond-shaped eyes, a straight nose, medium lips, faint smile lines, and thin rectangular dark-brown glasses. Her deep-brown straight hair is a jaw-length blunt pageboy cut with a precise left-side part, smooth inward-curved ends, and both sides tucked behind her ears. She wears a white round-neck cotton T-shirt, a fully unbuttoned dusty-teal knitted cardigan, straight black trousers, and plain black leather loafers, with no jewelry.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="3">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpw4rnfdvd.png" alt="Scene 4" loading="lazy"><span class="badge">4</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>It was her accomplishment. When the ladies at church talked about their husbands, Ellen would fold her hands in her lap and smile a small, patient smile, and she would think, quietly, that she had done the harder thing. <div class="scene-type">decision</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35–50mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials — worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric — with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Two-shot medium: protagonist passes a folded provenance note across the recurring supporting character recurring supporting character bench to the recurring supporting character recurring supporting character younger assistant, whose shoulders tighten; both wearing gloves, rolling stacks blurred behind, task lamp casting small warm pool of light.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo‑American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes. the recurring supporting character recurring supporting character: Full-body: woman age 26, Caucasian (Anglo‑American), youthful upright posture, long hair styled simply for formal scenes, contemporary light summer dresses or casual outfits offstage, flats or low heels, minimal jewelry — fresh, confident modern look.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="4">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp0ae874m5.png" alt="Scene 5" loading="lazy"><span class="badge">5</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>She had waited on the Lord.
+
+She kept her little house clean and still. She went to the early service. She read her Bible at the kitchen table every morning with one cup of coffee, and she underlined the verses about waiting. <div class="scene-type">transformation</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35–50mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials — worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric — with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Close detail of a slim notebook as the recurring supporting character recurring supporting character protagonist writes a precise notation with a fine pen, gloved hand steady on page, crate lid edge and quilt corner visible in soft background, cool archival tones.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo‑American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="5">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpntdmkx6z.png" alt="Scene 6" loading="lazy"><span class="badge">6</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>Those who wait on the Lord will find new strength. Wait for it, it will surely come. She had built her whole life on those lines, the way a woman builds a house on a rock.
+
+<div class="scene-type">decision</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35–50mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials — worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric — with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Medium frame of the recurring supporting character recurring supporting character protagonist closing the recurring supporting character recurring supporting character wooden crate lid with deliberate care while the recurring supporting character recurring supporting character younger assistant watches, storage aisle receding behind them; posture measured, exchange of a small, resigned look, cool light with depth.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo‑American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes. the recurring supporting character recurring supporting character: Full-body: woman age 26, Caucasian (Anglo‑American), youthful upright posture, long hair styled simply for formal scenes, contemporary light summer dresses or casual outfits offstage, flats or low heels, minimal jewelry — fresh, confident modern look.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="6">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpizp3cs_i.png" alt="Scene 7" loading="lazy"><span class="badge">7</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>But here is the thing Ellen could not see, though the truth sat right there beside her every morning like a guest she would not look at.
+
+Her waiting was not faith. It was fear wearing faith&#x27;s coat.
+
+<div class="scene-type">reflection</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35–50mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials — worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric — with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Interior evening home study. Protagonist sits at a small mending bench under a warm desk lamp, arranging index cards in a row, canvas tote on chair. Medium shot, thoughtful posture, pencil tapping paper.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo‑American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="7">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp8t8migy6.png" alt="Scene 8" loading="lazy"><span class="badge">8</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>She had stopped living years ago and called it holiness. She did not travel, because what if the season changed and she was not home for it. She did not paint the spare room, because the spare room was for the family she was still waiting to have. <div class="scene-type">decision</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35–50mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials — worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric — with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Close-up of protagonist&#x27;s gloved-free hands on a wooden table, moving handwritten index cards and sticky notes into prioritized piles; worn shawl draped on shoulders visible, shallow depth, cool-to-warm lamp contrast.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo‑American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="8">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpyfx6rk8i.png" alt="Scene 9" loading="lazy"><span class="badge">9</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>She kept her good dress in the closet with the tags almost worn off, saving it, always saving it, for the day that never came. She measured every year by the one thing she did not have. <div class="scene-type">transformation</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35–50mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials — worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric — with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Medium-close portrait of protagonist taping a printed timeline copy to the recurring supporting character recurring supporting character canvas tote by the recurring supporting character recurring supporting character door, evening window light at her back; she breathes out, eyes steady, slight smile forming.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo‑American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="9">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp22vw1fsl.png" alt="Scene 10" loading="lazy"><span class="badge">10</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>And she called the emptiness patience, because patience sounded like a virtue, and fear sounded like something she would have to fix.
+
+Then the invitation came in the mail, cream colored, with gold letters, and it cracked her quiet house right down the middle.
+
+<div class="scene-type">reflection</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35–50mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials — worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric — with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Over-the recurring supporting character recurring supporting character-shoulder shot from behind protagonist at the recurring supporting character recurring supporting character bench, index cards in foreground, she rehearses steps silently, pencil pointed like a metronome; hallway beyond shows a pair of volunteer gloves on a peg.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo‑American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+  </div>
+
+  <div id="modal">
+    <button class="close" aria-label="Close">&times;</button>
+    <div class="modal-inner">
+      <div class="scene-num" id="modal-scene-num"></div>
+      <span class="lane-badge" id="modal-lane"></span>
+      <span class="mood-badge" id="modal-mood" style="position:static; display:none;">CULTURAL ANCHOR</span>
+      <img id="modal-img" src="" alt="">
+      <div class="caption" id="modal-caption"></div>
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-basis" id="modal-basis"></div>
+    </div>
+  </div>
+
+<script>
+  var SCENES = [{"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpu1n9p_aq.png", "snippet": "\"\"\"I did everything right,\"\" she whispered to the empty room. \"\"So why am I the one still waiting?\"\"\n\nIf you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book where He wrote everybody else's, then stay with Ellen to the very end. ", "n": 1, "lane": null, "scene_type": "reflection", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. In a cool blue climate-controlled museum archive aisle in the morning, the two women wheel a large plain wooden donation crate between tall metal shelves. The older woman steadies it with white cotton-gloved hands while the younger woman guides the opposite side. Warm window light highlights unmarked acid-free cardboard boxes and folded gloves on a nearby wooden bench. The older woman is a 54-year-old Latina, 5 feet 10 inches tall, with a medium sturdy build, warm medium-olive skin, a long oval face, defined cheekbones, dark-brown almond-shaped eyes, a straight nose, medium lips, faint smile lines, and thin rectangular dark-brown glasses. Her deep-brown straight hair is a jaw-length blunt pageboy cut with a precise left-side part, smooth inward-curved ends, and both sides tucked behind her ears. She wears a white round-neck cotton T-shirt, a fully unbuttoned dusty-teal knitted cardigan, straight black trousers, and plain black leather loafers, with no jewelry. The younger woman is a 26-year-old Caucasian, 5 feet 5 inches tall, with a slender build, fair warm-toned skin, light freckles across her nose, a round face, soft cheekbones, green almond-shaped eyes, a small straight nose, and medium lips. Her deep chestnut-brown straight hair has a precise center part and a smooth low ponytail secured at the nape with a plain brown band. She wears a closed pale-yellow round-neck knitted pullover with no visible inner layer, straight dark-blue jeans, cream canvas flats, and small round silver stud earrings with no other jewelry.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp3f8k8fph.png", "snippet": "This story is for you. Subscribe now, so you never miss a story that finds you right where you hurt. Because what Ellen learned in one long, quiet night changed the whole shape of her life. ", "n": 2, "lane": null, "scene_type": "revelation", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. At a wooden conservation bench beside the open crate in the same archive, the older woman uses both white cotton-gloved hands to lift a brittle hand-stitched quilt from blank archival tissue while the younger woman supports its far edge. A black task lamp casts cool light across the frayed stitching, padded support board, and small conservation tools; warm morning rim light touches both faces. The older woman is a 54-year-old Latina, 5 feet 10 inches tall, with a medium sturdy build, warm medium-olive skin, a long oval face, defined cheekbones, dark-brown almond-shaped eyes, a straight nose, medium lips, faint smile lines, and thin rectangular dark-brown glasses. Her deep-brown straight hair is a jaw-length blunt pageboy cut with a precise left-side part, smooth inward-curved ends, and both sides tucked behind her ears. She wears a white round-neck cotton T-shirt, a fully unbuttoned dusty-teal knitted cardigan, straight black trousers, and plain black leather loafers, with no jewelry. The younger woman is a 26-year-old Caucasian, 5 feet 5 inches tall, with a slender build, fair warm-toned skin, light freckles across her nose, a round face, soft cheekbones, green almond-shaped eyes, a small straight nose, and medium lips. Her deep chestnut-brown straight hair has a precise center part and a smooth low ponytail secured at the nape with a plain brown band. She wears a closed pale-yellow round-neck knitted pullover with no visible inner layer, straight dark-blue jeans, cream canvas flats, and small round silver stud earrings with no other jewelry.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp_5zspe0g.png", "snippet": "And it started with a wedding she did not want to go to.\n\nEllen was forty-nine years old, and she liked to say she had waited well.\n\nThat was her word for it. Waiting. She said it the way other women said they had raised good children or built a good business. ", "n": 3, "lane": null, "scene_type": "reflection", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. At the same conservation bench, the older woman pauses over the unraveling quilt with one white cotton-gloved hand hovering above a damaged seam. Concern settles across her face. The quilt and small conservation tools fill the foreground, with unmarked archive boxes and a black task lamp softly blurred behind her. Cool blue room light mixes with soft amber light on her face. The older woman is a 54-year-old Latina, 5 feet 10 inches tall, with a medium sturdy build, warm medium-olive skin, a long oval face, defined cheekbones, dark-brown almond-shaped eyes, a straight nose, medium lips, faint smile lines, and thin rectangular dark-brown glasses. Her deep-brown straight hair is a jaw-length blunt pageboy cut with a precise left-side part, smooth inward-curved ends, and both sides tucked behind her ears. She wears a white round-neck cotton T-shirt, a fully unbuttoned dusty-teal knitted cardigan, straight black trousers, and plain black leather loafers, with no jewelry.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpw4rnfdvd.png", "snippet": "It was her accomplishment. When the ladies at church talked about their husbands, Ellen would fold her hands in her lap and smile a small, patient smile, and she would think, quietly, that she had done the harder thing. ", "n": 4, "lane": null, "scene_type": "decision", "image_basis": "family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35\u201350mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials \u2014 worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric \u2014 with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Two-shot medium: protagonist passes a folded provenance note across the recurring supporting character recurring supporting character bench to the recurring supporting character recurring supporting character younger assistant, whose shoulders tighten; both wearing gloves, rolling stacks blurred behind, task lamp casting small warm pool of light.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo\u2011American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes. the recurring supporting character recurring supporting character: Full-body: woman age 26, Caucasian (Anglo\u2011American), youthful upright posture, long hair styled simply for formal scenes, contemporary light summer dresses or casual outfits offstage, flats or low heels, minimal jewelry \u2014 fresh, confident modern look.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp0ae874m5.png", "snippet": "She had waited on the Lord.\n\nShe kept her little house clean and still. She went to the early service. She read her Bible at the kitchen table every morning with one cup of coffee, and she underlined the verses about waiting. ", "n": 5, "lane": null, "scene_type": "transformation", "image_basis": "family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35\u201350mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials \u2014 worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric \u2014 with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Close detail of a slim notebook as the recurring supporting character recurring supporting character protagonist writes a precise notation with a fine pen, gloved hand steady on page, crate lid edge and quilt corner visible in soft background, cool archival tones.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo\u2011American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpntdmkx6z.png", "snippet": "Those who wait on the Lord will find new strength. Wait for it, it will surely come. She had built her whole life on those lines, the way a woman builds a house on a rock.\n\n", "n": 6, "lane": null, "scene_type": "decision", "image_basis": "family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35\u201350mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials \u2014 worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric \u2014 with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Medium frame of the recurring supporting character recurring supporting character protagonist closing the recurring supporting character recurring supporting character wooden crate lid with deliberate care while the recurring supporting character recurring supporting character younger assistant watches, storage aisle receding behind them; posture measured, exchange of a small, resigned look, cool light with depth.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo\u2011American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes. the recurring supporting character recurring supporting character: Full-body: woman age 26, Caucasian (Anglo\u2011American), youthful upright posture, long hair styled simply for formal scenes, contemporary light summer dresses or casual outfits offstage, flats or low heels, minimal jewelry \u2014 fresh, confident modern look.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpizp3cs_i.png", "snippet": "But here is the thing Ellen could not see, though the truth sat right there beside her every morning like a guest she would not look at.\n\nHer waiting was not faith. It was fear wearing faith's coat.\n\n", "n": 7, "lane": null, "scene_type": "reflection", "image_basis": "family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35\u201350mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials \u2014 worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric \u2014 with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Interior evening home study. Protagonist sits at a small mending bench under a warm desk lamp, arranging index cards in a row, canvas tote on chair. Medium shot, thoughtful posture, pencil tapping paper.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo\u2011American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp8t8migy6.png", "snippet": "She had stopped living years ago and called it holiness. She did not travel, because what if the season changed and she was not home for it. She did not paint the spare room, because the spare room was for the family she was still waiting to have. ", "n": 8, "lane": null, "scene_type": "decision", "image_basis": "family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35\u201350mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials \u2014 worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric \u2014 with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Close-up of protagonist's gloved-free hands on a wooden table, moving handwritten index cards and sticky notes into prioritized piles; worn shawl draped on shoulders visible, shallow depth, cool-to-warm lamp contrast.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo\u2011American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpyfx6rk8i.png", "snippet": "She kept her good dress in the closet with the tags almost worn off, saving it, always saving it, for the day that never came. She measured every year by the one thing she did not have. ", "n": 9, "lane": null, "scene_type": "transformation", "image_basis": "family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35\u201350mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials \u2014 worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric \u2014 with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Medium-close portrait of protagonist taping a printed timeline copy to the recurring supporting character recurring supporting character canvas tote by the recurring supporting character recurring supporting character door, evening window light at her back; she breathes out, eyes steady, slight smile forming.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo\u2011American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp22vw1fsl.png", "snippet": "And she called the emptiness patience, because patience sounded like a virtue, and fear sounded like something she would have to fix.\n\nThen the invitation came in the mail, cream colored, with gold letters, and it cracked her quiet house right down the middle.\n\n", "n": 10, "lane": null, "scene_type": "reflection", "image_basis": "family-friendly stylized 3D animated scene, animated-film style, smooth toon-shaded materials, clearly an illustrated render and not a real photograph, 3D animated feature with tactile realism: warm neutrals for domestic and community scenes; cool archival blues and soft amber task lamps in storage and lab. Compositions favor medium steady frames that reveal hands and objects, measured camera dollies during movement through corridors, and close, empathetic portraits in still beats. Lenses: 35\u201350mm for human-scale scenes, 85mm for intimate close-ups on faces and hands, occasional high-angle wide shots to show gallery installation geometry. Production design centers on textured materials \u2014 worn wooden floors, linen-covered crates, rolling metal stacks, acid-free boxes, cotton gloves, and hoops of old fabric \u2014 with believable small-town signage and modest donor-home interiors. Lighting: natural window light for home and gallery mornings; layered warm practicals for donor breakfasts and trustee rooms; cool, controlled task lighting in conservation bench close-ups. Color progression moves from muted, anxious slate and blue in early archival scenes toward warmer ochres and soft greens as trust builds, culminating in golden late-afternoon gallery light for the recurring supporting character final reveal.. Over-the recurring supporting character recurring supporting character-shoulder shot from behind protagonist at the recurring supporting character recurring supporting character bench, index cards in foreground, she rehearses steps silently, pencil pointed like a metronome; hallway beyond shows a pair of volunteer gloves on a peg.. Characters in this scene: the recurring supporting character protagonist: Full-body: woman age 54, Midwestern white (Anglo\u2011American), medium sturdy build, salt-and-pepper bob just below the recurring supporting character recurring supporting character ears, side-parted and often tucked behind one ear; minimal makeup, slight sun lines; modest everyday wardrobe: muted cardigans or plain sweaters over collared shirts, straight trousers, low-heeled sensible shoes.. Keep each recurring character visually distinct and preserve their facial identity, body design, and wardrobe while respecting the requested framing. All people have contemporary hairstyles and wear modest modern everyday clothing. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}];
+  var modal = document.getElementById('modal');
+  var modalImg = document.getElementById('modal-img');
+  var modalCaption = document.getElementById('modal-caption');
+  var modalSceneNum = document.getElementById('modal-scene-num');
+  var modalLane = document.getElementById('modal-lane');
+  var modalMeta = document.getElementById('modal-meta');
+  var modalBasis = document.getElementById('modal-basis');
+  var modalMood = document.getElementById('modal-mood');
+
+  function openModal(idx) {
+    var s = SCENES[idx];
+    if (!s || !s.url) return;
+    modalImg.src = s.url;
+    modalImg.alt = 'Scene ' + s.n;
+    modalCaption.textContent = s.snippet;
+    modalSceneNum.textContent = 'Scene ' + s.n;
+    modalLane.className = 'lane-badge ' + (s.lane ? 'lane-' + s.lane : 'lane-none');
+    modalLane.textContent = s.lane || '—';
+    modalMood.style.display = s.mood_designated ? '' : 'none';
+    var metaParts = [];
+    if (s.scene_type) metaParts.push(s.scene_type);
+    modalMeta.textContent = metaParts.join(' · ');
+    if (s.image_basis) {
+      var label = s.basis_kind === 'search' ? 'Search' : 'Prompt';
+      modalBasis.textContent = '';
+      var labelSpan = document.createElement('span');
+      labelSpan.className = 'basis-label';
+      labelSpan.textContent = label + ': ';
+      modalBasis.appendChild(labelSpan);
+      modalBasis.appendChild(document.createTextNode(s.image_basis));
+      modalBasis.style.display = '';
+    } else {
+      modalBasis.textContent = '';
+      modalBasis.style.display = 'none';
+    }
+    modal.classList.add('open');
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    modalImg.src = '';
+  }
+
+  document.querySelectorAll('.card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      openModal(parseInt(card.getAttribute('data-idx'), 10));
+    });
+  });
+
+  document.querySelector('#modal .close').addEventListener('click', closeModal);
+
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-"""Character-sheet agent: one full-figured reference image per tracked character,
+"""Character-sheet agent: one full-body reference image per tracked character,
 generated once via gpt-image-2 t2i (src/gpt_image.py, quality=low — kept cheap on
 purpose). No automated vision-QA — whether a reference is good enough is a human call
 made off the gallery review, same as the rest of this pipeline's image QA today.
@@ -13,11 +13,11 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 
 import gpt_image  # src/
 
+CHARACTER_SHEET_CONTRACT_VERSION = 2
 REFERENCE_SCAFFOLD = (
-    "stylized 3D-rendered character reference sheet, Pixar/animated-film style, smooth "
-    "toon-shaded materials, clearly a 3D animated character and not a real photographed "
-    "person, single character, front-facing, neutral standing pose, plain light-grey "
-    "studio background, no text"
+    "A full-body 3D animated character reference, Pixar style with soft-matte detailed "
+    "textures. One adult, complete head-to-shoes front view, neutral standing pose, "
+    "plain light-gray studio background, no writing or logos"
 )
 
 
@@ -34,10 +34,18 @@ def generate_one(character: dict) -> dict:
     try:
         url = gpt_image.generate_image(prompt)
         print(f"    character '{character['id']}': ✓", flush=True)
-        return {**character, "reference_image_url": url}
+        return {
+            **character,
+            "reference_image_url": url,
+            "character_sheet_contract_version": CHARACTER_SHEET_CONTRACT_VERSION,
+        }
     except Exception as ex:
         print(f"    character '{character['id']}': ✗ {ex}", flush=True)
-        return {**character, "reference_image_url": None}
+        return {
+            **character,
+            "reference_image_url": None,
+            "character_sheet_contract_version": CHARACTER_SHEET_CONTRACT_VERSION,
+        }
 
 
 def generate_all(characters: list[dict]) -> list[dict]:

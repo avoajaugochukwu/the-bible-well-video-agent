@@ -1,4 +1,4 @@
-# Session: Agent-ify the pipeline + recurring full-figured characters
+# Session: Agent-ify the pipeline + recurring full-body characters
 
 Started: 2026-07-25
 
@@ -7,7 +7,7 @@ Started: 2026-07-25
 Revamp this pipeline to be more intelligent by adopting the agentic patterns used in
 the sibling `military/` repo (tool-calling loops, generate→validate→retry-with-feedback,
 vision-QA gates, critique passes) — and replace the current stick-figure image style with
-**recurring, full-figured characters** that stay visually consistent scene to scene.
+**recurring, full-body characters** that stay visually consistent scene to scene.
 
 ## Confirmed: current image-gen model
 
@@ -179,3 +179,47 @@ narration_script.txt, gpt-image-2 moderation-flakiness investigation ongoing). D
   no vision-QA) and scope (single character lane, not multi-lane router; agents/ built
   before wiring; Remotion untouched — confirmed it has no character dependency).
 - 2026-07-25: Phase 1 (agents/ package) built and verified live — see above.
+- 2026-07-27: Replaced literal narration illustration with a two-lane film architecture.
+  `agents/visual_director` first converts narration into a schema-constrained categorical
+  emotional score, then a separate call that never sees narration invents a coherent
+  everyday-America story with a visible external goal, recurring social locations, and
+  6-14 ordered beats. `scene_engine` mechanically creates verbatim 35-55-word narration
+  timing blocks, distributes them evenly over the film beats, and asks per-beat shot planners
+  that never see narration to create chronological shots. Source character names and
+  relationship roles are removed before image generation.
+- 2026-07-27: Removed negative-prompt vocabulary from gpt-image-2 requests. Images API has no
+  negative-prompt channel; positive structural constraints and a simple story-aware fallback
+  replaced the previous list. Live check on `narration_script.txt`: 67 scenes instead of the
+  former 221 literal cuts; the film was an independent community-garden restoration spanning
+  a civic meeting, farmer's market, garden, home, and supporting faith-community location.
+  Five early/middle/late gpt-image-2 samples all generated directly with zero moderation
+  rejections, including a despair frame shown through head-in-hands body language rather than
+  a narrated religious object.
+- 2026-07-27: Added `agents/story_dossier` ahead of the character ledger. It separates quoted
+  facts from abstract casting signals, independently selects a plausible occupation, and
+  commits to concrete body, ethnicity, hair, and reusable wardrobe. Generators remain
+  source-blind where literal copying is risky; source-aware semantic reviewers catch
+  contradiction and distinctive overlap without activity/location matrices or banned-word
+  lists. Fixed all agent retry loops to include the rejected JSON before critique. The final
+  Ellen rehearsal is a museum collections story with two valid museum-boardroom decisions;
+  all 67 image prompts were checked for narrated wedding/Bible/closet imagery and invented
+  marital-status jewelry.
+- 2026-07-28: Approved a new locked character-definition standard after testing scenes 1-3.
+  Each character is defined by exact demographic, height/build, face geometry, eyes, glasses,
+  one deterministic hair design, inner shirt, outer layer plus closure state, bottom,
+  footwear, and jewelry. The complete compact profile is repeated in every applicable image
+  prompt with only light style direction. The Helen/Clara test was workable; this structured
+  profile now replaces free-form appearance prose as the intended pipeline contract.
+- 2026-07-28: Implemented the locked profile directly in `agents/character_ledger`.
+  The LLM now returns strict `visual_profile` fields for exact demographics, body, face,
+  deterministic single-color hair geometry, clothing layers and closure, footwear, jewelry,
+  and body-worn accessories. `compile_visual_profile()` deterministically creates the compact
+  compatibility `appearance` consumed by the director, character-sheet generator, and scene
+  compositor. A focused semantic critic rejects variable hair, event/role clothing, outfit
+  alternatives, ambiguous closures, and bags/handheld props before source-consistency review.
+- 2026-07-28: Reworked the production compositor to match the approved compact test prompt.
+  Final Images API input is now one light 16:9 Pixar-style sentence, scene action, and the
+  deterministic complete profile for each visible character; the director's long
+  `movie_style` is no longer appended. Character sheets use the same soft-matte style.
+  Added character-sheet and compositor contract versions and wired `run.py` to invalidate
+  only stale character references/images and rebuild the gallery when either changes.

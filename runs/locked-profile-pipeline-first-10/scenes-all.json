@@ -1,0 +1,928 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "\"\"\"I did everything right,\"\" she whispered to the empty room. \"\"So why am I the one still waiting?\"\"\n\nIf you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book where He wrote everybody else's, then stay with Ellen to the very end. ",
+    "director_beat_number": 1,
+    "hero_subject": "Planner presenting",
+    "image_prompt": "Evening inside Linden Town Hall meeting room, protagonist stands beside a projected streetscape diagram, wooden pointer extended toward curb and tree placements, folding chairs filled with neighbors, medium-wide framing, fluorescent ceiling softened, warm edge light",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "This story is for you. Subscribe now, so you never miss a story that finds you right where you hurt. Because what Ellen learned in one long, quiet night changed the whole shape of her life. ",
+    "director_beat_number": 1,
+    "hero_subject": "Moderator watch",
+    "image_prompt": "Medium two-shot across the long wooden table: protagonist still pointing at projected bioswale lines while thomas stands with folded arms, watchful posture; rolled plans and a projector between them, community faces blurred behind, slightly tighter framing",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "And it started with a wedding she did not want to go to.\n\nEllen was forty-nine years old, and she liked to say she had waited well.\n\nThat was her word for it. Waiting. She said it the way other women said they had raised good children or built a good business. ",
+    "director_beat_number": 1,
+    "hero_subject": "Handing schedule",
+    "image_prompt": "Close over-shoulder of protagonist reaching across the table to hand a printed maintenance schedule to a seated neighbor, shallow depth shows textured paper edge and her plain 14k gold band catching light, warm lamplight on the table",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": "It was her accomplishment. When the ladies at church talked about their husbands, Ellen would fold her hands in her lap and smile a small, patient smile, and she would think, quietly, that she had done the harder thing. ",
+    "director_beat_number": 1,
+    "hero_subject": "Audience reaction",
+    "image_prompt": "Medium-wide of the meeting room audience reacting: mixed expressions\u2014curiosity, doubt, nods\u2014an elderly resident leans forward; protagonist remains steady at the projector, camera slightly off-center to show social dynamics in the room",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": "She had waited on the Lord.\n\nShe kept her little house clean and still. She went to the early service. She read her Bible at the kitchen table every morning with one cup of coffee, and she underlined the verses about waiting. ",
+    "director_beat_number": 1,
+    "hero_subject": "Planner close steadiness",
+    "image_prompt": "Close-up three-quarter of protagonist framed in a compositional third, thin reading glasses on cord, guarded but calm expression, pointer lowered, soft golden rim light begins to warm her face against cooler room tones",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "Those who wait on the Lord will find new strength. Wait for it, it will surely come. She had built her whole life on those lines, the way a woman builds a house on a rock.\n\n",
+    "director_beat_number": 1,
+    "hero_subject": "Inviting questions",
+    "image_prompt": "Medium shot: protagonist extends an open-handed gesture toward the crowd, palm-up and inviting, body language patient; thomas relaxes slightly in the background, folding chair legs and rolled plans visible, conversational energy building",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": "But here is the thing Ellen could not see, though the truth sat right there beside her every morning like a guest she would not look at.\n\nHer waiting was not faith. It was fear wearing faith's coat.\n\n",
+    "director_beat_number": 1,
+    "hero_subject": "Quiet handoff",
+    "image_prompt": "Tight two-shot on table level as thomas reaches to pick up a rolled plan protagonist set down, their hands nearly touch, municipal pickup keychain visible on the table, subdued warm light signaling an unspoken agreement, close framing",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": "She had stopped living years ago and called it holiness. She did not travel, because what if the season changed and she was not home for it. She did not paint the spare room, because the spare room was for the family she was still waiting to have. ",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist",
+    "image_prompt": "Maple Row street early morning overcast. Wide medium shot: protagonist kneels at curb with folding tape measure, clipboard beside her; an elderly woman watches from a stooped porch, worried. Wet pavement, modest bungalows visible.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": "She kept her good dress in the closet with the tags almost worn off, saving it, always saving it, for the day that never came. She measured every year by the one thing she did not have. ",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist",
+    "image_prompt": "Tighter medium shot at curb. Protagonist's hands extend tape blade across grass strip; the scrape on her right knuckle clearly visible as the blade clicks. Old woman blurred on porch, arms folded, watching intently.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": "And she called the emptiness patience, because patience sounded like a virtue, and fear sounded like something she would have to fix.\n\nThen the invitation came in the mail, cream colored, with gold letters, and it cracked her quiet house right down the middle.\n\n",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist",
+    "image_prompt": "Over-the-shoulder two-shot from behind protagonist. She traces a small sketch on a folded sheet showing reduced turf and a shallow swale; old woman leans forward on her stooped porch, peering down with cautious interest.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 11,
+    "script_snippet": "Her niece Katie was getting married. Katie, who Ellen had rocked to sleep as a baby. Katie, who was twenty-six. The wedding was set for the last Saturday of the month, which happened to be two days before Ellen turned fifty.\n\n",
+    "director_beat_number": 2,
+    "hero_subject": "old_woman",
+    "image_prompt": "Close-up of the sketch held out toward the porch. Protagonist's fingers clutch paper, scrape on right knuckle visible; a trembling, veined hand of the elderly woman reaches to touch the drawing, studying the shallow swale.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 12,
+    "script_snippet": "Ellen sat at her kitchen table with the invitation in her hands for a long time. Fifty. The number felt like a door swinging shut somewhere down a long hall. She could almost hear it close.\n\n",
+    "director_beat_number": 2,
+    "hero_subject": "old_woman",
+    "image_prompt": "Close reaction shot on the elderly woman on the stooped porch. Worry softens into tentative curiosity and a small, uncertain nod; the planner is reflected in the window glass, still kneeling outside, patient and steady.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 13,
+    "script_snippet": "At the family dinner the next Sunday, her sister-in-law Sharon could not stop talking about the wedding. The flowers, the dress, the venue by the water. And then Sharon looked across the table at Ellen with a soft, sorry smile that was not sorry at all.\n\n",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist",
+    "image_prompt": "Medium-wide pullback along Maple Row. Protagonist rises, folds tape measure into her palm, offers a calm, assuring smile toward the porch; the elderly woman gives a modest acknowledgement while a neighbor silhouette walks past.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 14,
+    "script_snippet": "\"\"You will come, of course,\"\" Sharon said. \"\"It will be good for you. Weddings are hard when you are, well.\"\" She let the sentence hang there, unfinished, so that everyone at the table could finish it themselves.\n\n",
+    "director_beat_number": 3,
+    "hero_subject": "Yard arrival and inventory",
+    "image_prompt": "Overhead wide at municipal maintenance yard late morning, protagonist and contractor stand beside a battered municipal pickup, rows of seedling flats and soil bags visible, cloudy sky, protagonist holding rolled plans, both facing the supplies.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 15,
+    "script_snippet": "Ellen smiled her small patient smile. \"\"I would not miss it,\"\" she said.\n\nBut under the table her hands were pressed flat against her knees, holding on to nothing.\n\nThe morning of the wedding, Ellen stood in front of her closet for a long time. ",
+    "director_beat_number": 3,
+    "hero_subject": "Comparing measurements",
+    "image_prompt": "Medium two-shot near a table of supplies, protagonist opens a small notebook and runs a pencil across measurements while contractor stands slightly behind with hands on hips, utility trenching sketches on clipboard, soft diffuse daylight.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 16,
+    "script_snippet": "On the top shelf sat a shoebox she had not opened in almost twenty years. She kept her eyes off it and would not think the name inside. And then she took out the good dress. ",
+    "director_beat_number": 3,
+    "hero_subject": "Hands on materials",
+    "image_prompt": "Tight detail of protagonist's hands beside a truckbed of soil amendments and seedling flats, tape measure extended across a tray edge, fingers brushing damp peat, shallow depth of field, tactile wet texture emphasized.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 17,
+    "script_snippet": "The one she had saved for years. She had bought it for a day she could never quite name, a day when something good would finally happen to her and she would need to be ready. ",
+    "director_beat_number": 3,
+    "hero_subject": "Contractor explains cost increase",
+    "image_prompt": "Medium shot of contractor gesturing with one hand on hip, jaw tight, explaining unseen trenching problems to protagonist who listens with attentive posture, tool racks and buckets framing background, overcast neutral light.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "walt",
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 18,
+    "script_snippet": "She had saved it so long the fabric had gone soft at the folds.\n\nShe put it on. She looked in the mirror. A woman almost fifty looked back, still pretty in a quiet way, with kind, tired eyes.\n\n",
+    "director_beat_number": 3,
+    "hero_subject": "Planner's private worry",
+    "image_prompt": "Close-up on protagonist's face, thin reading glasses on cord, eyes narrowing as she calculates, faint laugh lines and freckling visible, warm rim light at cheek, a moment of vulnerability and steady concentration.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 19,
+    "script_snippet": "\"\"Not what I saved you for,\"\" she said to the dress. Then she went to the wedding.\n\nIt was a beautiful day, the kind of day that does not care how you feel. The sky was clear. ",
+    "director_beat_number": 3,
+    "hero_subject": "Technical adjustment offered",
+    "image_prompt": "Medium-wide shot at the pickup tailgate, protagonist points to a sketched adjustment on her notebook while contractor listens, arms crossed, jaw still tight but attentive, crew gear and seed flats behind, tentative resolution in air.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 20,
+    "script_snippet": "The water behind the venue threw light everywhere. Katie came down the aisle and she was so young and so sure, and the young man waiting for her looked at her like she was the only true thing in the world.\n\n",
+    "director_beat_number": 4,
+    "hero_subject": "planner unfolds plans before the room",
+    "image_prompt": "Linden Town Hall meeting room, early evening fluorescent-warm light, medium-wide frame of long wooden table. The planner stands behind rolled plans, Thomas at table moderating, the old woman rises with a cane, Sharon seated second row, neighbors murmuring.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "thomas",
+      "old_woman",
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 21,
+    "script_snippet": "Ellen sat in the third row, on the aisle, in the seat where they put the ones who came alone. She clapped when everyone clapped. She dabbed her eyes when everyone dabbed. And when the pastor said the words, till death do you part, something in Ellen's chest folded up small and quiet, like a note passed in secret that no one would ever read.\n\n",
+    "director_beat_number": 4,
+    "hero_subject": "old woman pressing cane as she speaks",
+    "image_prompt": "Medium two-shot focused on the old woman standing, cane pressed against her kneecap as she leans slightly forward to speak, a cluster of concerned neighbors behind her; the planner listens across the table, soft rim from overhead light.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 22,
+    "script_snippet": "At the reception, Sharon found her by the gift table.\n\n\"\"No date tonight?\"\" Sharon asked, holding her wine, tilting her head. \"\"I keep hoping. You are still such a lovely woman, Ellen. It is such a shame.\"\" And there it was again, the word shame, dressed up as kindness.\n\n",
+    "director_beat_number": 4,
+    "hero_subject": "sister-in-law demands faster asphalt fix",
+    "image_prompt": "Close medium on Sharon in the second row, leaning forward with open palms, asking for a cheaper asphalt fix; faces behind her tighten, the planner visible in shallow depth, calm but attentive, murmurs ripple through the room.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "sister_in_law_sharon",
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 23,
+    "script_snippet": "Ellen said she was happy for Katie. She said it twice. Then she found a reason to leave early.\n\nShe drove home in the good dress while the sun went down over everything.\n\nHer house was dark when she got there. ",
+    "director_beat_number": 4,
+    "hero_subject": "planner unfolds larger phased-planting sketch",
+    "image_prompt": "Over-the-shoulder medium of the planner quickly unfolding a larger sketch across the table revealing phased planting zones; Thomas watches, several neighbors lean in, some faces harden, fluorescent light casts gentle shadows on paper.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 24,
+    "script_snippet": "She let herself in and stood in the front hall with her keys still in her hand, and she did not turn on the light. She could hear the refrigerator hum. She could hear the clock. ",
+    "director_beat_number": 4,
+    "hero_subject": "close-up of planner's hands on plans",
+    "image_prompt": "Tight close-up of the planner's hands\u2014thin 14k gold band visible\u2014measured gesture tapping a phased note on the sketch, tape measure and folded catalog on table edge, soft shallow depth isolates action from murmuring room.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 25,
+    "script_snippet": "She could hear how quiet a house gets when only one person lives there, and no one is coming, and no one has come for a very long time.\n\nShe sat down on the edge of her bed in the good dress. ",
+    "director_beat_number": 4,
+    "hero_subject": "room reaction and rising tension",
+    "image_prompt": "Medium-wide of the meeting as the room murmurs; the planner stands slightly off-center, Thomas raises a hand to restore order, the old woman sits back down uncertain, Sharon looks unconvinced\u2014tension holds as neighbors watch.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "thomas",
+      "old_woman",
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 26,
+    "script_snippet": "She did not take it off. Her phone sat face down on the nightstand, dark and silent, because there was no one who would text her tonight to ask if she got home safe.\n\nAnd there, in the dark, alone, the thing she had held back for thirty years finally caught up with her.\n\n",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist at kitchen table, wide",
+    "image_prompt": "Interior kitchen nook at night, small lamp pool illuminating a woman at a wooden table with rolled plans and seed catalog pages; she sits hunched, glasses on cord, shoulders slumped, over-the-shoulder wide framing, warm lamplight.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 27,
+    "script_snippet": "\"\"Lord,\"\" she whispered. \"\"Did you forget me?\"\"\n\nHer voice broke on the last word.\n\n\"\"Everybody got chosen,\"\" she said to the ceiling, to the dark, to the God she was not sure was listening. \"\"Katie got chosen. ",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist hands and plans, medium over-shoulder",
+    "image_prompt": "Medium over-shoulder of the woman spreading revised plan overlays and flipping a seed catalog; tape measure and eraser at hand, paper textures visible, close enough to read edge details but no text, evening kitchen background softened.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 28,
+    "script_snippet": "Sharon got chosen. The girls at church, all of them, one by one. And I waited. I did everything right. I waited so long and so well. So why. Why am I the one still sitting in the seat by the aisle. ",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist rubbing knuckle, tight close-up",
+    "image_prompt": "Tight close-up on the woman's right hand rubbing a faint old scar on her knuckle while glasses rest on a cord; shallow depth, soft rim light on callused skin, eraser and a bold erased line blurred in foreground.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 29,
+    "script_snippet": "Did you write everybody's name down and just, forget mine?\"\"\n\nNo answer came. Only the clock, and the hum, and the soft weight of a dress she had saved her whole life for nothing.\n\nShe cried until she was empty. ",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist erasing a bold line, close two-shot of hands and face",
+    "image_prompt": "Close two-shot framing her hands erasing a bold plan line and her face above the table, eyes downcast; lamp pool frames head, faint freckling and crow's feet visible, posture heavy, intimate and still, domestic background.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 30,
+    "script_snippet": "Then she slept in the dress, on top of the covers, with the light off.\n\nShe almost did not go back for the gift bag.\n\nBut the next morning, the church had a thank-you brunch for the wedding guests, and her brother had asked her to bring the leftover flowers home for their mother. ",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist looking through window, medium profile",
+    "image_prompt": "Medium profile shot of the woman sitting back, hands folded briefly in a quiet, prayerful posture as she gazes toward a dark window reflecting the kitchen light; soft anxious exhale, city street hints outside, reflective mood.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 31,
+    "script_snippet": "So Ellen went, tired and hollow, in a plain gray sweater, wanting only to grab the flowers and leave.\n\nThat was where she met the old woman.\n\nShe was sitting alone at a corner table by the window, a woman of maybe eighty, with white hair and hands like folded paper and eyes that were very clear. ",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist reaches for phone, close detail",
+    "image_prompt": "Close detail of the woman's right hand, gold band visible, reaching to pick up a phone beside folded plans; eraser sits at edge of table, her posture straightens slightly suggesting a small resolved decision, lamp glow on skin.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 32,
+    "script_snippet": "Ellen had seen her at the wedding, somewhere on the groom's side, a great-aunt perhaps. Now the old woman patted the chair beside her, and something in Ellen, too tired to argue, sat down.\n\nThey talked for a while about nothing. ",
+    "director_beat_number": 6,
+    "hero_subject": "protagonist kneeling in muddy test trench",
+    "image_prompt": "Maple Row morning after rain, overcast light. Kneeling in a shallow muddy test trench the planner brushes wet soil with gloved hands revealing a small collapse; contractor stands nearby arms folded, vacant equipment and puddled street visible.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 33,
+    "script_snippet": "The flowers. The weather. And then the old woman looked at Ellen with those clear eyes, and she said something that Ellen would carry for the rest of her life.\n\n\"\"You have been waiting a long time,\"\" the old woman said. ",
+    "director_beat_number": 6,
+    "hero_subject": "close detail of protagonist's gloved hands",
+    "image_prompt": "Tight medium close on gloved hands in trench: wet dark soil crumbles under a careful brush, a folding tape measure and a rolled plan lie half-muddied on trench edge, morning gray reflections in nearby puddles.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 34,
+    "script_snippet": "It was not a question.\n\nEllen felt her throat go tight. \"\"Yes,\"\" she said. \"\"I have.\"\"\n\n\"\"For a good man. A ring. A life.\"\"\n\n\"\"Yes.\"\"\n\nThe old woman nodded slowly. She looked out the window at the light on the water for a moment. ",
+    "director_beat_number": 6,
+    "hero_subject": "two-shot of protagonist straightening and Walt looking away",
+    "image_prompt": "Medium two-shot on damp curb: she straightens slowly clutching the rolled plan, eyes lowered; the contractor stands slightly behind her, arms folded, looking away toward the empty crew truck and tools, tension between them palpable.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 35,
+    "script_snippet": "Then she spoke, and her voice was calm, and it was gentle, and it went into Ellen like a key into a lock she did not know she had.\n\n\"\"Then let me tell you something, and forgive an old woman for saying it plain. ",
+    "director_beat_number": 6,
+    "hero_subject": "close-up on Walt's conflicted face",
+    "image_prompt": "Close portrait of contractor outdoors, rain-speckled canvas jacket. He looks off-frame, jaw tight, weathered features shadowed, eyes catching the pale morning light\u2014an internal pause, breath visible in cool air, distant street sounds muted.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 36,
+    "script_snippet": "You have been sitting in a locked room for thirty years. And you have been so busy weeping about the lock that you never once checked the door. Child, God never locked that door. You did.\n\n",
+    "director_beat_number": 6,
+    "hero_subject": "medium wide of planner appealing to neighborhood",
+    "image_prompt": "Medium-wide shot down Maple Row showing planner standing at trench edge holding the rolled plan to her chest, palm open in explanation; a few neighbors watch from porches, muddy street and maple canopy frame the scene.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 37,
+    "script_snippet": "\"\"You told yourself you were waiting on Him. But God does not ask us to stop living while we wait. He never once told you to leave the room dark. He never told you to save the dress and starve the day. ",
+    "director_beat_number": 6,
+    "hero_subject": "intimate two-shot: hand in soil, softened stance from Walt",
+    "image_prompt": "Three-quarter intimate frame: she kneels again, one gloved hand resting on the trench edge as a young neighbor tentatively reaches to touch the soil; Walt stands behind with softened shoulders, the morning light thinning.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 38,
+    "script_snippet": "That was fear. And you dressed your fear up in Sunday clothes and called it patience, and you have been so proud of it. But a bird that will not leave the cage cannot blame the sky.\n\n",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "Small bungalow porch at dusk, overcast turning warm rim light, protagonist standing inside doorway in light gray sweater and waxed jacket, facing sister-in-law on the step; medium-wide two-shot, rolled plans visible on table behind protagonist.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 39,
+    "script_snippet": "\"\"You thought He forgot to choose you. He did not forget you. He has seen you every single day, in the dark house, in the seat by the aisle. He saw you when no one else did. ",
+    "director_beat_number": 7,
+    "hero_subject": "sister_in_law_sharon",
+    "image_prompt": "Closer medium two-shot on porch step: sister-in-law in navy blazer holds a thermos, posture taut; protagonist listens, hands lightly on folded plans at her side; slight anamorphic squeeze emphasizes narrow street beyond, evening light soft on faces.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 40,
+    "script_snippet": "But you would not let Him fill a life you refused to live. You kept handing Him an empty room and asking why it echoed.\n\n\"\"The waiting was never Him forgetting you, child. The waiting was Him being patient with you, while you learned to stop being afraid. ",
+    "director_beat_number": 7,
+    "hero_subject": "sister_in_law_sharon",
+    "image_prompt": "Tight close-up of sister-in-law's face as she admits bluntness, hazel eyes downcast then lifting with concern; thermos clutched in both hands, forehead lines visible, soft breath, subtle expression shift toward vulnerability.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 41,
+    "script_snippet": "The door is open. It has always been open. The only question left is whether you will finally walk through it, or spend another thirty years crying at the lock.\"\"\n\nThen the old woman took Ellen's hand, and she held it, and she did not say anything more. ",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "Extreme close-up of protagonist's hands unfolding a crumpled napkin on her knee: a quick sketched maintenance rota, pencil marks and neighbor initial lines; small 14k gold band visible as she smooths the paper with measured calm.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 42,
+    "script_snippet": "And Ellen wept right there at the corner table, but it was a different kind of weeping now. It was the kind that washes a thing clean.\n\nEllen drove home that day and she looked at her life like a stranger seeing it for the first time.\n\n",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "Medium two-shot back on porch: protagonist holds the napkin between them, explaining a simplified rota; sister-in-law's expression softens, she nods, one hand lifting as if accepting responsibility to canvass neighbors, warm rim light on their profiles.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 43,
+    "script_snippet": "The spare room, empty for a family that never came. The good dress, saved and wasted. The trips she never took. The friends she let drift because she was always, always waiting for her real life to begin, as if the one she had did not count.\n\n",
+    "director_beat_number": 7,
+    "hero_subject": "sister_in_law_sharon",
+    "image_prompt": "Wider framing from sidewalk looking up: sister-in-law steps off the porch toward the street, blazer moving, purposeful stride as she turns once to offer a brief smile and small wave; protagonist watches from doorway, evening sky slightly greener.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 44,
+    "script_snippet": "She got down on her knees by her bed, still in the gray sweater, and she prayed the truest prayer she had ever prayed.\n\n\"\"Lord,\"\" she said, \"\"I am sorry. I blamed you for a door I locked myself. ",
+    "director_beat_number": 8,
+    "hero_subject": "protagonist",
+    "image_prompt": "Municipal maintenance yard morning. Protagonist stands beside battered municipal pickup, clipboard tucked under arm, sifting through buckets of seedlings and coiled hoses. Overcast light, tool racks behind, mid-shot showing her steady posture and intent expression.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 45,
+    "script_snippet": "I called my fear your will. Forgive me. I am done waiting to live. Teach me how to start.\"\"\n\nAnd starting was hard. Repentance is a feeling, but obedience is work.\n\nThat week she painted the spare room a warm yellow and made it a reading room, for herself, with a good chair by the window. ",
+    "director_beat_number": 8,
+    "hero_subject": "protagonist",
+    "image_prompt": "Wider view of yard as contractor and foreman arrive. Walt leans on a tool rack, arms folded; Thomas holds a pen, watching. Protagonist moves between them, unfolding a small plan on the pickup hood, three-quarter medium-wide framing.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "walt",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 46,
+    "script_snippet": "She hung the good dress out where she could wear it on any ordinary Tuesday she pleased. She called an old friend she had let slip and said she was sorry, and they cried a little and laughed more.\n\n",
+    "director_beat_number": 8,
+    "hero_subject": "protagonist",
+    "image_prompt": "Tighter medium shot. Protagonist holds clipboard up, pointing to a phased scope sketched at its top while explaining calmly. Thomas watches, tapping a pen against his notepad; Walt's jaw tightens, hands tucked into jacket pockets.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "thomas",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 47,
+    "script_snippet": "And she did the hardest thing of all. She went to her sister-in-law Sharon, and instead of the small patient smile, she was simply honest. She told Sharon that her little comments had cut deep for years. ",
+    "director_beat_number": 8,
+    "hero_subject": "thomas",
+    "image_prompt": "Two-shot close medium. Thomas smiles, taps his pen approvingly on the clipboard, leaning in. Protagonist meets his eye with relief; background shows stacked shovels and a wall of laminated work orders, warm rim light catching their profiles.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 48,
+    "script_snippet": "Sharon went still. For a moment Ellen was sure she would laugh it off, as always. But Sharon looked down at her hands, and her face went soft.\n\n\"\"I did not know it landed that hard,\"\" Sharon said at last, quiet, not quite meeting her eyes. ",
+    "director_beat_number": 8,
+    "hero_subject": "walt",
+    "image_prompt": "Intimate close-up on Walt and protagonist's hands. Walt pauses, then closes his hand to reach for a handshake. Protagonist extends her hand, fingers relaxed; weathered glove peeking in pocket, shallow depth of field on hands.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 49,
+    "script_snippet": "\"\"I suppose I have my own reasons.\"\" It was not an apology, not really. But it was the first honest thing Sharon had ever said to her.\n\nThe wall between them did not fall that afternoon. ",
+    "director_beat_number": 8,
+    "hero_subject": "protagonist",
+    "image_prompt": "Medium close as protagonist accepts the handshake then immediately signs a small work order on the clipboard. Thomas watches approvingly beside them; seedlings and a coiled hose frame the lower edge, golden light hinting hope.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "thomas",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 50,
+    "script_snippet": "But a single brick came loose, and for just a moment, two tired women saw each other plain. It was a beginning, and enough.\n\nThat is when Ellen finally opened the letter.\n\nShe had kept it in a shoebox on the top shelf of the closet for almost twenty years, and she had never once opened it. ",
+    "director_beat_number": 9,
+    "hero_subject": "Protagonist directing the crew",
+    "image_prompt": "Maple Row streetscape, late-morning soft golden light, wide frame showing shallow bioswale under construction; protagonist stands with rolled plans directing volunteers; sister_in_law_sharon handing out gloves, old_woman kneeling with watering can, contractor racking a shovel.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon",
+      "old_woman",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 51,
+    "script_snippet": "Because opening it had always felt like giving up.\n\nHis name was Thomas. A good man, a steady man, kind and slow to speak, who had loved her when she was thirty. He had wanted to marry her. ",
+    "director_beat_number": 9,
+    "hero_subject": "Protagonist measuring and instructing",
+    "image_prompt": "Medium shot on protagonist near the swale, tape measure extended; shallow depth of field, volunteers blurred behind planting; she points to a root ball placement while contractor leans in, listening close, overcast edge of a cloud softening the light.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 52,
+    "script_snippet": "And Ellen had told him no. She had said it was not God's timing. She had let him walk away and called it obedience, and she had felt holy about it for two decades.\n\nBefore he left, he had handed her an envelope and asked her not to open it until she was ready. ",
+    "director_beat_number": 9,
+    "hero_subject": "Sharon distributing gloves to neighbors",
+    "image_prompt": "Two-shot medium; sister_in_law_sharon smiles as she hands gloves to a young neighbor while the old_woman steadies a sapling nearby; warm interaction, folding plans tucked under Sharon's arm, neighborhood houses and parked pickup in background.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "sister_in_law_sharon",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 53,
+    "script_snippet": "And she never had. She had told herself she was still waiting for God's real answer, the one that would prove she had been right to say no.\n\nNow, with steady hands, she opened it.\n\n",
+    "director_beat_number": 9,
+    "hero_subject": "Old woman watering a sapling",
+    "image_prompt": "Close-up on the old_woman's hands and watering can at the base of a newly planted sapling in the swale; visible veins, careful pours of water soaking soil, rim light on pale blue blouse and grey cardigan, intimate tactile detail.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 54,
+    "script_snippet": "The paper was soft with age. And in Thomas's plain, careful handwriting, it said this.\n\n\"\"Ellen. I am not leaving because I stopped loving you. I am leaving because I love you, and I cannot wait at a door you will not open. ",
+    "director_beat_number": 9,
+    "hero_subject": "Walt acknowledging the progress",
+    "image_prompt": "Medium two-shot of contractor leaning on his shovel, nodding to the protagonist; she wipes soil from her hands, half-smile emerging, background bustle of volunteers planting and carrying root balls, sense of quiet mutual respect.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 55,
+    "script_snippet": "I waited longer than you know. Three years I waited, hoping you would stop being afraid. You kept calling it God's timing. But Ellen, I think you were just scared, and I think somewhere you know it. ",
+    "director_beat_number": 9,
+    "hero_subject": "Group planting completion moment",
+    "image_prompt": "Medium-wide street-level frame: protagonist slightly off-center, smiling as neighbors and volunteers shoulder tools together; visible line of newly planted street trees and filled swale, soft golden rim light, a sense of shared accomplishment and forward motion.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 56,
+    "script_snippet": "I hope one day you stop waiting for permission to be happy. I hope one day you let yourself be loved. You were never too little for God's love, or for mine. You just could not believe it. ",
+    "director_beat_number": 10,
+    "hero_subject": "finished streetscape",
+    "image_prompt": "Maple Row wide-frame at golden morning light: newly planted bioswales and young trees in neat row, neighbors on porches watching, puddles channeling into green swales, camera pulled back to show whole block.",
+    "scene_type": "transformation",
+    "character_ids": [],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 57,
+    "script_snippet": "Be well. Live. Please, finally, live. Tom.\"\"\n\nEllen sat on the floor of the closet and read it three times.\n\nHe had known. Twenty years ago, that quiet, steady man had seen the whole truth of her and named it gently, and she had put his words in a box on a high shelf so she would not have to hear them. ",
+    "director_beat_number": 10,
+    "hero_subject": "protagonist walking curb",
+    "image_prompt": "Medium-wide along curb: the protagonist walks beside Thomas and Walt, pointing to saplings and swales; Walt nods slightly, Thomas listens with hands behind back, soft rim light warms faces, street perspective emphasizes linear trees.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "thomas",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 58,
+    "script_snippet": "He had waited three years. She had never even known.\n\nShe did not cry for what she lost that day. That door had closed long ago, and it was right that it stay closed. But she pressed the letter to her chest, and she thanked God for a man kind enough to tell her the truth, and for a God patient enough to wait until she was finally ready to read it.\n\n",
+    "director_beat_number": 10,
+    "hero_subject": "protagonist touches sapling",
+    "image_prompt": "Close two-shot: protagonist slows, places a hand briefly on a young sapling trunk while Thomas and Walt watch a respectful distance; shallow depth isolates callused hand, warm greens deepen, intimate quiet moment.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist",
+      "thomas",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 59,
+    "script_snippet": "The seasons turned. And Ellen truly lived now.\n\nShe traveled once, to see the ocean she had never seen. She hosted Sunday dinners in her bright house. She taught a little class at church for younger women, and she told them, gently, do not save your life for a day that has a name. ",
+    "director_beat_number": 10,
+    "hero_subject": "old_woman on porch reaction",
+    "image_prompt": "Medium porch frame: the old woman stands at her doorway wrapped in cardigan, watching the street with a small, surprised smile; distant volunteers kneel planting, neighbors exchange soft conversation across lawns.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 60,
+    "script_snippet": "Live the day you are in. It counts. It all counts.\n\nAnd here is what she told them was the deepest thing she had learned, in her own plain words.\n\n\"\"For thirty years,\"\" she said, \"\"I thought God forgot to choose me. ",
+    "director_beat_number": 10,
+    "hero_subject": "detail puddle draining",
+    "image_prompt": "Tight detail shot at curb: rain puddle edge flows into a planted swale, ripples and wet pavement texture visible, seedlings and mulch at rim, sunlight catching water as it drains away\u2014practical proof of design working.",
+    "scene_type": "revelation",
+    "character_ids": [],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 61,
+    "script_snippet": "But He never forgot me for one single day. The long wait was not Him passing me over. It was Him being patient while I learned to stop hiding. He was not making me wait to be found. ",
+    "director_beat_number": 10,
+    "hero_subject": "group pause and handoff",
+    "image_prompt": "Medium-wide closing frame: protagonist, sister-in-law Sharon, Thomas, Walt and a few neighbors stand together in the street, Sharon steps forward smiling, they exchange quiet words and a shared nod, camera holds as light warms.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon",
+      "thomas",
+      "walt"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 62,
+    "script_snippet": "He was waiting for me to stop refusing to live. I was the one who locked the door. And the day I opened it, I found He had been standing on the other side the whole time, seeing me, knowing my name, loving me first, before any ring, before any man, before anything.\"\"\n\nLove did come to Ellen, in time. ",
+    "director_beat_number": 11,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior Linden Town Hall meeting room, early evening. Medium-wide: planner pins a laminated volunteer calendar to community bulletin board; folding chairs, neighbors gather; old woman, sister-in-law, and Thomas stand nearby, soft overhead fluorescent warmth.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon",
+      "old_woman",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 63,
+    "script_snippet": "But it came quietly, the way good things often do.\n\nHe was a widower named Walt, who fixed the sound system at church and had a laugh that filled a room. He was not in a hurry, and neither was she. ",
+    "director_beat_number": 11,
+    "hero_subject": "protagonist",
+    "image_prompt": "Close-up detail: planner's hands steady as she secures laminated calendar with a pushpin; rolled plans on table edge, her thin gold band visible, shallow depth shows neighbors' blurred shoulders behind, late-evening warm light.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 64,
+    "script_snippet": "There was no rush to a ring, because Ellen was already full. She was not a woman waiting to be chosen anymore. She was a woman who had finally, fully, arrived in her own life, and simply had room now for one more good thing.\n\n",
+    "director_beat_number": 11,
+    "hero_subject": "old_woman",
+    "image_prompt": "Medium two-shot: elderly neighbor at the bulletin board signs beside a printed name with careful, veined hand; planner watches kindly over her shoulder; anonymous neighbors lean in, murmuring and initialing next to names.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist",
+      "old_woman"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 65,
+    "script_snippet": "On the morning she turned fifty-one, Ellen sat at her kitchen table with one cup of coffee and her worn Bible open to the old familiar verse about waiting. But she read it differently now. ",
+    "director_beat_number": 11,
+    "hero_subject": "protagonist",
+    "image_prompt": "Close two-shot: sister-in-law clasps the planner's forearm in a quiet, grateful gesture; planner exhales, folds her hands calmly, a measured trusting smile forming as warm rim light catches their faces.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 66,
+    "script_snippet": "She understood, at last, that waiting on the Lord was never meant to be a locked room in the dark. It was meant to be trust with the lights on. It was meant to be a life, lived and loved and full, held gently in open hands.\n\n",
+    "director_beat_number": 11,
+    "hero_subject": "thomas",
+    "image_prompt": "Medium-wide: Thomas leans over the board, initialing his name with a decisive nod; other neighbors follow, the calendar filling with initials, the battered municipal pickup jacket visible on a volunteer chair in background.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "thomas",
+      "protagonist"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 67,
+    "script_snippet": "She looked out at the morning light coming through the yellow room she had almost never made.\n\n\"\"You never forgot me,\"\" she whispered. \"\"You were making me ready to be found.\"\"\n\nAnd for the first time in thirty years, she believed it all the way down.\"",
+    "director_beat_number": 11,
+    "hero_subject": "protagonist",
+    "image_prompt": "Wide pull-back: the meeting room framed with folding chairs and community members standing around the filled calendar; planner centered slightly off, hands folded, offering a quiet smile to the assembled neighborhood in soft evening glow.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "sister_in_law_sharon",
+      "old_woman",
+      "thomas"
+    ],
+    "prompt_contract_version": 7,
+    "visual_story_contract_version": 7
+  }
+]

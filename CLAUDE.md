@@ -16,9 +16,9 @@ own side of the job the moment it fires the ingest request; this pipeline only r
 it's told to process. Script, narration audio, and sound all come from a Baserow row that's
 already been marked `script_status=done` and `voice_status=done` by an upstream writing process
 (not this repo). This project's job starts after that: break the script into scenes, figure out
-which characters recur and are worth tracking across the video, generate one full-figured
+which characters recur and are worth tracking across the video, generate one full-body
 reference image per tracked character, generate a spiritual image per scene (gpt-image-2,
-full-figured digital painting, referencing whichever tracked characters that scene calls for),
+full-body digital painting, referencing whichever tracked characters that scene calls for),
 assemble/render, then push the finished video url back to ClickUp.
 
 Output per run → one rendered video, one ClickUp task updated with the video url.
@@ -35,9 +35,11 @@ character-consistency work lives, separate from `src/scene_engine.py`'s scene-br
 calls. There is **no vision-QA anywhere in this pipeline** — whether a generated image actually
 matches its character(s) is a human call made off the gallery review, not an automated gate.
 
-Stage order: Baserow read (given row_id) → context → character ledger + one full-figured
+Stage order: Baserow read (given row_id) → context → whole-script production dossier →
+character ledger + one full-body
 reference image per tracked character (`agents/character_ledger`, `agents/character_sheet`) →
-character-aware scene breakdown → per-scene images (`agents/scene_compositor`, gpt-image-2 t2i
+whole-film parallel-story direction (`agents/visual_director`) → verbatim narration timing
+blocks mapped evenly across that film → per-scene images (`agents/scene_compositor`, gpt-image-2 t2i
 only for now — i2i against a character's reference sheet is cut, bring it back if t2i-only
 consistency doesn't hold up in testing) → gallery (non-blocking review) →
 download the row's own narration → Whisper+DTW alignment against that real audio → Remotion
@@ -62,15 +64,52 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
 
 - **Never write or edit the script.** If a row's `script` field looks wrong, thin, or
   off-topic, stop and flag it — do not rewrite it here. That's the upstream writer's job.
-- **Recurring, full-figured characters — not a stock-figure default.** Every script gets its
+- **Narration and visuals are two separate lanes.** Narration is split mechanically into
+  verbatim spoken-length timing blocks. It never supplies scene props, locations, or actions
+  to the shot planner. `agents/story_dossier` first separates evidence-backed source facts
+  from production inference, chooses one plausible occupation from an abstract character
+  profile, and commits to concrete casting. `agents/visual_director` reduces the source to a
+  categorical emotional score, then invents a standalone contemporary film with its own
+  external goal, recurring social locations, cause-and-effect plot, and resolved ending.
+  `src/scene_engine.py` expands each ordered film beat into shots without receiving narration.
+  Do not restore literal visual-change cutting, per-sentence illustration, or source-noun
+  prompting. Show emotion through body language and social situation: despair is a woman
+  with her head in her hands during lived activity, not the narrated book in her hands.
+- **Prefer semantic review to case lists.** Do not add activity-to-building matrices, growing
+  banned-word catalogs, or script-specific prompt patches. Source-blind casting/direction
+  calls create the new visual world; separate reviewers may see evidence-backed source facts
+  only to catch contradiction or distinctive story overlap. Reviewers judge whether settings,
+  institutions, professional activity, casting, and story causality make sense in context.
+  Every retry must include the rejected JSON before the feedback message.
+- **Use affirmative image prompts, not safety vocabulary lists.** The Images API has no
+  negative-prompt channel. Do not append `negative_prompt` or banned-word lists to ordinary
+  prompt text; that previously caused avoidable gpt-image-2 moderation matches. The compositor
+  uses concise renderable direction and positive composition constraints.
+- **Recurring, full-body characters — not a stock-figure default.** Every script gets its
   own character ledger, built once up front by `agents/character_ledger:build(script, context)`:
   the protagonist is always tracked, Jesus only if he actually appears, any other character
   only if they recur across multiple beats (never a one-off mention). Each tracked character
-  gets one full-figured reference image (`agents/character_sheet:generate_all()`, gpt-image-2
+  gets one full-body reference image (`agents/character_sheet:generate_all()`, gpt-image-2
   t2i, `quality=low`). `src/scene_engine.py`'s scene authoring then tags every scene with which
   tracked characters (`character_ids`) are visually present, and `agents/scene_compositor`
   generates that scene's image referencing them by name/appearance. No fixed per-channel
   design and no stick figures — that was the old model, fully retired.
+- **Characters are locked production specifications, not loose prose.** The approved
+  character-profile standard names every stable visual decision: exact age, ethnicity,
+  height, build, skin tone, face shape, cheek structure, eye color/shape, nose, lips,
+  age markers, glasses, deterministic hair color/cut/length/part/finish, inner shirt,
+  outer layer and exact closure state, bottom, footwear, jewelry, and body-worn accessories
+  or explicit absence of them. Bags and handheld objects remain scene props, never identity.
+  Avoid variable traits such as unspecified bobs or salt-and-pepper patterns. Repeat the
+  complete compact profile in every image prompt where that character appears; keep style
+  direction light and let the image model handle rendering. Names remain internal and are
+  removed before Images API calls because common names can trigger public-figure matching.
+- **Final image prompts stay compact.** `agents/scene_compositor` sends exactly a short
+  16:9 animated-film style sentence, the authored visible scene action, and the complete
+  deterministic compiled profile for each visible tracked character. It does not append
+  `visual_story.movie_style`; that longer direction remains planning context for the shot
+  author only. `COMPOSITOR_CONTRACT_VERSION` invalidates images when this final prompt
+  construction changes.
 - **No automated vision-QA, anywhere.** Whether a generated image matches its expected
   character(s) is a human call made off the gallery review (`src/gallery.py`), not a gpt-4o
   vision gate — keeps cost down; this is a story pipeline, not a verification pipeline.
@@ -93,51 +132,61 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
 2 CONTEXT    scene_engine.py:infer_context() — OpenAI gpt-5-mini, reasoning_effort=low.
              Setting/spiritual_theme/emotional_palette for the script, cached in
              context.json and reused by every later stage.
-3 CHARACTERS agents/character_ledger:build(script, context) reads the whole script once
+3 DOSSIER    agents/story_dossier:build(script) reads the whole script before casting. It
+             separates quoted source facts from abstract casting signals, generates five
+             occupation candidates, selects one, then creates concrete body/ethnicity/hair/
+             wardrobe design and a plot-free director profile. The casting generator never
+             sees source events; its reviewer sees source facts only to catch contradictions.
+4 CHARACTERS agents/character_ledger:build(script, context, story_dossier) reads the whole script
              and decides which characters are worth tracking as a recurring visual
              identity — protagonist always, Jesus only if he actually appears, any other
              character only if they recur across multiple beats. Generate -> deterministic
              validate -> retry-with-feedback loop. Then agents/character_sheet:
-             generate_all() makes one full-figured reference image per tracked character
+             generate_all() makes one full-body reference image per tracked character
              (gpt-image-2 t2i, quality=low). characters.json.
-4 SCENES     src/scene_engine.py: LLM scene breakdown of the row's script, character-aware
-             — OpenAI gpt-5-mini, reasoning_effort=low. chunk_script() (mechanical, no LLM,
-             ~8 sentences/chunk, one scene per VISUAL CHANGE) feeds author_chunk() per chunk
-             IN PARALLEL (image_prompt + negative_prompt + character_ids — which tracked
-             characters from step 3 are visually present in that scene — strict json_schema
-             structured output, character_ids enum-constrained to the real ledger). See
-             scene_engine.py for the current contract.
-5 IMAGES     agents/scene_compositor:compose_all() — per scene, IN PARALLEL, gpt-image-2 t2i
-             only (for now) referencing whichever tracked characters that scene's
-             character_ids call for by name/appearance. NO automated vision-QA anywhere in
-             this pipeline — a human reviews the gallery (step 6) and judges consistency.
+5 DIRECTOR   agents/visual_director:build() — two-pass whole-video design. Pass one sees the
+             narration but can emit only categorical emotional signals plus alignment anchors.
+             Pass two sees only the categorical score, concrete cast, and plot-free dossier
+             handoff; it invents a coherent standalone film with an external goal, credible
+             institutions, and one ordered story beat per emotional phase. A source-aware
+             semantic reviewer catches literal overlap and repeated administrative staging.
+             visual-story.json.
+6 SCENES     src/scene_engine.py:split_narration_scenes() mechanically creates verbatim
+             35-55-word timing blocks, independent of narrated visual nouns. Blocks are evenly
+             distributed across the ordered director beats so every beat gets screen time.
+             author_story_beat() runs per beat in parallel and sees only the film plan, never
+             narration; it returns chronological image_prompt + character_ids shots.
+7 IMAGES     agents/scene_compositor:compose_all() — per scene, IN PARALLEL, gpt-image-2 t2i
+             only (for now). The final prompt is light style + visible action + the complete
+             compiled locked profile for every character_id, with names removed. NO automated vision-QA anywhere in
+             this pipeline — a human reviews the gallery (step 8) and judges consistency.
              i2i (src/krea.py:krea_edit_photo(), reference_images = a character's reference
              sheet) is cut from the pipeline — a future whole-pipeline direction if t2i-only
              consistency doesn't hold up, not a per-scene fix.
-6 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
+8 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
              click-to-expand modal, vanilla JS/CSS) for manual review. See that file.
-7 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
+9 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
              hosted Modal whisper service (REMOTION_WHISPER_SERVICE_URL, same one
              senior-finance/finance/remotion calls) + utils/align.py DTW mapped onto each
              scene's verbatim script_snippet. NOT a word-count estimate (tried and
              explicitly rejected — doesn't actually align). NOT local faster-whisper —
              that package was never installed in this repo's .venv.
-8 RENDER     remotion/ (standalone Remotion project) on Remotion Lambda (local
+10 RENDER    remotion/ (standalone Remotion project) on Remotion Lambda (local
              `remotion render` freezes the machine — banned, always deploy:site + render:
              remote). scenes.json is `{scenes, narrationUrl}` — narrationUrl is the row's
              OWN voice_url (already a public S3 url, no rehost needed) muxed in via a plain
              `<Audio src={narrationUrl}>` in HeritageScenes.tsx. Remotion has no character/
              style awareness at all — it just renders whatever image_url each scene carries.
-9 S3         src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
+11 S3        src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
              public-read) — ALWAYS push the finished video here for review, never hand back
              a presigned link or a local-only file path.
-10 CLICKUP   src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
+12 CLICKUP   src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
              clickup_url task description (falls back to a comment on failure), same
              update-existing-task pattern as space-cluster. Last stage — nothing
              writes back to Baserow after this.
 ```
 
-Steps 1-10 are wired into one `run.py` command (`src/run.py`, Phase 5 in
+Steps 1-11 are wired into one `run.py` command (`src/run.py`, Phase 5 in
 `HERITAGE_PLAN.md`) — run it with `python3 src/run.py <row_id>` from the repo root, or trigger
 it over HTTP via `POST /ingest` (`src/ingest_server.py`, JSON body `{"row_id": ...}`).
 
@@ -214,19 +263,17 @@ Fields consumed:
 ## Scene generation + character agents (owned elsewhere — read, don't edit here)
 
 `src/scene_engine.py` (scene breakdown + classification) and `src/gallery.py` (review HTML)
-are built and maintained as their own unit. `agents/character_ledger`, `agents/character_sheet`,
-and `agents/scene_compositor` (character-consistency work — see "Hard rules" above) are their
-own unit too. This doc deliberately doesn't duplicate their internals since they're still
-evolving — read those files directly for the current contract.
+are built and maintained as their own unit. `agents/visual_director`,
+`agents/character_ledger`, `agents/character_sheet`, and `agents/scene_compositor` are their
+own unit too. Contract versions on context, character, visual-story, and scene artifacts force
+stale cached work to regenerate when any authored interface changes.
 
 **Anti-Jesus regression bias (known gpt-image-2 failure mode):** faith-themed image generators
 default ANY unspecified secondary character into a long-haired, bearded Jesus in robes. Every
-non-Jesus character must carry an explicit concrete gender, ethnicity, hairstyle, and clothing
-appropriate to the story's era in `agents/character_ledger`'s per-character `appearance` field —
-a bare "a person"/"a figure" is what triggers the regression. Scenes with a tracked character
-but not Jesus get `Jesus, biblical robes, bearded man, long hair, ancient tunic, halo` appended
-to `negative_prompt` at generation time (`agents/scene_compositor:_build_negative()`, code, not
-prompt-trust).
+non-Jesus character must carry an explicit concrete gender, ethnicity, hairstyle, and ordinary
+modern clothing in `agents/character_ledger`'s per-character `appearance` field — a bare
+"a person"/"a figure" is what triggers the regression. Do not counter this with a negative
+prompt list; use concrete positive character descriptions.
 
 ## Layout
 
@@ -237,7 +284,8 @@ heritage-decoded/
 ├── agents/         character-consistency agents (plain importable Python packages, no
 │                   subprocess bridge — this repo has no cross-language boundary):
 │                   character_ledger/ (which characters are worth tracking), character_sheet/
-│                   (one full-figured reference image per tracked character),
+│                   (one full-body reference image per tracked character),
+│                   visual_director/ (categorical emotional score + standalone film plan),
 │                   scene_compositor/ (per-scene t2i; i2i is cut for now)
 ├── utils/          stdlib-only / low-dependency helpers: env.py (env-var lookup),
 │                   llm.py (shared OpenAI structured-JSON caller, used by scene_engine.py

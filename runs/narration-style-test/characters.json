@@ -1,0 +1,27 @@
+[
+  {
+    "id": "protagonist",
+    "name": "Ellen",
+    "role": "protagonist; woman who learns to stop waiting and begin living",
+    "appearance": "Full-figured woman in her early fifties, Caucasian, medium build with kind, tired brown eyes and short wavy salt-and-pepper hair. Dresses modestly in modern, comfortable clothing\u2014sweaters, a plain gray knit, and a saved dress with soft fabric folds. Often shown with a Bible and a cup of coffee.",
+    "script_spans": [
+      "\"I did everything right,\" she whispered to the empty room.",
+      "Ellen was forty-nine years old, and she liked to say she had waited well.",
+      "\"Lord,\" she whispered. \"Did you forget me?\"",
+      "\"For thirty years,\" she said, \"I thought God forgot to choose me.\""
+    ],
+    "reference_image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp_2eqsov7.png"
+  },
+  {
+    "id": "sharon",
+    "name": "Sharon (sister-in-law)",
+    "role": "sister-in-law; casual well-meaning critic whose remarks push Ellen to honesty and reconnection",
+    "appearance": "Full-figured woman in her late forties to early fifties, African American, medium-tall, with smooth dark skin, shoulder-length straightened hair, and contemporary church attire\u2014floral blouse or smart cardigan and slacks. Warm but habitually talkative expression; often holding a wine glass or seated at a family table.",
+    "script_spans": [
+      "\"You will come, of course,\" Sharon said. \"It will be good for you. Weddings are hard when you are, well.\"",
+      "\"No date tonight?\" Sharon asked, holding her wine, tilting her head.",
+      "\"I did not know it landed that hard,\" Sharon said at last, quiet, not quite meeting her eyes."
+    ],
+    "reference_image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp6q7do9e_.png"
+  }
+]
