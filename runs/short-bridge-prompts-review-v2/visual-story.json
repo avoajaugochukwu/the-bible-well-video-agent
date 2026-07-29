@@ -1,0 +1,390 @@
+{
+  "film_title": "Stitching Light",
+  "parallel_story": "A meticulous regional museum conservation technician races to conserve a fragile local wedding dress so it can be displayed at the museum's community anniversary exhibit and secure a long-time donor's formal gift. The work forces her out of solitary routines into measured public interactions\u2014negotiating with the curator and mentoring an intern\u2014until she chooses to claim visible leadership, reconcile with the donor, and present the restored garment at the community event.",
+  "movie_style": "3D stylized realism with tactile, intimate composition. Frequent close-ups on hands, textiles, and tools with shallow depth-of-field; wide studio shots to show workbench geography. Soft, dust-filled shafts of warm afternoon sunlight in the conservation studio; cooler slate-blue fluorescent light in storage vault glimpses. Color palette anchored in earth tones\u2014oatmeal, olive, slate\u2014warming gradually as the protagonist gains agency. Production design emphasizes layered textures (frayed lace, carded paper, brushed wood). Camera language alternates between quiet, steady tripod close-ups for meticulous work and measured handheld for public interactions; mid-telephoto lenses compress table-top details. Lighting for domestic scenes is low-key, warm window light; public museum interiors are neutral and wood-paneled. Costumes remain conservative-casual: the protagonist's lab smock and muted cardigans contrast with a single preserved 'good dress' hung onscreen when private life and public duty align.",
+  "external_goal": "Conserve and prepare a fragile historic wedding dress to be exhibit-ready for the museum's community anniversary opening, convincing a hesitant donor to finalize a promised gift and loan by the event.",
+  "protagonist_arc": "Beginning: careful, passive conservator working within strict routines. Pressure: a fragile gown arrives with the donor's expectation and the curator's informal deadline; logistical and emotional ruptures expose her reluctance to take visible responsibility. Choice: after faltering in public moments she decides to lead the restoration, mentor the intern, and personally meet the donor. Changed ending: she completes a careful, honest stabilization of the dress, presents it at the exhibit opening with calm authority, and accepts a more purposeful public role at the museum.",
+  "supporting_characters": [
+    {
+      "id": "chief_curator",
+      "name": "Ellen (chief curator)",
+      "role": "museum chief curator and informal project steward",
+      "story_function": "Glances at deadlines and institutional needs; initially presses for a display-ready garment for the anniversary, then offers measured support when protagonist steps up\u2014relationship shifts from procedural to collegial respect."
+    },
+    {
+      "id": "intern",
+      "name": "Sam (conservation intern)",
+      "role": "practical, eager intern assigned to assist in the studio",
+      "story_function": "Provides hands-on help and a sounding board; their practical questions challenge the protagonist to explain choices aloud, prompting the protagonist to take leadership and teach."
+    },
+    {
+      "id": "donor",
+      "name": "Mrs. Keller (long-time donor)",
+      "role": "reticent donor and long-time supporter who offered the dress",
+      "story_function": "Her attendance at the opening and conditional gift raise the stakes; initial wariness and a private rupture force personal outreach and reconciliation with the protagonist, culminating in trust and public affirmation."
+    }
+  ],
+  "recurring_locations": [
+    {
+      "id": "conservation_studio",
+      "name": "Regional Museum Conservation Studio",
+      "setting_type": "shared_public",
+      "social_domain": "museum professional workspace",
+      "institution_type": "museum conservation laboratory attached to a regional museum",
+      "visual_identity": "Long wooden bench under high windows, magnifying lamps, trays of tiny tools, labeled chemical bottles, drying racks, and textile frames; dust motes in sunbeams, muted earth tones, shallow depth-of-field on tactile details.",
+      "story_function": "Primary workplace where restoration decisions, tactile problem-solving, and mentor moments occur."
+    },
+    {
+      "id": "museum_office_gallery",
+      "name": "Museum Offices and Small Gallery",
+      "setting_type": "shared_public",
+      "social_domain": "museum administration and public-facing display",
+      "institution_type": "wood-paneled curator office and compact donor gallery",
+      "visual_identity": "Tight office with rolling racks of framed works, donor plaques, and a small adjacent gallery with a preparatory display pedestal; warm wood and soft focused vignettes.",
+      "story_function": "Site for meetings with the chief curator, the donor's tour, and the exhibit opening where institutional stakes and social reconciliation play out."
+    },
+    {
+      "id": "storage_vault",
+      "name": "Museum Storage Vault",
+      "setting_type": "shared_public",
+      "social_domain": "collection care and logistics",
+      "institution_type": "cramped storage vault with racks and packing materials",
+      "visual_identity": "Cooler, dimly lit room with tall racks, numbered boxes, and a sense of institutional scale; quiet, measured camera moves to show constraint.",
+      "story_function": "Where the dress is received and where the protagonist assesses its fragile condition under time pressure."
+    },
+    {
+      "id": "protagonist_home",
+      "name": "Protagonist's Bungalow",
+      "setting_type": "private",
+      "social_domain": "domestic life",
+      "institution_type": "small-town single-income bungalow",
+      "visual_identity": "Tidy book-lined living room, small herb window-box, sunroom with a clothes rail, a neat bedroom with a modest bed and a back porch workbench; warm, lived-in textures.",
+      "story_function": "Private moments of reflection, domestic rituals, and the scene for the protagonist's emotional turning and final preparations."
+    },
+    {
+      "id": "cafe_market",
+      "name": "Local Caf\u00e9 and Saturday Farmer's Market",
+      "setting_type": "shared_public",
+      "social_domain": "small-town community interaction",
+      "institution_type": "corner caf\u00e9 and adjacent market stalls",
+      "visual_identity": "Small caf\u00e9 with worn wood counter and checked napkins; outdoor market with wooden stalls and fresh flowers; polite small-talk atmosphere.",
+      "story_function": "Places for brief, public civility\u2014conferring with the curator and a donor sighting, and anchoring the protagonist's modest social world."
+    }
+  ],
+  "story_beats": [
+    {
+      "beat_number": 1,
+      "location_id": "protagonist_home",
+      "activity_type": "private morning ritual and first intuitive worry",
+      "setting_logic": "At home she begins her day with tea and quiet routines before heading to the museum; this is where a lingering unease first surfaces.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close-up on the protagonist sitting at her kitchen table pouring tea; her gloved hand (later used for work) rests on an envelope containing a formal note about the donated wedding dress and the upcoming anniversary\u2014she reads, exhales, and whispers into the empty sunroom as if naming a worry, then folds the note and places it beside a small stack of conservation journals.",
+      "emotional_turn": "Unease\u2014she feels a low, private anxiety about the responsibility implied in the envelope.",
+      "bridge_cue": "whisper in empty room",
+      "narration_anchor": "\"I did everything right,\" she whispered to the empty room."
+    },
+    {
+      "beat_number": 2,
+      "location_id": "storage_vault",
+      "activity_type": "assessment of incoming artifact",
+      "setting_logic": "The vault is where newly donated or loaned objects arrive and are triaged before conservation work.",
+      "character_ids": [
+        "protagonist",
+        "chief_curator"
+      ],
+      "visible_action": "Medium shot as the chief curator and protagonist unbox the wedding dress on a padded table under the vault's cooler light; the protagonist carefully spreads the fragile fabric, runs gloved fingertips along a seam, and notes weak areas on a clipboard while the curator states the exhibit timeline.",
+      "emotional_turn": "Exposure\u2014the dress's poor condition and the curator's timeline make the project's stakes visible but she still remains reserved.",
+      "bridge_cue": "",
+      "narration_anchor": "If you have ever turned fifty with no ring on your hand"
+    },
+    {
+      "beat_number": 3,
+      "location_id": "conservation_studio",
+      "activity_type": "benchwork trial and tool choreography",
+      "setting_logic": "The studio is the operational hub where hands-on repairs, tests, and tool work are performed.",
+      "character_ids": [
+        "protagonist",
+        "intern"
+      ],
+      "visible_action": "Wide coverage of the studio bench: the protagonist arranges small padded supports and micro-clamps to stabilize a lace panel while the intern watches; close-ups show her picking up tiny fragments with steady gloved fingers, aligning them precisely under magnification and laying sample fibers on a labeled test card while the intern organizes trays.",
+      "emotional_turn": "Stability\u2014she slips into methodical routine but remains inward and passive about broader decisions.",
+      "bridge_cue": "",
+      "narration_anchor": "She kept her small house quiet."
+    },
+    {
+      "beat_number": 4,
+      "location_id": "museum_office_gallery",
+      "activity_type": "donor meeting and ruptured expectation",
+      "setting_logic": "The donor visits the curator's office and a small gallery space for an informal preview; such meetings are standard when negotiating gifts and loans.",
+      "character_ids": [
+        "protagonist",
+        "chief_curator",
+        "donor"
+      ],
+      "visible_action": "Close framing as the donor, holding a neatly folded 'good dress' kept with tags (a personal family garment), arrives; she reveals nervousness and asks whether the museum will treat her dress with the same care. The protagonist fumbles for words, defers to the curator, and the donor\u2019s guarded look signals disappointment\u2014an emotional rupture between caretaker and donor.",
+      "emotional_turn": "Rupture\u2014her reluctance to speak plainly erodes trust; she realizes institutional duty requires visible advocacy.",
+      "bridge_cue": "good dress kept with tags",
+      "narration_anchor": "She had stopped living years ago and called it holiness."
+    },
+    {
+      "beat_number": 5,
+      "location_id": "cafe_market",
+      "activity_type": "informal negotiation and social pressure",
+      "setting_logic": "Caf\u00e9 and market are plausible neutral settings to exchange news and read invitations; the cream-colored invitation visually anchors social expectations tied to the exhibit opening.",
+      "character_ids": [
+        "protagonist",
+        "chief_curator",
+        "intern"
+      ],
+      "visible_action": "Measured medium shot: the curator slides a cream-colored invitation across the caf\u00e9 table\u2014the anniversary opening is imminent and donors will be present; the intern asks practical questions about padding and display mounts. The protagonist studies the invitation, fingers the embossed edge, and finally states a modest plan to stabilize the gown for display.",
+      "emotional_turn": "Challenge\u2014public expectation pushes her toward committing to a plan beyond the bench.",
+      "bridge_cue": "cream-colored invitation",
+      "narration_anchor": "Then the invitation came\u2014cream-colored with gold letters."
+    },
+    {
+      "beat_number": 6,
+      "location_id": "museum_office_gallery",
+      "activity_type": "rehearsal of donor briefing and social exposure",
+      "setting_logic": "A small gallery and donor seating layout is where previews and donor briefings happen; arranging seating and routes for visitors is part of exhibit preparation.",
+      "character_ids": [
+        "protagonist",
+        "donor",
+        "chief_curator"
+      ],
+      "visible_action": "Wide shot of the gallery with a mock-up pedestal and a curtained dressing: the curator places an aisle seat reserved 'for those who came alone'; the donor and a few guests circulate. The protagonist is asked to explain display risks aloud before the donor\u2014her voice is steady but quiet; faces in the room register polite scrutiny, and the donor\u2019s guarded expression remains.",
+      "emotional_turn": "Exposure\u2014she must perform visible stewardship in front of others and feels the weight of being judged.",
+      "bridge_cue": "aisle seat for those who came alone",
+      "narration_anchor": "At the wedding, Ellen sat in the third row, on the aisle,"
+    },
+    {
+      "beat_number": 7,
+      "location_id": "protagonist_home",
+      "activity_type": "private low point and self-questioning",
+      "setting_logic": "After a draining day at the museum, she returns home to process and confront personal hesitation alone.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close shot of the protagonist sitting on the edge of her bed, pale light through the blinds; she holds a small swatch and stares at it, fingers worrying the frayed edge. The camera lingers on her still hands and the small domestic objects that mirror her professional tools\u2014she sinks into doubt.",
+      "emotional_turn": "Low point\u2014her passivity returns; she contemplates stepping back from leadership rather than facing the donor.",
+      "bridge_cue": "sitting on the edge of her bed",
+      "narration_anchor": "\"Lord,\" she whispered. \"Did you write everyone else's name down and just... forget mine?\""
+    },
+    {
+      "beat_number": 8,
+      "location_id": "conservation_studio",
+      "activity_type": "recognition through teaching and decisive planning",
+      "setting_logic": "Back at the studio she must translate private resolve into a concrete conservation plan and share it with the intern and curator.",
+      "character_ids": [
+        "protagonist",
+        "intern",
+        "chief_curator"
+      ],
+      "visible_action": "Medium shot of the protagonist demonstrating a stabilization stitch to the intern, explaining why she chooses a non-invasive support under the lens. The curator watches from the doorway; the protagonist lays out a step-by-step plan pinned on a board and assigns tasks\u2014her posture is steadier and more engaged, opening the path from private worry to communal action.",
+      "emotional_turn": "Recognition\u2014she acknowledges that leading the work and sharing responsibility is the right step.",
+      "bridge_cue": "",
+      "narration_anchor": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly."
+    },
+    {
+      "beat_number": 9,
+      "location_id": "protagonist_home",
+      "activity_type": "preparatory choice and personal alignment",
+      "setting_logic": "She uses her sunroom and domestic rail to air and prepare her personal 'good dress' as a private ritual of commitment before the public event.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Active close framing: she opens the sunroom windows to let fresh air in, then lifts her carefully stored 'good dress' from a protective cover and hangs it on the rail in full view; she smooths the fabric with deliberate, confident motions\u2014this private act mirrors the professional choice to present the restored gown honestly at the opening.",
+      "emotional_turn": "Choice\u2014she commits to a visible role, aligning private dignity with public responsibility.",
+      "bridge_cue": "",
+      "narration_anchor": "She went home and looked at her life with new eyes."
+    },
+    {
+      "beat_number": 10,
+      "location_id": "museum_office_gallery",
+      "activity_type": "arrival at the exhibit opening and quiet public affirmation",
+      "setting_logic": "The gallery opening is where the exhibit goes public, donor promises are formalized, and the protagonist's work meets its social test.",
+      "character_ids": [
+        "protagonist",
+        "donor",
+        "chief_curator",
+        "intern"
+      ],
+      "visible_action": "Close composition on a small cluster at the gallery's reception table: the protagonist places a modest vase with simple unarranged garden flowers beside the stabilized dress display. Guests circulate; the donor approaches, pauses at the display, and then offers a warm, surprised smile. The protagonist meets her gaze with steady, grounded posture\u2014the curator clasps her shoulder in quiet approval while the intern beams.",
+      "emotional_turn": "Arrival\u2014she arrives as purposeful, public-facing steward; trust is restored and the donor finalizes the gift.",
+      "bridge_cue": "",
+      "narration_anchor": "\"You never forgot me,\" she whispered, smiling."
+    }
+  ],
+  "emotional_spine": {
+    "core_transformation": {
+      "from_state": "passivity",
+      "to_state": "purposeful_action"
+    },
+    "emotional_beats": [
+      {
+        "beat_number": 1,
+        "narration_anchor": "\"I did everything right,\" she whispered to the empty room.",
+        "story_pressure": "unease",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "whisper in empty room",
+            "evidence": "\"I did everything right,\" she whispered to the empty room."
+          }
+        ]
+      },
+      {
+        "beat_number": 2,
+        "narration_anchor": "If you have ever turned fifty with no ring on your hand",
+        "story_pressure": "exposure",
+        "emotional_valence": "mixed",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": []
+      },
+      {
+        "beat_number": 3,
+        "narration_anchor": "She kept her small house quiet.",
+        "story_pressure": "stability",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "wide",
+        "bridge_cues": [
+          {
+            "cue": "wooden flower presses",
+            "evidence": "preserving wildflowers in heavy wooden presses."
+          },
+          {
+            "cue": "silver tweezers",
+            "evidence": "She would arrange the delicate petals with silver tweezers,"
+          }
+        ]
+      },
+      {
+        "beat_number": 4,
+        "narration_anchor": "She had stopped living years ago and called it holiness.",
+        "story_pressure": "rupture",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "good dress kept with tags",
+            "evidence": "she kept her good dress in the closet with the tags still on,"
+          }
+        ]
+      },
+      {
+        "beat_number": 5,
+        "narration_anchor": "Then the invitation came\u2014cream-colored with gold letters.",
+        "story_pressure": "challenge",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "cream-colored invitation",
+            "evidence": "Then the invitation came\u2014cream-colored with gold letters."
+          }
+        ]
+      },
+      {
+        "beat_number": 6,
+        "narration_anchor": "At the wedding, Ellen sat in the third row, on the aisle,",
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "wide",
+        "bridge_cues": [
+          {
+            "cue": "aisle seat for those who came alone",
+            "evidence": "in the seat where they put the ones who came alone."
+          }
+        ]
+      },
+      {
+        "beat_number": 7,
+        "narration_anchor": "\"Lord,\" she whispered. \"Did you write everyone else's name down and just... forget mine?\"",
+        "story_pressure": "low_point",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "sitting on the edge of her bed",
+            "evidence": "Sitting on the edge of her bed in her good dress,"
+          }
+        ]
+      },
+      {
+        "beat_number": 8,
+        "narration_anchor": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly.",
+        "story_pressure": "recognition",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": []
+      },
+      {
+        "beat_number": 9,
+        "narration_anchor": "She went home and looked at her life with new eyes.",
+        "story_pressure": "choice",
+        "emotional_valence": "positive",
+        "agency": 4,
+        "social_openness": 3,
+        "tempo": "active",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "opening sunroom windows",
+            "evidence": "She opened the sunroom windows, letting the warm breeze scatter the dry leaves."
+          },
+          {
+            "cue": "hanging her good dress",
+            "evidence": "She hung her good dress where she could wear it on any ordinary Tuesday."
+          }
+        ]
+      },
+      {
+        "beat_number": 10,
+        "narration_anchor": "\"You never forgot me,\" she whispered, smiling.",
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 4,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "cup of coffee at the kitchen table",
+            "evidence": "On the morning she turned fifty-one, Ellen sat at her kitchen table with a cup of coffee."
+          },
+          {
+            "cue": "fresh unpressed flowers",
+            "evidence": "She looked at the fresh, unpressed flowers sitting in the morning light."
+          }
+        ]
+      }
+    ]
+  },
+  "visual_story_contract_version": 9
+}

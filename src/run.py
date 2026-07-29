@@ -154,37 +154,34 @@ def run_pipeline(row_id) -> str | None:
             flush=True,
         )
 
-    # 3 CHARACTERS — agents/character_ledger decides which characters are worth
-    # tracking (protagonist always, Jesus only if he appears, supporting cast only
-    # if recurring), then agents/character_sheet generates one full-body
-    # reference image per tracked character. characters.json is a single evolving
-    # artifact, same resumable pattern as scenes.json below.
-    characters_path = os.path.join(rd, "characters.json")
-    characters_current = False
-    if os.path.exists(characters_path):
-        characters = json.load(open(characters_path))
-        characters_current = bool(characters) and all(
-            c.get("character_contract_version") == character_ledger.CHARACTER_CONTRACT_VERSION
-            and c.get("character_sheet_contract_version")
-            == character_sheet.CHARACTER_SHEET_CONTRACT_VERSION
-            for c in characters
+    # 3 SOURCE CAST — characters that exist in the narration. Reference sheets wait
+    # until after the director declares any recurring people invented for its film.
+    source_characters_path = os.path.join(rd, "source-characters.json")
+    source_characters_current = False
+    if os.path.exists(source_characters_path):
+        source_characters = json.load(open(source_characters_path))
+        source_characters_current = bool(source_characters) and all(
+            c.get("character_contract_version")
+            == character_ledger.CHARACTER_CONTRACT_VERSION
+            for c in source_characters
         )
-    if not characters_current:
-        if os.path.exists(characters_path):
-            print("  characters: cached contract is outdated; regenerating visual identities", flush=True)
-        print("  characters: character_ledger.build()...", flush=True)
-        characters = character_ledger.build(
+    if not source_characters_current:
+        print("  source cast: character_ledger.build()...", flush=True)
+        source_characters = character_ledger.build(
             script,
             context,
             story_dossier=story_dossier,
         )["characters"]
-        print(f"  characters: {len(characters)} tracked -> {[c['id'] for c in characters]}", flush=True)
-        print("  characters: character_sheet.generate_all()...", flush=True)
-        characters = character_sheet.generate_all(characters)
-        json.dump(characters, open(characters_path, "w"), indent=2)
-        print("  characters: done")
+        json.dump(source_characters, open(source_characters_path, "w"), indent=2)
+        print(
+            f"  source cast: {len(source_characters)} tracked -> "
+            f"{[c['id'] for c in source_characters]}",
+            flush=True,
+        )
+
     # 4 DIRECTOR — narration and visuals are separate lanes. The director sees
-    # the categorical emotional score and production dossier, not narration events.
+    # the categorical emotional score, evidence-backed bridge cues, production
+    # dossier, and source cast. It declares recurring foreground film-only roles.
     visual_story_path = os.path.join(rd, "visual-story.json")
     visual_story_current = False
     if os.path.exists(visual_story_path):
@@ -198,7 +195,7 @@ def run_pipeline(row_id) -> str | None:
         visual_story = visual_director.build(
             script,
             context,
-            characters,
+            source_characters,
             story_dossier=story_dossier,
         )
         json.dump(visual_story, open(visual_story_path, "w"), indent=2)
@@ -208,7 +205,53 @@ def run_pipeline(row_id) -> str | None:
             flush=True,
         )
 
-    # 5 SCENES — verbatim narration cuts mapped onto the director's parallel
+    # 5 COMPLETE CAST — lock identities for director-invented recurring foreground
+    # roles, then generate one reference sheet for every source and film character.
+    characters_path = os.path.join(rd, "characters.json")
+    declared_supporting_ids = {
+        character["id"]
+        for character in visual_story.get("supporting_characters") or []
+    }
+    expected_character_ids = {
+        character["id"] for character in source_characters
+    } | declared_supporting_ids
+    characters_current = False
+    if os.path.exists(characters_path):
+        characters = json.load(open(characters_path))
+        characters_current = (
+            bool(characters)
+            and {character.get("id") for character in characters}
+            == expected_character_ids
+            and all(
+                character.get("character_contract_version")
+                == character_ledger.CHARACTER_CONTRACT_VERSION
+                and character.get("character_sheet_contract_version")
+                == character_sheet.CHARACTER_SHEET_CONTRACT_VERSION
+                for character in characters
+            )
+        )
+    if not characters_current:
+        if os.path.exists(characters_path):
+            print(
+                "  characters: cast declaration or cached contract changed; regenerating",
+                flush=True,
+            )
+        director_characters = character_ledger.build_director_cast(
+            visual_story,
+            source_characters,
+            story_dossier=story_dossier,
+        )
+        characters = source_characters + director_characters
+        print(
+            f"  characters: {len(characters)} locked -> {[c['id'] for c in characters]}",
+            flush=True,
+        )
+        print("  characters: character_sheet.generate_all()...", flush=True)
+        characters = character_sheet.generate_all(characters)
+        json.dump(characters, open(characters_path, "w"), indent=2)
+        print("  characters: done")
+
+    # 6 SCENES — verbatim narration cuts mapped onto the director's parallel
     # story. Chunk authors choose shots inside the locked film plan.
     # scenes.json is a single evolving artifact — later stages add keys to it
     # (image_url, then start/end/duration_seconds) rather than writing separate

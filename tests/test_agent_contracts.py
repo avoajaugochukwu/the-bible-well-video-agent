@@ -52,6 +52,27 @@ class AgentContractTests(unittest.TestCase):
         self.assertIn("dusty-teal knitted cardigan fully unbuttoned", appearance)
         self.assertIn("blunt pageboy cut", appearance)
 
+    def test_small_accessories_are_rejected_from_locked_identity(self):
+        character = {
+            "id": "protagonist",
+            "name": "Ellen",
+            "role": "protagonist",
+            "visual_profile": self._visual_profile(
+                hair_accessory="small barrette",
+                accessories="linen handkerchief in pocket",
+            ),
+            "casting_basis": "whole-story casting",
+            "script_spans": ["Ellen"],
+        }
+        data = character_ledger._materialize_appearances(
+            {"characters": [character]}
+        )
+
+        problems = character_ledger._validate(data, "Ellen considered her future.")
+
+        self.assertTrue(any("no hair accessory" in p for p in problems))
+        self.assertTrue(any("no accessories" in p for p in problems))
+
     def test_director_handoff_excludes_source_audit_details(self):
         dossier = {
             "source_facts": {"protagonist": [{"fact": "source-only detail"}]},
@@ -71,6 +92,177 @@ class AgentContractTests(unittest.TestCase):
             {"social_class_and_lifestyle": "modest and independent"},
         )
         self.assertNotIn("wardrobe_vibe", json.dumps(handoff))
+
+    def test_director_score_carries_bridge_cues_without_narration(self):
+        spine = {
+            "core_transformation": {
+                "from_state": "withdrawal",
+                "to_state": "purposeful_action",
+            },
+            "emotional_beats": [{
+                "beat_number": 1,
+                "narration_anchor": "verbatim source phrase",
+                "story_pressure": "unease",
+                "emotional_valence": "negative",
+                "agency": 2,
+                "social_openness": 1,
+                "tempo": "measured",
+                "camera_distance": "close",
+                "bridge_cues": [
+                    {
+                        "cue": "silver tweezers",
+                        "cue_type": "tool",
+                        "evidence": "with silver tweezers",
+                    },
+                    {
+                        "cue": "tightening a small screw",
+                        "cue_type": "physical_gesture",
+                        "evidence": "tightening the screw",
+                    },
+                ],
+            }],
+        }
+
+        score = visual_director._score_for_director(spine)
+
+        self.assertIn("silver tweezers", score)
+        self.assertIn("tightening a small screw", score)
+        self.assertNotIn("verbatim source phrase", score)
+
+    def test_director_cannot_invent_bridge_cues(self):
+        emotional_beats = [{
+            "beat_number": 1,
+            "bridge_cues": [{
+                "cue": "silver tweezers",
+                "cue_type": "tool",
+                "evidence": "with silver tweezers",
+            }],
+        }]
+        plan = {
+            "story_beats": [{
+                "beat_number": 1,
+                "bridge_cue": "gold pocket watch",
+            }]
+        }
+
+        problems = visual_director._validate_bridge_cues(plan, emotional_beats)
+
+        self.assertTrue(any("unapproved bridge_cue" in p for p in problems))
+
+    def test_bridge_cue_requires_exact_source_evidence(self):
+        spine = {
+            "emotional_beats": [{
+                "beat_number": 1,
+                "narration_anchor": "She worked carefully.",
+                "bridge_cues": [{
+                    "cue": "marked calendar",
+                    "cue_type": "tool",
+                    "evidence": "a marked calendar",
+                }],
+            }]
+        }
+
+        problems = visual_director._validate_spine(
+            spine,
+            "She worked carefully.",
+        )
+
+        self.assertTrue(any("lacks exact source evidence" in p for p in problems))
+
+    def test_director_supporting_role_must_recur(self):
+        plan = {
+            "supporting_characters": [{
+                "id": "coordinator",
+                "name": "the coordinator",
+                "role": "project coordinator",
+                "story_function": "challenges and later supports the protagonist",
+            }],
+            "recurring_locations": [
+                {
+                    "id": "studio",
+                    "setting_type": "shared_public",
+                    "social_domain": "work",
+                },
+                {
+                    "id": "market",
+                    "setting_type": "shared_public",
+                    "social_domain": "commerce",
+                },
+                {
+                    "id": "hall",
+                    "setting_type": "shared_public",
+                    "social_domain": "community",
+                },
+            ],
+            "story_beats": [
+                {
+                    "beat_number": 1,
+                    "location_id": "studio",
+                    "character_ids": ["protagonist", "coordinator"],
+                },
+                {
+                    "beat_number": 2,
+                    "location_id": "market",
+                    "character_ids": ["protagonist"],
+                },
+                {
+                    "beat_number": 3,
+                    "location_id": "hall",
+                    "character_ids": ["protagonist"],
+                },
+            ],
+        }
+
+        problems = visual_director._validate(plan, {"protagonist"})
+
+        self.assertTrue(any("appears in only 1 beat" in p for p in problems))
+
+    def test_director_cast_receives_locked_profiles(self):
+        profile = self._visual_profile(
+            age=39,
+            ethnicity="Black American",
+            hair_color="dark brown",
+        )
+
+        def fake_call(_messages, schema, **_kwargs):
+            if schema["name"] == "character_ledger_review":
+                return {"approved": True, "issues": []}
+            return {
+                "characters": [{
+                    "id": "coordinator",
+                    "name": "the coordinator",
+                    "role": "project coordinator",
+                    "visual_profile": profile,
+                    "casting_basis": "Distinct professional supporting presence.",
+                }]
+            }
+
+        visual_story = {
+            "film_title": "A Film",
+            "parallel_story": "A working team completes a difficult project.",
+            "external_goal": "Complete the project.",
+            "supporting_characters": [{
+                "id": "coordinator",
+                "name": "the coordinator",
+                "role": "project coordinator",
+                "story_function": "Recurring collaborator.",
+            }],
+            "recurring_locations": [],
+        }
+
+        with patch.object(character_ledger, "call_llm_json", side_effect=fake_call):
+            cast = character_ledger.build_director_cast(
+                visual_story,
+                [],
+                story_dossier={},
+            )
+
+        self.assertEqual([character["id"] for character in cast], ["coordinator"])
+        self.assertEqual(
+            cast[0]["character_contract_version"],
+            character_ledger.CHARACTER_CONTRACT_VERSION,
+        )
+        self.assertIn("no accessories", cast[0]["appearance"])
 
     def test_character_retry_includes_previous_json(self):
         generation_messages = []

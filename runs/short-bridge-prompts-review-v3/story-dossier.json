@@ -1,0 +1,148 @@
+{
+  "source_facts": {
+    "protagonist": [
+      {
+        "fact": "Protagonist is named Ellen and is around fifty years old.",
+        "evidence": "\"Ellen was forty-nine years old\""
+      },
+      {
+        "fact": "She has been single/unmarried and measures years by not having a ring.",
+        "evidence": "\"If you have ever turned fifty with no ring on your hand\""
+      },
+      {
+        "fact": "She kept a small, quiet house and spent days in a sunroom preserving wildflowers.",
+        "evidence": "\"She kept her small house quiet. Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses.\""
+      },
+      {
+        "fact": "She has a 'good dress' saved unworn in her closet, kept for a day that never came.",
+        "evidence": "\"She kept her good dress in the closet with the tags still on, saving it for a day that never came.\""
+      },
+      {
+        "fact": "She experiences spiritual questioning and speaks directly to God.",
+        "evidence": "\"'Lord,' she whispered. 'Did you write everyone else's name down and just... forget mine?'\""
+      },
+      {
+        "fact": "By story's end she decides to begin living, opening windows and wearing her good dress on ordinary days.",
+        "evidence": "\"She opened the sunroom windows... She hung her good dress where she could wear it on any ordinary Tuesday.\""
+      }
+    ],
+    "relationships": [
+      {
+        "fact": "She has a niece who is getting married.",
+        "evidence": "\"Her niece was getting married.\""
+      },
+      {
+        "fact": "She encounters an older, wise woman at the wedding brunch who challenges her.",
+        "evidence": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly.\""
+      },
+      {
+        "fact": "She attends church/wedding services where a pastor speaks marriage vows.",
+        "evidence": "\"At the wedding, Ellen sat in the third row... When the pastor said the words, till death do you part...\""
+      },
+      {
+        "fact": "Her primary spiritual interlocutor in the story is God, to whom she prays and asks for forgiveness and instruction.",
+        "evidence": "\"'Lord, I called my fear your will. Forgive me. Teach me how to start.'\""
+      }
+    ],
+    "social_world": [
+      {
+        "fact": "She lives a solitary, home-centered life and avoids travel and social risk.",
+        "evidence": "\"She did not travel... She had stopped living years ago and called it holiness.\""
+      },
+      {
+        "fact": "She participates in community religious life sufficiently to attend a niece's wedding and brunch.",
+        "evidence": "\"At the wedding, Ellen sat in the third row...\" and \"At the wedding brunch, Ellen sat alone at a corner table.\""
+      },
+      {
+        "fact": "Her daily routine includes delicate, meticulous work (preserving flowers) and quiet domestic rhythms.",
+        "evidence": "\"carefully preserving wildflowers in heavy wooden presses. She would arrange the delicate petals with silver tweezers...\""
+      }
+    ],
+    "occupation": {
+      "stated": false,
+      "value": "",
+      "evidence": ""
+    },
+    "unstated_visual_traits": [
+      "exact height",
+      "precise body shape",
+      "skin tone / ethnicity",
+      "hair color and texture",
+      "eye color",
+      "voice timbre"
+    ]
+  },
+  "whole_script_vibe": {
+    "social_class_and_lifestyle": "Modest, lower-middle-class or stable single-income life; home-centered, frugal, inward-facing domesticity.",
+    "professional_energy": "Quiet, methodical, detail-focused; low-risk, routine-driven, conservative about change.",
+    "primary_visual_vibe": "Soft, muted domestic palette; worn-but-careful interiors; late-afternoon warm light, threaded with small, orderly objects.",
+    "wardrobe_vibe": "Conservative, well-kept but underused pieces; simple dresses, cardigans, sensible shoes\u2014neat and slightly formal for daily life.",
+    "credible_social_domains": [
+      "small-town civic networks",
+      "local church community",
+      "neighbourhood social circle",
+      "municipal workplaces and public service settings"
+    ],
+    "credible_locations": [
+      "small-town downtown or municipal buildings",
+      "suburban bungalow interiors",
+      "community church and fellowship halls",
+      "local caf\u00e9s and brunch venues"
+    ]
+  },
+  "abstract_casting_signals": {
+    "age_range": "late 40s to early 60s (specifically 49\u201352 for the story)",
+    "gender": "female",
+    "temperament": [
+      "reserved",
+      "thoughtful",
+      "steady",
+      "careful"
+    ],
+    "economic_independence": "financially independent but modest; maintains her own household",
+    "work_style": [
+      "methodical",
+      "precise",
+      "conscientious",
+      "private"
+    ],
+    "interpersonal_style": "polite, quietly warm but hesitant to initiate social risk",
+    "wardrobe_formality": "semi-formal to conservative casual",
+    "cultural_tone": "small-town, Christian-adjacent, traditionally polite"
+  },
+  "cinematic_inference": {
+    "protagonist_occupation": "Museum Collections Conservator / Registrar (small regional museum)",
+    "occupation_basis": "creative_inference",
+    "body_design": "5'6\"; lean-medium build with sturdy shoulders and an economical, upright posture; fine expression lines at the eyes and mouth; a small pale scar on the right index knuckle from years of handling crates",
+    "ethnicity_design": "Light olive skin, Mediterranean\u2011adjacent presentation (acts and photographs as a mid\u2011light olive tone for continuity) \u2014 a concrete, production-ready choice to anchor on-screen continuity and local casting calls",
+    "hair_design": "Ash-brown with soft gray at the temples, shoulder-length normally swept into a low, tidy bun with a few loose face\u2011framing strands; practical and unornamented",
+    "wardrobe_design": "Semi-formal\u2011conservative baseline: muted-tone cotton blouses, sensible tailored trousers or midi skirt, fine-knit cardigans, low leather oxfords; on-duty additions: light padded conservation smock or lab coat, thin nitrile gloves, magnifying loupe on a cord, crossbody leather satchel for condition reports. Hand jewelry: ordinarily none (she marks years by not wearing a ring); occasionally wears a plain, flat signet worn on the right hand as a non\u2011marital family keepsake \u2014 explicitly not a wedding band.",
+    "casting_rationale": "The defined light-olive ethnicity gives production a single, film-ready visual reference for continuity and local casting while avoiding plot-driven ethnicity requirements. The wardrobe and tactile props (smock, loupe, gloves, scar) crisply communicate a methodical conservator who is modestly independent; the optional plain signet is specified as a non-marital family keepsake to respect the character's choice not to wear a wedding ring."
+  },
+  "director_profile": {
+    "stable_identity": [
+      "Late 40s\u2013early 50s female museum conservator/registrar",
+      "Methodical, private, conscientious; prefers ordered routines",
+      "Financially independent, runs a modest single-person household",
+      "Polite and reserved in public, quietly warm with familiar colleagues",
+      "Lives in a small town with conservative, Christian-adjacent social rhythms"
+    ],
+    "social_dynamics": "Works in a small regional museum with layered, cautious relationships: courteous with trustees and the director, quietly authoritative with volunteers, collaborative with curators, and diplomatically wary with enthusiastic donors; bonds form through shared tasks (install days, cataloging) rather than overt social life.",
+    "professional_vibe": "Precision-driven and quietly authoritative: measured speech, meticulous condition reports, negotiating preservation standards against tight budgets, arranging crate shipments and offsite loans with steady competence.",
+    "visual_vibe": "Tactile, intimate cinematography \u2014 close-ups of gloved hands, labels, microscopes, subdued lighting on textiles, a muted palette (soft grays, olive, taupe), orderly worktables, compact storage vaults, and a modest bungalow interior that reflect her restrained aesthetic.",
+    "credible_worlds": [
+      "Conservation bench and small lab with microscopes, pasteboards, humidified cabinets",
+      "Climate-controlled storage vault and rolling compact shelving",
+      "Regional gallery spaces and community-hall exhibit sites",
+      "Shipping/receiving dock and local freight service for crate transfers",
+      "County historical society and a university restoration lab for consultations",
+      "Colleagues: pragmatic museum director, enthusiastic curator, visiting city conservator, dependable volunteer crew, anxious donor family, local antiques dealer"
+    ],
+    "parallel_story_rule": "Maintain her role as the small regional museum's conservator/registrar throughout; do not convert her employer to a private religious or family institution. Any religious or cultural texture belongs to her private life, not as a defining feature of her professional role."
+  },
+  "occupation_selection": {
+    "job_title": "Museum Collections Conservator / Registrar (small regional museum)",
+    "rationale": "A small\u2011museum conservator/registrar fits the profile neatly: the work is methodical, precise and solitary enough to match a reserved, conscientious temperament while still providing collaborative touchpoints (curators, volunteers, donors) that allow for subtle interpersonal drama without forced extroversion. Visually it\u2019s rich and cinematic \u2014 padded worktables, microscopes, archival boxes, delicate textiles, framed documents, gloved hands, crate shipments and quiet exhibit installs give varied, tactile scenes. The role supports activity across changing environments (storage vaults, conservation bench, galleries, offsite shipping) and relationships (anxious donor, visiting conservator, earnest volunteer, skeptical director) that can reveal character through small gestures and restrained choices. Costume and props (smock or lab coat over conservative clothing, labels, notebooks, condition reports) reinforce her modest independence and care for detail without relying on clich\u00e9d social or cultural cues."
+  },
+  "story_dossier_contract_version": 11
+}

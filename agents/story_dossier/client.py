@@ -1,4 +1,5 @@
 """Extract source facts and infer a coherent cinematic world from the whole script."""
+import json
 import os
 import sys
 

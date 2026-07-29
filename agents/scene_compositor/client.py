@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 
 import gpt_image      # src/
 
-COMPOSITOR_CONTRACT_VERSION = 2
+COMPOSITOR_CONTRACT_VERSION = 3
 SCENE_STYLE_PREFIX = (
     "A horizontal 16:9 3D animated film still, Pixar style with soft-matte "
     "detailed textures. "
@@ -34,6 +34,10 @@ def _role_label(character: dict) -> str:
         return "the protagonist"
     if character_id == "jesus":
         return "Jesus"
+    if character.get("cast_origin") == "director":
+        role = re.sub(r"\s+", " ", character.get("role") or "").strip(" .")
+        if role:
+            return f"the {role}"
     return "the recurring supporting character"
 
 

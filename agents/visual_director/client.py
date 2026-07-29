@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json
 
 
-VISUAL_STORY_CONTRACT_VERSION = 7
+VISUAL_STORY_CONTRACT_VERSION = 9
 MAX_ATTEMPTS = 3
 
 
@@ -98,6 +98,39 @@ EMOTIONAL_SPINE_SCHEMA = {
                             "type": "string",
                             "enum": ["wide", "medium", "close", "varied"],
                         },
+                        "bridge_cues": {
+                            "type": "array",
+                            "maxItems": 3,
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "cue": {"type": "string"},
+                                    "cue_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "tool",
+                                            "material_or_texture",
+                                            "physical_gesture",
+                                            "garment_action",
+                                        ],
+                                    },
+                                    "evidence": {
+                                        "type": "string",
+                                        "description": (
+                                            "short exact narration quote proving the visible "
+                                            "cue is physically present and affirmed"
+                                        ),
+                                    },
+                                },
+                                "required": ["cue", "cue_type", "evidence"],
+                                "additionalProperties": False,
+                            },
+                            "description": (
+                                "sparse portable visual anchors from this narration phase: "
+                                "tools, materials, textures, or garment actions that can live "
+                                "inside a different plot"
+                            ),
+                        },
                     },
                     "required": [
                         "beat_number",
@@ -108,6 +141,7 @@ EMOTIONAL_SPINE_SCHEMA = {
                         "social_openness",
                         "tempo",
                         "camera_distance",
+                        "bridge_cues",
                     ],
                     "additionalProperties": False,
                 },
@@ -137,11 +171,7 @@ PLAN_REVIEW_SCHEMA = {
 
 
 def _schema(character_ids: list[str], beat_count: int) -> dict:
-    character_item = (
-        {"type": "string", "enum": character_ids}
-        if character_ids
-        else {"type": "string"}
-    )
+    character_item = {"type": "string"}
     return {
         "name": "parallel_visual_story",
         "schema": {
@@ -166,6 +196,36 @@ def _schema(character_ids: list[str], beat_count: int) -> dict:
                 "protagonist_arc": {
                     "type": "string",
                     "description": "beginning, pressure, choice, and changed ending",
+                },
+                "supporting_characters": {
+                    "type": "array",
+                    "maxItems": 4,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "description": "unique lowercase role slug",
+                            },
+                            "name": {
+                                "type": "string",
+                                "description": "short internal character name or role label",
+                            },
+                            "role": {
+                                "type": "string",
+                                "description": "stable role inside the invented film",
+                            },
+                            "story_function": {
+                                "type": "string",
+                                "description": (
+                                    "why this foreground person recurs and how their relationship "
+                                    "with the protagonist changes"
+                                ),
+                            },
+                        },
+                        "required": ["id", "name", "role", "story_function"],
+                        "additionalProperties": False,
+                    },
                 },
                 "recurring_locations": {
                     "type": "array",
@@ -231,6 +291,13 @@ def _schema(character_ids: list[str], beat_count: int) -> dict:
                             },
                             "visible_action": {"type": "string"},
                             "emotional_turn": {"type": "string"},
+                            "bridge_cue": {
+                                "type": "string",
+                                "description": (
+                                    "one selected portable cue from the corresponding emotional "
+                                    "beat, naturally integrated into this new plot, or empty string"
+                                ),
+                            },
                         },
                         "required": [
                             "beat_number",
@@ -240,6 +307,7 @@ def _schema(character_ids: list[str], beat_count: int) -> dict:
                             "character_ids",
                             "visible_action",
                             "emotional_turn",
+                            "bridge_cue",
                         ],
                         "additionalProperties": False,
                     },
@@ -251,6 +319,7 @@ def _schema(character_ids: list[str], beat_count: int) -> dict:
                 "movie_style",
                 "external_goal",
                 "protagonist_arc",
+                "supporting_characters",
                 "recurring_locations",
                 "story_beats",
             ],
@@ -276,11 +345,80 @@ def _validate_spine(data: dict, script: str) -> list[str]:
                 "keeping it as a semantic locator",
                 flush=True,
             )
+        for cue in beat.get("bridge_cues") or []:
+            if len((cue.get("cue") or "").split()) > 6:
+                problems.append(
+                    f"emotional beat {beat.get('beat_number')} bridge cue "
+                    f"{cue.get('cue')!r} is not a compact portable detail"
+                )
+            evidence = (cue.get("evidence") or "").strip()
+            if not evidence or evidence not in script:
+                problems.append(
+                    f"emotional beat {beat.get('beat_number')} bridge cue "
+                    f"{cue.get('cue')!r} lacks exact source evidence"
+                )
     return problems
+
+
+def _review_bridge_cues(data: dict, script: str) -> list[str]:
+    """Reject negated and figurative cues that exact substring checks cannot."""
+    proposed = [
+        {
+            "beat_number": beat.get("beat_number"),
+            "bridge_cues": beat.get("bridge_cues") or [],
+        }
+        for beat in data.get("emotional_beats") or []
+    ]
+    review = call_llm_json(
+        [
+            {
+                "role": "system",
+                "content": (
+                    "Audit visual bridge cues against their quoted narration evidence. "
+                    "Approve only tangible things or directly visible physical actions that "
+                    "the evidence AFFIRMS are present: tools, materials, textures, gestures, "
+                    "or garment actions. Reject anything absent, avoided, imagined, "
+                    "hypothetical, or negated. Reject figurative doors, locks, weight, light, "
+                    "or other metaphors unless the evidence depicts the physical thing. "
+                    "Reject cues that add an object not stated in the evidence. A cue may "
+                    "shorten the exact wording but cannot change its meaning. PORTABILITY IS "
+                    "MANDATORY: reject a cue that carries a source event, location, occupation, "
+                    "relationship, celebration, social status, or complete tableau. A physical "
+                    "gesture contains only the movement, not the room or emotional explanation. "
+                    "A garment action contains only the action and must not lock a source outfit. "
+                    "A material_or_texture describes sensory material, not an invitation or other "
+                    "event-bearing document. Return concise beat-numbered corrections."
+                ),
+            },
+            {
+                "role": "user",
+                "content": (
+                    f"NARRATION:\n{script}\n\n"
+                    "PROPOSED CUES:\n"
+                    f"{json.dumps(proposed, ensure_ascii=False, indent=2)}"
+                ),
+            },
+        ],
+        PLAN_REVIEW_SCHEMA,
+        max_completion_tokens=2048,
+    )
+    if review.get("approved"):
+        return []
+    return review.get("issues") or ["bridge cue reviewer rejected the cues"]
 
 
 def _validate(data: dict, character_ids: set[str]) -> list[str]:
     problems = []
+    supporting = data.get("supporting_characters") or []
+    supporting_ids = [character.get("id") for character in supporting]
+    if len(supporting_ids) != len(set(supporting_ids)):
+        problems.append("supporting character ids must be unique")
+    collisions = set(supporting_ids) & character_ids
+    if collisions:
+        problems.append(
+            f"supporting character ids collide with tracked source cast: {sorted(collisions)}"
+        )
+    all_character_ids = character_ids | set(supporting_ids)
     locations = data.get("recurring_locations") or []
     location_ids = [loc.get("id") for loc in locations]
     if len(location_ids) != len(set(location_ids)):
@@ -308,10 +446,20 @@ def _validate(data: dict, character_ids: set[str]) -> list[str]:
                 f"beat {beat.get('beat_number')} uses unknown location_id "
                 f"{beat.get('location_id')!r}"
             )
-        unknown = set(beat.get("character_ids") or []) - character_ids
+        unknown = set(beat.get("character_ids") or []) - all_character_ids
         if unknown:
             problems.append(
                 f"beat {beat.get('beat_number')} uses unknown character ids: {sorted(unknown)}"
+            )
+    for supporting_id in supporting_ids:
+        appearances = sum(
+            supporting_id in (beat.get("character_ids") or [])
+            for beat in beats
+        )
+        if appearances < 2:
+            problems.append(
+                f"supporting character {supporting_id!r} appears in only {appearances} "
+                "beat(s); only recurring foreground roles belong in supporting_characters"
             )
     public_beats = sum(beat.get("location_id") in public_locations for beat in beats)
     if beats and public_beats * 2 < len(beats):
@@ -329,6 +477,25 @@ def _validate(data: dict, character_ids: set[str]) -> list[str]:
     return problems
 
 
+def _validate_bridge_cues(data: dict, emotional_beats: list[dict]) -> list[str]:
+    """A director may omit a cue, but may not invent one outside source analysis."""
+    allowed = {
+        beat.get("beat_number"): {
+            cue.get("cue")
+            for cue in beat.get("bridge_cues") or []
+        }
+        for beat in emotional_beats
+    }
+    problems = []
+    for beat in data.get("story_beats") or []:
+        cue = (beat.get("bridge_cue") or "").strip()
+        if cue and cue not in allowed.get(beat.get("beat_number"), set()):
+            problems.append(
+                f"beat {beat.get('beat_number')} uses unapproved bridge_cue {cue!r}"
+            )
+    return problems
+
+
 def _build_emotional_spine(script: str) -> dict:
     """Reduce the narration to an abstract score before any visual story is invented."""
     messages = [
@@ -338,11 +505,22 @@ def _build_emotional_spine(script: str) -> dict:
                 "You are a story analyst creating an emotional score for a separate visual film. "
                 "Read the Christian narration and divide its progression into 6-14 chronological "
                 "phases. Preserve one short verbatim narration_anchor per phase solely for later "
-                "alignment. Encode everything else only with the categorical fields in the "
-                "schema. The schema deliberately provides no place for plot events, objects, "
-                "locations, occupations, relationships, celebrations, clothing, or other "
-                "source-story nouns. Select the closest emotional values without explaining "
-                "them in prose."
+                "alignment. Encode story meaning with the categorical fields in the schema. "
+                "For bridge_cues only, extract zero to three sparse, portable visual anchors "
+                "from that phase: a specific tool, material, tactile texture, repeated physical "
+                "gesture, or garment action that could naturally appear inside a different plot. "
+                "Every cue must include a short exact evidence quote from the narration. The "
+                "evidence must affirm that the physical cue is present or performed. Do not turn "
+                "an absent, negated, hypothetical, or figurative object into a cue. "
+                "cue is at most six words and must fit exactly one cue_type. Decontextualize it: "
+                "a gesture names only the movement; a garment action names only the action and "
+                "will use the film character's locked outfit; a material_or_texture names sensory "
+                "material rather than an event-bearing document. It must remain usable in an "
+                "unrelated profession and location without recreating the narrated situation. "
+                "Do not include source events, locations, occupations, relationships, names, "
+                "celebrations, religious shorthand, or complete scene descriptions. A garment "
+                "cue describes an action such as putting on an outer layer, not a new costume. "
+                "Select the closest emotional values without explaining them in prose."
             ),
         },
         {
@@ -360,6 +538,8 @@ def _build_emotional_spine(script: str) -> dict:
         data = call_llm_json(messages, EMOTIONAL_SPINE_SCHEMA, max_completion_tokens=4096)
         problems = _validate_spine(data, script)
         if not problems:
+            problems = _review_bridge_cues(data, script)
+        if not problems:
             return data
         messages.append({
             "role": "assistant",
@@ -369,8 +549,22 @@ def _build_emotional_spine(script: str) -> dict:
     raise RuntimeError(f"visual_director emotional spine failed validation: {last_problems}")
 
 
-def _review_plan(data: dict, story_dossier: dict) -> list[str]:
+def _review_plan(
+    data: dict,
+    story_dossier: dict,
+    emotional_spine: dict | None = None,
+) -> list[str]:
     """General semantic review without encoding a catalog of institution rules."""
+    approved_bridge_cues = [
+        {
+            "beat_number": beat.get("beat_number"),
+            "bridge_cues": [
+                cue.get("cue")
+                for cue in beat.get("bridge_cues") or []
+            ],
+        }
+        for beat in (emotional_spine or {}).get("emotional_beats") or []
+    ]
     review = call_llm_json(
         [
             {
@@ -383,7 +577,9 @@ def _review_plan(data: dict, story_dossier: dict) -> list[str]:
                     "social world rather than promoting background faith/community texture "
                     "into the main plot without a character-specific reason; "
                     "the film is genuinely parallel and does not replay source events, "
-                    "objects, celebrations, locations, or actions; "
+                    "celebrations, locations, or plot actions; sparse APPROVED BRIDGE CUES may "
+                    "be reused as tools, materials, textures, gestures, or garment actions, "
+                    "but must be natural to the invented plot rather than recreate the source; "
                     "each stated activity credibly belongs in its chosen real institution; "
                     "locations are not treated as interchangeable rooms; scenes provide varied "
                     "action rather than repeated meetings and paperwork. When a professional "
@@ -396,6 +592,9 @@ def _review_plan(data: dict, story_dossier: dict) -> list[str]:
                     "plot has clear cause, pressure, choice, and resolution. Do not demand literal narration "
                     "events or props. Source facts are supplied only to detect distinctive "
                     "overlap or contradiction; do not ask the parallel film to include them, "
+                    "Every foreground person who appears in multiple beats or carries a changing "
+                    "relationship is declared in supporting_characters and referenced by id. "
+                    "Anonymous people are genuinely one-off or background-only; "
                     "and do not reject an ordinary generic detail merely because both stories "
                     "could contain it. Report concise actionable issues."
                 ),
@@ -407,6 +606,8 @@ def _review_plan(data: dict, story_dossier: dict) -> list[str]:
                     f"{json.dumps(_profile_for_director(story_dossier), ensure_ascii=False, indent=2)}\n\n"
                     "SOURCE FACTS (overlap/contradiction audit only):\n"
                     f"{json.dumps(story_dossier.get('source_facts') or {}, ensure_ascii=False, indent=2)}\n\n"
+                    "APPROVED BRIDGE CUES:\n"
+                    f"{json.dumps(approved_bridge_cues, ensure_ascii=False, indent=2)}\n\n"
                     "PROPOSED FILM:\n"
                     f"{json.dumps(data, ensure_ascii=False, indent=2)}"
                 ),
@@ -459,6 +660,14 @@ The production dossier controls casting, social class, professional energy,
 wardrobe, and which worlds feel credible. Invent new events and an external plot
 inside that world. Do not contradict source facts or ignore the dossier's vibe.
 
+The score also contains sparse bridge_cues. These are deliberate points of contact
+between the two lanes. Select a cue only where it belongs naturally in the invented
+work or social activity, and record the selected phrase in story_beat.bridge_cue.
+It may guide a tool, material, tactile detail, gesture, or garment action across
+that beat's shots. Do not reconstruct the source event around it. Garment actions
+must use the tracked character's locked clothing rather than inventing another coat
+or outfit. Leave bridge_cue empty when none fits.
+
 Give the protagonist a concrete external goal that creates action and continuity:
 winning an account, leading a difficult launch, negotiating a partnership, saving a
 small business, completing skilled work, preparing a major presentation, repairing
@@ -490,8 +699,12 @@ Build one cinematic world with recurring locations, clear geography, time
 progression, relationship development, and a beginning, pressure, turning point,
 choice, and resolved ending. Keep it reverent and emotionally honest, not preachy,
 symbolic, or fantastical. Anonymous coworkers, neighbors, shoppers, congregants,
-and community members may populate scenes naturally. Only recurring named cast
-members below receive character_ids.
+and community members may populate scenes naturally only as one-off or background
+figures. Declare every foreground person who appears across multiple beats or carries
+a changing relationship in supporting_characters, then use that id in each applicable
+beat's character_ids. Do not hide a recurring curator, assistant, client, coordinator,
+relative, or colleague inside visible_action as an anonymous role. Existing tracked
+cast ids remain valid and must not be re-declared.
 
 Faith is expressed through conduct, service, reconciliation, community, prayerful
 body language, and changed choices. Religious books, paperwork, signs, and decorative
@@ -556,7 +769,13 @@ Return only the structured visual-story plan.
         )
         problems = _validate(data, set(character_ids))
         if not problems:
-            problems = _review_plan(data, story_dossier or {})
+            problems = _validate_bridge_cues(data, emotional_beats)
+        if not problems:
+            problems = _review_plan(
+                data,
+                story_dossier or {},
+                emotional_spine,
+            )
         if not problems:
             anchors = {
                 beat["beat_number"]: beat["narration_anchor"]
@@ -591,6 +810,10 @@ def _score_for_director(spine: dict) -> str:
                 "social_openness": beat.get("social_openness"),
                 "tempo": beat.get("tempo"),
                 "camera_distance": beat.get("camera_distance"),
+                "bridge_cues": [
+                    cue.get("cue")
+                    for cue in beat.get("bridge_cues") or []
+                ],
             }
             for beat in spine.get("emotional_beats") or []
         ],

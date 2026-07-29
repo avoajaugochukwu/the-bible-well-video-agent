@@ -192,6 +192,23 @@ narration_script.txt, gpt-image-2 moderation-flakiness investigation ongoing). D
   replaced the previous list. Live check on `narration_script.txt`: 67 scenes instead of the
   former 221 literal cuts; the film was an independent community-garden restoration spanning
   a civic meeting, farmer's market, garden, home, and supporting faith-community location.
+- 2026-07-29: Replaced the fixed 35-55-word narration grouping with the homestead cutting
+  architecture: gpt-5-mini proposes visual-change boundaries in eight-sentence chunks, code
+  anchors them back to verbatim source slices, and a 30-word maximum prefers sentence and
+  clause punctuation before a hard split. This controls image pacing only; the parallel-film
+  shot planner still never sees narration. `narration_script_short.txt` produced 35 scenes
+  from 575 words; its first ten ranged from 6 to 28 words with no dangling hard-cap cuts.
+- 2026-07-29: Locked character profiles no longer carry small persistent accessories.
+  `hair_accessory` must be `no hair accessory` and `accessories` must be `no accessories`.
+  Jewelry defaults to none unless the source explicitly makes one stable worn item essential.
+  This prevents invented handkerchiefs, pocket objects, and similar fragile details from being
+  repeated in every generated scene. Eyewear remains available as a facial identity feature.
+- 2026-07-29: Added sparse `bridge_cues` to the two-lane director architecture. The
+  source-aware emotional pass may extract portable tools, materials, textures, gestures, or
+  garment actions; the independent director may select an approved cue where it naturally
+  fits the new plot, and the narration-blind shot planner must render it within that beat.
+  Deterministic validation rejects invented cues. This anchors the lanes without returning
+  to literal scene translation; garment actions must use the locked wardrobe.
   Five early/middle/late gpt-image-2 samples all generated directly with zero moderation
   rejections, including a despair frame shown through head-in-hands body language rather than
   a narrated religious object.

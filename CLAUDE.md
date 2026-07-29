@@ -64,17 +64,25 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
 
 - **Never write or edit the script.** If a row's `script` field looks wrong, thin, or
   off-topic, stop and flag it — do not rewrite it here. That's the upstream writer's job.
-- **Narration and visuals are two separate lanes.** Narration is split mechanically into
-  verbatim spoken-length timing blocks. It never supplies scene props, locations, or actions
-  to the shot planner. `agents/story_dossier` first separates evidence-backed source facts
+- **Narration and visuals are two separate lanes.** Narration is cut into verbatim visual
+  pacing beats using the homestead pattern: an LLM proposes boundaries, code anchors them
+  losslessly to the source, and a 30-word ceiling prefers sentence or clause boundaries.
+  The narration content never supplies scene props, locations, or actions to the shot planner.
+  `agents/story_dossier` first separates evidence-backed source facts
   from production inference, chooses one plausible occupation from an abstract character
   profile, and commits to concrete casting. `agents/visual_director` reduces the source to a
   categorical emotional score, then invents a standalone contemporary film with its own
   external goal, recurring social locations, cause-and-effect plot, and resolved ending.
   `src/scene_engine.py` expands each ordered film beat into shots without receiving narration.
-  Do not restore literal visual-change cutting, per-sentence illustration, or source-noun
-  prompting. Show emotion through body language and social situation: despair is a woman
+  Do not turn narration cuts into per-sentence illustration or source-noun prompting. Show
+  emotion through body language and social situation: despair is a woman
   with her head in her hands during lived activity, not the narrated book in her hands.
+- **Bridge the two lanes with sparse literal cues.** The source-aware emotional pass may
+  extract a few portable tools, materials, textures, gestures, or garment actions from each
+  phase. The independent director can select one only where it fits its invented plot, and
+  the shot planner carries that selected cue into the beat. This is deliberate visual rhyme,
+  not permission to recreate the narrated event, location, relationship, or religious symbol.
+  Garment actions always use the locked character outfit rather than inventing another coat.
 - **Prefer semantic review to case lists.** Do not add activity-to-building matrices, growing
   banned-word catalogs, or script-specific prompt patches. Source-blind casting/direction
   calls create the new visual world; separate reviewers may see evidence-backed source facts
@@ -98,8 +106,11 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
   character-profile standard names every stable visual decision: exact age, ethnicity,
   height, build, skin tone, face shape, cheek structure, eye color/shape, nose, lips,
   age markers, glasses, deterministic hair color/cut/length/part/finish, inner shirt,
-  outer layer and exact closure state, bottom, footwear, jewelry, and body-worn accessories
-  or explicit absence of them. Bags and handheld objects remain scene props, never identity.
+  outer layer and exact closure state, bottom, and footwear. Hair accessories and wearable
+  non-jewelry accessories are always explicitly absent: small persistent objects are fragile
+  continuity details, not identity. Jewelry also defaults to none and is allowed only when the
+  source explicitly makes one stable worn item identity- or plot-critical. Eyewear is allowed
+  because it materially defines the face. Bags and handheld objects remain scene props.
   Avoid variable traits such as unspecified bobs or salt-and-pepper patterns. Repeat the
   complete compact profile in every image prompt where that character appears; keep style
   direction light and let the image model handle rendering. Names remain internal and are
@@ -151,9 +162,10 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
              institutions, and one ordered story beat per emotional phase. A source-aware
              semantic reviewer catches literal overlap and repeated administrative staging.
              visual-story.json.
-6 SCENES     src/scene_engine.py:split_narration_scenes() mechanically creates verbatim
-             35-55-word timing blocks, independent of narrated visual nouns. Blocks are evenly
-             distributed across the ordered director beats so every beat gets screen time.
+6 SCENES     src/scene_engine.py:cut_narration_scenes() uses an LLM to propose visual-change
+             boundaries in sentence-aligned chunks, anchors those boundaries losslessly to
+             the verbatim narration, and caps long beats at 30 words using natural punctuation
+             where possible. Cuts are evenly distributed across the ordered director beats.
              author_story_beat() runs per beat in parallel and sees only the film plan, never
              narration; it returns chronological image_prompt + character_ids shots.
 7 IMAGES     agents/scene_compositor:compose_all() — per scene, IN PARALLEL, gpt-image-2 t2i

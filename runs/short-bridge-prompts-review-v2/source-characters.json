@@ -1,0 +1,46 @@
+[
+  {
+    "id": "protagonist",
+    "name": "Ellen",
+    "role": "quiet, middle-aged woman who chooses to begin living",
+    "visual_profile": {
+      "age": 49,
+      "gender": "female",
+      "ethnicity": "White (Midwestern American)",
+      "height": "5'6\"",
+      "build": "medium",
+      "skin_tone": "light ivory",
+      "face_shape": "oval",
+      "cheek_structure": "soft cheeks with slight fullness",
+      "eye_description": "hazel, almond-shaped",
+      "nose_description": "straight bridge, softly rounded tip",
+      "lip_description": "medium width, gently curved",
+      "age_markers": "subtle vertical crease between brows and a few silver strands at the temples",
+      "eyewear": "no eyewear",
+      "hair_color": "dark ash-brown",
+      "hair_texture": "straight, fine",
+      "hair_length": "collar-length",
+      "haircut": "blunt collar-length bob (even length around the jawline)",
+      "hair_part": "center part",
+      "hair_end_shape": "blunt ends",
+      "hair_position": "loose",
+      "hair_accessory": "no hair accessory",
+      "inner_top": "crew-neck cotton blouse, muted oatmeal",
+      "outer_layer": "soft knit cardigan, olive",
+      "outer_layer_closure": "fully open",
+      "bottom": "mid-calf A-line skirt, slate blue",
+      "footwear": "low-heeled leather oxford shoes, brown",
+      "jewelry": "no jewelry",
+      "accessories": "no accessories"
+    },
+    "casting_basis": "The dossier defines a single, specific late-40s Midwestern visual identity and conservative-casual wardrobe, so the profile locks an exact age, ethnicity, hair, and one coherent outfit to ensure visual continuity.",
+    "script_spans": [
+      "Ellen was forty-nine years old",
+      "She kept her small house quiet",
+      "She opened the sunroom windows",
+      "She hung her good dress where she could wear it on any ordinary Tuesday"
+    ],
+    "appearance": "49-year-old White (Midwestern American) female, 5'6\", medium, light ivory; oval face, soft cheeks with slight fullness, hazel, almond-shaped, straight bridge, softly rounded tip, medium width, gently curved, subtle vertical crease between brows and a few silver strands at the temples, no eyewear; dark ash-brown straight, fine hair, collar-length, blunt collar-length bob (even length around the jawline), center part, blunt ends, loose, no hair accessory; wears crew-neck cotton blouse, muted oatmeal, soft knit cardigan, olive fully open, mid-calf A-line skirt, slate blue, low-heeled leather oxford shoes, brown, no jewelry. no accessories.",
+    "character_contract_version": 13
+  }
+]

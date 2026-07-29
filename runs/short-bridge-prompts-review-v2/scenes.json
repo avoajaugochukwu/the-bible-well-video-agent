@@ -1,0 +1,558 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "\"I did everything right,\" she whispered to the empty room. \"So why am I the one still waiting?\"\n",
+    "director_beat_number": 1,
+    "hero_subject": "Protagonist pouring tea at kitchen table",
+    "image_prompt": "Warm morning in a small bungalow kitchen. Long wooden table, sunbeam through a herb-window. Protagonist pours tea from a kettle; gloved right hand rests on a sealed envelope beside stacked conservation journals. Framing: steady wide-medium.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "If you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book, ",
+    "director_beat_number": 1,
+    "hero_subject": "Detail close-up of gloved hand and envelope",
+    "image_prompt": "Tactile close-up: protagonist's gloved hand fingers the envelope edge, tea steam blurring the background. Shallow depth-of-field on frayed paper, journals' textured spines visible; soft domestic light, intimate composition.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "then stay with Ellen to the very end. ",
+    "director_beat_number": 1,
+    "hero_subject": "Protagonist reads note and whispers into sunroom",
+    "image_prompt": "Medium three-quarter shot toward a bright sunroom. Protagonist reads the folded note, exhales, and leans forward to whisper in empty room, the phrase whisper in empty room captured as a staged moment; empty clothes rail and plants behind.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": "This story is for you. Subscribe now, so you never miss a story that finds you right where you hurt. ",
+    "director_beat_number": 1,
+    "hero_subject": "Over-the-shoulder on folded note and journals as she stands",
+    "image_prompt": "Over-the-shoulder from behind protagonist as she folds the note and places it beside conservation journals, rising from the table with a steadying breath. Composition shows kettle, envelope, and the doorway leading out\u2014a small handoff to the day.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": "Because what Ellen learned in one quiet night changed her whole life. And it started with a wedding she did not want to go to.\n",
+    "director_beat_number": 2,
+    "hero_subject": "unboxing on padded table",
+    "image_prompt": "Storage vault interior, cool dim light. Two museum professionals\u2014a slightly reserved conservator and an observant chief curator\u2014unpack a bundled wedding dress on a padded table; medium wide shot shows racks, numbered boxes, and careful hands lifting fabric.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "chief_curator"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "Ellen was forty-nine years old, and she liked to say she had waited well.\n",
+    "director_beat_number": 2,
+    "hero_subject": "gloved fingertips along seam",
+    "image_prompt": "Medium close shot over the table: the conservator leans forward, linen-gloved fingertips tracing a fragile seam while she records notes on a clipboard; shallow depth-of-field isolates frayed lace and her careful wrist movement under cool vault light.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": "She kept her small house quiet. ",
+    "director_beat_number": 2,
+    "hero_subject": "detail of damage and curator pointing",
+    "image_prompt": "Tight detail: torn lace, disintegrating tulle, and yellowed stitching on the dress; the chief curator's hand enters frame, index finger pointing to a large weak area as dust motes float in the light, compressed telephoto framing.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "chief_curator"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": "Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses. ",
+    "director_beat_number": 2,
+    "hero_subject": "two-shot of timeline and quiet acceptance",
+    "image_prompt": "Medium two-shot at the table: the chief curator gestures with a measured timeline, speaking calmly; the conservator keeps record, face composed but inwardly affected \u2014 a small nod indicates quiet acceptance; vault racks recede behind them.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "chief_curator"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": "She would arrange the delicate petals with silver tweezers, tightening the screws to keep them still, frozen in time. ",
+    "director_beat_number": 3,
+    "hero_subject": "protagonist",
+    "image_prompt": "Wide view of the long wooden conservation bench under high windows in warm afternoon light; protagonist arranges padded supports and tiny micro-clamps to stabilize a lace panel while the intern stands nearby, watching and organizing small labeled trays.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": "She called it preserving. But in truth, she was hiding.\n",
+    "director_beat_number": 3,
+    "hero_subject": "protagonist",
+    "image_prompt": "Mid-telephoto close shot at the bench under a magnifying lamp: protagonist, gloved, lifts a tiny lace fragment with tweezers and aligns it precisely on the fabric frame; intern blurred in background arranging trays and tools.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 11,
+    "script_snippet": "She had stopped living years ago and called it holiness. ",
+    "director_beat_number": 3,
+    "hero_subject": "protagonist's hands",
+    "image_prompt": "Extreme close-up on gloved fingers placing delicate sample fibers onto a small labeled test card, shallow depth-of-field on fibers and tweezers, warm dust motes in sunbeams; intern's hands visible at edge, sorting micro-clamps on a tray.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 12,
+    "script_snippet": "She did not travel, ",
+    "director_beat_number": 3,
+    "hero_subject": "protagonist and intern",
+    "image_prompt": "Over-the-shoulder two-shot from behind the intern: protagonist pauses, meets the intern's expectant look, then nods minutely and slides a tray of micro-clamps across the bench; studio geography and warm window light frame the small handoff.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 13,
+    "script_snippet": "and she kept her good dress in the closet with the tags still on, saving it for a day that never came. ",
+    "director_beat_number": 4,
+    "hero_subject": "donor",
+    "image_prompt": "Interior museum office and small gallery, warm afternoon light through clerestory; donor enters holding a neatly folded 'good dress' with visible tags, petite and guarded, chief curator and protagonist near a wood desk, medium two-shot.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "donor",
+      "chief_curator",
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 14,
+    "script_snippet": "She measured every year by the one thing she did not have. ",
+    "director_beat_number": 4,
+    "hero_subject": "protagonist",
+    "image_prompt": "Tighter medium close on protagonist at the desk, hands slightly clenched, stammering; in foreground the folded 'good dress kept with tags' rests on the desk, chief curator's open-palmed gesture visible, shallow depth-of-field.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "chief_curator",
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 15,
+    "script_snippet": "She called the emptiness patience, because fear sounded like something she would have to fix.\n",
+    "director_beat_number": 4,
+    "hero_subject": "donor",
+    "image_prompt": "Close-up on donor's face: small, guarded, disappointed; gold-rim glasses catch light, downturned mouth, fingertips brush the dress's edge and tags at frame bottom, office wood paneling softly blurred behind her.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "donor",
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 16,
+    "script_snippet": "Then the invitation came\u2014cream-colored with gold letters. ",
+    "director_beat_number": 4,
+    "hero_subject": "protagonist",
+    "image_prompt": "Mid-shot across the small gallery: protagonist takes an uneven step forward, shoulders squared but unsure, meeting donor's disappointed gaze; chief curator watches from behind, composition showing a subtle handoff of responsibility.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "chief_curator",
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 17,
+    "script_snippet": "Her niece was getting married.\n",
+    "director_beat_number": 5,
+    "hero_subject": "chief_curator",
+    "image_prompt": "Interior of corner caf\u00e9 at late morning market, warm light through window, medium-wide table view. Chief curator leans forward, sliding a cream-colored invitation across the table toward protagonist; background market stalls glimpsed through glass. Three-quarter framing.",
+    "scene_type": "decision",
+    "character_ids": [
+      "chief_curator",
+      "protagonist",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 18,
+    "script_snippet": "Ellen sat at her kitchen table with the invitation in her hands. ",
+    "director_beat_number": 5,
+    "hero_subject": "intern",
+    "image_prompt": "Closer medium two-shot across the table. Intern sits upright, hands folded, asking practical questions; chief curator watches expectant. Protagonist reaches toward the invitation, fingers hovering over embossed edge. Shallow depth-of-field on hands and cream invitation.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "intern",
+      "chief_curator",
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 19,
+    "script_snippet": "Fifty. The number felt like a door swinging shut.\n",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist",
+    "image_prompt": "Tight close-up on protagonist's hands and face, sunlight rim-light, she studies the cream-colored invitation and gently fingers the embossed edge, brief outward glance showing measured resolve; caf\u00e9 patrons blurred behind her shoulder.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 20,
+    "script_snippet": "At the wedding, Ellen sat in the third row, ",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist",
+    "image_prompt": "Medium over-the-shoulder shot from behind protagonist toward curator and intern. Protagonist sets the invitation down with a modest, calm gesture and states a plan to stabilize the gown for display; intern nods, curator relaxes.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "chief_curator",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 21,
+    "script_snippet": "on the aisle, ",
+    "director_beat_number": 6,
+    "hero_subject": "gallery layout and reserved aisle seat",
+    "image_prompt": "Small museum donor gallery, late afternoon warm wood light, mock-up pedestal with curtained dressing, chief curator placing a small chair labelled 'aisle seat for those who came alone', donor and guests circulate, wide framing showing arrangement.",
+    "scene_type": "decision",
+    "character_ids": [
+      "chief_curator",
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 22,
+    "script_snippet": "in the seat where they put the ones who came alone. ",
+    "director_beat_number": 6,
+    "hero_subject": "protagonist steadies beside curator",
+    "image_prompt": "Medium two-shot across donor seating: protagonist standing beside chief curator as curator gestures toward pedestal; protagonist steadies herself, hands folded at waist, guests shift; warm gallery, shallow depth-of-field on fabric edge of curtain.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "chief_curator"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 23,
+    "script_snippet": "When the pastor said the words, till death do you part, something in Ellen's chest folded up small and quiet.\n",
+    "director_beat_number": 6,
+    "hero_subject": "protagonist speaking, donor reaction",
+    "image_prompt": "Tight close-up on protagonist from chest up as she explains display risks aloud, steady but quiet; out-of-focus patrons and donor in background register polite scrutiny, donor's guarded expression readable, warm wood panels.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 24,
+    "script_snippet": "She drove home in the dark. ",
+    "director_beat_number": 6,
+    "hero_subject": "curator nod, protagonist exhales, handoff",
+    "image_prompt": "Medium wide two-shot: chief curator and protagonist near curtained pedestal; curator gives a small encouraging nod, donor remains reserved, protagonist exhales, shoulders relax slightly\u2014camera pulls back to show the prepared aisle and seating, handoff to rehearsal end.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "chief_curator",
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 25,
+    "script_snippet": "Sitting on the edge of her bed in her good dress, the silence of the house caught up with her.\n\"Lord,\" she whispered. ",
+    "director_beat_number": 7,
+    "hero_subject": "Protagonist sitting on edge of bed",
+    "image_prompt": "Interior of a modest bungalow bedroom at late afternoon. Protagonist sits on the edge of her bed, pale light through blinds across her knees, holding a small frayed textile swatch, staring. Medium-wide, showing bedside table with neat tools.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 26,
+    "script_snippet": "\"Did you write everyone else's name down and just... forget mine?\"\nNo answer came. Only the quiet weight of a dress she had saved for nothing.\n",
+    "director_beat_number": 7,
+    "hero_subject": "Close-up of hands worrying swatch",
+    "image_prompt": "Tight close-up of protagonist's hands in shallow depth-of-field: fingers worrying the frayed edge of the swatch, thumb tracing a stitch. Nearby domestic objects echo lab tools \u2014 a thimble on a sewing tray, folded lint-free paper on table.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 27,
+    "script_snippet": "The next morning, at the wedding brunch, Ellen sat alone at a corner table. ",
+    "director_beat_number": 7,
+    "hero_subject": "Three-quarter shot sinking into doubt",
+    "image_prompt": "Three-quarter shot from beside the bed. Protagonist leans forward, elbows on knees, gaze unfocused toward a sunroom clothes rail where a preserved 'good dress' hangs faintly in background; warm domestic textures, posture heavy with hesitation.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 28,
+    "script_snippet": "That was where she met the old woman\u2014a gentle stranger with clear, wise eyes.\n",
+    "director_beat_number": 7,
+    "hero_subject": "Protagonist rising, small decisive gesture",
+    "image_prompt": "Medium shot as protagonist sits up, exhales, places the swatch on the bedside table, straightens her cardigan with a quiet, deliberate motion \u2014 a small physical decision to act. Pale blind light, readying to move toward next task.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 29,
+    "script_snippet": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly. ",
+    "director_beat_number": 8,
+    "hero_subject": "Protagonist demonstrates stabilization stitch",
+    "image_prompt": "Conservation studio at late afternoon, medium shot of protagonist showing a delicate stabilization stitch under a magnifying lamp to an attentive intern; chief curator stands in doorway watching; sunbeams and dust motes, workbench props visible.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "intern",
+      "chief_curator"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 30,
+    "script_snippet": "\"And you have been so busy weeping about the lock that you never checked the door. God never locked that door, child. You did. ",
+    "director_beat_number": 8,
+    "hero_subject": "Close-up on hands stitching and intern mirroring",
+    "image_prompt": "Tight close-up of the protagonist's hands making a non-invasive support stitch on frayed lace; intern's hands mirror the motion across the table; shallow depth-of-field, pins and tiny tools blurred at edges.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "intern"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 31,
+    "script_snippet": "You dressed your fear in Sunday clothes and called it patience. Walk through the door. Stop refusing to live.\"\n",
+    "director_beat_number": 8,
+    "hero_subject": "Protagonist pins step-by-step plan to board",
+    "image_prompt": "Three-quarter shot as the protagonist pins a step-by-step conservation plan on a cork board, pointing and assigning tasks; chief curator watches with folded hands near the doorway, intern listens, studio geometry and racks in background.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "intern",
+      "chief_curator"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 32,
+    "script_snippet": "Ellen wept, but it was a different kind of weeping now. It washed her clean.\n",
+    "director_beat_number": 8,
+    "hero_subject": "Two-shot handoff and steady leadership",
+    "image_prompt": "Over-the-shoulder two-shot of the protagonist handing labeled task trays to the intern, steady posture and calm expression; intern accepts with a small, respectful nod; chief curator seen softly smiling in background.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "intern",
+      "chief_curator"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 33,
+    "script_snippet": "She went home and looked at her life with new eyes. She got down on her knees and prayed her truest prayer: \"Lord, I called my fear your will. ",
+    "director_beat_number": 9,
+    "hero_subject": "Protagonist opening sunroom windows",
+    "image_prompt": "Sunlit sunroom in late afternoon; a woman in an oatmeal blouse and olive cardigan reaches up to push wide the tall wooden windows, dust motes in warm shafts of light, domestic rail and folded dress covers visible, medium-wide framing.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 34,
+    "script_snippet": "Forgive me. Teach me how to start.\"\n",
+    "director_beat_number": 9,
+    "hero_subject": "Protagonist lifts protected 'good dress' from cover",
+    "image_prompt": "Closer medium shot at the sunroom rail; the woman slides a pale canvas cover off a carefully folded garment, exposing delicate fabric, her posture deliberate and steady, sun behind her softening edges, shallow depth-of-field on hands and cloth.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 35,
+    "script_snippet": "And starting was quiet. She opened the sunroom windows, letting the warm breeze scatter the dry leaves. ",
+    "director_beat_number": 9,
+    "hero_subject": "Hands smoothing the dress in sunlight",
+    "image_prompt": "Tight close-up of her hands smoothing lace and skirt on the rail; fine threads, carded texture, and gentle pressing visible, warm afternoon light catching dust motes, fingers confident and unhurried, intimate tactile detail.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 36,
+    "script_snippet": "She hung her good dress where she could wear it on any ordinary Tuesday. ",
+    "director_beat_number": 9,
+    "hero_subject": "Protagonist steps back, appraising the hung dress",
+    "image_prompt": "Three-quarter medium shot: the woman stands a step back from the rail, hands relaxed at her sides, the dress hanging fully displayed behind her in the sunroom, a quiet resolved expression, neighborhood roofs seen through open windows, calm composition.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 37,
+    "script_snippet": "She was done waiting to live.\n",
+    "director_beat_number": 10,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior museum small gallery at opening, warm wood panels, mid-afternoon light. Framed medium-wide tripod shot of the protagonist placing a modest vase of unarranged garden flowers beside the stabilized dress display, calm, purposeful posture, guests blurred in background.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 38,
+    "script_snippet": "On the morning she turned fifty-one, Ellen sat at her kitchen table with a cup of coffee. ",
+    "director_beat_number": 10,
+    "hero_subject": "donor",
+    "image_prompt": "Tighter mid-telephoto two-shot of the dress pedestal and nearby circulation. The donor approaches and pauses, head tilted, surprised smile forming; the protagonist stands slightly behind the table, steady. Other guests circulate softly out of focus, warm gallery atmosphere.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 39,
+    "script_snippet": "She looked at the fresh, unpressed flowers sitting in the morning light.\n",
+    "director_beat_number": 10,
+    "hero_subject": "donor",
+    "image_prompt": "Close-up on the donor's face, warm gallery light catching silver-white hair and gold-rim glasses; a gentle, surprised smile and soft eyes. Shallow depth-of-field blurs the dress and gallery behind, intimate reaction to the display.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  },
+  {
+    "scene_number": 40,
+    "script_snippet": "\"You never forgot me,\" she whispered, smiling. \"You were just waiting for me to begin.\"",
+    "director_beat_number": 10,
+    "hero_subject": "chief_curator",
+    "image_prompt": "Medium relationship shot at the reception table: the chief curator clasps the protagonist's shoulder in quiet approval; the intern stands beside them beaming. The donor stands a step away smiling warmly at the group, guests moving around them.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist",
+      "chief_curator",
+      "intern",
+      "donor"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 9
+  }
+]

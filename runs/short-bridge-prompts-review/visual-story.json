@@ -1,0 +1,444 @@
+{
+  "film_title": "Threads of Stewardship",
+  "parallel_story": "A meticulous conservation technician must stabilize and prepare a fragile town parade banner \u2014 a century-old embroidered civic banner central to a proposed traveling exhibit \u2014 within five days so her small regional museum secures a visiting partnership and associated funding. Through concentrated bench work, a single decisive on-site negotiation, and quiet at-home problem-solving, she moves from cautious caretaker to visible project leader who protects the object and the museum's reputation.",
+  "movie_style": "3D stylized family-friendly animation emphasizing tactile realism: muted earth tones (denim blue, oat beige, slate gray) with warm amber accents around the banner's embroidered threads. Soft natural window light in domestic and gallery interiors; cool, clinical LEDs in the lab; deep shadow and metal textures in the storage vault. Composition favors medium-close three-quarter shots of the protagonist at her bench, extreme close-ups of hands, threads, needles, and labels, balanced with wide establishing shots of the modest gallery and expansive community center gym. Shallow depth of field for intimate conservation moments; longer lenses for observational public-space shots. Production design is lived-in: scuffed wooden benches, jars of reagents with handwritten labels, archival boxes, volunteer clipboards, and a single vintage silk scarf folded on a chair as a personal token. Camera movement is deliberate \u2014 slow push-ins on decisions, a subtle handheld sway during tense public moments, and a steady dolly when she takes action. Texture: visible fabric weave, corroded metal buttons, matte painted gallery walls, warm oak floors. No visual religious iconography in the museum; any private ritual is small and personal.",
+  "external_goal": "Stabilize, create a safe transport mount for, and supervise the installation of the fragile century-old embroidered civic parade banner as the centerpiece of a traveling exhibit at the community center within five days so the museum secures the visiting partnership and funding commitment.",
+  "protagonist_arc": "Beginning: A careful, technically skilled but passive caretaker who prefers to limit responsibility to bench work. Pressure: A rigid visiting coordinator deadline, fragile banner condition, and limited gallery/transport resources force the banner into public visibility. Choice: She decides to expand her role beyond conservator \u2014 designing a transport mount, coordinating volunteers, and confronting logistical obstacles \u2014 taking visible leadership. Changed ending: She leads a successful installation, defends professional choices publicly, and returns to conservation work with clear, purposeful agency and recognized stewardship.",
+  "recurring_locations": [
+    {
+      "id": "lab",
+      "name": "Conservation Lab",
+      "setting_type": "shared_public",
+      "social_domain": "museum professional workspace",
+      "institution_type": "small regional museum conservation studio",
+      "visual_identity": "long wooden bench with glass jars, microscopes, pinned evidence board, aprons, archival boxes, neutral walls and one small window; close-up-friendly tools and samples.",
+      "story_function": "Primary site for stabilization experiments, prototype mounts, and private technical decision-making."
+    },
+    {
+      "id": "vault",
+      "name": "Climate-Controlled Storage Vault",
+      "setting_type": "shared_public",
+      "social_domain": "museum collections",
+      "institution_type": "museum basement archival stacks and shelving",
+      "visual_identity": "narrow aisles of metal shelving, labeled boxes, dim cool lighting, a wheeled cart and padded supports; tactile textures of cardboard, rusted clips, and old cloth.",
+      "story_function": "Where the banner's full condition and related pieces are discovered; establishes stakes and constraints for mounting and transport."
+    },
+    {
+      "id": "gallery",
+      "name": "Museum Gallery",
+      "setting_type": "shared_public",
+      "social_domain": "public exhibition",
+      "institution_type": "small regional museum gallery with local-history exhibits",
+      "visual_identity": "low ceilings, warm wall paint, modest pedestals and display cases, volunteer bulletin board and folding chairs for donor/partner briefings.",
+      "story_function": "Site for the decisive meeting with the visiting coordinator and the museum's public presentation area where institutional choices are negotiated."
+    },
+    {
+      "id": "community_center",
+      "name": "Community Center Gym",
+      "setting_type": "shared_public",
+      "social_domain": "public event space",
+      "institution_type": "school/municipal community center gym used as traveling exhibit venue",
+      "visual_identity": "tall open space with folding partitions, overhead utility lighting, taped floor marks and volunteer teams carrying pedestals and crates; wide vistas for installation choreography.",
+      "story_function": "Final installation venue where mounts are tested under real transport and display conditions and where the partnership is validated."
+    },
+    {
+      "id": "bungalow",
+      "name": "Protagonist's Bungalow",
+      "setting_type": "private",
+      "social_domain": "home life and reflection",
+      "institution_type": "modest owned small-town bungalow with small garden",
+      "visual_identity": "simple kitchen table with neatly stacked notes, a folded vintage silk scarf on a chair, a small orderly garden visible through the window; warm morning light.",
+      "story_function": "Private space for low-stakes mock-ups, quiet strategy, and a habitual grounding gesture that remains personal and professional rather than confessional."
+    }
+  ],
+  "story_beats": [
+    {
+      "beat_number": 1,
+      "location_id": "lab",
+      "activity_type": "initial condition assessment of the civic parade banner",
+      "setting_logic": "The conservation lab is the proper place for first technical inspection and condition reports; she must document weaknesses before any mount is proposed.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close-up on her hands gently unlacing a padded bundle to reveal faded embroidered lettering and a long horizontal tear; she photographs the tear, annotates a ledger entry with precise measurements, then re-lays a protective tissue over the exposed area.",
+      "emotional_turn": "unease \u2014 she feels the weight of professional responsibility but stays within cautious technical routines.",
+      "bridge_cue": "",
+      "narration_anchor": "\"I did everything right,\" she whispered to the empty room."
+    },
+    {
+      "beat_number": 2,
+      "location_id": "vault",
+      "activity_type": "retrieving associated banners and provenance notes",
+      "setting_logic": "The vault holds related banners, provenance cards, and packing history needed to design a safe transport approach; she must inventory what accompanies the banner.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Medium shot as she pulls a labeled box, finds a small metal accession ring and an old shipment tag; she pins a marked calendar note indicating the exhibit arrival date on the box lid and rubs her thumb over the deadline.",
+      "emotional_turn": "exposure \u2014 the deadline becomes concrete and urgent, compressing the available time for careful work.",
+      "bridge_cue": "marked calendar",
+      "narration_anchor": "If you have ever turned fifty with no ring on your hand,"
+    },
+    {
+      "beat_number": 3,
+      "location_id": "gallery",
+      "activity_type": "single decisive meeting with curator and visiting coordinator about display and transport constraints",
+      "setting_logic": "Gallery is the correct place to review space, packing, and staffing needs in one briefing that must combine layout and crate-suitability decisions.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Wide framing of the small group around a folding table; the coordinator opens a scuffed transport crate and shows limited internal bracing while the curator points out low ceiling height and visitor flow. The protagonist steps forward, touches the weakened hem edge, and proposes a temporary internal support; discussion tightens into a single decisive plan to redesign the crate and approve a prototype mount.",
+      "emotional_turn": "stability to pressure \u2014 constraints crystallize into a high-stakes technical and coordination problem rather than repeated administrative friction.",
+      "bridge_cue": "",
+      "narration_anchor": "She kept her small house quiet."
+    },
+    {
+      "beat_number": 4,
+      "location_id": "lab",
+      "activity_type": "prototype mount experiments and material testing",
+      "setting_logic": "The bench is where she must invent and test a low-bulk internal support system that will protect embroidery and survive transport; hands-on trials demonstrate progress.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close montage shots: she uses silver tweezers to place tiny stitch anchors, tests a low-profile internal fabric sleeve on a mock-up, tacks a curved padded support to a sample edge, and notes load-bearing results on a trial rig.",
+      "emotional_turn": "effort \u2014 increased agency through skilled, visible problem-solving and iterative testing.",
+      "bridge_cue": "silver tweezers",
+      "narration_anchor": "She would arrange the delicate petals with silver tweezers, tightening the screws to keep them still, frozen in time."
+    },
+    {
+      "beat_number": 5,
+      "location_id": "vault",
+      "activity_type": "finding a hidden reinforcing strip sewn historically into the banner",
+      "setting_logic": "Deeper inspection in the vault reveals historic repairs and materials that affect modern mounting choices; she must adapt techniques to respect original construction.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Medium shot as she gently teases back an understrip sewn into a hem, exposing a layered canvas support; she studies the stitch pattern and adjusts her mounting sketch accordingly, registering the change with a quiet frown.",
+      "emotional_turn": "rupture \u2014 new technical information forces revision of earlier prototypes and raises transport concerns.",
+      "bridge_cue": "",
+      "narration_anchor": "She had stopped living years ago and called it holiness."
+    },
+    {
+      "beat_number": 6,
+      "location_id": "bungalow",
+      "activity_type": "home mock-up and logistical planning",
+      "setting_logic": "She refines small mock-ups at home where concentration and tactile space allow creative problem-solving away from the pressure of the public eye.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Medium shot as she unfolds a taped miniature rig at her kitchen table, slides a cream-colored card as a template under a fabric sample to test curvature, and lays out a simple packing checklist she will present to volunteers.",
+      "emotional_turn": "challenge \u2014 private refinement deepens agency and produces a concrete plan linking technical work to volunteer logistics.",
+      "bridge_cue": "",
+      "narration_anchor": "Then the invitation came\u2014cream-colored with gold letters."
+    },
+    {
+      "beat_number": 7,
+      "location_id": "gallery",
+      "activity_type": "coordinated on-site inspection combining crate critique and layout confirmation",
+      "setting_logic": "A single, timed on-site inspection must resolve both crate adequacy and gallery placement before transport; this compresses administrative friction into one decisive moment.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close-up as the coordinator opens a recent crate; she inhales sharply, then the protagonist, leaning in, points to the modified internal sketch and requests specific bracing and custom foam inserts. The coordinator challenges budget limits; she responds with a calm, technical explanation of risk and cost-benefit, asking for a modest reallocation of funds.",
+      "emotional_turn": "exposure \u2014 public negotiation puts her expertise on display; tension is transformed into an assertive plea grounded in professional stewardship.",
+      "bridge_cue": "",
+      "narration_anchor": "When the pastor said the words, till death do you part, something in Ellen's chest folded up small and quiet."
+    },
+    {
+      "beat_number": 8,
+      "location_id": "bungalow",
+      "activity_type": "late-night doubt and near-withdrawal",
+      "setting_logic": "Home remains the plausible place for exhaustion and private recalibration when the project's stakes and conflicting priorities weigh on her.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close-up on her seated at the kitchen table, ledger closed beside her; she pauses, fingers folding a bit of thread between them, breath shallow as she contemplates stepping back from logistical leadership, then sets the thread down and stares at the plan.",
+      "emotional_turn": "low_point \u2014 temptation to cede responsibility returns as fatigue and self-doubt mount.",
+      "bridge_cue": "",
+      "narration_anchor": "\"Lord,\" she whispered. \"Did you write everyone else's name down and just... forget mine?\""
+    },
+    {
+      "beat_number": 9,
+      "location_id": "lab",
+      "activity_type": "receiving neighborhood volunteer support and finalizing team roles",
+      "setting_logic": "Volunteers and interns who assist in the lab provide practical help; a neighbor-volunteer with experience in carpentry can fill an essential gap for crate bracing, enabling forward movement.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Medium shot as a volunteer places a steadying palm on the prototype support board; she meets the volunteer's calm glance, exchanges a brief, determined nod, and they write final role assignments on the whiteboard: transport team, padding team, and installation lead (her).",
+      "emotional_turn": "recognition \u2014 accepting help reframes her responsibility into leadership; agency and social openness increase.",
+      "bridge_cue": "",
+      "narration_anchor": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly."
+    },
+    {
+      "beat_number": 10,
+      "location_id": "community_center",
+      "activity_type": "leading the transport unpacking and banner mounting on-site",
+      "setting_logic": "The community center is the travel venue where packing realities must be tested and the mount must be installed under real conditions before the opening; her leadership is required for trust and success.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Medium shot as she opens the crate and steps forward onto the gym floor; she directs volunteers to position the low-profile internal support, secure the banner onto the temporary form, and adjust tension lines while she steps between teams to supervise alignment.",
+      "emotional_turn": "choice \u2014 she visibly takes command, making logistical and technical calls that determine the artifact's safety and the partnership's success.",
+      "bridge_cue": "opening a door",
+      "narration_anchor": "\"Walk through the door. Stop refusing to live.\""
+    },
+    {
+      "beat_number": 11,
+      "location_id": "community_center",
+      "activity_type": "final delicate adjustments and a small personal grounding ritual",
+      "setting_logic": "Just before public arrival, small on-site refinements and a brief personal composure ritual are credible; the ritual must be private and professional, not confessional.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close-up as she kneels to tuck a padded support under the banner hem, then smooths her vintage silk scarf folded in her pocket across her fingers as a quick habit to steady her hands; she breathes in, straightens, and resumes precise stitching of a securing loop.",
+      "emotional_turn": "effort \u2014 focused, contained preparation anchored by a private, habitual gesture that grounds her without invoking public faith practices.",
+      "bridge_cue": "",
+      "narration_anchor": "She got down on her knees and prayed her truest prayer: \"Lord, I called my fear your will. Forgive me. Teach me how to start.\""
+    },
+    {
+      "beat_number": 12,
+      "location_id": "gallery",
+      "activity_type": "opening the exhibit to partners and community with adjusted lighting",
+      "setting_logic": "The museum gallery hosts the partner and donor preview; adjusting daylight and lamps is a professional step to protect the textile and present it well \u2014 a practical use of opening windows and light control.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Wide shot as volunteers and staff open select gallery windows and adjust blinds and lamps to balance light; the protagonist monitors illumination on the banner, nods in approval as warm daylight and controlled lamp light meet, and steps back to greet incoming guests.",
+      "emotional_turn": "reconnection \u2014 practical environmental control and community presence signify successful stewardship and renewed institutional confidence.",
+      "bridge_cue": "opening windows",
+      "narration_anchor": "She opened the sunroom windows, letting the warm breeze scatter the dry leaves."
+    },
+    {
+      "beat_number": 13,
+      "location_id": "community_center",
+      "activity_type": "public demonstration of the transport-mount solution and Q&A",
+      "setting_logic": "At the original installation venue during the public reveal she must explain how the mount protects the banner so lay volunteers and the visiting coordinator understand and trust the approach.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Medium shot as she displays a small cross-section of the mount on a demo arm, smooths the sample fabric while explaining load distribution to patrons and the coordinator, then answers questions with calm technical authority; appreciative murmurs follow.",
+      "emotional_turn": "arrival \u2014 professional competence is publicly validated; she receives recognition rooted in stewardship, not personal spectacle.",
+      "bridge_cue": "",
+      "narration_anchor": "She hung her good dress where she could wear it on any ordinary Tuesday."
+    },
+    {
+      "beat_number": 14,
+      "location_id": "bungalow",
+      "activity_type": "quiet morning after \u2014 resuming routines with renewed purpose",
+      "setting_logic": "Returning home after the opening, she performs small domestic routines that now feel fulfilled; these quiet actions show inner change without religious exposition.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close-up on her hands as she pours a cup of coffee, places fresh unpressed flowers in a simple vase, folds her vintage silk scarf neatly and sets it on the table, then opens her ledger to file final notes with calm, purposeful pen strokes.",
+      "emotional_turn": "reconnection \u2014 calm, purposeful equilibrium; she has shifted from passive caretaker to recognized steward and leader.",
+      "bridge_cue": "cup of coffee",
+      "narration_anchor": "\"You never forgot me,\" she whispered, smiling. \"You were just waiting for me to begin.\""
+    }
+  ],
+  "emotional_spine": {
+    "core_transformation": {
+      "from_state": "passivity",
+      "to_state": "purposeful_action"
+    },
+    "emotional_beats": [
+      {
+        "beat_number": 1,
+        "narration_anchor": "\"I did everything right,\" she whispered to the empty room.",
+        "story_pressure": "unease",
+        "emotional_valence": "negative",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          "whispered hush",
+          "folded hands"
+        ]
+      },
+      {
+        "beat_number": 2,
+        "narration_anchor": "If you have ever turned fifty with no ring on your hand,",
+        "story_pressure": "exposure",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          "plain band of metal (unadorned ring)",
+          "marked calendar"
+        ]
+      },
+      {
+        "beat_number": 3,
+        "narration_anchor": "She kept her small house quiet.",
+        "story_pressure": "stability",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "wide",
+        "bridge_cues": [
+          "closed curtains",
+          "careful arrangement of objects"
+        ]
+      },
+      {
+        "beat_number": 4,
+        "narration_anchor": "She would arrange the delicate petals with silver tweezers, tightening the screws to keep them still, frozen in time.",
+        "story_pressure": "effort",
+        "emotional_valence": "mixed",
+        "agency": 3,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [
+          "silver tweezers",
+          "wooden press with tightening screws",
+          "pressed petals"
+        ]
+      },
+      {
+        "beat_number": 5,
+        "narration_anchor": "She had stopped living years ago and called it holiness.",
+        "story_pressure": "rupture",
+        "emotional_valence": "negative",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          "tagged garment left untouched",
+          "folded hands in lap"
+        ]
+      },
+      {
+        "beat_number": 6,
+        "narration_anchor": "Then the invitation came\u2014cream-colored with gold letters.",
+        "story_pressure": "challenge",
+        "emotional_valence": "mixed",
+        "agency": 3,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          "cream-colored card",
+          "careful unfolding"
+        ]
+      },
+      {
+        "beat_number": 7,
+        "narration_anchor": "When the pastor said the words, till death do you part, something in Ellen's chest folded up small and quiet.",
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          "caught breath",
+          "folded posture"
+        ]
+      },
+      {
+        "beat_number": 8,
+        "narration_anchor": "\"Lord,\" she whispered. \"Did you write everyone else's name down and just... forget mine?\"",
+        "story_pressure": "low_point",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          "soft plea",
+          "edge-of-bed pause"
+        ]
+      },
+      {
+        "beat_number": 9,
+        "narration_anchor": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly.",
+        "story_pressure": "recognition",
+        "emotional_valence": "mixed",
+        "agency": 4,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          "gentle touch",
+          "steady eye contact"
+        ]
+      },
+      {
+        "beat_number": 10,
+        "narration_anchor": "\"Walk through the door. Stop refusing to live.\"",
+        "story_pressure": "choice",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 4,
+        "tempo": "active",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          "opening a door",
+          "taking a step forward"
+        ]
+      },
+      {
+        "beat_number": 11,
+        "narration_anchor": "She got down on her knees and prayed her truest prayer: \"Lord, I called my fear your will. Forgive me. Teach me how to start.\"",
+        "story_pressure": "effort",
+        "emotional_valence": "mixed",
+        "agency": 4,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [
+          "kneeling",
+          "palms together"
+        ]
+      },
+      {
+        "beat_number": 12,
+        "narration_anchor": "She opened the sunroom windows, letting the warm breeze scatter the dry leaves.",
+        "story_pressure": "reconnection",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 4,
+        "tempo": "active",
+        "camera_distance": "wide",
+        "bridge_cues": [
+          "opening windows",
+          "warm breeze on fabric"
+        ]
+      },
+      {
+        "beat_number": 13,
+        "narration_anchor": "She hung her good dress where she could wear it on any ordinary Tuesday.",
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          "hanging a dress",
+          "smoothing fabric"
+        ]
+      },
+      {
+        "beat_number": 14,
+        "narration_anchor": "\"You never forgot me,\" she whispered, smiling. \"You were just waiting for me to begin.\"",
+        "story_pressure": "reconnection",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          "cup of coffee",
+          "fresh unpressed flowers"
+        ]
+      }
+    ]
+  },
+  "visual_story_contract_version": 8
+}

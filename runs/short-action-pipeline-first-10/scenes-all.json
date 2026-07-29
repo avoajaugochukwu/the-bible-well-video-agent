@@ -1,0 +1,457 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "\"I did everything right,\" she whispered to the empty room. \"So why am I the one still waiting?\"\n",
+    "director_beat_number": 1,
+    "hero_subject": "protagonist lifting a sample centerpiece",
+    "image_prompt": "Interior floral studio morning light, protagonist at central weathered worktable lifts a completed centerpiece toward eye level, slight three-quarter close medium, hands visible holding arrangement, subtle pause in posture, focused inspection.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "If you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book, ",
+    "director_beat_number": 1,
+    "hero_subject": "detail of bruised peony and loose ribbon",
+    "image_prompt": "Tight detail close of centerpiece focal peony with a dark bruise and a ribbon tail unraveling over wooden table, protagonist's hands hovering, linen apron and ribbon spools blurred in background, soft sunlit rim light.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "then stay with Ellen to the very end. This story is for you. Subscribe now, so you never miss a story that finds you right where you hurt. ",
+    "director_beat_number": 1,
+    "hero_subject": "protagonist scanning other samples",
+    "image_prompt": "Over-the-shoulder medium shot from behind protagonist toward worktable: multiple sample centerpieces and altar mockups arrayed, she methodically inspects each, fingers tracing petals and edges, small flaws visible, studio shelving and buckets framing scene.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": "Because what Ellen learned in one quiet night changed her whole life. ",
+    "director_beat_number": 1,
+    "hero_subject": "protagonist touching the calendar date",
+    "image_prompt": "Wider three-quarter shot of studio showing protagonist standing, one hand on the pinned calendar at the wedding date, jaw tightening subtly, compositions asymmetric with buckets and ribbon spools, late-morning natural light flooding in.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": "And it started with a wedding she did not want to go to.\n",
+    "director_beat_number": 1,
+    "hero_subject": "protagonist setting the damaged sample down and breathing",
+    "image_prompt": "Close medium of protagonist's hands gently setting the damaged centerpiece onto the table, she inhales with a small steadying exhale, fingers curl around the arrangement before release, studio tools and mood board softly out of focus.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "Ellen was forty-nine years old, and she liked to say she had waited well.\n",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist at kitchen table, planning",
+    "image_prompt": "Interior home kitchen, late afternoon warm window light. Medium wide shot of a worn oak table with pinned venue layout and client photos on a pinboard, empty vases and color swatch spread. Protagonist sits, studying papers, slight inward posture.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": "She kept her small house quiet. ",
+    "director_beat_number": 2,
+    "hero_subject": "assistant arrival at doorstep; exchange",
+    "image_prompt": "Medium two-shot framed through an open doorway. Part-time assistant stands on doorstep holding a small box of stems, anxious expression; protagonist rises from table, hands on papers, measured look exchanged. Evening shadows lengthen behind them.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": "Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses. ",
+    "director_beat_number": 2,
+    "hero_subject": "hands pinning and arranging props",
+    "image_prompt": "Close-up on protagonist's hands pinning the venue layout to the kitchen pinboard; visible texture of paper, thumb pressing, wedding photos blurred behind. Nearby, empty vases and a small color swatch; soft domestic light, intimate detail.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": "She would arrange the delicate petals with silver tweezers, tightening the screws to keep them still, frozen in time. ",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist removes trench coat, accepts help",
+    "image_prompt": "Medium shot across the table showing protagonist lifting her trench coat off with a small, steady nod toward the assistant; cardigan sleeves slightly rumpled, expression composed but resolute. Kitchen background, warm lamp glow.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": "She called it preserving. But in truth, she was hiding.\n",
+    "director_beat_number": 2,
+    "hero_subject": "handoff: calls and brief directions",
+    "image_prompt": "Over-the-shoulder shot from behind protagonist at the table as she reaches for a phone and points to the pinboard; assistant moves to clear space, box of stems set down. Papers, vases, and a loosened barrette visible, preparing next action.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 11,
+    "script_snippet": "She had stopped living years ago and called it holiness. ",
+    "director_beat_number": 3,
+    "hero_subject": "hands opening cold box",
+    "image_prompt": "Close handheld on protagonist's pale, gloved hands prying open a cold cardboard box on a damp pallet inside a warehouse cooler. Frosted breath, wilted brown peony heads inside, visible water droplets, early morning warehouse light.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 12,
+    "script_snippet": "She did not travel, and she kept her good dress in the closet with the tags still on, saving it for a day that never came. ",
+    "director_beat_number": 3,
+    "hero_subject": "empty crate and passing rival",
+    "image_prompt": "Medium shot down a row of pallets: protagonist's fingers close briefly on an empty wooden crate as a rival florist pushes a cart loaded with the exact fresh stems she needs, passing briskly, other buyers blurred in background.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 13,
+    "script_snippet": "She measured every year by the one thing she did not have. ",
+    "director_beat_number": 3,
+    "hero_subject": "warehouse bustle and isolation",
+    "image_prompt": "Wider composition of the wholesale floor: canvas market stalls and aluminum carts, bundled vendors arguing prices, rival florist moving away with stems; protagonist stands slightly off-center by a pallet, small and isolated, morning haze and concrete floors.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 14,
+    "script_snippet": "She called the emptiness patience, because fear sounded like something she would have to fix.\n",
+    "director_beat_number": 3,
+    "hero_subject": "protagonist's reaction close-up",
+    "image_prompt": "Tight close-up on protagonist's face and right hand at her chest: a slow exhale, downturned eyes, pale fingers curl around her non-marital decorative signet ring, cardigan buttoned, subtle freckling and tired lines visible in soft cold light.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 15,
+    "script_snippet": "Then the invitation came\u2014cream-colored with gold letters. Her niece was getting married.\n",
+    "director_beat_number": 3,
+    "hero_subject": "resolve and step toward action",
+    "image_prompt": "Three-quarter medium shot as protagonist straightens her sage cardigan, tucks handkerchief slightly back into pocket, plants feet, and steps away from the empty crate toward the market crowds with quiet resolve, overcast light shifting toward practical movement.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 16,
+    "script_snippet": "Ellen sat at her kitchen table with the invitation in her hands. Fifty. The number felt like a door swinging shut.\n",
+    "director_beat_number": 4,
+    "hero_subject": "Protagonist arranging alternate samples",
+    "image_prompt": "Interior Willow & Root Floral Studio, mid-morning. Medium shot across weathered worktable: protagonist lays out rustic alternative samples of greenery and small blooms. Phone screen propped open shows an unhappy client text. Soft window light, buckets and ribbon visible.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 17,
+    "script_snippet": "At the wedding, Ellen sat in the third row, on the aisle, in the seat where they put the ones who came alone. ",
+    "director_beat_number": 4,
+    "hero_subject": "Protagonist pinning sample beside original",
+    "image_prompt": "Three-quarter medium shot, slightly over-the-table angle. Protagonist pins the new rustic sample beside the original arrangement, hands steady, shoulders squaring. Visible signet ring and linen pocket handkerchief. Pegboard tools and pinned mood board in background.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 18,
+    "script_snippet": "When the pastor said the words, till death do you part, something in Ellen's chest folded up small and quiet.\n",
+    "director_beat_number": 4,
+    "hero_subject": "Protagonist steady, focused close-up",
+    "image_prompt": "Tight shallow close-up on protagonist's face and upper torso at the table edge. Expression shifts from worry to focused resolve; hands blurred in foreground assembling a garland. Warm indoor light on skin, subtle fabric texture of cardigan visible.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 19,
+    "script_snippet": "She drove home in the dark. ",
+    "director_beat_number": 4,
+    "hero_subject": "Protagonist directing helpers and gathering supplies",
+    "image_prompt": "Wide asymmetric studio shot, protagonist in foreground slightly left, handing a bundle of sample garlands toward two anonymous volunteers at right. A set of van keys and labeled boxes sit on the table. She stands upright, sleeves slightly rolled, preparing to leave.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 20,
+    "script_snippet": "Sitting on the edge of her bed in her good dress, the silence of the house caught up with her.\n",
+    "director_beat_number": 5,
+    "hero_subject": "Protagonist prepares at kitchen table",
+    "image_prompt": "Home kitchen at gray morning, protagonist at worn oak table checking a paper route map and fumbling for a linen handkerchief and van keys in her pocket, medium-wide, soft window light, domestic clutter visible",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 21,
+    "script_snippet": "\"Lord,\" she whispered. \"Did you write everyone else's name down and just... forget mine?\"\n",
+    "director_beat_number": 5,
+    "hero_subject": "Hand close-up on van key",
+    "image_prompt": "Close-up of protagonist's right hand emerging from trouser pocket, fingers fumbling a scuffed metal van key and a tucked linen handkerchief, shallow depth, warm kitchen light catching a pearl stud earring and wooden button on cardigan",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 22,
+    "script_snippet": "No answer came. Only the quiet weight of a dress she had saved for nothing.\n",
+    "director_beat_number": 5,
+    "hero_subject": "Van hood steaming and crushed bouquet",
+    "image_prompt": "Exterior doorstep in steady rain, steaming cargo van with open hood in background, protagonist kneeling beside a crushed bouquet bag on wet pavement, soaked card darkening, blurred neighbor with umbrella passing, mid-shot, cool overcast light",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 23,
+    "script_snippet": "The next morning, at the wedding brunch, Ellen sat alone at a corner table. ",
+    "director_beat_number": 5,
+    "hero_subject": "Protagonist sunk on stoop with ruined bouquet",
+    "image_prompt": "Stooped front step at rain-lashed morning, protagonist seated, soaked sage cardigan with rain spatter, ruined bouquet in her lap, head bowed, hands limp and empty of action, tight-medium framing, pale diffuse light emphasizing stillness",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 24,
+    "script_snippet": "That was where she met the old woman\u2014a gentle stranger with clear, wise eyes.\n",
+    "director_beat_number": 6,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior St. Jude's sanctuary early morning, dim natural light through tall windows; protagonist steps into frame, face in three-quarter close-up, volunteers busy in background pinning mismatched ribbons, folding tables blocking altar, composition intimate, shallow focus.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 25,
+    "script_snippet": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly. ",
+    "director_beat_number": 6,
+    "hero_subject": "protagonist",
+    "image_prompt": "Wider, slightly tilted shot of church hall interior, volunteers pin ribbon to pews, janitor shrugs near stacked folding tables; protagonist stands hand on worn pew, observing the clutter, mid-shot showing spatial obstacles, cooler diffuse light.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 26,
+    "script_snippet": "\"And you have been so busy weeping about the lock that you never checked the door. God never locked that door, child. You did. ",
+    "director_beat_number": 6,
+    "hero_subject": "protagonist",
+    "image_prompt": "Tight close-up on protagonist's hands gripping pew edge, linen cardigan sleeve and signet ring visible, small working fists forming; textured wood, watermarks, soft rim light, shallow depth emphasizing internal resolve.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 27,
+    "script_snippet": "You dressed your fear in Sunday clothes and called it patience. Walk through the door. Stop refusing to live.\"\n",
+    "director_beat_number": 6,
+    "hero_subject": "protagonist",
+    "image_prompt": "Medium-wide shot down center aisle, protagonist in foreground stepping forward, voiceless but directing with a pointed hand; volunteers and janitor respond, shifting tables and retying ribbons, dynamic group tableau, natural window light.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 28,
+    "script_snippet": "Ellen wept, but it was a different kind of weeping now. It washed her clean.\n",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "St. Jude's Church Hall interior, mid-morning overcast light, medium-wide frame: protagonist stands near folding tables handing buckets and sketch sheets to a local farmer and three church volunteers, lively exchange, volunteers gathering tools and nodding.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 29,
+    "script_snippet": "She went home and looked at her life with new eyes. ",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior wide-medium two-shot near altar: protagonist, arms engaged, demonstrates a simplified garland technique to the farmer and a volunteer; close hands weaving stems, buckets at feet, volunteers leaning in, sketch sheet pinned to table.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 30,
+    "script_snippet": "She got down on her knees and prayed her truest prayer: \"Lord, I called my fear your will. Forgive me. Teach me how to start.\"\n",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "Low-angle medium shot on a ladder at the altar: protagonist climbs to adjust altar swags, cardigan slightly loosened, authoritative, farmer steadying ladder below, volunteers arranging ropes and bunched greenery in soft, diffused light.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 31,
+    "script_snippet": "And starting was quiet. ",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "Close-up on protagonist and hands over a finished centerpiece on a long worktable: she checks composition, nods, then passes it to an assistant; background shows coordinated volunteers placing centerpieces down the aisle.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 32,
+    "script_snippet": "She opened the sunroom windows, letting the warm breeze scatter the dry leaves. ",
+    "director_beat_number": 8,
+    "hero_subject": "completed-installation sweep",
+    "image_prompt": "Interior church sanctuary early afternoon, steadycam sweep from aisle to altar revealing garlands framing altar, tidy centerpieces on reception tables, guests murmuring approval; client steps into frame studying arrangements while protagonist stands slightly apart, hands clasped at waist.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 33,
+    "script_snippet": "She hung her good dress where she could wear it on any ordinary Tuesday. She was done waiting to live.\n",
+    "director_beat_number": 8,
+    "hero_subject": "client acceptance two-shot",
+    "image_prompt": "Medium two-shot at altar edge, client reaches forward to touch a garland, gives a soft relieved smile; protagonist stands beside her, posture upright and purposeful, breathing out, small contented smile as she quietly watches the client's reaction.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 34,
+    "script_snippet": "On the morning she turned fifty-one, Ellen sat at her kitchen table with a cup of coffee. She looked at the fresh, unpressed flowers sitting in the morning light.\n",
+    "director_beat_number": 8,
+    "hero_subject": "hands detail reaction",
+    "image_prompt": "Close-up on protagonist's hands at waist then unclasping: worn signet ring, linen blouse sleeve, faint fleck of mud on cardigan, soft natural side light; subtle exhale, eyes off-frame conveying prayerful gratitude and calm.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  },
+  {
+    "scene_number": 35,
+    "script_snippet": "\"You never forgot me,\" she whispered, smiling. \"You were just waiting for me to begin.\"",
+    "director_beat_number": 8,
+    "hero_subject": "foreground leadership tableau",
+    "image_prompt": "Wide slightly tilted tableau in sanctuary, protagonist in foreground slightly off-center directing volunteers who adjust centerpieces and boutonnieres; congregation and client in background nodding approval, late golden-hour backlight through tall arched windows.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 9,
+    "visual_story_contract_version": 7
+  }
+]

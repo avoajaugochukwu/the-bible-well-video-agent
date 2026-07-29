@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Christian Story — Scene Gallery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #14110f;
+    --card-bg: #1e1a17;
+    --border: #33291f;
+    --text: #f0e6d8;
+    --muted: #b8a88f;
+    --accent: #c9973f;
+    --lane-archival: #c9973f;
+    --lane-stock: #4fa8a0;
+    --lane-graphic: #8b7cc9;
+    --lane-krea: #c0654a;
+    --mood: #5fb26a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Georgia, 'Times New Roman', serif;
+    padding: 32px 24px 64px;
+  }
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--accent);
+  }
+  p.sub {
+    margin: 0 0 28px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    margin: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+  .card.mood-designated {
+    border-color: var(--mood);
+    box-shadow: 0 0 0 1px var(--mood);
+  }
+  .mood-badge {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: var(--mood);
+    color: #0d1a0f;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: #0c0a08;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .thumb .missing {
+    color: #8a5a4a;
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+  .badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0,0,0,0.65);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  figcaption {
+    padding: 12px 14px 16px;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--text);
+  }
+  figcaption .scene-type {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  figcaption .basis {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-style: italic;
+    line-height: 1.4;
+  }
+  figcaption .basis-label {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+  }
+  .lane-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #14110f;
+    background: var(--muted);
+  }
+  .thumb .lane-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+  .lane-badge.lane-archival { background: var(--lane-archival); }
+  .lane-badge.lane-stock { background: var(--lane-stock); }
+  .lane-badge.lane-graphic-map { background: var(--lane-graphic); }
+  .lane-badge.lane-graphic-document { background: var(--lane-graphic); }
+  .lane-badge.lane-krea { background: var(--lane-krea); }
+  .lane-badge.lane-none { background: var(--muted); color: var(--bg); }
+
+  /* Modal / lightbox */
+  #modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.88);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 5vh 4vw;
+  }
+  #modal.open { display: flex; }
+  #modal .modal-inner {
+    max-width: 1100px;
+    width: 100%;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  #modal img {
+    max-width: 100%;
+    max-height: 68vh;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  #modal .caption {
+    color: var(--text);
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 800px;
+    text-align: center;
+  }
+  #modal .scene-num {
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+  }
+  #modal .modal-meta {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  #modal .modal-basis {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    line-height: 1.5;
+    max-width: 800px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  #modal .modal-basis .basis-label {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 0.75rem;
+  }
+  #modal .close {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    color: var(--text);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+  #modal .close:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+  <h1>Christian Story — Scene Gallery</h1>
+  <p class="sub">10 scenes, 0 marked
+    <span style="color: var(--mood); font-weight: 700;">CULTURAL ANCHOR</span>
+    (code-picked mood/establishing scenes). Click any image to view full size.</p>
+  <div class="grid">
+        <figure class="card" data-idx="0">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpvcxj8fmw.png" alt="Scene 1" loading="lazy"><span class="badge">1</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>&quot;I did everything right,&quot; she whispered to the empty room. &quot;So why am I the one still waiting?&quot;
+<div class="scene-type">reflection</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Interior floral studio morning light, protagonist at central weathered worktable lifts a completed centerpiece toward eye level, slight three-quarter close medium, hands visible holding arrangement, subtle pause in posture, focused inspection. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="1">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp7oxm0jxs.png" alt="Scene 2" loading="lazy"><span class="badge">2</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>If you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book, <div class="scene-type">revelation</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Tight detail close of centerpiece focal peony with a dark bruise and a ribbon tail unraveling over wooden table, protagonist&#x27;s hands hovering, linen apron and ribbon spools blurred in background, soft sunlit rim light. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="2">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp_c2dox55.png" alt="Scene 3" loading="lazy"><span class="badge">3</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>then stay with Ellen to the very end. This story is for you. Subscribe now, so you never miss a story that finds you right where you hurt. <div class="scene-type">reflection</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Over-the-shoulder medium shot from behind protagonist toward worktable: multiple sample centerpieces and altar mockups arrayed, she methodically inspects each, fingers tracing petals and edges, small flaws visible, studio shelving and buckets framing scene. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="3">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpqmnt1t38.png" alt="Scene 4" loading="lazy"><span class="badge">4</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>Because what Ellen learned in one quiet night changed her whole life. <div class="scene-type">decision</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Wider three-quarter shot of studio showing protagonist standing, one hand on the pinned calendar at the wedding date, jaw tightening subtly, compositions asymmetric with buckets and ribbon spools, late-morning natural light flooding in. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="4">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpadg_l35g.png" alt="Scene 5" loading="lazy"><span class="badge">5</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>And it started with a wedding she did not want to go to.
+<div class="scene-type">decision</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Close medium of protagonist&#x27;s hands gently setting the damaged centerpiece onto the table, she inhales with a small steadying exhale, fingers curl around the arrangement before release, studio tools and mood board softly out of focus. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="5">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpofq0u7dw.png" alt="Scene 6" loading="lazy"><span class="badge">6</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>Ellen was forty-nine years old, and she liked to say she had waited well.
+<div class="scene-type">reflection</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Interior home kitchen, late afternoon warm window light. Medium wide shot of a worn oak table with pinned venue layout and client photos on a pinboard, empty vases and color swatch spread. Protagonist sits, studying papers, slight inward posture. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="6">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp4erlzmg4.png" alt="Scene 7" loading="lazy"><span class="badge">7</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>She kept her small house quiet. <div class="scene-type">revelation</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Medium two-shot framed through an open doorway. Part-time assistant stands on doorstep holding a small box of stems, anxious expression; protagonist rises from table, hands on papers, measured look exchanged. Evening shadows lengthen behind them. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="7">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp6qua7sj2.png" alt="Scene 8" loading="lazy"><span class="badge">8</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses. <div class="scene-type">decision</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Close-up on protagonist&#x27;s hands pinning the venue layout to the kitchen pinboard; visible texture of paper, thumb pressing, wedding photos blurred behind. Nearby, empty vases and a small color swatch; soft domestic light, intimate detail. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="8">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp4icuhvy_.png" alt="Scene 9" loading="lazy"><span class="badge">9</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>She would arrange the delicate petals with silver tweezers, tightening the screws to keep them still, frozen in time. <div class="scene-type">transformation</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Medium shot across the table showing protagonist lifting her trench coat off with a small, steady nod toward the assistant; cardigan sleeves slightly rumpled, expression composed but resolute. Kitchen background, warm lamp glow. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+        <figure class="card" data-idx="9">
+          <div class="thumb"><img src="https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp2fqgk2f4.png" alt="Scene 10" loading="lazy"><span class="badge">10</span><span class="lane-badge lane-none">—</span></div>
+          <figcaption>She called it preserving. But in truth, she was hiding.
+<div class="scene-type">decision</div><div class="basis basis-prompt"><span class="basis-label">Prompt:</span> A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Over-the-shoulder shot from behind protagonist at the table as she reaches for a phone and points to the pinboard; assistant moves to clear space, box of stems set down. Papers, vases, and a loosened barrette visible, preparing next action. The protagonist is 51-year-old White (mixed Northern European) female, 5&#x27;5&quot;, medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid&#x27;s bow, fine crow&#x27;s feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.</div></figcaption>
+        </figure>
+  </div>
+
+  <div id="modal">
+    <button class="close" aria-label="Close">&times;</button>
+    <div class="modal-inner">
+      <div class="scene-num" id="modal-scene-num"></div>
+      <span class="lane-badge" id="modal-lane"></span>
+      <span class="mood-badge" id="modal-mood" style="position:static; display:none;">CULTURAL ANCHOR</span>
+      <img id="modal-img" src="" alt="">
+      <div class="caption" id="modal-caption"></div>
+      <div class="modal-meta" id="modal-meta"></div>
+      <div class="modal-basis" id="modal-basis"></div>
+    </div>
+  </div>
+
+<script>
+  var SCENES = [{"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpvcxj8fmw.png", "snippet": "\"I did everything right,\" she whispered to the empty room. \"So why am I the one still waiting?\"\n", "n": 1, "lane": null, "scene_type": "reflection", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Interior floral studio morning light, protagonist at central weathered worktable lifts a completed centerpiece toward eye level, slight three-quarter close medium, hands visible holding arrangement, subtle pause in posture, focused inspection. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp7oxm0jxs.png", "snippet": "If you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book, ", "n": 2, "lane": null, "scene_type": "revelation", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Tight detail close of centerpiece focal peony with a dark bruise and a ribbon tail unraveling over wooden table, protagonist's hands hovering, linen apron and ribbon spools blurred in background, soft sunlit rim light. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp_c2dox55.png", "snippet": "then stay with Ellen to the very end. This story is for you. Subscribe now, so you never miss a story that finds you right where you hurt. ", "n": 3, "lane": null, "scene_type": "reflection", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Over-the-shoulder medium shot from behind protagonist toward worktable: multiple sample centerpieces and altar mockups arrayed, she methodically inspects each, fingers tracing petals and edges, small flaws visible, studio shelving and buckets framing scene. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpqmnt1t38.png", "snippet": "Because what Ellen learned in one quiet night changed her whole life. ", "n": 4, "lane": null, "scene_type": "decision", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Wider three-quarter shot of studio showing protagonist standing, one hand on the pinned calendar at the wedding date, jaw tightening subtly, compositions asymmetric with buckets and ribbon spools, late-morning natural light flooding in. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpadg_l35g.png", "snippet": "And it started with a wedding she did not want to go to.\n", "n": 5, "lane": null, "scene_type": "decision", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Close medium of protagonist's hands gently setting the damaged centerpiece onto the table, she inhales with a small steadying exhale, fingers curl around the arrangement before release, studio tools and mood board softly out of focus. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpofq0u7dw.png", "snippet": "Ellen was forty-nine years old, and she liked to say she had waited well.\n", "n": 6, "lane": null, "scene_type": "reflection", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Interior home kitchen, late afternoon warm window light. Medium wide shot of a worn oak table with pinned venue layout and client photos on a pinboard, empty vases and color swatch spread. Protagonist sits, studying papers, slight inward posture. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp4erlzmg4.png", "snippet": "She kept her small house quiet. ", "n": 7, "lane": null, "scene_type": "revelation", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Medium two-shot framed through an open doorway. Part-time assistant stands on doorstep holding a small box of stems, anxious expression; protagonist rises from table, hands on papers, measured look exchanged. Evening shadows lengthen behind them. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp6qua7sj2.png", "snippet": "Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses. ", "n": 8, "lane": null, "scene_type": "decision", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Close-up on protagonist's hands pinning the venue layout to the kitchen pinboard; visible texture of paper, thumb pressing, wedding photos blurred behind. Nearby, empty vases and a small color swatch; soft domestic light, intimate detail. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp4icuhvy_.png", "snippet": "She would arrange the delicate petals with silver tweezers, tightening the screws to keep them still, frozen in time. ", "n": 9, "lane": null, "scene_type": "transformation", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Medium shot across the table showing protagonist lifting her trench coat off with a small, steady nod toward the assistant; cardigan sleeves slightly rumpled, expression composed but resolute. Kitchen background, warm lamp glow. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}, {"url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp2fqgk2f4.png", "snippet": "She called it preserving. But in truth, she was hiding.\n", "n": 10, "lane": null, "scene_type": "decision", "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Over-the-shoulder shot from behind protagonist at the table as she reaches for a phone and points to the pinboard; assistant moves to clear space, box of stems set down. Papers, vases, and a loosened barrette visible, preparing next action. The protagonist is 51-year-old White (mixed Northern European) female, 5'5\", medium, porcelain with subtle freckling; oval face, soft, lightly rounded, green, slightly downturned almond-shaped, straight with a narrow bridge and rounded tip, medium fullness with a defined cupid's bow, fine crow's feet at outer eyes and faint nasolabial lines, no eyewear; steel gray fine with soft waves hair, chin-length, blunt bob, center part aligned with the bridge of the nose, blunt, loose, natural, resting at jawline, single tortoiseshell barrette on right side; wears light-weight linen crewneck blouse, soft cream, sage green cotton-blend knit cardigan fully fastened with three small wooden buttons, straight-cut mid-rise cotton trousers in warm taupe, low-heeled leather loafers in chestnut brown, small pearl stud earrings and a non-marital decorative signet ring on right hand. plain soft linen handkerchief tucked in right trouser pocket.. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.", "basis_kind": "prompt", "mood_designated": false}];
+  var modal = document.getElementById('modal');
+  var modalImg = document.getElementById('modal-img');
+  var modalCaption = document.getElementById('modal-caption');
+  var modalSceneNum = document.getElementById('modal-scene-num');
+  var modalLane = document.getElementById('modal-lane');
+  var modalMeta = document.getElementById('modal-meta');
+  var modalBasis = document.getElementById('modal-basis');
+  var modalMood = document.getElementById('modal-mood');
+
+  function openModal(idx) {
+    var s = SCENES[idx];
+    if (!s || !s.url) return;
+    modalImg.src = s.url;
+    modalImg.alt = 'Scene ' + s.n;
+    modalCaption.textContent = s.snippet;
+    modalSceneNum.textContent = 'Scene ' + s.n;
+    modalLane.className = 'lane-badge ' + (s.lane ? 'lane-' + s.lane : 'lane-none');
+    modalLane.textContent = s.lane || '—';
+    modalMood.style.display = s.mood_designated ? '' : 'none';
+    var metaParts = [];
+    if (s.scene_type) metaParts.push(s.scene_type);
+    modalMeta.textContent = metaParts.join(' · ');
+    if (s.image_basis) {
+      var label = s.basis_kind === 'search' ? 'Search' : 'Prompt';
+      modalBasis.textContent = '';
+      var labelSpan = document.createElement('span');
+      labelSpan.className = 'basis-label';
+      labelSpan.textContent = label + ': ';
+      modalBasis.appendChild(labelSpan);
+      modalBasis.appendChild(document.createTextNode(s.image_basis));
+      modalBasis.style.display = '';
+    } else {
+      modalBasis.textContent = '';
+      modalBasis.style.display = 'none';
+    }
+    modal.classList.add('open');
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    modalImg.src = '';
+  }
+
+  document.querySelectorAll('.card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      openModal(parseInt(card.getAttribute('data-idx'), 10));
+    });
+  });
+
+  document.querySelector('#modal .close').addEventListener('click', closeModal);
+
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) closeModal();
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
+</script>
+</body>
+</html>

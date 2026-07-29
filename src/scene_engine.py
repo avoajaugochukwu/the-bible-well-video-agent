@@ -19,7 +19,7 @@ import env                     # utils: one .env lookup (checks root .env)
 import align                    # utils: Whisper-word <-> verbatim-scene DTW aligner
 from llm import call_llm_json   # utils: shared OpenAI structured-JSON caller
 
-PROMPT_CONTRACT_VERSION = 7
+PROMPT_CONTRACT_VERSION = 10
 CONTEXT_CONTRACT_VERSION = 2
 
 CONTEXT_SCHEMA = {
@@ -75,11 +75,10 @@ def infer_context(script: str) -> dict:
     return context
 
 
-# Retained as a compatibility argument for older callers; narration scenes now use
-# the word-duration targets below.
 SENTENCES_PER_CHUNK = 8
-NARRATION_TARGET_WORDS = 35
-NARRATION_MAX_WORDS = 55
+WORDS_PER_SECOND = 2.5
+MAX_SCENE_SECONDS = 12
+MAX_SCENE_WORDS = round(WORDS_PER_SECOND * MAX_SCENE_SECONDS)
 
 _SENTENCE_END = re.compile(r"[.!?]+(?:[\"'”’])?(?:\s+|$)")
 
@@ -91,41 +90,157 @@ def strip_production_cues(script: str) -> str:
     return re.sub(r"[ \t]{2,}", " ", _PRODUCTION_CUE.sub("", script)).strip()
 
 
-def split_narration_scenes(
-    script: str,
-    target_words: int = NARRATION_TARGET_WORDS,
-    max_words: int = NARRATION_MAX_WORDS,
-) -> list[str]:
-    """Split narration into verbatim timing blocks, independent of visual nouns.
-
-    The visual story is a separate lane, so "visual change" in the narration is
-    not a valid cut signal. Group complete sentences into stable spoken-length
-    blocks instead; short rhetorical sentences naturally stay together.
-    """
+def mechanical_split(script: str, sentences_per_scene: int = 4) -> list[str]:
+    """Lossless sentence-group fallback and sentence-aligned LLM chunker."""
     bounds = [m.end() for m in _SENTENCE_END.finditer(script)]
     if not bounds or bounds[-1] < len(script):
         bounds.append(len(script))
     starts = [0] + bounds[:-1]
     sentences = [script[s:e] for s, e in zip(starts, bounds) if script[s:e].strip()]
+    return [
+        "".join(sentences[i:i + sentences_per_scene])
+        for i in range(0, len(sentences), sentences_per_scene)
+    ]
 
+
+SNIPPETS_SCHEMA = {
+    "name": "narration_visual_beats",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "snippets": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"type": "string"},
+            }
+        },
+        "required": ["snippets"],
+        "additionalProperties": False,
+    },
+}
+
+
+def propose_snippets(script: str) -> list[str]:
+    """Ask the model only where the narration's natural picture changes."""
+    data = call_llm_json(
+        [
+            {
+                "role": "system",
+                "content": (
+                    "Slice this script into sequential visual beats for a narrated video. "
+                    "Cut on VISUAL CHANGE: each beat is one continuous thing a camera could "
+                    "show. Evaluate every sentence in priority order:\n"
+                    "1. LIST-CUT: visually distinct items in a list each get their own beat.\n"
+                    "2. STACCATO/CONTRAST: short rhetorical or contrast sequences stay together "
+                    "when they form one dramatic beat.\n"
+                    "3. Otherwise, merge the same subject, setting, action, and tone; start a "
+                    "new beat when any of those visibly changes.\n"
+                    "Do not force beats toward a word count. Never leave a dangling fragment "
+                    "ending on a preposition, article, or conjunction. Copy every beat VERBATIM "
+                    "from the script, in order, losing no text. "
+                    'Return JSON: {"snippets":["...","..."]}.'
+                ),
+            },
+            {"role": "user", "content": script},
+        ],
+        SNIPPETS_SCHEMA,
+        max_completion_tokens=4096,
+    )
+    return [s for s in data["snippets"] if isinstance(s, str) and s.strip()]
+
+
+def slice_by_snippets(script: str, snippets: list[str]) -> list[str] | None:
+    """Use model text only as cut locators; emitted scenes are original slices."""
+    starts = []
+    cursor = 0
+    for snippet in snippets:
+        words = snippet.split()
+        if not words:
+            continue
+        match = re.search(
+            r"\s+".join(re.escape(word) for word in words),
+            script[cursor:],
+        )
+        if match is None:
+            continue
+        start = cursor + match.start()
+        starts.append(start)
+        cursor += match.end()
+    if not starts:
+        return None
+    starts[0] = 0
+    starts = list(dict.fromkeys(starts))
+    return [
+        script[start:starts[i + 1] if i + 1 < len(starts) else len(script)]
+        for i, start in enumerate(starts)
+    ]
+
+
+def cap_segments(
+    segments: list[str],
+    max_words: int = MAX_SCENE_WORDS,
+) -> list[str]:
+    """Losslessly split overlong beats, preferring sentence and clause breaks."""
     out = []
-    current = ""
-    current_words = 0
-    for sentence in sentences:
-        words = len(sentence.split())
-        if current and current_words >= target_words and current_words + words > max_words:
-            out.append(current)
-            current = ""
-            current_words = 0
-        current += sentence
-        current_words += words
-        if current_words >= target_words:
-            out.append(current)
-            current = ""
-            current_words = 0
-    if current:
-        out.append(current)
+    for segment in segments:
+        words = list(re.finditer(r"\S+", segment))
+        if len(words) <= max_words:
+            out.append(segment)
+            continue
+        char_start = 0
+        word_start = 0
+        while len(words) - word_start > max_words:
+            hard_end = word_start + max_words
+            eligible = range(min(word_start + 6, hard_end), hard_end + 1)
+            sentence_ends = [
+                i for i in eligible
+                if re.search(r"[.!?][\"'”’]*$", words[i - 1].group())
+            ]
+            clause_ends = [
+                i for i in eligible
+                if re.search(r"[,;:][\"'”’]*$", words[i - 1].group())
+            ]
+            word_end = (
+                sentence_ends[-1]
+                if sentence_ends
+                else clause_ends[-1]
+                if clause_ends
+                else hard_end
+            )
+            char_end = words[word_end].start()
+            out.append(segment[char_start:char_end])
+            char_start = char_end
+            word_start = word_end
+        out.append(segment[char_start:])
+    if "".join(out) != "".join(segments):
+        raise RuntimeError("cap_segments dropped narration text")
     return out
+
+
+def cut_narration_scenes(
+    script: str,
+    sentences_per_chunk: int = SENTENCES_PER_CHUNK,
+    workers: int = 8,
+) -> list[str]:
+    """Homestead-style agent cut with lossless anchoring and local fallback."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    chunks = mechanical_split(script, sentences_per_chunk)
+
+    def cut_one(chunk: str) -> list[str]:
+        try:
+            proposed = propose_snippets(chunk)
+            return slice_by_snippets(chunk, proposed) or mechanical_split(chunk)
+        except Exception as ex:
+            print(f"    scene cut: agent fallback ({ex})", flush=True)
+            return mechanical_split(chunk)
+
+    with ThreadPoolExecutor(max_workers=min(workers, len(chunks))) as ex:
+        results = list(ex.map(cut_one, chunks))
+    segments = cap_segments([segment for result in results for segment in result])
+    if "".join(segments) != script:
+        raise RuntimeError("cut_narration_scenes does not reconstruct the narration")
+    return segments
 
 
 def _assign_snippets_to_beats(
@@ -245,6 +360,9 @@ TRACKED CAST:
 {cast}
 
 Treat the shots as a short sequence inside one movie, not separate illustrations.
+If LOCKED STORY BEAT has a non-empty bridge_cue, show that exact portable cue
+naturally in one or more shots. It is an intentional point of contact with the
+narration, not permission to reconstruct any source event around it.
 Every stable physical, wardrobe, jewelry, relationship-status, or occupational
 identity detail must come from TRACKED CAST. Do not invent unlisted identity
 markers to make a character feel more specific; specificity comes from action,
@@ -300,7 +418,11 @@ def break_into_scenes(
     print(f"  context: {context.get('setting', 'a churchy, faith-practice setting')}", flush=True)
 
     clean_script = strip_production_cues(script)
-    snippets = split_narration_scenes(clean_script)
+    snippets = cut_narration_scenes(
+        clean_script,
+        sentences_per_chunk=sentences_per_chunk,
+        workers=workers,
+    )
     story_beats = visual_story.get("story_beats") or []
     if not story_beats:
         raise ValueError("visual_story has no story_beats")
