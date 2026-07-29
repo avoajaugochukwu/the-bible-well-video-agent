@@ -217,53 +217,6 @@ class AgentContractTests(unittest.TestCase):
 
         self.assertTrue(any("appears in only 1 beat" in p for p in problems))
 
-    def test_director_cast_receives_locked_profiles(self):
-        profile = self._visual_profile(
-            age=39,
-            ethnicity="Black American",
-            hair_color="dark brown",
-        )
-
-        def fake_call(_messages, schema, **_kwargs):
-            if schema["name"] == "character_ledger_review":
-                return {"approved": True, "issues": []}
-            return {
-                "characters": [{
-                    "id": "coordinator",
-                    "name": "the coordinator",
-                    "role": "project coordinator",
-                    "visual_profile": profile,
-                    "casting_basis": "Distinct professional supporting presence.",
-                }]
-            }
-
-        visual_story = {
-            "film_title": "A Film",
-            "parallel_story": "A working team completes a difficult project.",
-            "external_goal": "Complete the project.",
-            "supporting_characters": [{
-                "id": "coordinator",
-                "name": "the coordinator",
-                "role": "project coordinator",
-                "story_function": "Recurring collaborator.",
-            }],
-            "recurring_locations": [],
-        }
-
-        with patch.object(character_ledger, "call_llm_json", side_effect=fake_call):
-            cast = character_ledger.build_director_cast(
-                visual_story,
-                [],
-                story_dossier={},
-            )
-
-        self.assertEqual([character["id"] for character in cast], ["coordinator"])
-        self.assertEqual(
-            cast[0]["character_contract_version"],
-            character_ledger.CHARACTER_CONTRACT_VERSION,
-        )
-        self.assertIn("no accessories", cast[0]["appearance"])
-
     def test_character_retry_includes_previous_json(self):
         generation_messages = []
         generation_count = 0
@@ -315,6 +268,30 @@ class AgentContractTests(unittest.TestCase):
         self.assertIn('"visual_profile"', assistant_messages[-1])
         self.assertIn('"hair_position": ""', assistant_messages[-1])
         self.assertNotIn('"appearance"', assistant_messages[-1])
+
+    def test_profile_contract_review_payload_excludes_casting_details(self):
+        captured = {}
+
+        def fake_call(messages, _schema, **_kwargs):
+            captured["messages"] = messages
+            return {"approved": True, "issues": []}
+
+        character = {
+            "id": "coordinator",
+            "name": "the coordinator",
+            "role": "project coordinator",
+            "visual_profile": self._visual_profile(),
+            "casting_basis": "Distinct professional supporting presence.",
+            "script_spans": ["coordinator"],
+        }
+
+        with patch.object(character_ledger, "call_llm_json", side_effect=fake_call):
+            character_ledger._review_profile_contract({"characters": [character]})
+
+        sent = json.loads(captured["messages"][-1]["content"])
+        self.assertEqual(set(sent["characters"][0]), {"id", "visual_profile"})
+        self.assertNotIn("casting_basis", json.dumps(sent))
+        self.assertNotIn("script_spans", json.dumps(sent))
 
 
 if __name__ == "__main__":

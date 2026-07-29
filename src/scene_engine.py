@@ -39,18 +39,16 @@ CONTEXT_SCHEMA = {
 # Scene types for spiritual journey — all scenes focus on faith transformation.
 SCENE_TYPES = ["spiritual_moment", "transformation", "revelation", "decision", "reflection"]
 
-_CLASSIFICATION_PROPERTIES = {
-    "scene_type": {
-        "type": "string",
-        "enum": SCENE_TYPES,
-        "description": (
-            "spiritual_moment: a quiet personal encounter with faith or God's presence. "
-            "transformation: a visible change or breakthrough in the protagonist's faith. "
-            "revelation: understanding or realization about God or faith. "
-            "decision: a choice point where the protagonist chooses faith/obedience. "
-            "reflection: internal pondering, prayer, or spiritual contemplation."
-        ),
-    },
+_SCENE_TYPE_PROPERTY = {
+    "type": "string",
+    "enum": SCENE_TYPES,
+    "description": (
+        "spiritual_moment: a quiet personal encounter with faith or God's presence. "
+        "transformation: a visible change or breakthrough in the protagonist's faith. "
+        "revelation: understanding or realization about God or faith. "
+        "decision: a choice point where the protagonist chooses faith/obedience. "
+        "reflection: internal pondering, prayer, or spiritual contemplation."
+    ),
 }
 
 
@@ -297,7 +295,7 @@ def _shot_schema(character_ids: list[str], count: int) -> dict:
                                     else {"type": "string"}
                                 ),
                             },
-                            **_CLASSIFICATION_PROPERTIES,
+                            "scene_type": _SCENE_TYPE_PROPERTY,
                         },
                         "required": [
                             "hero_subject",
@@ -628,7 +626,7 @@ if __name__ == "__main__":
               f"[{s['scene_type']}] chars={s['character_ids']}", flush=True)
 
     print("\n7/9 scene_compositor.compose_all()...", flush=True)
-    scenes = scene_compositor.compose_all(scenes, characters, visual_story)
+    scenes = scene_compositor.compose_all(scenes, characters)
 
     narration_path = os.path.join(HERE, "test-narration.mp3")
     print(f"\n8/9 tts.synthesize() -> {narration_path}...", flush=True)

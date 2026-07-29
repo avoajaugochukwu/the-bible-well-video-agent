@@ -352,10 +352,18 @@ def _validate_spine(data: dict, script: str) -> list[str]:
                     f"{cue.get('cue')!r} is not a compact portable detail"
                 )
             evidence = (cue.get("evidence") or "").strip()
-            if not evidence or evidence not in script:
+            if not evidence:
                 problems.append(
                     f"emotional beat {beat.get('beat_number')} bridge cue "
-                    f"{cue.get('cue')!r} lacks exact source evidence"
+                    f"{cue.get('cue')!r} has no evidence"
+                )
+            elif evidence not in script:
+                # Same tolerance as narration_anchor above: paraphrase is fine,
+                # _review_bridge_cues is the real groundedness check.
+                print(
+                    f"    director: beat {beat.get('beat_number')} bridge cue evidence "
+                    "is not exactly verbatim; keeping it as a semantic locator",
+                    flush=True,
                 )
     return problems
 

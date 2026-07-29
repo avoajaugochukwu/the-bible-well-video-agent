@@ -280,7 +280,7 @@ def run_pipeline(row_id) -> str | None:
         )
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print(f"  scenes: done ({len(scenes)} scenes)")
-    # 5 IMAGES — agents/scene_compositor, t2i per scene using whichever tracked
+    # 7 IMAGES — agents/scene_compositor, t2i per scene using whichever tracked
     # characters that scene calls for, in parallel. No vision-QA anywhere — a human
     # reviews the gallery and judges consistency. The compositor has its own cache
     # contract because final prompt construction can change without changing shot plans.
@@ -295,7 +295,7 @@ def run_pipeline(row_id) -> str | None:
         if scenes and any(s.get("image_url") for s in scenes):
             print("  images: cached compositor contract is outdated; regenerating", flush=True)
         print("  images: scene_compositor.compose_all()...", flush=True)
-        scenes = scene_compositor.compose_all(scenes, characters, visual_story)
+        scenes = scene_compositor.compose_all(scenes, characters)
         miss = [s["scene_number"] for s in scenes if not s["image_url"]]
         if miss:
             print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
@@ -304,13 +304,13 @@ def run_pipeline(row_id) -> str | None:
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  images: done")
 
-    # 4 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
+    # 8 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
     gallery_path = os.path.join(rd, "gallery.html")
     if scenes_regenerated or images_regenerated or not os.path.exists(gallery_path):
         heritage_gallery.build_gallery(scenes, gallery_path)
         print(f"  gallery: {gallery_path}")
 
-    # 5 ALIGN — download the row's OWN narration (never a fresh TTS call — that's
+    # 9 ALIGN — download the row's OWN narration (never a fresh TTS call — that's
     # only scene_engine.py's self-test), then real Whisper+DTW alignment against it.
     narration_path = os.path.join(rd, "narration.mp3")
     if not os.path.exists(narration_path):
@@ -340,7 +340,7 @@ def run_pipeline(row_id) -> str | None:
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  align: done")
 
-    # 6/7 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
+    # 10 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
     # narrationUrl = the row's OWN voice_url (already public, no rehost), words =
     # the same whisper words computed above (remotion's <Captions> highlights
     # whichever word is currently being spoken). Then Remotion Lambda (deploy:site
@@ -375,7 +375,7 @@ def run_pipeline(row_id) -> str | None:
         with open(rendered_mp4, "rb") as src, open(local_copy, "wb") as dst:
             dst.write(src.read())
 
-        # 8 S3 — raw public url, NEVER presigned (that's what gets shared for review).
+        # 11 S3 — raw public url, NEVER presigned (that's what gets shared for review).
         print("  s3: uploading rendered mp4...", flush=True)
         video_url = heritage_s3.put_file(local_copy, f"bible-well/renders/{row_id}.mp4")
         if not video_url:
@@ -384,7 +384,7 @@ def run_pipeline(row_id) -> str | None:
         print(f"  s3: {video_url}")
     video_url = open(video_url_path).read().strip()
 
-    # 9 CLICKUP — update-existing-task only, never create. push_video() itself never
+    # 12 CLICKUP — update-existing-task only, never create. push_video() itself never
     # raises (falls back to a comment on a description-PUT failure) — but if BOTH
     # routes fail it returns False, and we raise here so this run isn't silently
     # marked done with nowhere the video actually landed. Gated so a rerun never

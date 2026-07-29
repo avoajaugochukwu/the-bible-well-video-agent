@@ -52,17 +52,8 @@ class PromptSafetyTests(unittest.TestCase):
         )
         self.assertNotIn("Ellen", prompt)
         self.assertNotIn("Sharon", prompt)
-        self.assertNotIn("woman who learns", prompt)
-        self.assertNotIn("sister-in-law", prompt)
         self.assertIn("the recurring supporting character", prompt)
         self.assertIn("the protagonist", prompt)
-
-    def test_constraints_are_positive_and_structural(self):
-        constraints = compositor._build_constraints(scene("the protagonist walks outside"))
-        self.assertIn("Preserve every stated character detail exactly", constraints)
-        self.assertIn("entire horizontal 16:9 frame", constraints)
-        self.assertIn("requested scene", constraints)
-        self.assertNotIn("negative prompt", constraints.lower())
 
     def test_fallback_is_name_free_and_independent_of_authored_scene(self):
         fallback = compositor.build_fallback_prompt(

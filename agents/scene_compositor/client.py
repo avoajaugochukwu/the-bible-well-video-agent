@@ -70,15 +70,7 @@ def _safe_appearance(character: dict, characters_by_id: dict) -> str:
     return re.sub(r"\s+", " ", appearance).strip(" .")
 
 
-def build_scene_prompt(
-    scene: dict,
-    characters_by_id: dict,
-    movie_style: str = "",
-) -> str:
-    # The director's long movie_style was useful while exploring art direction but
-    # over-specified the image model. Scene action plus locked character profiles is
-    # now the complete production prompt.
-    del movie_style
+def build_scene_prompt(scene: dict, characters_by_id: dict) -> str:
     present = _present_characters(scene, characters_by_id)
     prompt = (
         SCENE_STYLE_PREFIX
@@ -112,11 +104,7 @@ def _build_constraints(scene: dict) -> str:
     )
 
 
-def build_fallback_prompt(
-    scene: dict,
-    characters_by_id: dict,
-    movie_style: str = "",
-) -> str:
+def build_fallback_prompt(scene: dict, characters_by_id: dict) -> str:
     """Conservative fallback used only after the authored prompt is rejected.
 
     It preserves the cast and broad spiritual beat while dropping the story-specific
@@ -125,7 +113,6 @@ def build_fallback_prompt(
     """
     present = _present_characters(scene, characters_by_id)
     subject = scene.get("hero_subject") or scene.get("image_prompt") or "a quiet turning point"
-    del movie_style
     designs = " ".join(
         f"{_role_label(c).capitalize()} is {_safe_appearance(c, characters_by_id)}."
         for c in present
@@ -137,18 +124,18 @@ def build_fallback_prompt(
     )
 
 
-def compose_one(scene: dict, characters_by_id: dict, movie_style: str = "") -> dict:
+def compose_one(scene: dict, characters_by_id: dict) -> dict:
     """t2i only. Fail-open: on generation error, image_url is None rather than
     raising — matches asset_selector.route()'s (now-removed) per-scene fail-open
     catch. image_basis/basis_kind match src/gallery.py's existing display contract
     (image_basis = the actual prompt used, for review)."""
-    prompt = build_scene_prompt(scene, characters_by_id, movie_style)
+    prompt = build_scene_prompt(scene, characters_by_id)
     prompt_with_constraints = f"{prompt}. {_build_constraints(scene)}"
     generation_method = "direct"
     try:
         url = gpt_image.generate_image(prompt_with_constraints)
     except Exception as ex:
-        fallback = build_fallback_prompt(scene, characters_by_id, movie_style)
+        fallback = build_fallback_prompt(scene, characters_by_id)
         print(
             f"    scene {scene.get('scene_number')}: authored prompt rejected; "
             f"retrying conservative fallback ({ex})",
@@ -178,13 +165,8 @@ def compose_one(scene: dict, characters_by_id: dict, movie_style: str = "") -> d
     }
 
 
-def compose_all(
-    scenes: list[dict],
-    characters: list[dict],
-    visual_story: dict | None = None,
-) -> list[dict]:
+def compose_all(scenes: list[dict], characters: list[dict]) -> list[dict]:
     characters_by_id = {c["id"]: c for c in characters}
-    del visual_story
     with ThreadPoolExecutor(max_workers=8) as ex:
         futures = {
             ex.submit(compose_one, s, characters_by_id): i

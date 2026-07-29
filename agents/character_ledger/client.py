@@ -33,8 +33,23 @@ _VISUAL_PROFILE_PROPERTIES = {
     "eyewear": {"type": "string", "description": "exact eyewear or explicit no eyewear"},
     "hair_color": {"type": "string", "description": "one uniform exact color"},
     "hair_texture": {"type": "string"},
-    "hair_length": {"type": "string"},
-    "haircut": {"type": "string", "description": "one named, geometrically repeatable cut"},
+    "hair_length": {
+        "type": "string",
+        "enum": [
+            "very short (buzzed or cropped)",
+            "short (above chin)",
+            "medium (chin to shoulder)",
+            "long (past shoulders)",
+        ],
+    },
+    "haircut": {
+        "type": "string",
+        "description": (
+            "one commonly recognized style name, easy to redraw the same way every time "
+            "(e.g. ponytail, bun, bob, pixie cut, loose waves, buzz cut, fade, afro, "
+            "cornrows) — not a vague catch-all and not a measurement"
+        ),
+    },
     "hair_part": {"type": "string", "description": "exact side and placement"},
     "hair_end_shape": {"type": "string", "description": "exact blunt, tapered, feathered, curled, or other end geometry"},
     "hair_position": {"type": "string", "description": "exact loose, tucked, tied, braided, or other placement state"},
@@ -47,7 +62,7 @@ _VISUAL_PROFILE_PROPERTIES = {
     "outer_layer": {"type": "string", "description": "color, fabric, and garment type"},
     "outer_layer_closure": {
         "type": "string",
-        "description": "exact fully open, fully closed, partially closed with fasteners named, or pullover state",
+        "enum": ["fully open", "fully closed", "pullover (no closure)"],
     },
     "bottom": {"type": "string", "description": "one simple exact trouser or skirt design"},
     "footwear": {"type": "string"},
@@ -194,10 +209,13 @@ _SYSTEM = (
     "with exactly one concise choice. Do not use alternatives, ranges, 'or', optional details, "
     "open casting, or decisions deferred to production. Choose one exact age and height. "
     "Choose a single uniform hair color unless the source explicitly requires otherwise. "
-    "The haircut must be geometrically repeatable: exact length, named cut, exact part, end "
-    "shape and placement state. Set hair_accessory to exactly 'no hair accessory'. Do not "
-    "write only 'bob', 'short hair', or 'ponytail'. Clothing must name the inner top, outer "
-    "layer, exact closure state, one simple bottom, and footwear. Set accessories to exactly "
+    "hair_length is one of the schema's fixed categories; haircut names one commonly "
+    "recognized style (ponytail, bun, bob, pixie cut, loose waves, buzz cut, fade, afro, "
+    "cornrows, etc. — whatever fits this character) that redraws the same way every time. "
+    "If two-tone or graying, name both colors and where each falls (e.g. 'ash-brown with soft "
+    "gray at the temples'), not just the dominant color. Clothing must name the inner top, "
+    "outer layer, one simple bottom, and footwear; outer_layer_closure is one of the schema's "
+    "fixed states. Set hair_accessory to exactly 'no hair accessory'. Set accessories to exactly "
     "'no accessories': pocket items, handheld objects, bags, and other small additions are "
     "scene props and must never be locked onto a character. Use 'no jewelry' unless the script "
     "explicitly makes one stable worn item identity- or plot-critical. Preserve credible family "
@@ -249,10 +267,11 @@ def _review(data: dict, script: str, story_dossier: dict) -> list[str]:
                 "content": (
                     "Review locked structured character profiles for production readiness and "
                     "visual continuity. Approve only if every field is one concrete concise choice; "
-                    "no identity, clothing, closure, hair, or jewelry choice is open, hedged, "
-                    "variable, or deferred. Hair must use one exact color and a geometrically "
-                    "repeatable length, cut, part, and end shape rather "
-                    "than a generic style name. Established relatives "
+                    "no identity, clothing, or jewelry choice is open, hedged, variable, or "
+                    "deferred (hair length and outer-layer closure are schema-constrained already "
+                    "— don't relitigate those). Hair must use one exact color (name both tones if "
+                    "the source establishes two-tone or graying) and haircut must name one "
+                    "recognizable, redrawable style rather than a vague catch-all. Established relatives "
                     "have credible visual continuity; body shape is not used as shorthand for "
                     "age, occupation, faith, competence, or emotion; the protagonist follows the "
                     "production dossier's physical casting. The compiled appearance is deliberately occupation- "
@@ -299,16 +318,16 @@ def _review_profile_contract(data: dict) -> list[str]:
                 "role": "system",
                 "content": (
                     "Audit locked character visual profiles. Approve only when every field "
-                    "contains one exact reusable production choice. Hair must use one uniform "
-                    "color and one deterministic geometry: length, cut, part, end shape, "
-                    "and placement state. Reject mixed or variable color "
-                    "patterns unless explicitly marked as a source fact, generic styles that "
-                    "can change shape between renders, alternatives, ranges, optional wording, "
-                    "and deferred decisions. Clothing must be one ordinary reusable outfit "
-                    "with an exact inner top, outer layer, closure state, bottom, footwear, "
-                    "jewelry state, and explicit absence of non-jewelry accessories. "
-                    "Closure must say fully open, fully closed, pullover, or name exactly which "
-                    "fasteners are closed. hair_accessory must be 'no hair accessory' and "
+                    "contains one exact reusable production choice (hair_length and "
+                    "outer_layer_closure are schema-constrained already — don't relitigate "
+                    "those). Hair must use one uniform color, naming both tones if the source "
+                    "establishes two-tone or graying, and haircut must name one recognizable, "
+                    "redrawable style rather than a vague catch-all. Reject mixed or variable "
+                    "color patterns unless explicitly marked as a source fact, alternatives, "
+                    "ranges, optional wording, and deferred decisions. Clothing must be one "
+                    "ordinary reusable outfit with an exact inner top, outer layer, bottom, "
+                    "footwear, jewelry state, and explicit absence of non-jewelry accessories. "
+                    "hair_accessory must be 'no hair accessory' and "
                     "accessories must be 'no accessories'. Jewelry must be 'no jewelry' unless "
                     "the supplied script explicitly requires one stable worn item. "
                     "Reject any event costume or references to scenes, "
@@ -330,6 +349,30 @@ def _review_profile_contract(data: dict) -> list[str]:
     return review.get("issues") or ["profile contract reviewer rejected the design"]
 
 
+def _profile_contract_problems(character: dict) -> list[str]:
+    """Shared per-character checks: empty fields, forbidden accessories, thin appearance."""
+    problems = []
+    char_id = character.get("id")
+    profile = character.get("visual_profile") or {}
+    empty_fields = [
+        field for field in _VISUAL_PROFILE_PROPERTIES
+        if not str(profile.get(field, "")).strip()
+    ]
+    if empty_fields:
+        problems.append(f"character '{char_id}' has empty visual_profile fields: {empty_fields}")
+    if profile.get("hair_accessory") != "no hair accessory":
+        problems.append(f"character '{char_id}' must use 'no hair accessory'")
+    if profile.get("accessories") != "no accessories":
+        problems.append(f"character '{char_id}' must use 'no accessories'")
+    words = len((character.get("appearance") or "").split())
+    if words < 35:
+        problems.append(
+            f"character '{char_id}' compiled appearance is too thin "
+            f"({words} words); make visual_profile fields concrete"
+        )
+    return problems
+
+
 def _validate(data: dict, script: str) -> list[str]:
     problems = []
     chars = data.get("characters") or []
@@ -343,29 +386,7 @@ def _validate(data: dict, script: str) -> list[str]:
         problems.append("duplicate character ids — every id must be unique")
     seen_appearance_heads = set()
     for c in chars:
-        profile = c.get("visual_profile") or {}
-        empty_fields = [
-            field for field in _VISUAL_PROFILE_PROPERTIES
-            if not str(profile.get(field, "")).strip()
-        ]
-        if empty_fields:
-            problems.append(
-                f"character '{c.get('id')}' has empty visual_profile fields: {empty_fields}"
-            )
-        if profile.get("hair_accessory") != "no hair accessory":
-            problems.append(
-                f"character '{c.get('id')}' must use 'no hair accessory'"
-            )
-        if profile.get("accessories") != "no accessories":
-            problems.append(
-                f"character '{c.get('id')}' must use 'no accessories'"
-            )
-        words = len((c.get("appearance") or "").split())
-        if words < 35:
-            problems.append(
-                f"character '{c.get('id')}' compiled appearance is too thin "
-                f"({words} words); make visual_profile fields concrete"
-            )
+        problems.extend(_profile_contract_problems(c))
         head = (c.get("appearance") or "")[:40].lower()
         if head in seen_appearance_heads:
             problems.append(f"character '{c.get('id')}' has a near-duplicate appearance to another character — make each visually distinct")
@@ -398,29 +419,8 @@ def _validate_director_cast(
         for character in existing_characters
     }
     for character in characters:
-        profile = character.get("visual_profile") or {}
-        empty_fields = [
-            field for field in _VISUAL_PROFILE_PROPERTIES
-            if not str(profile.get(field, "")).strip()
-        ]
-        if empty_fields:
-            problems.append(
-                f"character '{character.get('id')}' has empty visual_profile fields: "
-                f"{empty_fields}"
-            )
-        if profile.get("hair_accessory") != "no hair accessory":
-            problems.append(
-                f"character '{character.get('id')}' must use 'no hair accessory'"
-            )
-        if profile.get("accessories") != "no accessories":
-            problems.append(
-                f"character '{character.get('id')}' must use 'no accessories'"
-            )
+        problems.extend(_profile_contract_problems(character))
         appearance = character.get("appearance") or ""
-        if len(appearance.split()) < 35:
-            problems.append(
-                f"character '{character.get('id')}' compiled appearance is too thin"
-            )
         if appearance[:40].lower() in existing_heads:
             problems.append(
                 f"character '{character.get('id')}' is not visually distinct from existing cast"
@@ -462,7 +462,10 @@ def build_director_cast(
                 "others. Make each person visually distinct from the existing cast while fitting "
                 "the film world and declared role. Every profile field is one exact choice: "
                 "exact age, demographic, height/build, face geometry, deterministic single-color "
-                "hair design, and one reusable modern outfit with exact closure. Set "
+                "hair design (hair_length is one of the schema's fixed categories; haircut names "
+                "one commonly recognized style — ponytail, bun, bob, pixie cut, buzz cut, fade, "
+                "afro, cornrows, etc. — that redraws the same way every time), and one reusable "
+                "modern outfit (outer_layer_closure is one of the schema's fixed states). Set "
                 "hair_accessory to exactly 'no hair accessory' and accessories to exactly "
                 "'no accessories'. Use 'no jewelry' unless the declaration explicitly requires "
                 "one stable identity-critical item. Do not add bags, pocket objects, handheld "
