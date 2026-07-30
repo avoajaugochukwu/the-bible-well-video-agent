@@ -1,0 +1,247 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "Maria had always kept her faith quiet, tucked away like a secret. ",
+    "director_beat_number": 1,
+    "hero_subject": "fragile embroidered cloth and protagonist",
+    "image_prompt": "Conservation studio interior, midday lamp glow; protagonist in gloves methodically unwraps fragile embroidered cloth on bench, gloved hands smoothing fabric; open field notebook with pen, battered accession ledger closed on nearby shelf, calendar with circled date visible, medium three-quarter framing",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpkfmihq75.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Conservation studio interior, midday lamp glow; protagonist in gloves methodically unwraps fragile embroidered cloth on bench, gloved hands smoothing fabric; open field notebook with pen, battered accession ledger closed on nearby shelf, calendar with circled date visible, medium three-quarter framing. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "Every morning she scrolled her phone before she ever thought to pray. ",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist signing for delivery, opening damaged crate while scrolling her phone",
+    "image_prompt": "Storage vault loading dock at late morning with harsh overhead industrial light; protagonist squats beside a crate ripped open, soiled padding and torn labeled box visible, phone in right hand scrolling, left hand sifting padding; distant courier and pallet jack blurred background, medium-wide three-quarter framing, tense posture and tightened face, cool muted palette.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmphen6466j.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Storage vault loading dock at late morning with harsh overhead industrial light; protagonist squats beside a crate ripped open, soiled padding and torn labeled box visible, phone in right hand scrolling, left hand sifting padding; distant courier and pallet jack blurred background, medium-wide three-quarter framing, tense posture and tightened face, cool muted palette. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "Then Pastor Daniel stopped her after service one Sunday. ",
+    "director_beat_number": 3,
+    "hero_subject": "Pinned textile triage and personal exchange",
+    "image_prompt": "Conservation studio under warm examination lamps at midday; two women at a long bench\u2014museum conservator gestures with a cotton swab toward a pinned textile on a temporary board while the donor stands close, holding a small box of family photos and recipe cards, watching with a soft smile; tools, jars, magnifier, and pinned swatches visible; medium two-shot, slightly elevated 35mm framing to include hands, faces, and workspace.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "grace_mendez"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpgfomj1v7.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Conservation studio under warm examination lamps at midday; two women at a long bench\u2014museum conservator gestures with a cotton swab toward a pinned textile on a temporary board while the donor stands close, holding a small box of family photos and recipe cards, watching with a soft smile; tools, jars, magnifier, and pinned swatches visible; medium two-shot, slightly elevated 35mm framing to include hands, faces, and workspace. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": "'God isn't asking for your Sunday,' he said gently, 'He's asking for your whole week.' ",
+    "director_beat_number": 4,
+    "hero_subject": "Protagonist at a folding-table meeting in the community hall, negotiating conservation constraints while Pastor and volunteer coordinator offer help",
+    "image_prompt": "St. Matthew's community hall folding-table meeting, pastor offers hall with open, warm posture; protagonist stands arms folded, precise, guarded; volunteer coordinator gestures encouragingly while volunteers exchange looks; late-afternoon warm natural light, medium-wide 35mm framing, full-body",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "rev_daniel",
+      "grace_mendez"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpfblyuh7i.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. St. Matthew's community hall folding-table meeting, the recurring supporting character offers hall with open, warm posture; protagonist stands arms folded, precise, guarded; volunteer coordinator gestures encouragingly while volunteers exchange looks; late-afternoon warm natural light, medium-wide 35mm framing, full-body. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": "The words stayed with Maria all week. ",
+    "director_beat_number": 5,
+    "hero_subject": "Protagonist in storage vault confronting missed pickup and funding email",
+    "image_prompt": "Interior storage vault at late morning. Medium-wide, three-quarter view: protagonist stands by an empty pallet, jaw set, rubbing the pale scar on her right index pad. A wall-mounted scheduler screen shows a red alert icon; nearby tablet displays an unopened funding email. Industrial shelves, scattered crates, cool overhead light; posture tight, alone, decisive.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpwsy5b4sw.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Interior storage vault at late morning. Medium-wide, three-quarter view: protagonist stands by an empty pallet, jaw set, rubbing the pale scar on her right index pad. A wall-mounted scheduler screen shows a red alert icon; nearby tablet displays an unopened funding email. Industrial shelves, scattered crates, cool overhead light; posture tight, alone, decisive. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "She found herself short with her coworkers, ",
+    "director_beat_number": 6,
+    "hero_subject": "Protagonist sitting on edge of bed",
+    "image_prompt": "Night in a compact apartment bedroom. Protagonist sits on bed edge, shoulders hunched, one hand pressing a smartphone face-down on the duvet showing missed-call badges; other hand rests on a messy stack of textile sample mounts. Head buried in hands, bedside lamp casts cool pool of light through a frosted window, medium close three-quarter framing.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpf2r17b7n.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Night in a compact apartment bedroom. Protagonist sits on bed edge, shoulders hunched, one hand pressing a smartphone face-down on the duvet showing missed-call badges; other hand rests on a messy stack of textile sample mounts. Head buried in hands, bedside lamp casts cool pool of light through a frosted window, medium close three-quarter framing. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": "avoiding calls from her sister, ",
+    "director_beat_number": 7,
+    "hero_subject": "Protagonist placing field manual on nightstand while rehearsing delegation",
+    "image_prompt": "Evening in a compact apartment bedroom; protagonist pads to a small nightstand, book placed on nightstand as she sets a worn closed field manual there, messenger bag open on bed with a folded list, she exhales, shoulders loosening.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpshv4qvde.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Evening in a compact apartment bedroom; protagonist pads to a small nightstand, book placed on nightstand as she sets a worn closed field manual there, messenger bag open on bed with a folded list, she exhales, shoulders loosening. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": "and staring at the ceiling at 2am more nights than not. ",
+    "director_beat_number": 8,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior of a warm community hall late afternoon; protagonist stands at a whiteboard, phone held to her ear, writing assignments; pastor listens with calm nod, volunteer coordinator marks names on a roster, volunteers milling, medium-wide frame.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "rev_daniel",
+      "grace_mendez"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpw6fs6qvz.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Interior of a warm community hall late afternoon; protagonist stands at a whiteboard, phone held to her ear, writing assignments; the recurring supporting character listens with calm nod, volunteer coordinator marks names on a roster, volunteers milling, medium-wide frame. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": "Her sister Grace left a third voicemail that went unanswered, her voice tight with worry. ",
+    "director_beat_number": 9,
+    "hero_subject": "protagonist",
+    "image_prompt": "Storage vault loading bay at midday under cool overhead lights. Woman kneels adjusting padded corner support on a textile-filled crate while volunteers strap crates to a pallet jack; a petite woman signs courier paperwork at the dock entrance.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "grace_mendez"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpd2z6qcbe.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Storage vault loading bay at midday under cool overhead lights. Woman kneels adjusting padded corner support on a textile-filled crate while volunteers strap crates to a pallet jack; a petite woman signs courier paperwork at the dock entrance. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": "By Friday, Maria had moved her Bible from the shelf to her nightstand, the first thing she'd see each morning instead of her phone. ",
+    "director_beat_number": 10,
+    "hero_subject": "protagonist",
+    "image_prompt": "Gallery interior at late afternoon; protagonist steps back from a mounted textile, smiling softly; rev_daniel and grace_mendez walk down panels conversing; a volunteer gently adjusts a mount as protagonist taught; medium wide, warm directional light, quiet, composed.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "rev_daniel",
+      "grace_mendez"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp3xzdteuh.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Gallery interior at late afternoon; protagonist steps back from a mounted textile, smiling softly; rev_daniel and grace_mendez walk down panels conversing; a volunteer gently adjusts a mount as protagonist taught; medium wide, warm directional light, quiet, composed. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 11,
+    "script_snippet": "She finally called Grace back, and they talked for an hour, longer than they had in months. ",
+    "director_beat_number": 11,
+    "hero_subject": "protagonist",
+    "image_prompt": "Small regional museum gallery at early evening reception: medium-wide crowd frame showing guests and volunteers milling between textile cases. Protagonist in steady profile watching viewers engage, Grace Mendez at her side giving a brief hand-squeeze, Reverend Daniel talking with a donor nearby.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "rev_daniel",
+      "grace_mendez"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpxliniiud.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Small regional museum gallery at early evening reception: medium-wide crowd frame showing guests and volunteers milling between textile cases. Protagonist in steady profile watching viewers engage, the recurring supporting character Mendez at her side giving a brief hand-squeeze, Reverend Daniel talking with a donor nearby. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 12,
+    "script_snippet": "Pastor Daniel smiled when Maria told him the following Sunday \u2014 a small, ordinary victory, but hers, and the first of many. ",
+    "director_beat_number": 12,
+    "hero_subject": "protagonist",
+    "image_prompt": "Late-night apartment bedroom: woman sits on edge of bed in warm bedside lamp glow, one hand reaching for a closed book on the nightstand while the other holds a phone showing an open message draft; calm, reflective three-quarter medium shot.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmp_gcxgww3.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Late-night apartment bedroom: woman sits on edge of bed in warm bedside lamp glow, one hand reaching for a closed book on the nightstand while the other holds a phone showing an open message draft; calm, reflective three-quarter medium shot. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  },
+  {
+    "scene_number": 13,
+    "script_snippet": "Weeks later, she caught herself reaching for the Bible before the phone without even thinking about it, and it felt less like a rule and more like coming home.",
+    "director_beat_number": 13,
+    "hero_subject": "protagonist",
+    "image_prompt": "Conservation Studio morning light; medium two-shot: protagonist sliding on canvas conservation apron at bench, closed book beside a pillow visible; supporting woman offers paper coffee cup, both share a small laugh; warm window shaft, tool trays and pinned swatches.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "grace_mendez"
+    ],
+    "prompt_contract_version": 10,
+    "visual_story_contract_version": 10,
+    "image_url": "https://yt-bible-well-media.s3.us-west-2.amazonaws.com/bible-well/tmpga1nsyhk.png",
+    "image_basis": "A horizontal 16:9 3D animated film still, Pixar style with soft-matte detailed textures. Conservation Studio morning light; medium two-shot: protagonist sliding on canvas conservation apron at bench, closed book beside a pillow visible; supporting woman offers paper coffee cup, both share a small laugh; warm window shaft, tool trays and pinned swatches. Depict each person exactly as shown in their reference image. Preserve every stated character detail exactly. Fill the entire horizontal 16:9 frame with the requested scene. Include no writing, logos, or watermarks.",
+    "basis_kind": "prompt",
+    "generation_method": "edit",
+    "compositor_contract_version": 5
+  }
+]

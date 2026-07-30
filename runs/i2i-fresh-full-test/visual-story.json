@@ -1,0 +1,455 @@
+{
+  "film_title": "Keepers of the Thread",
+  "parallel_story": "A meticulous museum conservator races to stabilize and install a fragile donated textile collection for a small regional exhibition threatened by budget cuts and logistical setbacks. Along the way she must learn to ask for help\u2014from a pastor who connects the museum with community volunteers and a longtime community liaison\u2014moving from solitary competence to shared responsibility so the show can open on time.",
+  "movie_style": "Stylized 3D animation with tactile, lived-in surfaces and intimate cinematography. Use warm directional key lights for studio interiors (examination lamps, window shafts) and cooler, diffuse light in storage vaults. Composition favors medium close-ups on hands and objects (loupe, cotton swabs, stitched edges) with occasional wide, low-angle shots to show crate-laden corridors and gallery walls. Lenses: 35\u201350mm for object work to keep slight perspective, 24mm for environmental establishing shots to emphasize small-scale architecture, and a short telephoto (85mm) for compressing people in conversation during emotional beats. Production design leans muted neutrals\u2014stone gray, olive, indigo\u2014with warm wood surfaces in community spaces; textures are worn canvas, taped labels, scuffed wooden floors, and soft fabric fibers. Lighting color temperature shifts subtly with the protagonist's interior change: cool and controlled early, softer and warmer as help arrives. Camera movement is deliberate: slow dollies around benches during treatment, handheld-ish subtle pushes for interpersonal tension, and stable tripod framing for decision beats. Close-ups are allowed to carry narrative when sound is off: object detail, a thumb smoothing a creased textile, a labeled crate being sealed. All staging emphasizes full-body expressions\u2014shoulders, gait, and hands\u2014so that relationships and choices read silently.",
+  "external_goal": "Stabilize, crate, transport, and install a donated set of fragile community textiles and complete the small regional 'Threads of Home' exhibition opening in two weeks despite limited staff, an uncooperative shipping window, and a last-minute funding shortfall.",
+  "protagonist_arc": "Beginning: Self-reliant conservator manages the museum's collections and takes immediate responsibility for the donated textiles. Pressure: A tight timeline, damaged boxes, and a threatened shipping slot force choices that reveal her habit of doing everything herself. Choice: She must either insist on solo control and risk missing the opening, or trust and organize volunteers and community partners. Changed ending: She expands trust, delegates tasks, accepts imperfect help, and achieves the installation while creating new community ties.",
+  "supporting_characters": [
+    {
+      "id": "rev_daniel",
+      "name": "Pastor Daniel",
+      "role": "community connector / faith community leader",
+      "story_function": "Provides the entry point to a volunteer network and moral support; his relationship shifts from polite acquaintance to practical collaborator who offers resources and steady encouragement."
+    },
+    {
+      "id": "grace_mendez",
+      "name": "Grace Mendez",
+      "role": "community liaison / volunteer organizer",
+      "story_function": "Longtime local volunteer and liaison for the donor family; initially frustrated with slow museum processes, she becomes the protagonist's on-site partner, teaching her to ask and coordinate rather than solo-execute."
+    }
+  ],
+  "recurring_locations": [
+    {
+      "id": "studio",
+      "name": "Conservation Studio",
+      "setting_type": "shared_public",
+      "social_domain": "museum workroom",
+      "institution_type": "museum conservation lab",
+      "visual_identity": "long benches under examination lamps, magnifiers, stacks of conservation trays, a sink with carefully labeled jars, and pinned sample swatches; neutral stone-gray counters and canvas aprons.",
+      "story_function": "Primary place for tactile treatment, crisis triage, and small team coordination; most object-focused beats occur here."
+    },
+    {
+      "id": "vault",
+      "name": "Storage Vault & Loading Dock",
+      "setting_type": "shared_public",
+      "social_domain": "museum logistics",
+      "institution_type": "temperature- and humidity-controlled storage and loading area",
+      "visual_identity": "metal shelving holding labeled flats and crates, narrow aisles, pallet jack, overhead industrial light; outside loading dock shows trucks and courier handoffs.",
+      "story_function": "Where receiving, packing, and transport logistics unfold; a frequent site of visible obstacles (damaged crate, missed pickup)."
+    },
+    {
+      "id": "community_hall",
+      "name": "St. Matthew's Community Hall",
+      "setting_type": "shared_public",
+      "social_domain": "faith-based community center",
+      "institution_type": "church-run community hall",
+      "visual_identity": "warm wood floors, folding tables with mismatched chairs, bulletin board, shelves with donated fabrics; natural light through frosted windows and a modest kitchen visible in the background.",
+      "story_function": "Where volunteers gather, Pastor Daniel and Grace Mendez mobilize people, and the protagonist learns to coordinate community labor and accept help."
+    },
+    {
+      "id": "gallery",
+      "name": "Small Regional Museum Gallery",
+      "setting_type": "shared_public",
+      "social_domain": "public exhibition space",
+      "institution_type": "museum gallery",
+      "visual_identity": "modular white walls, track lighting, pedestals and wall mounts with discrete labels; a folding reception desk for the opening night.",
+      "story_function": "The final destination for the exhibit installation and the public resolution where community presence and the protagonist's changed posture are visible."
+    },
+    {
+      "id": "apartment",
+      "name": "Protagonist's Apartment",
+      "setting_type": "private",
+      "social_domain": "personal living space",
+      "institution_type": "small urban apartment",
+      "visual_identity": "compact, tidy one-bedroom with a bookshelf, a worn canvas messenger bag hung by the door, a small nightstand with a closed book, and a simple wooden desk with field notes.",
+      "story_function": "Private place for quiet doubt, decision, and the small rituals that show inner life\u2014where she returns to weigh choices and sleep on them."
+    }
+  ],
+  "story_beats": [
+    {
+      "beat_number": 1,
+      "location_id": "studio",
+      "activity_type": "initial assessment of donated textile group",
+      "setting_logic": "Newly arrived donation is routinely examined in the conservation studio for condition reports before accessioning and exhibition.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Protagonist methodically unwraps a fragile embroidered cloth on the bench under an examination lamp, cataloging with gloved hands and recording notes in her field notebook; she closes a battered accession ledger on a nearby shelf and eyes a calendar with the exhibition opening date circled.",
+      "emotional_turn": "Mixed steadiness \u2014 competent but quietly carrying the deadline; the closed book on the shelf hints at routines she keeps to herself.",
+      "bridge_cue": "closed book on shelf",
+      "narration_anchor": "kept her faith quiet"
+    },
+    {
+      "beat_number": 2,
+      "location_id": "vault",
+      "activity_type": "receive and inventory arriving crates from donor family",
+      "setting_logic": "Donor's courier delivers several labeled crates to the museum's loading dock for intake and placement into storage.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "She signs off on delivery, opens a damaged crate and pulls out soiled padding and a half-tear in a labeled box; while squatting in the harsh dock light she scrolls her phone for the donor's contact and shipment paperwork, face tightening at the unread messages.",
+      "emotional_turn": "Unease grows as physical damage and a looming timeline increase pressure; her scrolling is both search for answers and a private attempt to fix it alone.",
+      "bridge_cue": "scrolling a phone",
+      "narration_anchor": "Every morning she scrolled her phone"
+    },
+    {
+      "beat_number": 3,
+      "location_id": "studio",
+      "activity_type": "triage treatment and quick stabilization",
+      "setting_logic": "Conservators immediately perform emergency surface cleaning and temporary housings when objects arrive damaged to prevent further deterioration.",
+      "character_ids": [
+        "protagonist",
+        "grace_mendez"
+      ],
+      "visible_action": "Grace Mendez arrives with a small box of family photos and recipe cards; together they pin textiles to temporary boards and apply quick, reversible supports while the protagonist explains each step, speaking in clipped, practical gestures as Grace watches and gently offers memories tied to the cloth.",
+      "emotional_turn": "Exposure and mild connection\u2014she's forced to explain and include someone, allowing a personal stake from the donor side to surface.",
+      "bridge_cue": "",
+      "narration_anchor": "Pastor Daniel stopped her after service"
+    },
+    {
+      "beat_number": 4,
+      "location_id": "community_hall",
+      "activity_type": "meeting with Pastor Daniel and volunteer coordinators",
+      "setting_logic": "The museum reaches out to local community partners for volunteer labor and temporary storage when budgets and timelines are tight.",
+      "character_ids": [
+        "protagonist",
+        "rev_daniel",
+        "grace_mendez"
+      ],
+      "visible_action": "At a folding-table meeting, Pastor Daniel offers the hall as a staging area and a network of volunteers; the protagonist listens closely but keeps arms folded, listing exact conservation constraints while the volunteers exchange looks\u2014her precise rules clash with their willing hands.",
+      "emotional_turn": "Rupture between procedural certainty and communal goodwill\u2014the protagonist's reluctance to loosen control is visible in guarded posture.",
+      "bridge_cue": "",
+      "narration_anchor": "'He's asking for your whole week.'"
+    },
+    {
+      "beat_number": 5,
+      "location_id": "vault",
+      "activity_type": "logistics setback: missed courier pickup and funding email",
+      "setting_logic": "Courier windows are scheduled from the loading dock; funding shortfalls and missed pickups create real barriers to scheduled transport.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Alone in the vault, she watches a scheduler on a screen mark 'missed pickup'; she opens an email from the museum director indicating a grant shortfall and stares at the empty pallet where crates should be loaded, fingers rubbing the pale scar on her right index pad.",
+      "emotional_turn": "Challenge and constriction\u2014threat of failure makes her jaw set; her internal tendency to carry everything begins to feel like a risk.",
+      "bridge_cue": "",
+      "narration_anchor": "The words stayed with Maria all week."
+    },
+    {
+      "beat_number": 6,
+      "location_id": "apartment",
+      "activity_type": "isolated night: avoidance and withdrawal",
+      "setting_logic": "After a long day of triage and bureaucracy, staff commonly retreat home to think through options alone.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "She sits on the edge of her bed, phone face-up on the duvet with multiple missed call indicators; she stares, then turns it face down and moves through a stack of sample mounts, leaving voicemail notifications flashing unanswered\u2014she buries her head in her hands.",
+      "emotional_turn": "Low point\u2014she retreats into self-reliance and avoidance, closing herself off instead of reaching out.",
+      "bridge_cue": "",
+      "narration_anchor": "short with her coworkers"
+    },
+    {
+      "beat_number": 7,
+      "location_id": "apartment",
+      "activity_type": "quiet decision to try a different approach",
+      "setting_logic": "Personal reflection at home is the believable place for a professional to reconsider leadership style and choose to reach out.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "She pads to the small nightstand, opens a drawer and places a worn closed book on it\u2014an old field manual she keeps\u2014then takes a breath, opens her messenger bag, and rehearses a short list of tasks she could hand off.",
+      "emotional_turn": "Choice \u2014 a tentative opening from self-reliance toward connection; placing the book becomes a ritualized marker of decision.",
+      "bridge_cue": "book placed on nightstand",
+      "narration_anchor": "moved her Bible from the shelf to her nightstand"
+    },
+    {
+      "beat_number": 8,
+      "location_id": "community_hall",
+      "activity_type": "mobilizing volunteers and delegating tasks",
+      "setting_logic": "With the hall secured, the protagonist calls contacts to coordinate volunteer shifts, transport, and simple conservation tasks that can be supervised.",
+      "character_ids": [
+        "protagonist",
+        "rev_daniel",
+        "grace_mendez"
+      ],
+      "visible_action": "She stands at a whiteboard and, phone held to her ear, speaks briskly into it\u2014calling the courier, confirming a truck time, and assigning volunteers to plying, measuring, and packing duties; Pastor Daniel listens and nods while Grace Mendez marks names on a roster.",
+      "emotional_turn": "Effort and growing agency\u2014the protagonist actively shares responsibility and uses the phone to coordinate rather than to fix alone.",
+      "bridge_cue": "holding a phone to her ear",
+      "narration_anchor": "She finally called Grace back"
+    },
+    {
+      "beat_number": 9,
+      "location_id": "vault",
+      "activity_type": "coordinated packing and supervised transport",
+      "setting_logic": "Volunteers and museum staff must work together in the loading area to crate the stabilized textiles properly for the final move to the gallery.",
+      "character_ids": [
+        "protagonist",
+        "grace_mendez"
+      ],
+      "visible_action": "Under her direction, volunteers place padded supports, label flats, and strap crates onto a pallet jack; she kneels, adjusting a corner support and then steps back to let a volunteer tighten straps; a courier arrives and exchanges paperwork that Grace Mendez signs with a steady hand.",
+      "emotional_turn": "Reconnection\u2014trust is visible in handing off physical tasks and seeing others carefully execute them.",
+      "bridge_cue": "",
+      "narration_anchor": "they talked for an hour"
+    },
+    {
+      "beat_number": 10,
+      "location_id": "gallery",
+      "activity_type": "installation and community walkthrough",
+      "setting_logic": "Final installation requires museum staff to supervise placement and donors and partners to review the display before opening.",
+      "character_ids": [
+        "protagonist",
+        "rev_daniel",
+        "grace_mendez"
+      ],
+      "visible_action": "She steps back from the mounted textile as Pastor Daniel and Grace Mendez walk along the panels; a soft, private smile crosses her face as she watches a volunteer gently adjust a mount exactly as she'd shown earlier.",
+      "emotional_turn": "Recognition and warmth\u2014she registers that the work is no longer hers alone and allows herself to take gentle pride; she smiles openly.",
+      "bridge_cue": "smiling expression",
+      "narration_anchor": "Pastor Daniel smiled when Maria told him"
+    },
+    {
+      "beat_number": 11,
+      "location_id": "gallery",
+      "activity_type": "opening reception and community presence",
+      "setting_logic": "The community and museum hold a modest reception for the new exhibit; volunteers, donors, and staff attend to celebrate the opening.",
+      "character_ids": [
+        "protagonist",
+        "rev_daniel",
+        "grace_mendez"
+      ],
+      "visible_action": "Crowd shots: volunteers chatting with visitors, the protagonist greeting a donor family and exchanging a brief, warm hand-squeeze with Grace Mendez; camera varies from medium crowd frames to a close, steady profile of the protagonist watching people engage with the textiles she conserved.",
+      "emotional_turn": "Arrival\u2014the exhibition opens on time and she experiences communal accomplishment rather than solitary achievement.",
+      "bridge_cue": "",
+      "narration_anchor": "first of many"
+    },
+    {
+      "beat_number": 12,
+      "location_id": "apartment",
+      "activity_type": "post-opening reflection and reached-out relationships",
+      "setting_logic": "After the opening, professionals often return home to process and integrate the experience with personal life.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Late-night in her apartment: she reaches across to the nightstand, her hand finding the same closed book and pausing there, then opens a simple thank-you message draft on her phone addressed to Pastor Daniel and Grace Mendez.",
+      "emotional_turn": "Reconnection inward \u2014 she honors relationships with a deliberate gesture of thanks and restored humility; she reaches for the book as a grounding object.",
+      "bridge_cue": "reaching hand for book",
+      "narration_anchor": "reaching for the Bible before the phone"
+    },
+    {
+      "beat_number": 13,
+      "location_id": "studio",
+      "activity_type": "calm return to studio and steady stewardship",
+      "setting_logic": "With the show running, the conservator resumes regular studio work and records final treatment notes for the archive.",
+      "character_ids": [
+        "protagonist",
+        "grace_mendez"
+      ],
+      "visible_action": "Morning light through the studio window as she places the same closed book beside a pillow on the bench used for object rest; Grace Mendez drops by with coffee, they share a brief laugh, and the protagonist slides on her canvas conservation apron and begins a new, measured mending routine.",
+      "emotional_turn": "Arrival and steady connection\u2014she is more open, collaborative, and at peace; the book beside a pillow signals a cycle completed with new companionship.",
+      "bridge_cue": "book beside a pillow",
+      "narration_anchor": "felt less like a rule and more like coming home"
+    }
+  ],
+  "emotional_spine": {
+    "core_transformation": {
+      "from_state": "self_reliance",
+      "to_state": "connection"
+    },
+    "emotional_beats": [
+      {
+        "beat_number": 1,
+        "narration_anchor": "kept her faith quiet",
+        "story_pressure": "stability",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "closed book on shelf",
+            "cue_type": "material_or_texture",
+            "evidence": "kept her faith quiet, tucked away like a secret"
+          }
+        ]
+      },
+      {
+        "beat_number": 2,
+        "narration_anchor": "Every morning she scrolled her phone",
+        "story_pressure": "unease",
+        "emotional_valence": "negative",
+        "agency": 3,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "scrolling a phone",
+            "cue_type": "tool",
+            "evidence": "Every morning she scrolled her phone"
+          }
+        ]
+      },
+      {
+        "beat_number": 3,
+        "narration_anchor": "Pastor Daniel stopped her after service",
+        "story_pressure": "exposure",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": []
+      },
+      {
+        "beat_number": 4,
+        "narration_anchor": "'He's asking for your whole week.'",
+        "story_pressure": "rupture",
+        "emotional_valence": "mixed",
+        "agency": 3,
+        "social_openness": 3,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": []
+      },
+      {
+        "beat_number": 5,
+        "narration_anchor": "The words stayed with Maria all week.",
+        "story_pressure": "challenge",
+        "emotional_valence": "negative",
+        "agency": 2,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": []
+      },
+      {
+        "beat_number": 6,
+        "narration_anchor": "short with her coworkers",
+        "story_pressure": "low_point",
+        "emotional_valence": "negative",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "active",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "ignoring incoming calls",
+            "cue_type": "physical_gesture",
+            "evidence": "avoiding calls from her sister"
+          },
+          {
+            "cue": "unanswered voicemail tone",
+            "cue_type": "material_or_texture",
+            "evidence": "Grace left a third voicemail that went unanswered"
+          }
+        ]
+      },
+      {
+        "beat_number": 7,
+        "narration_anchor": "moved her Bible from the shelf to her nightstand",
+        "story_pressure": "choice",
+        "emotional_valence": "mixed",
+        "agency": 5,
+        "social_openness": 4,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "book placed on nightstand",
+            "cue_type": "material_or_texture",
+            "evidence": "moved her Bible from the shelf to her nightstand"
+          }
+        ]
+      },
+      {
+        "beat_number": 8,
+        "narration_anchor": "She finally called Grace back",
+        "story_pressure": "effort",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "active",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "holding a phone to her ear",
+            "cue_type": "physical_gesture",
+            "evidence": "She finally called Grace back"
+          }
+        ]
+      },
+      {
+        "beat_number": 9,
+        "narration_anchor": "they talked for an hour",
+        "story_pressure": "reconnection",
+        "emotional_valence": "positive",
+        "agency": 4,
+        "social_openness": 5,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": []
+      },
+      {
+        "beat_number": 10,
+        "narration_anchor": "Pastor Daniel smiled when Maria told him",
+        "story_pressure": "recognition",
+        "emotional_valence": "positive",
+        "agency": 4,
+        "social_openness": 5,
+        "tempo": "still",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "smiling expression",
+            "cue_type": "physical_gesture",
+            "evidence": "Pastor Daniel smiled when Maria told him"
+          }
+        ]
+      },
+      {
+        "beat_number": 11,
+        "narration_anchor": "first of many",
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "measured",
+        "camera_distance": "varied",
+        "bridge_cues": []
+      },
+      {
+        "beat_number": 12,
+        "narration_anchor": "reaching for the Bible before the phone",
+        "story_pressure": "reconnection",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "reaching hand for book",
+            "cue_type": "physical_gesture",
+            "evidence": "caught herself reaching for the Bible before the phone"
+          }
+        ]
+      },
+      {
+        "beat_number": 13,
+        "narration_anchor": "felt less like a rule and more like coming home",
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 5,
+        "social_openness": 5,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "book beside a pillow",
+            "cue_type": "material_or_texture",
+            "evidence": "the first thing she'd see each morning instead of her phone"
+          }
+        ]
+      }
+    ]
+  },
+  "visual_story_contract_version": 10
+}

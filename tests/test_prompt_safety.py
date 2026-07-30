@@ -45,15 +45,12 @@ def scene(prompt, ids=("protagonist",)):
 
 
 class PromptSafetyTests(unittest.TestCase):
-    def test_scrubs_every_cast_name_and_narrative_role_detail(self):
-        prompt = compositor.build_scene_prompt(
-            scene("Sharon reassures Ellen at a table", ("sharon", "protagonist")),
-            CHARACTERS,
+    def test_anonymize_names_scrubs_every_cast_name(self):
+        scrubbed = compositor._anonymize_names(
+            "Sharon reassures Ellen at a table", CHARACTERS
         )
-        self.assertNotIn("Ellen", prompt)
-        self.assertNotIn("Sharon", prompt)
-        self.assertIn("the recurring supporting character", prompt)
-        self.assertIn("the protagonist", prompt)
+        self.assertNotIn("Ellen", scrubbed)
+        self.assertNotIn("Sharon", scrubbed)
 
     def test_fallback_is_name_free_and_independent_of_authored_scene(self):
         fallback = compositor.build_fallback_prompt(
@@ -63,7 +60,6 @@ class PromptSafetyTests(unittest.TestCase):
         self.assertNotIn("Ellen", fallback)
         self.assertNotIn("literal story prop", fallback)
         self.assertIn("movie moment", fallback)
-        self.assertIn("the protagonist", fallback)
 
 
 if __name__ == "__main__":

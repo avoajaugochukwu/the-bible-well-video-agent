@@ -240,3 +240,155 @@ narration_script.txt, gpt-image-2 moderation-flakiness investigation ongoing). D
   `movie_style` is no longer appended. Character sheets use the same soft-matte style.
   Added character-sheet and compositor contract versions and wired `run.py` to invalidate
   only stale character references/images and rebuild the gallery when either changes.
+- 2026-07-29: Audited the whole character-consistency stack (story_dossier, character_ledger,
+  visual_director, scene_compositor, character_sheet, scene_engine, utils/llm.py, tests/)
+  against military/agents/ and service/scene-generation-service's breakdown-pro path.
+  Verdict: this repo drifted from its own "prefer semantic review to case lists" rule —
+  stacked second-LLM-judge calls on top of generator calls, and a pile of ratio/word-count
+  heuristics trying to deterministically pin down story quality. Confirmed a real bug from
+  this: `scene_compositor.build_scene_prompt()` Python-glues `"The protagonist is..."` into
+  every image prompt — structural noise a model would never volunteer on its own. Wrote
+  `NORTH_STAR.md` (the operating philosophy this rework follows) and the plan below.
+
+## Phase: prompt-first de-heuristic rework (planned, not yet executed)
+
+See `NORTH_STAR.md` for the five rules this plan follows. Nothing below is a Python
+rewrite — every "cut" is a *relocation* into a prompt at the correct scope (global /
+regional / scene, per NORTH_STAR.md rule 4), not a deletion of the judgment itself.
+
+**Cut outright — second-LLM-judge calls (violates rule 2, no code replaces these, the
+generating model's own prompt just needs to be good enough that a second opinion isn't
+needed):**
+- `agents/story_dossier/client.py:_review_casting` (+ `DOSSIER_REVIEW_SCHEMA`)
+- `agents/character_ledger/client.py:_review_profile_contract`, `_review`
+- `agents/visual_director/client.py:_review_bridge_cues`, `_review_plan`
+
+Each of these currently gates a `MAX_ATTEMPTS` retry loop feeding the same model its own
+rejected JSON. Once the judge is gone, the loop either collapses to one call, or retries
+only against the objective checks that remain (below).
+
+**Cut as dead code (schema already guarantees these, the Python check can't ever fire):**
+- `character_ledger.py` hair_accessory/accessories exact-string checks (enum has one value)
+- `scene_engine.py:break_into_scenes` `.get(..., default)` fallbacks for schema-required fields
+- `scene_engine.py:_assign_snippets_to_beats`'s unused `script` param (`del script`)
+
+**Relocate into prompts, by scope (violates rule 3/4 as Python code, becomes guidance in
+the model's own instructions once moved):**
+- `visual_director.py:_validate`'s five ratio checks — all **global** (whole-film shape,
+  decided once by the single world-building call, not counted after the fact):
+  - "≥3 public locations" / "≥3 distinct social domains" → one sentence in the world-building
+    system prompt: invent a world with genuine variety in where it happens and who's in it.
+  - "supporting char ≥2 appearances" → a definitional instruction where `supporting_characters`
+    is declared: only declare someone if they naturally recur; a single appearance means
+    they're one-off, leave them out.
+  - "≥half beats public" / "no location >half the beats" → one pacing sentence: most of the
+    film happens in shared/public settings; don't let any single location dominate the runtime.
+- `character_ledger.py` appearance word-count floor (35 words) and first-40-char dedup
+  heuristic — relocate as **scene-adjacent-but-really-global** guidance in the character
+  generation prompt: describe each character with enough concrete visual detail to be
+  redrawable, and make each character visually distinct from the others in this cast.
+  (Not "regional" — a character's visual profile is decided once for the whole film, same
+  tier as casting.)
+
+**Fix the confirmed bug (rule 5 — internal labels riding into content text):**
+- `scene_compositor.py:build_scene_prompt`/`build_fallback_prompt` — stop Python-gluing
+  `"The protagonist is..."` role-label prefixes into the final image prompt. Follow
+  `scene_engine.py:author_story_beat`'s existing correct pattern in this same repo: give
+  the model appearance/context in its own instructions and let it author the final
+  visual-only sentence as one output field, the way breakdown-pro's per-scene calls do.
+
+**Tests to drop alongside their mechanism** (pin the second-judge flow or the taste
+heuristics above, not real logic): `test_small_accessories_are_rejected_from_locked_identity`,
+`test_director_supporting_role_must_recur`, `test_character_retry_includes_previous_json`,
+`test_profile_contract_review_payload_excludes_casting_details`, both tests in
+`test_prompt_safety.py`. Everything else in `tests/` tests genuine deterministic logic
+(verbatim slicing, lossless reconstruction, chronological beat assignment, id/reference
+integrity) and stays.
+
+**Executed 2026-07-29.** All cuts/relocations above landed:
+`story_dossier`, `character_ledger`, `visual_director`, `scene_compositor` each lost their
+second-LLM-judge call(s); the five visual_director ratio heuristics and character_ledger's
+word-count/dedup heuristics were relocated into their generation prompts as global-scope
+guidance instead of deleted outright; the confirmed `scene_compositor` role-label leak is
+fixed via a model-authored final prompt field (`_author_visual_prompt`, mirrors
+`scene_engine.py:author_story_beat`'s existing correct pattern); `script_spans` dropped
+entirely from the character schema (dead weight, never consumed downstream); the two dead
+`.get(..., default)` fallbacks and the unused `_assign_snippets_to_beats` `script` param
+are gone. Test suite trimmed to 12 tests, all passing, all deterministic (no network calls)
+— cut the 4 planned tests plus one bonus stale test discovered only by running the suite
+(`test_bridge_cue_requires_exact_source_evidence`, pinned a verbatim-reject behavior a
+prior session had already downgraded to tolerant, never updated to match). Kept
+`test_character_retry_includes_previous_json` against the original plan's classification —
+turned out to still validate real surviving behavior (the retry-with-feedback loop against
+the objective empty-field check), not the deleted judge call; only its dead review-schema
+branch and `script_spans` fixture needed cleanup, not removal. `test_prompt_safety.py`'s
+name-scrubbing coverage moved from an incidental assertion on `build_scene_prompt` (now a
+real LLM call) to a direct deterministic test of `_anonymize_names` itself.
+
+**Step 6 completed 2026-07-29, later same day**, once OpenAI quota was restored (the
+earlier `insufficient_quota` was an account billing issue, unrelated to the rework). Ran a
+real, no-cache pass through all four rewritten agents (`scratchpad/verify_rework.py`) on
+the Maria/Pastor Daniel sample script. Hit one unrelated pre-existing issue along the way:
+`story_dossier.build()`'s first call (untouched by this rework) burned its entire
+6144-token budget on reasoning with `gpt-5-mini` and returned zero output text — bumped
+`max_completion_tokens` 6144→12288 for that one call so verification could run; this is an
+infra/budget fix, not part of the de-heuristic plan.
+
+Results — every stage converged on the first attempt, zero retries anywhere:
+- story_dossier picked a concrete, non-stereotyped occupation ("Freelance UX/Service
+  Researcher") on its own, no judge call needed.
+- character_ledger produced 2 genuinely distinct characters (32yo Latina protagonist vs.
+  48yo White male pastor) with no near-duplicate-appearance warning — the removed 40-char
+  dedup heuristic wasn't needed; the "make each character distinct" prompt guidance alone
+  did the job.
+- visual_director invented one supporting character and 5 recurring locations spanning
+  genuinely distinct domains (domestic/freelance, civic/community, startup/freelance,
+  faith, neighborhood ethnography) — satisfies the relocated "≥3 distinct social domains"
+  guidance purely from prompt text, no Python ratio-check ran. 7/9 beats public, busiest
+  location used only 3/9 times — both satisfy the relocated pacing guidance the same way.
+- scene_compositor's `build_scene_prompt()` produced one natural authored sentence with no
+  leaked structural label ("protagonist"/"supporting character" both absent) — the original
+  bug this whole audit started from is confirmed fixed.
+
+Target met: the model's own judgment, guided by sharper prompts at the right scope,
+satisfied every goal the deleted Python heuristics used to gate — without a second LLM
+judging the first, and without a single retry.
+
+## Phase: i2i pivot (2026-07-29, same day)
+
+Moved `agents/scene_compositor` from t2i-with-restated-appearance-text to i2i via
+gpt-image-2's own `images.edit()`, conditioned on each present character's own reference
+image — deliberately reversing the "t2i only, for now" hard rule now that the audit above
+already fixed t2i's biggest failure mode. Backend: gpt-image-2's edit endpoint (not Krea —
+`src/krea.py:krea_edit_photo()` stays unused, its token stays parked in
+`sleep-stories/.env.local`).
+
+- `utils/images.py:shrink_for_upload()` — new: downscales a reference image (longest edge
+  768px) and re-encodes as JPEG (quality 80) before every edit call. Measured live: a
+  ~990KB t2i-generated PNG reference shrank to ~14-15KB, roughly 60-65x smaller.
+- `src/gpt_image.py:edit_image()` — new: same retry/upload shape as `generate_image()`,
+  but calls `client.images.edit(model=..., image=[...], prompt=...)` with a list of
+  reference image files instead of pure text.
+- `agents/scene_compositor/client.py` — rewritten: `build_scene_prompt()` is now
+  deterministic and carries the visible action ONLY, no appearance text at all (nothing
+  left for a role label to leak into — the earlier `_author_visual_prompt` LLM-authoring
+  step from the de-heuristic rework above is now dead code and was removed, since the
+  problem it solved — weaving appearance text in without leaking role labels — no longer
+  exists once appearance text isn't in the prompt at all). `_fetch_reference_bytes()`
+  downloads+shrinks every tracked character's reference once per `compose_all()` call,
+  reused across every scene. `compose_one()` uses i2i (`edit_image`) when every present
+  character has a usable reference; otherwise falls back to t2i (`generate_image`, full
+  appearance text via the unchanged `build_fallback_prompt`) — same fallback shape as
+  before, still deterministic, still no role-label framing.
+- Contract version bumped 4→5.
+
+Verified live twice (`scratchpad/verify_i2i.py`): generated a real reference image, then
+successfully edited it into a scene via the new path — `generation_method: "edit"`, real
+`image_url` returned, ~60x reference-size reduction confirmed. Caught and fixed one
+cosmetic bug from the first live run (missing punctuation between the action sentence and
+the reference-match instruction, e.g. "...beside her Depict each..." — no period). Second
+live run confirmed the fix. Unit test suite (12 tests) still green throughout — none of
+them exercised the new i2i path, since it needs real images; only the deterministic
+`build_scene_prompt`/`build_fallback_prompt`/`_anonymize_names` pieces are unit-tested.
+`agents/CLAUDE.md` and root `CLAUDE.md` (stage list, Layout, credentials note) updated to
+describe i2i-by-default instead of t2i-only.

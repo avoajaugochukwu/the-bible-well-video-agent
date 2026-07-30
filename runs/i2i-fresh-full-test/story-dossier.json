@@ -1,0 +1,156 @@
+{
+  "source_facts": {
+    "protagonist": [
+      {
+        "fact": "Keeps her faith quiet, not integrated into daily life",
+        "evidence": "\"had always kept her faith quiet, tucked away like a secret.\""
+      },
+      {
+        "fact": "Has a habit of using her phone first thing in the morning instead of praying",
+        "evidence": "\"Every morning she scrolled her phone before she ever thought to pray.\""
+      },
+      {
+        "fact": "Responds to a pastor's challenge about living faith beyond Sundays",
+        "evidence": "\"'God isn't asking for your Sunday,' he said gently, 'He's asking for your whole week.'\""
+      },
+      {
+        "fact": "Experiences internal unrest and sleep disturbance after the challenge",
+        "evidence": "\"staring at the ceiling at 2am more nights than not.\""
+      },
+      {
+        "fact": "Has a Bible that had been on a shelf and is moved to her nightstand",
+        "evidence": "\"moved her Bible from the shelf to her nightstand, the first thing she'd see each morning instead of her phone.\""
+      },
+      {
+        "fact": "Begins to change daily habit: reaches for Bible before phone",
+        "evidence": "\"she caught herself reaching for the Bible before the phone without even thinking about it\""
+      },
+      {
+        "fact": "Small personal spiritual progress is meaningful to her",
+        "evidence": "\"a small, ordinary victory, but hers, and the first of many.\""
+      }
+    ],
+    "relationships": [
+      {
+        "fact": "Has a sister named Grace who is worried and leaves voicemails",
+        "evidence": "\"Her sister Grace left a third voicemail that went unanswered, her voice tight with worry.\""
+      },
+      {
+        "fact": "Repaired communication with her sister by calling back and talking for an hour",
+        "evidence": "\"She finally called Grace back, and they talked for an hour, longer than they had in months.\""
+      },
+      {
+        "fact": "Is part of a church community and interacts with Pastor Daniel",
+        "evidence": "\"Pastor Daniel stopped her after service one Sunday.\""
+      },
+      {
+        "fact": "Receives affirmation from Pastor Daniel when she shares progress",
+        "evidence": "\"Pastor Daniel smiled when Maria told him the following Sunday\""
+      }
+    ],
+    "social_world": [
+      {
+        "fact": "Attends weekly church services",
+        "evidence": "\"after service one Sunday\""
+      },
+      {
+        "fact": "Has coworkers and a workplace where interpersonal friction can occur",
+        "evidence": "\"She found herself short with her coworkers\""
+      },
+      {
+        "fact": "Uses a smartphone and voicemail as primary communication tools",
+        "evidence": "\"Every morning she scrolled her phone\"; \"left a third voicemail\""
+      },
+      {
+        "fact": "Her daily rhythms involve morning routines (phone, prayer, Bible placement)",
+        "evidence": "\"Every morning she scrolled her phone before she ever thought to pray.\"; \"the first thing she'd see each morning instead of her phone.\""
+      }
+    ],
+    "occupation": {
+      "stated": false,
+      "value": "",
+      "evidence": ""
+    },
+    "unstated_visual_traits": [
+      "age range",
+      "body type",
+      "ethnicity",
+      "hair length and color",
+      "everyday clothing style",
+      "grooming level"
+    ]
+  },
+  "whole_script_vibe": {
+    "social_class_and_lifestyle": "Lower-middle to middle-class urban/suburban life: steady job with coworkers, church community involvement, typical modern conveniences (smartphone, bookshelf).",
+    "professional_energy": "Routine, slightly pressured weekdays with interpersonal friction; not high-powered but responsible daily work life.",
+    "primary_visual_vibe": "Quiet, everyday realism \u2014 warm natural light, domestic interiors, modest church interiors, office cubicles or shared workspace.",
+    "wardrobe_vibe": "Practical smart-casual: muted tones, comfortable fabrics, low-key accessories; nothing flashy.",
+    "credible_social_domains": [
+      "local church community",
+      "workplace with coworkers (office or shared professional setting)",
+      "family ties (sibling)",
+      "neighborhood social life"
+    ],
+    "credible_locations": [
+      "modest apartment or small single-family home (bedroom, nightstand)",
+      "church sanctuary and foyer",
+      "office or shared workplace (open-plan or small office)",
+      "city/suburban streets and caf\u00e9s"
+    ]
+  },
+  "abstract_casting_signals": {
+    "age_range": "late 20s to early 40s (preferably 30\u201338)",
+    "gender": "female",
+    "temperament": [
+      "introspective",
+      "steadfast",
+      "slightly anxious under stress"
+    ],
+    "economic_independence": "financially independent or partly independent (earns own living, supports day-to-day needs)",
+    "work_style": [
+      "methodical",
+      "responsible",
+      "adaptable"
+    ],
+    "interpersonal_style": "reserved but capable of warmth in close relationships",
+    "wardrobe_formality": "casual-to-smart-casual",
+    "cultural_tone": "contemporary, grounded, community-oriented"
+  },
+  "cinematic_inference": {
+    "protagonist_occupation": "Conservator / Collections Manager at a regional museum",
+    "occupation_basis": "creative_inference",
+    "body_design": "5'6\" (168 cm), medium build with lean musculature from lifting crates and working long hours standing; pronounced, capable hands with short, practical nails and a faint pale scar along the pad of the right index finger; neutral posture that tightens when stressed; skin olive-toned with subtle sun freckles across the nose and forearms.",
+    "ethnicity_design": "Colombian-American (Latina), bicultural presence that informs quiet confidence and community ties without defining the profession.",
+    "hair_design": "Dark brown, naturally wavy, shoulder-length usually worn in a low, slightly messy bun for studio work or loose with a middle part for public appearances; a few silvering strands at the temples but overall thick and serviceable.",
+    "wardrobe_design": "Smart-casual practical wardrobe: soft, neutral linen and cotton button shirts; slim, tapered chinos or dark denim; lightweight tweed or utility jacket for gallery visits; comfortable leather ankle boots with non-slip soles; archival-smock lab coat or sleeveless canvas conservation apron for studio scenes; muted, minimal jewelry (thin gold band and small stud earrings); always carries a worn canvas messenger bag containing gloves, field notebook, cotton swabs, and a compact loupe.",
+    "casting_rationale": "A conservator/collections manager fits the profile by combining meticulous, tactile work with interpersonal responsibilities, creating opportunities for quiet intensity and pressured moments. The role supports a grounded, community-oriented cultural tone and a methodical work style while offering strong visual motifs\u2014tools, light, crates\u2014that reveal inner steadiness and controlled anxiety under stress."
+  },
+  "director_profile": {
+    "stable_identity": [
+      "Age: late 20s to early 40s (preferably 30\u201338)",
+      "Gender: female",
+      "Temperament: introspective, steadfast, slightly anxious under stress",
+      "Economic: financially independent or partly independent",
+      "Work style: methodical, responsible, adaptable",
+      "Interpersonal style: reserved, warm with close contacts",
+      "Cultural tone: contemporary, grounded, community-oriented"
+    ],
+    "social_dynamics": "Reserved in larger staff meetings and public events, she is deferential but assertive when collections' integrity is at stake; has a small circle of trusted colleagues (a practical registrar, an idealistic curator, a sympathetic preparator) and routinely negotiates with contractors, donors, and volunteer docents. She mentors interns quietly and becomes quietly protective over objects and people she trusts.",
+    "professional_vibe": "Hands-on specialist who balances meticulous studio treatment with logistics and small-scale diplomacy\u2014methodical in procedure, meticulous with documentation, and pragmatic about budgets and timelines.",
+    "visual_vibe": "Muted, tactile color palette (stone grays, warm olives, indigo) with close-up, object-focused cinematography: gloved hands, magnified surface textures, directional examination lamps, stacked archival crates, and narrow vault corridors that emphasize intimate scale and quiet intensity.",
+    "credible_worlds": [
+      "Conservation studio with benches, microscopes, consolidated tools, and a sink area for wet treatments",
+      "Temperature- and humidity-controlled storage vault lined with metal shelving and cardboard flats",
+      "Small regional museum gallery with flexible modular walls and peaked visitor flows",
+      "Loading dock and receiving area where crate logistics and courier handoffs occur",
+      "On-site field visits to local historic homes, churches, or community centers for in-situ assessments",
+      "Pop-up outreach events and donor walkthroughs in civic spaces"
+    ],
+    "parallel_story_rule": "Do not recast the employer as a private religious or family institution; the job remains a museum-based conservator/collections manager and any personal faith or family life belongs to off-duty identity, not the workplace."
+  },
+  "occupation_selection": {
+    "job_title": "Conservator / Collections Manager at a regional museum",
+    "rationale": "A conservator/collections manager balances methodical, detail-focused work with occasional high-stakes, human-facing moments\u2014ideal for a reserved, introspective woman who is steadfast and slightly anxious under stress. The day-to-day allows for focused, tactile labor (cleaning, stabilizing, photographing artifacts) that suits a methodical temperament and offers concrete visual interest: studio benches, microscopes, archival crates, examination lights, and hands-in-gloves close-ups. The role also supports varied scenes and relationships\u2014collaborating with curators and installers, coordinating with registrars and registrants, overseeing condition reports and crate movements, doing site visits for loans or conservation treatments, and giving occasional gallery talks or donor walkthroughs. Those elements create dynamic, changing environments (studio, storage vaults, galleries, loading docks, field locations) without relying mainly on paperwork or meetings, and plausibly support financial independence through museum salary or contract work. Casting a conservator avoids obvious occupational tropes while offering a visually rich, credible world for character-driven storytelling."
+  },
+  "story_dossier_contract_version": 12
+}

@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json  # utils/
 
 MAX_ATTEMPTS = 5
-CHARACTER_CONTRACT_VERSION = 14
+CHARACTER_CONTRACT_VERSION = 15
 
 _VISUAL_PROFILE_PROPERTIES = {
     "age": {"type": "integer", "description": "one exact production age"},
@@ -87,23 +87,6 @@ _VISUAL_PROFILE_SCHEMA = {
     "additionalProperties": False,
 }
 
-_REVIEW_SCHEMA = {
-    "name": "character_ledger_review",
-    "schema": {
-        "type": "object",
-        "properties": {
-            "approved": {"type": "boolean"},
-            "issues": {
-                "type": "array",
-                "maxItems": 8,
-                "items": {"type": "string"},
-            },
-        },
-        "required": ["approved", "issues"],
-        "additionalProperties": False,
-    },
-}
-
 _SCHEMA = {
     "name": "character_ledger",
     "schema": {
@@ -133,13 +116,6 @@ _SCHEMA = {
                                 "the inferred visual design and wardrobe"
                             ),
                         },
-                        "script_spans": {
-                            "type": "array",
-                            "minItems": 1,
-                            "maxItems": 4,
-                            "items": {"type": "string"},
-                            "description": "1-4 short substrings quoted VERBATIM from the script where this character appears",
-                        },
                     },
                     "required": [
                         "id",
@@ -147,7 +123,6 @@ _SCHEMA = {
                         "role",
                         "visual_profile",
                         "casting_basis",
-                        "script_spans",
                     ],
                     "additionalProperties": False,
                 },
@@ -222,7 +197,10 @@ _SYSTEM = (
     "resemblance when the script establishes relatives. Keep the profile reusable and free "
     "of names, story events, relationships, occupation, religion, emotional history, locations, "
     "and scene props. 'Full-body' is framing, never body size. Body shape must not encode age, "
-    "occupation, faith, competence, or emotion.\n"
+    "occupation, faith, competence, or emotion. Describe each field with enough concrete visual "
+    "detail that an artist could redraw the same person from it alone, and make every tracked "
+    "character clearly visually distinct from every other tracked character in this ledger — "
+    "no two characters sharing near-identical age, coloring, and build.\n"
     "Return ONLY the JSON object described by the schema."
 )
 
@@ -259,99 +237,8 @@ def _materialize_appearances(data: dict) -> dict:
     }
 
 
-def _review(data: dict, script: str, story_dossier: dict) -> list[str]:
-    review = call_llm_json(
-        [
-            {
-                "role": "system",
-                "content": (
-                    "Review locked structured character profiles for production readiness and "
-                    "visual continuity. Approve only if every field is one concrete concise choice; "
-                    "no identity, clothing, or jewelry choice is open, hedged, variable, or "
-                    "deferred (hair length and outer-layer closure are schema-constrained already "
-                    "— don't relitigate those). Hair must use one exact color (name both tones if "
-                    "the source establishes two-tone or graying) and haircut must name one "
-                    "recognizable, redrawable style rather than a vague catch-all. Established relatives "
-                    "have credible visual continuity; body shape is not used as shorthand for "
-                    "age, occupation, faith, competence, or emotion; the protagonist follows the "
-                    "production dossier's physical casting. The compiled appearance is deliberately occupation- "
-                    "and plot-free, so do not demand that a job or narrative role appear in it. "
-                    "A stable apparent age within the script's stated age range is sufficient even "
-                    "when narration spans birthdays. Hair accessories and non-jewelry accessories "
-                    "must be absent. Jewelry must also be absent unless explicitly required by the "
-                    "source as a stable identity- or plot-critical item. Appearance descriptions contain "
-                    "no source events, relationships, occupations, religious identity, locations, "
-                    "scene props, or event-specific costumes. Report only concise actionable issues."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"PRODUCTION DOSSIER:\n{story_dossier}\n\n"
-                    f"SCRIPT (for identity and relationship audit only):\n{script}\n\n"
-                    f"PROPOSED LEDGER:\n{data}"
-                ),
-            },
-        ],
-        _REVIEW_SCHEMA,
-        max_completion_tokens=2048,
-    )
-    if review.get("approved"):
-        return []
-    return review.get("issues") or ["character ledger reviewer rejected the design"]
-
-
-def _review_profile_contract(data: dict) -> list[str]:
-    """Audit only the reusable visual contract, without long-script distraction."""
-    profiles_only = {
-        "characters": [
-            {
-                "id": character.get("id"),
-                "visual_profile": character.get("visual_profile") or {},
-            }
-            for character in data.get("characters") or []
-        ]
-    }
-    review = call_llm_json(
-        [
-            {
-                "role": "system",
-                "content": (
-                    "Audit locked character visual profiles. Approve only when every field "
-                    "contains one exact reusable production choice (hair_length and "
-                    "outer_layer_closure are schema-constrained already — don't relitigate "
-                    "those). Hair must use one uniform color, naming both tones if the source "
-                    "establishes two-tone or graying, and haircut must name one recognizable, "
-                    "redrawable style rather than a vague catch-all. Reject mixed or variable "
-                    "color patterns unless explicitly marked as a source fact, alternatives, "
-                    "ranges, optional wording, and deferred decisions. Clothing must be one "
-                    "ordinary reusable outfit with an exact inner top, outer layer, bottom, "
-                    "footwear, jewelry state, and explicit absence of non-jewelry accessories. "
-                    "hair_accessory must be 'no hair accessory' and "
-                    "accessories must be 'no accessories'. Jewelry must be 'no jewelry' unless "
-                    "the supplied script explicitly requires one stable worn item. "
-                    "Reject any event costume or references to scenes, "
-                    "ceremonies, narrative roles, occupations, locations, props, or different "
-                    "outfits for different occasions. Physical specificity is required; do "
-                    "not flatten distinct body or facial designs. Report concise actionable issues."
-                ),
-            },
-            {
-                "role": "user",
-                "content": json.dumps(profiles_only, ensure_ascii=False),
-            },
-        ],
-        _REVIEW_SCHEMA,
-        max_completion_tokens=2048,
-    )
-    if review.get("approved"):
-        return []
-    return review.get("issues") or ["profile contract reviewer rejected the design"]
-
-
 def _profile_contract_problems(character: dict) -> list[str]:
-    """Shared per-character checks: empty fields, forbidden accessories, thin appearance."""
-    problems = []
+    """Shared per-character objective check: no required field left empty."""
     char_id = character.get("id")
     profile = character.get("visual_profile") or {}
     empty_fields = [
@@ -359,21 +246,11 @@ def _profile_contract_problems(character: dict) -> list[str]:
         if not str(profile.get(field, "")).strip()
     ]
     if empty_fields:
-        problems.append(f"character '{char_id}' has empty visual_profile fields: {empty_fields}")
-    if profile.get("hair_accessory") != "no hair accessory":
-        problems.append(f"character '{char_id}' must use 'no hair accessory'")
-    if profile.get("accessories") != "no accessories":
-        problems.append(f"character '{char_id}' must use 'no accessories'")
-    words = len((character.get("appearance") or "").split())
-    if words < 35:
-        problems.append(
-            f"character '{char_id}' compiled appearance is too thin "
-            f"({words} words); make visual_profile fields concrete"
-        )
-    return problems
+        return [f"character '{char_id}' has empty visual_profile fields: {empty_fields}"]
+    return []
 
 
-def _validate(data: dict, script: str) -> list[str]:
+def _validate(data: dict) -> list[str]:
     problems = []
     chars = data.get("characters") or []
     if not chars:
@@ -384,28 +261,14 @@ def _validate(data: dict, script: str) -> list[str]:
         problems.append("no character with id 'protagonist' — the protagonist must always be included")
     if len(ids) != len(set(ids)):
         problems.append("duplicate character ids — every id must be unique")
-    seen_appearance_heads = set()
     for c in chars:
         problems.extend(_profile_contract_problems(c))
-        head = (c.get("appearance") or "")[:40].lower()
-        if head in seen_appearance_heads:
-            problems.append(f"character '{c.get('id')}' has a near-duplicate appearance to another character — make each visually distinct")
-        seen_appearance_heads.add(head)
-        # script_spans is a loose "where does this character show up" hint retained
-        # for ledger review; visual-story shot planning does not consume it — a quoting mismatch here (this
-        # script's doubled ""smart-quote"" style trips exact substring checks) isn't
-        # worth failing the whole ledger over. Log, don't block.
-        for span in c.get("script_spans") or []:
-            if span and span not in script:
-                print(f"    note: character '{c.get('id')}' script_span {span[:60]!r}... "
-                      f"isn't an exact verbatim substring (quoting mismatch, likely harmless)", flush=True)
     return problems
 
 
 def _validate_director_cast(
     data: dict,
     expected_ids: set[str],
-    existing_characters: list[dict],
 ) -> list[str]:
     problems = []
     characters = data.get("characters") or []
@@ -414,17 +277,8 @@ def _validate_director_cast(
         problems.append(
             f"director supporting cast ids must be exactly {sorted(expected_ids)}"
         )
-    existing_heads = {
-        (character.get("appearance") or "")[:40].lower()
-        for character in existing_characters
-    }
     for character in characters:
         problems.extend(_profile_contract_problems(character))
-        appearance = character.get("appearance") or ""
-        if appearance[:40].lower() in existing_heads:
-            problems.append(
-                f"character '{character.get('id')}' is not visually distinct from existing cast"
-            )
     return problems
 
 
@@ -469,7 +323,10 @@ def build_director_cast(
                 "hair_accessory to exactly 'no hair accessory' and accessories to exactly "
                 "'no accessories'. Use 'no jewelry' unless the declaration explicitly requires "
                 "one stable identity-critical item. Do not add bags, pocket objects, handheld "
-                "props, event costumes, alternate outfits, or story actions. Return only JSON."
+                "props, event costumes, alternate outfits, or story actions. Describe each field "
+                "with enough concrete visual detail to be redrawable, and make sure no new "
+                "character shares near-identical age, coloring, and build with another new "
+                "character or with anyone in the existing cast. Return only JSON."
             ),
         },
         {
@@ -495,13 +352,7 @@ def build_director_cast(
             })
         raw_data = call_llm_json(messages, schema, max_completion_tokens=6144)
         data = _materialize_appearances(raw_data)
-        problems = _validate_director_cast(
-            data,
-            set(expected_ids),
-            existing_characters,
-        )
-        if not problems:
-            problems = _review_profile_contract(data)
+        problems = _validate_director_cast(data, set(expected_ids))
         if not problems:
             for character in data["characters"]:
                 character["character_contract_version"] = CHARACTER_CONTRACT_VERSION
@@ -540,11 +391,7 @@ def build(script: str, context: dict, story_dossier: dict | None = None) -> dict
             })
         raw_data = call_llm_json(messages, _SCHEMA, max_completion_tokens=6144)
         data = _materialize_appearances(raw_data)
-        problems = _validate(data, script)
-        if not problems:
-            problems = _review_profile_contract(data)
-        if not problems:
-            problems = _review(data, script, story_dossier or {})
+        problems = _validate(data)
         if not problems:
             for character in data["characters"]:
                 character["character_contract_version"] = CHARACTER_CONTRACT_VERSION

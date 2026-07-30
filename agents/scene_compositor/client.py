@@ -1,9 +1,12 @@
-"""Scene compositor agent: per-scene t2i generation (gpt-image-2) using the tracked
-characters present in that scene, character description folded into the prompt
-text. NO vision-QA anywhere in this app — matching is a human call made off the
-gallery review (src/gallery.py). i2i (Krea image-to-image against each character's
-reference sheet) is cut for now — bring it back if t2i-only consistency doesn't
-hold up in testing, not before.
+"""Scene compositor agent: per-scene i2i generation (gpt-image-2 images.edit) using
+the tracked characters present in that scene. Identity now comes from each
+character's own reference image, conditioned via edit, not from restated
+appearance text in the prompt — the prompt only carries the scene's visible
+action. Reference images are downloaded + shrunk once per character and reused
+across every scene that includes them. NO vision-QA anywhere in this app —
+matching is a human call made off the gallery review (src/gallery.py). Falls
+back to plain t2i (gpt-image-2 generate, full appearance text) only if a
+character has no usable reference image, or if an edit call is rejected.
 """
 import os
 import re
@@ -16,12 +19,15 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 sys.path.insert(0, os.path.join(ROOT, "utils"))
 
 import gpt_image      # src/
+from images import ImageFetcher, shrink_for_upload  # utils/
 
-COMPOSITOR_CONTRACT_VERSION = 3
+COMPOSITOR_CONTRACT_VERSION = 5
 SCENE_STYLE_PREFIX = (
     "A horizontal 16:9 3D animated film still, Pixar style with soft-matte "
     "detailed textures. "
 )
+REFERENCE_MATCH_INSTRUCTION = " Depict each person exactly as shown in their reference image."
+
 
 def _present_characters(scene: dict, characters_by_id: dict) -> list[dict]:
     return [characters_by_id[cid] for cid in (scene.get("character_ids") or []) if cid in characters_by_id]
@@ -71,17 +77,12 @@ def _safe_appearance(character: dict, characters_by_id: dict) -> str:
 
 
 def build_scene_prompt(scene: dict, characters_by_id: dict) -> str:
-    present = _present_characters(scene, characters_by_id)
-    prompt = (
-        SCENE_STYLE_PREFIX
-        + _anonymize_names(scene["image_prompt"].strip(), characters_by_id)
-    )
-    if present:
-        prompt += " " + " ".join(
-            f"{_role_label(c).capitalize()} is {_safe_appearance(c, characters_by_id)}."
-            for c in present
-        )
-    return _anonymize_names(prompt, characters_by_id)
+    """The visible action only — no character content at all. Identity is carried
+    by whichever reference images accompany the edit call, not by text (see
+    agents/CLAUDE.md rule 5), so there is nothing here for a role label to leak
+    into."""
+    visible_action = _anonymize_names(scene["image_prompt"].strip(), characters_by_id)
+    return _anonymize_names(f"{SCENE_STYLE_PREFIX}{visible_action}", characters_by_id)
 
 
 def _build_constraints(scene: dict) -> str:
@@ -105,18 +106,15 @@ def _build_constraints(scene: dict) -> str:
 
 
 def build_fallback_prompt(scene: dict, characters_by_id: dict) -> str:
-    """Conservative fallback used only after the authored prompt is rejected.
-
-    It preserves the cast and broad spiritual beat while dropping the story-specific
-    construction that tripped moderation. This is preferable to silently reusing a
-    neighboring scene image, which is what the previous pipeline did.
+    """Conservative t2i fallback — used when a character has no usable reference
+    image, or an edit call is rejected. States each present character's appearance
+    directly (the one place appearance text still belongs, since there's no
+    reference image to carry identity instead), with no role-label framing riding
+    along as content (see agents/CLAUDE.md rule 5).
     """
     present = _present_characters(scene, characters_by_id)
     subject = scene.get("hero_subject") or scene.get("image_prompt") or "a quiet turning point"
-    designs = " ".join(
-        f"{_role_label(c).capitalize()} is {_safe_appearance(c, characters_by_id)}."
-        for c in present
-    )
+    designs = " ".join(f"{_safe_appearance(c, characters_by_id)}." for c in present)
     return _anonymize_names(
         f"{SCENE_STYLE_PREFIX}A clear, uncluttered movie moment: {subject}. "
         f"{designs} {_build_constraints(scene)}",
@@ -124,21 +122,51 @@ def build_fallback_prompt(scene: dict, characters_by_id: dict) -> str:
     )
 
 
-def compose_one(scene: dict, characters_by_id: dict) -> dict:
-    """t2i only. Fail-open: on generation error, image_url is None rather than
-    raising — matches asset_selector.route()'s (now-removed) per-scene fail-open
-    catch. image_basis/basis_kind match src/gallery.py's existing display contract
-    (image_basis = the actual prompt used, for review)."""
-    prompt = build_scene_prompt(scene, characters_by_id)
-    prompt_with_constraints = f"{prompt}. {_build_constraints(scene)}"
-    generation_method = "direct"
+def _fetch_reference_bytes(characters: list[dict]) -> dict[str, bytes]:
+    """Download + shrink each tracked character's reference sheet ONCE, reused by
+    every scene that includes them (see utils/images.py:shrink_for_upload — trims
+    resolution/bytes before every edit call, not per scene)."""
+    urls = {
+        c["id"]: c["reference_image_url"]
+        for c in characters
+        if c.get("reference_image_url")
+    }
+    fetched = ImageFetcher().fetch_many(list(urls.values()))
+    out = {}
+    for char_id, url in urls.items():
+        data = fetched.get(url)
+        if data:
+            out[char_id] = shrink_for_upload(data)
+    return out
+
+
+def compose_one(scene: dict, characters_by_id: dict, reference_bytes_by_id: dict) -> dict:
+    """i2i when every present character has a usable reference image; t2i (plain
+    generate, full appearance text) when none are present, or a character is
+    missing a reference, or the edit call itself is rejected. Fail-open: on
+    generation error, image_url is None rather than raising. image_basis/basis_kind
+    match src/gallery.py's existing display contract (image_basis = the actual
+    prompt used, for review)."""
+    present = _present_characters(scene, characters_by_id)
+    references = [reference_bytes_by_id[c["id"]] for c in present if c["id"] in reference_bytes_by_id]
+    use_edit = bool(references) and len(references) == len(present)
+
+    prompt = build_scene_prompt(scene, characters_by_id).rstrip(". ")
+    if use_edit:
+        prompt += "." + REFERENCE_MATCH_INSTRUCTION
+    prompt_with_constraints = f"{prompt.rstrip('. ')}. {_build_constraints(scene).strip()}"
+    generation_method = "edit" if use_edit else "direct"
     try:
-        url = gpt_image.generate_image(prompt_with_constraints)
+        url = (
+            gpt_image.edit_image(prompt_with_constraints, references)
+            if use_edit
+            else gpt_image.generate_image(prompt_with_constraints)
+        )
     except Exception as ex:
         fallback = build_fallback_prompt(scene, characters_by_id)
         print(
             f"    scene {scene.get('scene_number')}: authored prompt rejected; "
-            f"retrying conservative fallback ({ex})",
+            f"retrying conservative t2i fallback ({ex})",
             flush=True,
         )
         generation_method = "safety-fallback"
@@ -167,9 +195,10 @@ def compose_one(scene: dict, characters_by_id: dict) -> dict:
 
 def compose_all(scenes: list[dict], characters: list[dict]) -> list[dict]:
     characters_by_id = {c["id"]: c for c in characters}
+    reference_bytes_by_id = _fetch_reference_bytes(characters)
     with ThreadPoolExecutor(max_workers=8) as ex:
         futures = {
-            ex.submit(compose_one, s, characters_by_id): i
+            ex.submit(compose_one, s, characters_by_id, reference_bytes_by_id): i
             for i, s in enumerate(scenes)
         }
         results = [None] * len(scenes)
@@ -184,15 +213,27 @@ if __name__ == "__main__":
     scene_no_char = {"scene_number": 2, "image_prompt": "a sunrise over a quiet town", "character_ids": []}
     by_id = {"protagonist": protagonist}
 
-    p1 = build_scene_prompt(scene_with_char, by_id)
-    assert "Maria" not in p1, p1  # names must be scrubbed — gpt-image-2 blocks real given names as a public-figure false positive
-    assert "the protagonist" in p1 and protagonist["appearance"] in p1, p1
+    # Fully deterministic — no LLM call, no image call. Names scrubbed, no
+    # appearance text or structural role label present since identity now rides
+    # on the reference image, not the prompt.
     p2 = build_scene_prompt(scene_no_char, by_id)
     assert p2 == SCENE_STYLE_PREFIX + scene_no_char["image_prompt"], p2
+
+    p1 = build_scene_prompt(scene_with_char, by_id)
+    assert "Maria" not in p1, p1
+    # "the protagonist" here is the name-scrub substitute, not the old bug (which
+    # injected it as unrequested appearance-description scaffolding) — no
+    # appearance text rides along at all now, confirmed by the exact match below.
+    assert p1 == SCENE_STYLE_PREFIX + "the protagonist kneels by her bed at dawn", p1
+    assert protagonist["appearance"] not in p1, p1
+
+    fallback = build_fallback_prompt(scene_with_char, by_id)
+    assert "Maria" not in fallback, fallback
+    assert protagonist["appearance"] in fallback, fallback
 
     constraints = _build_constraints(scene_with_char)
     assert "Preserve every stated character detail exactly" in constraints, constraints
     assert "entire horizontal 16:9 frame" in constraints, constraints
     assert "Jesus" not in constraints and "nsfw" not in constraints, constraints
 
-    print("ok  prompt construction: names scrubbed, locked profiles applied, prompt kept compact")
+    print("ok  prompt construction: names scrubbed, no appearance text in the i2i prompt, fallback intact")

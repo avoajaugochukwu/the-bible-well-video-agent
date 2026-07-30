@@ -36,7 +36,7 @@ class TwoLaneStoryTests(unittest.TestCase):
             {"beat_number": 2, "narration_anchor": "The meeting became difficult"},
             {"beat_number": 3, "narration_anchor": "The group returned to work"},
         ]
-        assigned = scene_engine._assign_snippets_to_beats(script, snippets, beats)
+        assigned = scene_engine._assign_snippets_to_beats(snippets, beats)
         flattened = [
             scene_number
             for beat_number in (1, 2, 3)
@@ -70,7 +70,7 @@ class TwoLaneStoryTests(unittest.TestCase):
             {"beat_number": i, "narration_anchor": "unused"}
             for i in range(1, 6)
         ]
-        assigned = scene_engine._assign_snippets_to_beats("", snippets, beats)
+        assigned = scene_engine._assign_snippets_to_beats(snippets, beats)
         self.assertTrue(all(assigned[i] for i in range(1, 6)))
         self.assertEqual(sum(map(len, assigned.values())), len(snippets))
 

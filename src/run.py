@@ -23,8 +23,8 @@ to test against).
   baserow(get_row) -> context(infer_context) -> characters(agents/character_ledger
   + agents/character_sheet — who's worth tracking, one full-body reference image
   each) -> scenes(break_into_scenes, characters-aware) -> images
-  (agents/scene_compositor, gpt-image-2 t2i per scene using the tracked characters
-  present — no vision-QA anywhere in this pipeline, match/no-match is a human call
+  (agents/scene_compositor, gpt-image-2 i2i per scene against each present tracked
+  character's reference image — no vision-QA anywhere in this pipeline, match/no-match is a human call
   off the gallery) -> gallery(build_gallery, non-blocking review) -> download
   narration -> whisper_words (cached, computed ONCE) ->
   align(align_scene_durations, real Whisper+DTW) -> remotion/src/scenes.json
@@ -280,8 +280,8 @@ def run_pipeline(row_id) -> str | None:
         )
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print(f"  scenes: done ({len(scenes)} scenes)")
-    # 7 IMAGES — agents/scene_compositor, t2i per scene using whichever tracked
-    # characters that scene calls for, in parallel. No vision-QA anywhere — a human
+    # 7 IMAGES — agents/scene_compositor, i2i per scene against whichever tracked
+    # characters that scene calls for, in parallel (t2i fallback only). No vision-QA anywhere — a human
     # reviews the gallery and judges consistency. The compositor has its own cache
     # contract because final prompt construction can change without changing shot plans.
     images_current = bool(scenes) and all(

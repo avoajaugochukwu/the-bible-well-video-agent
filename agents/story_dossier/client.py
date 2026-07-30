@@ -1,5 +1,4 @@
 """Extract source facts and infer a coherent cinematic world from the whole script."""
-import json
 import os
 import sys
 
@@ -10,8 +9,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json
 
 
-STORY_DOSSIER_CONTRACT_VERSION = 11
-MAX_ATTEMPTS = 3
+STORY_DOSSIER_CONTRACT_VERSION = 12
 
 _FACT_SCHEMA = {
     "type": "object",
@@ -211,23 +209,6 @@ DOSSIER_SCHEMA = {
     },
 }
 
-DOSSIER_REVIEW_SCHEMA = {
-    "name": "story_dossier_review",
-    "schema": {
-        "type": "object",
-        "properties": {
-            "approved": {"type": "boolean"},
-            "issues": {
-                "type": "array",
-                "maxItems": 8,
-                "items": {"type": "string"},
-            },
-        },
-        "required": ["approved", "issues"],
-        "additionalProperties": False,
-    },
-}
-
 CASTING_SCHEMA = {
     "name": "independent_cinematic_casting",
     "schema": {
@@ -337,60 +318,6 @@ def _abstract_casting_input(dossier: dict) -> dict:
     return dossier.get("abstract_casting_signals") or {}
 
 
-def _review_casting(
-    abstract_profile: dict,
-    source_facts: dict,
-    casting: dict,
-) -> list[str]:
-    review = call_llm_json(
-        [
-            {
-                "role": "system",
-                "content": (
-                    "Audit an independent cinematic casting against an abstract character "
-                    "profile. Approve only if it chooses one concrete plausible occupation, "
-                    "not alternatives or hedging; a combined title is acceptable when it clearly "
-                    "describes one plausible role in a small organization, and title punctuation "
-                    "or wording is outside this reviewer's scope. Approve only if it builds a "
-                    "credible workplace, daily activity, "
-                    "and relationship world distinct from private faith/family life; does not "
-                    "turn a private religious or family institution into the employer when "
-                    "the source did not state that job; infers "
-                    "body, hair, ethnicity, and reusable wardrobe as deliberate casting choices "
-                    "without stereotypes; each is one production-ready choice rather than open "
-                    "casting, alternatives, ranges of identities, or decisions deferred to rehearsal; "
-                    "specific height, shoulders, torso, hips, and build are desirable and must not "
-                    "be flattened into a generic or automatically medium body. Reject body design "
-                    "only when the proposal explicitly claims that its shape was caused by or inferred "
-                    "from occupation, competence, age, faith, hobby, or emotional condition; and keep "
-                    "the director profile plot-free. The casting "
-                    "does not map one soft trait directly to a stereotyped caring/service job; "
-                    "must create visual range without inventing status, wealth, or temperament "
-                    "that conflicts with the abstract profile or evidence-backed source facts. "
-                    "Use source facts only to catch contradictions in stable identity, status, "
-                    "body, grooming, jewelry, or reusable wardrobe. Do not ask the casting to "
-                    "include narrated objects, event costumes, relationships, faith practices, "
-                    "locations, or plot actions. Report concise actionable issues."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"ABSTRACT PROFILE:\n{abstract_profile}\n\n"
-                    f"EVIDENCE-BACKED SOURCE FACTS (contradiction audit only):\n"
-                    f"{source_facts}\n\n"
-                    f"PROPOSED CASTING:\n{casting}"
-                ),
-            },
-        ],
-        DOSSIER_REVIEW_SCHEMA,
-        max_completion_tokens=2048,
-    )
-    if review.get("approved"):
-        return []
-    return review.get("issues") or ["casting reviewer rejected the design"]
-
-
 def build(script: str) -> dict:
     messages = [
         {
@@ -434,7 +361,7 @@ def build(script: str) -> dict:
         },
         {"role": "user", "content": script},
     ]
-    data = call_llm_json(messages, DOSSIER_SCHEMA, max_completion_tokens=6144)
+    data = call_llm_json(messages, DOSSIER_SCHEMA, max_completion_tokens=12288)
 
     abstract_profile = _abstract_casting_input(data)
     occupation = _choose_occupation(abstract_profile)
@@ -474,46 +401,24 @@ def build(script: str) -> dict:
             ),
         },
     ]
-    issues = []
-    for _ in range(MAX_ATTEMPTS):
-        if issues:
-            casting_messages.append({
-                "role": "user",
-                "content": (
-                    "Revise the complete casting to address this review:\n"
-                    + "\n".join(f"- {issue}" for issue in issues)
-                ),
-            })
-        casting = call_llm_json(
-            casting_messages,
-            CASTING_SCHEMA,
-            max_completion_tokens=4096,
-        )
-        # Occupation is an upstream selection, not another free-form casting output.
-        # Carry it forward structurally so harmless title paraphrases cannot break the
-        # contract and so the reviewer audits the actual locked choice.
-        casting["cinematic_inference"]["protagonist_occupation"] = occupation["job_title"]
-        issues = _review_casting(
-            abstract_profile,
-            data.get("source_facts") or {},
-            casting,
-        )
-        if not issues:
-            occupation_stated = bool(
-                data.get("source_facts", {}).get("occupation", {}).get("stated")
-            )
-            casting["cinematic_inference"]["occupation_basis"] = (
-                "explicit" if occupation_stated else "creative_inference"
-            )
-            data.update(casting)
-            data["occupation_selection"] = occupation
-            data["story_dossier_contract_version"] = STORY_DOSSIER_CONTRACT_VERSION
-            return data
-        casting_messages.append({
-            "role": "assistant",
-            "content": json.dumps(casting, ensure_ascii=False),
-        })
-    raise RuntimeError(f"story_dossier.build() casting failed review: {issues}")
+    casting = call_llm_json(
+        casting_messages,
+        CASTING_SCHEMA,
+        max_completion_tokens=4096,
+    )
+    # Occupation is an upstream selection, not another free-form casting output.
+    # Carry it forward structurally so harmless title paraphrases cannot break the contract.
+    casting["cinematic_inference"]["protagonist_occupation"] = occupation["job_title"]
+    occupation_stated = bool(
+        data.get("source_facts", {}).get("occupation", {}).get("stated")
+    )
+    casting["cinematic_inference"]["occupation_basis"] = (
+        "explicit" if occupation_stated else "creative_inference"
+    )
+    data.update(casting)
+    data["occupation_selection"] = occupation
+    data["story_dossier_contract_version"] = STORY_DOSSIER_CONTRACT_VERSION
+    return data
 
 
 if __name__ == "__main__":

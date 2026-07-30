@@ -14,10 +14,55 @@ Usage:
     fetched = ImageFetcher().fetch_many(urls)   # {url: bytes|None}
     data = ImageFetcher().fetch(one_url)        # bytes|None
 """
+import io
 import urllib.request
 
 _UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
        "(KHTML, like Gecko) Chrome/122.0 Safari/537.36")
+
+
+def _autocrop_to_content(img):
+    """Trim flat-background padding down to the actual subject's bounding box —
+    e.g. a full-body reference generated on a wide 16:9 canvas has large empty
+    gray margins left/right of an upright figure; those pixels cost edit-call
+    tokens for nothing. Classic Pillow autocrop recipe: diff against the
+    corner's background color, threshold out compression noise, crop to
+    whatever's left. No-op (returns img unchanged) if nothing differs enough
+    from the background to find a bounding box."""
+    from PIL import Image, ImageChops
+
+    bg = Image.new(img.mode, img.size, img.getpixel((0, 0)))
+    diff = ImageChops.difference(img, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -30)  # boost real edges, drop soft/noise pixels
+    bbox = diff.getbbox()
+    if not bbox:
+        return img
+    pad = round(0.02 * max(img.size))
+    left, top, right, bottom = bbox
+    return img.crop((
+        max(0, left - pad), max(0, top - pad),
+        min(img.width, right + pad), min(img.height, bottom + pad),
+    ))
+
+
+def shrink_for_upload(data: bytes, max_dimension: int = 768, quality: int = 80) -> bytes:
+    """Downscale + re-encode a reference image before sending it as an image-edit
+    input — identity carries fine at a fraction of the original pixels/bytes, and
+    edit-call cost scales with input size. Autocrops flat-background padding to an
+    upright rectangle around the actual subject first, then caps the longest edge
+    at max_dimension, then re-encodes as JPEG at `quality` (drops PNG's larger,
+    unneeded alpha channel for an opaque character reference)."""
+    from PIL import Image
+
+    img = Image.open(io.BytesIO(data)).convert("RGB")
+    img = _autocrop_to_content(img)
+    w, h = img.size
+    scale = min(1.0, max_dimension / max(w, h))
+    if scale < 1.0:
+        img = img.resize((max(1, round(w * scale)), max(1, round(h * scale))), Image.LANCZOS)
+    out = io.BytesIO()
+    img.save(out, format="JPEG", quality=quality, optimize=True)
+    return out.getvalue()
 
 
 def looks_image(data: bytes) -> bool:

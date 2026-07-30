@@ -242,7 +242,6 @@ def cut_narration_scenes(
 
 
 def _assign_snippets_to_beats(
-    script: str,
     snippets: list[str],
     story_beats: list[dict],
 ) -> dict[int, list[tuple[int, str]]]:
@@ -253,7 +252,6 @@ def _assign_snippets_to_beats(
     can also starve late film beats when a long narration sentence crosses an
     anchor. Balanced chronological allocation gives every film beat screen time.
     """
-    del script
     if len(snippets) < len(story_beats):
         raise ValueError(
             "parallel story has more beats than available narration timing blocks"
@@ -424,7 +422,7 @@ def break_into_scenes(
     story_beats = visual_story.get("story_beats") or []
     if not story_beats:
         raise ValueError("visual_story has no story_beats")
-    assignments = _assign_snippets_to_beats(clean_script, snippets, story_beats)
+    assignments = _assign_snippets_to_beats(snippets, story_beats)
     print(
         f"  -> {len(snippets)} narration scenes mapped across "
         f"{len(story_beats)} director beats",
@@ -458,8 +456,8 @@ def break_into_scenes(
                 "director_beat_number": beat["beat_number"],
                 "hero_subject": shot["hero_subject"],
                 "image_prompt": shot["image_prompt"],
-                "scene_type": shot.get("scene_type", "spiritual_moment"),
-                "character_ids": shot.get("character_ids", []),
+                "scene_type": shot["scene_type"],
+                "character_ids": shot["character_ids"],
                 "prompt_contract_version": PROMPT_CONTRACT_VERSION,
                 "visual_story_contract_version": visual_story.get(
                     "visual_story_contract_version"

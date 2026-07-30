@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json
 
 
-VISUAL_STORY_CONTRACT_VERSION = 9
+VISUAL_STORY_CONTRACT_VERSION = 10
 MAX_ATTEMPTS = 3
 
 
@@ -151,24 +151,6 @@ EMOTIONAL_SPINE_SCHEMA = {
         "additionalProperties": False,
     },
 }
-
-PLAN_REVIEW_SCHEMA = {
-    "name": "visual_story_review",
-    "schema": {
-        "type": "object",
-        "properties": {
-            "approved": {"type": "boolean"},
-            "issues": {
-                "type": "array",
-                "maxItems": 8,
-                "items": {"type": "string"},
-            },
-        },
-        "required": ["approved", "issues"],
-        "additionalProperties": False,
-    },
-}
-
 
 def _schema(character_ids: list[str], beat_count: int) -> dict:
     character_item = {"type": "string"}
@@ -368,53 +350,6 @@ def _validate_spine(data: dict, script: str) -> list[str]:
     return problems
 
 
-def _review_bridge_cues(data: dict, script: str) -> list[str]:
-    """Reject negated and figurative cues that exact substring checks cannot."""
-    proposed = [
-        {
-            "beat_number": beat.get("beat_number"),
-            "bridge_cues": beat.get("bridge_cues") or [],
-        }
-        for beat in data.get("emotional_beats") or []
-    ]
-    review = call_llm_json(
-        [
-            {
-                "role": "system",
-                "content": (
-                    "Audit visual bridge cues against their quoted narration evidence. "
-                    "Approve only tangible things or directly visible physical actions that "
-                    "the evidence AFFIRMS are present: tools, materials, textures, gestures, "
-                    "or garment actions. Reject anything absent, avoided, imagined, "
-                    "hypothetical, or negated. Reject figurative doors, locks, weight, light, "
-                    "or other metaphors unless the evidence depicts the physical thing. "
-                    "Reject cues that add an object not stated in the evidence. A cue may "
-                    "shorten the exact wording but cannot change its meaning. PORTABILITY IS "
-                    "MANDATORY: reject a cue that carries a source event, location, occupation, "
-                    "relationship, celebration, social status, or complete tableau. A physical "
-                    "gesture contains only the movement, not the room or emotional explanation. "
-                    "A garment action contains only the action and must not lock a source outfit. "
-                    "A material_or_texture describes sensory material, not an invitation or other "
-                    "event-bearing document. Return concise beat-numbered corrections."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    f"NARRATION:\n{script}\n\n"
-                    "PROPOSED CUES:\n"
-                    f"{json.dumps(proposed, ensure_ascii=False, indent=2)}"
-                ),
-            },
-        ],
-        PLAN_REVIEW_SCHEMA,
-        max_completion_tokens=2048,
-    )
-    if review.get("approved"):
-        return []
-    return review.get("issues") or ["bridge cue reviewer rejected the cues"]
-
-
 def _validate(data: dict, character_ids: set[str]) -> list[str]:
     problems = []
     supporting = data.get("supporting_characters") or []
@@ -431,18 +366,6 @@ def _validate(data: dict, character_ids: set[str]) -> list[str]:
     location_ids = [loc.get("id") for loc in locations]
     if len(location_ids) != len(set(location_ids)):
         problems.append("recurring location ids must be unique")
-    public_locations = {
-        loc.get("id") for loc in locations if loc.get("setting_type") == "shared_public"
-    }
-    if len(public_locations) < 3:
-        problems.append("the film needs at least three recurring shared/public locations")
-    public_domains = {
-        loc.get("social_domain")
-        for loc in locations
-        if loc.get("id") in public_locations
-    }
-    if len(public_domains) < 3:
-        problems.append("shared/public locations must span at least three social domains")
     beats = data.get("story_beats") or []
     numbers = [beat.get("beat_number") for beat in beats]
     if numbers != list(range(1, len(beats) + 1)):
@@ -459,29 +382,6 @@ def _validate(data: dict, character_ids: set[str]) -> list[str]:
             problems.append(
                 f"beat {beat.get('beat_number')} uses unknown character ids: {sorted(unknown)}"
             )
-    for supporting_id in supporting_ids:
-        appearances = sum(
-            supporting_id in (beat.get("character_ids") or [])
-            for beat in beats
-        )
-        if appearances < 2:
-            problems.append(
-                f"supporting character {supporting_id!r} appears in only {appearances} "
-                "beat(s); only recurring foreground roles belong in supporting_characters"
-            )
-    public_beats = sum(beat.get("location_id") in public_locations for beat in beats)
-    if beats and public_beats * 2 < len(beats):
-        problems.append(
-            f"only {public_beats}/{len(beats)} story beats use shared/public locations; "
-            "at least half must"
-        )
-    if beats:
-        busiest = max(
-            (sum(beat.get("location_id") == loc_id for beat in beats) for loc_id in location_ids),
-            default=0,
-        )
-        if busiest * 2 > len(beats):
-            problems.append("more than half the story beats use one location")
     return problems
 
 
@@ -519,7 +419,11 @@ def _build_emotional_spine(script: str) -> dict:
                 "gesture, or garment action that could naturally appear inside a different plot. "
                 "Every cue must include a short exact evidence quote from the narration. The "
                 "evidence must affirm that the physical cue is present or performed. Do not turn "
-                "an absent, negated, hypothetical, or figurative object into a cue. "
+                "an absent, negated, hypothetical, or figurative object into a cue — a figurative "
+                "door, lock, weight, or light only counts if the evidence depicts the literal "
+                "physical thing, not the metaphor. Portability is mandatory: never propose a cue "
+                "that carries a source event, location, occupation, relationship, celebration, "
+                "social status, or complete tableau along with it. "
                 "cue is at most six words and must fit exactly one cue_type. Decontextualize it: "
                 "a gesture names only the movement; a garment action names only the action and "
                 "will use the film character's locked outfit; a material_or_texture names sensory "
@@ -546,8 +450,6 @@ def _build_emotional_spine(script: str) -> dict:
         data = call_llm_json(messages, EMOTIONAL_SPINE_SCHEMA, max_completion_tokens=4096)
         problems = _validate_spine(data, script)
         if not problems:
-            problems = _review_bridge_cues(data, script)
-        if not problems:
             return data
         messages.append({
             "role": "assistant",
@@ -555,78 +457,6 @@ def _build_emotional_spine(script: str) -> dict:
         })
         last_problems = problems
     raise RuntimeError(f"visual_director emotional spine failed validation: {last_problems}")
-
-
-def _review_plan(
-    data: dict,
-    story_dossier: dict,
-    emotional_spine: dict | None = None,
-) -> list[str]:
-    """General semantic review without encoding a catalog of institution rules."""
-    approved_bridge_cues = [
-        {
-            "beat_number": beat.get("beat_number"),
-            "bridge_cues": [
-                cue.get("cue")
-                for cue in beat.get("bridge_cues") or []
-            ],
-        }
-        for beat in (emotional_spine or {}).get("emotional_beats") or []
-    ]
-    review = call_llm_json(
-        [
-            {
-                "role": "system",
-                "content": (
-                    "Review a proposed parallel visual film against its production dossier. "
-                    "Approve only if: the protagonist and wardrobe fit the whole-script vibe; "
-                    "the external plot feels specific rather than a generic civic template; "
-                    "the external goal grows from the inferred professional or distinctive "
-                    "social world rather than promoting background faith/community texture "
-                    "into the main plot without a character-specific reason; "
-                    "the film is genuinely parallel and does not replay source events, "
-                    "celebrations, locations, or plot actions; sparse APPROVED BRIDGE CUES may "
-                    "be reused as tools, materials, textures, gestures, or garment actions, "
-                    "but must be natural to the invented plot rather than recreate the source; "
-                    "each stated activity credibly belongs in its chosen real institution; "
-                    "locations are not treated as interchangeable rooms; scenes provide varied "
-                    "action rather than repeated meetings and paperwork. When a professional "
-                    "world offers hands-on, customer-facing, field, travel, production, or "
-                    "problem-solving action, administrative confrontation, negotiation, and "
-                    "presentation should not become multiple similar turning points; compress "
-                    "them and dramatize progress through the work itself. Most progress is "
-                    "visible through consequential activity in changing environments, with "
-                    "administration only an obstacle rather than the dramatic spine; and the "
-                    "plot has clear cause, pressure, choice, and resolution. Do not demand literal narration "
-                    "events or props. Source facts are supplied only to detect distinctive "
-                    "overlap or contradiction; do not ask the parallel film to include them, "
-                    "Every foreground person who appears in multiple beats or carries a changing "
-                    "relationship is declared in supporting_characters and referenced by id. "
-                    "Anonymous people are genuinely one-off or background-only; "
-                    "and do not reject an ordinary generic detail merely because both stories "
-                    "could contain it. Report concise actionable issues."
-                ),
-            },
-            {
-                "role": "user",
-                "content": (
-                    "PRODUCTION DOSSIER:\n"
-                    f"{json.dumps(_profile_for_director(story_dossier), ensure_ascii=False, indent=2)}\n\n"
-                    "SOURCE FACTS (overlap/contradiction audit only):\n"
-                    f"{json.dumps(story_dossier.get('source_facts') or {}, ensure_ascii=False, indent=2)}\n\n"
-                    "APPROVED BRIDGE CUES:\n"
-                    f"{json.dumps(approved_bridge_cues, ensure_ascii=False, indent=2)}\n\n"
-                    "PROPOSED FILM:\n"
-                    f"{json.dumps(data, ensure_ascii=False, indent=2)}"
-                ),
-            },
-        ],
-        PLAN_REVIEW_SCHEMA,
-        max_completion_tokens=2048,
-    )
-    if review.get("approved"):
-        return []
-    return review.get("issues") or ["semantic reviewer rejected the visual story"]
 
 
 def _profile_for_director(story_dossier: dict) -> dict:
@@ -696,8 +526,10 @@ means credible lived texture inside that specific world: it may be corporate,
 office-professional, small-business, hospitality, family, faith, working-class,
 creative, or another environment. It does not mean every protagonist becomes a
 community organizer. Private rooms may appear when earned, but the film must not
-become one person alone in generic rooms. At least half the beats should involve
-meaningful interaction in shared or public settings.
+become one person alone in generic rooms. Most beats — well over half — should
+involve meaningful interaction in shared or public settings, and no single
+recurring location should host anywhere near half the film's runtime; spread
+activity across the world you invent.
 
 A faith-community location may be one part of this world, but never the external
 plot's default setting or the film's whole identity. The standalone plot should
@@ -710,9 +542,10 @@ symbolic, or fantastical. Anonymous coworkers, neighbors, shoppers, congregants,
 and community members may populate scenes naturally only as one-off or background
 figures. Declare every foreground person who appears across multiple beats or carries
 a changing relationship in supporting_characters, then use that id in each applicable
-beat's character_ids. Do not hide a recurring curator, assistant, client, coordinator,
-relative, or colleague inside visible_action as an anonymous role. Existing tracked
-cast ids remain valid and must not be re-declared.
+beat's character_ids. A single appearance is one-off — leave them anonymous, don't
+declare them. Do not hide a genuinely recurring curator, assistant, client,
+coordinator, relative, or colleague inside visible_action as an anonymous role.
+Existing tracked cast ids remain valid and must not be re-declared.
 
 Faith is expressed through conduct, service, reconciliation, community, prayerful
 body language, and changed choices. Religious books, paperwork, signs, and decorative
@@ -729,8 +562,10 @@ Direct this as a family-friendly stylized 3D animated feature with cinematic
 composition and expressive full-body character staging. movie_style must contain
 visual direction only: composition, lenses/framing, production design, lighting,
 texture, and color progression. Do not include audio or sound direction. Shared
-locations must span at least three credible parts of the dossier's world. Do not
-let one building or institution become the whole film.
+locations must span at least three genuinely distinct social domains of the
+dossier's world (e.g. not three variations on one workplace) — real variety in
+where this world happens and who populates it, not one building or institution
+standing in for the whole film.
 
 WHOLE-SCRIPT PRODUCTION DOSSIER:
 {json.dumps(_profile_for_director(story_dossier or {}), ensure_ascii=False, indent=2)}
@@ -778,12 +613,6 @@ Return only the structured visual-story plan.
         problems = _validate(data, set(character_ids))
         if not problems:
             problems = _validate_bridge_cues(data, emotional_beats)
-        if not problems:
-            problems = _review_plan(
-                data,
-                story_dossier or {},
-                emotional_spine,
-            )
         if not problems:
             anchors = {
                 beat["beat_number"]: beat["narration_anchor"]

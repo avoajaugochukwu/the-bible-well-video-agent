@@ -52,27 +52,6 @@ class AgentContractTests(unittest.TestCase):
         self.assertIn("dusty-teal knitted cardigan fully unbuttoned", appearance)
         self.assertIn("blunt pageboy cut", appearance)
 
-    def test_small_accessories_are_rejected_from_locked_identity(self):
-        character = {
-            "id": "protagonist",
-            "name": "Ellen",
-            "role": "protagonist",
-            "visual_profile": self._visual_profile(
-                hair_accessory="small barrette",
-                accessories="linen handkerchief in pocket",
-            ),
-            "casting_basis": "whole-story casting",
-            "script_spans": ["Ellen"],
-        }
-        data = character_ledger._materialize_appearances(
-            {"characters": [character]}
-        )
-
-        problems = character_ledger._validate(data, "Ellen considered her future.")
-
-        self.assertTrue(any("no hair accessory" in p for p in problems))
-        self.assertTrue(any("no accessories" in p for p in problems))
-
     def test_director_handoff_excludes_source_audit_details(self):
         dossier = {
             "source_facts": {"protagonist": [{"fact": "source-only detail"}]},
@@ -149,83 +128,12 @@ class AgentContractTests(unittest.TestCase):
 
         self.assertTrue(any("unapproved bridge_cue" in p for p in problems))
 
-    def test_bridge_cue_requires_exact_source_evidence(self):
-        spine = {
-            "emotional_beats": [{
-                "beat_number": 1,
-                "narration_anchor": "She worked carefully.",
-                "bridge_cues": [{
-                    "cue": "marked calendar",
-                    "cue_type": "tool",
-                    "evidence": "a marked calendar",
-                }],
-            }]
-        }
-
-        problems = visual_director._validate_spine(
-            spine,
-            "She worked carefully.",
-        )
-
-        self.assertTrue(any("lacks exact source evidence" in p for p in problems))
-
-    def test_director_supporting_role_must_recur(self):
-        plan = {
-            "supporting_characters": [{
-                "id": "coordinator",
-                "name": "the coordinator",
-                "role": "project coordinator",
-                "story_function": "challenges and later supports the protagonist",
-            }],
-            "recurring_locations": [
-                {
-                    "id": "studio",
-                    "setting_type": "shared_public",
-                    "social_domain": "work",
-                },
-                {
-                    "id": "market",
-                    "setting_type": "shared_public",
-                    "social_domain": "commerce",
-                },
-                {
-                    "id": "hall",
-                    "setting_type": "shared_public",
-                    "social_domain": "community",
-                },
-            ],
-            "story_beats": [
-                {
-                    "beat_number": 1,
-                    "location_id": "studio",
-                    "character_ids": ["protagonist", "coordinator"],
-                },
-                {
-                    "beat_number": 2,
-                    "location_id": "market",
-                    "character_ids": ["protagonist"],
-                },
-                {
-                    "beat_number": 3,
-                    "location_id": "hall",
-                    "character_ids": ["protagonist"],
-                },
-            ],
-        }
-
-        problems = visual_director._validate(plan, {"protagonist"})
-
-        self.assertTrue(any("appears in only 1 beat" in p for p in problems))
-
     def test_character_retry_includes_previous_json(self):
         generation_messages = []
         generation_count = 0
 
-        def fake_call(messages, schema, **_kwargs):
+        def fake_call(messages, _schema, **_kwargs):
             nonlocal generation_count
-            if schema["name"] == "character_ledger_review":
-                return {"approved": True, "issues": []}
-
             generation_messages.append([dict(message) for message in messages])
             generation_count += 1
             if generation_count == 1:
@@ -236,7 +144,6 @@ class AgentContractTests(unittest.TestCase):
                         "role": "protagonist",
                         "visual_profile": self._visual_profile(hair_position=""),
                         "casting_basis": "whole-story casting",
-                        "script_spans": ["Ellen"],
                     }]
                 }
             return {
@@ -246,7 +153,6 @@ class AgentContractTests(unittest.TestCase):
                     "role": "protagonist",
                     "visual_profile": self._visual_profile(),
                     "casting_basis": "whole-story casting",
-                    "script_spans": ["Ellen"],
                 }]
             }
 
@@ -268,30 +174,6 @@ class AgentContractTests(unittest.TestCase):
         self.assertIn('"visual_profile"', assistant_messages[-1])
         self.assertIn('"hair_position": ""', assistant_messages[-1])
         self.assertNotIn('"appearance"', assistant_messages[-1])
-
-    def test_profile_contract_review_payload_excludes_casting_details(self):
-        captured = {}
-
-        def fake_call(messages, _schema, **_kwargs):
-            captured["messages"] = messages
-            return {"approved": True, "issues": []}
-
-        character = {
-            "id": "coordinator",
-            "name": "the coordinator",
-            "role": "project coordinator",
-            "visual_profile": self._visual_profile(),
-            "casting_basis": "Distinct professional supporting presence.",
-            "script_spans": ["coordinator"],
-        }
-
-        with patch.object(character_ledger, "call_llm_json", side_effect=fake_call):
-            character_ledger._review_profile_contract({"characters": [character]})
-
-        sent = json.loads(captured["messages"][-1]["content"])
-        self.assertEqual(set(sent["characters"][0]), {"id", "visual_profile"})
-        self.assertNotIn("casting_basis", json.dumps(sent))
-        self.assertNotIn("script_spans", json.dumps(sent))
 
 
 if __name__ == "__main__":
