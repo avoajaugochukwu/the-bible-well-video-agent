@@ -1,455 +1,1096 @@
 {
-  "film_title": "Keepers of the Thread",
-  "parallel_story": "A meticulous museum conservator races to stabilize and install a fragile donated textile collection for a small regional exhibition threatened by budget cuts and logistical setbacks. Along the way she must learn to ask for help\u2014from a pastor who connects the museum with community volunteers and a longtime community liaison\u2014moving from solitary competence to shared responsibility so the show can open on time.",
-  "movie_style": "Stylized 3D animation with tactile, lived-in surfaces and intimate cinematography. Use warm directional key lights for studio interiors (examination lamps, window shafts) and cooler, diffuse light in storage vaults. Composition favors medium close-ups on hands and objects (loupe, cotton swabs, stitched edges) with occasional wide, low-angle shots to show crate-laden corridors and gallery walls. Lenses: 35\u201350mm for object work to keep slight perspective, 24mm for environmental establishing shots to emphasize small-scale architecture, and a short telephoto (85mm) for compressing people in conversation during emotional beats. Production design leans muted neutrals\u2014stone gray, olive, indigo\u2014with warm wood surfaces in community spaces; textures are worn canvas, taped labels, scuffed wooden floors, and soft fabric fibers. Lighting color temperature shifts subtly with the protagonist's interior change: cool and controlled early, softer and warmer as help arrives. Camera movement is deliberate: slow dollies around benches during treatment, handheld-ish subtle pushes for interpersonal tension, and stable tripod framing for decision beats. Close-ups are allowed to carry narrative when sound is off: object detail, a thumb smoothing a creased textile, a labeled crate being sealed. All staging emphasizes full-body expressions\u2014shoulders, gait, and hands\u2014so that relationships and choices read silently.",
-  "external_goal": "Stabilize, crate, transport, and install a donated set of fragile community textiles and complete the small regional 'Threads of Home' exhibition opening in two weeks despite limited staff, an uncooperative shipping window, and a last-minute funding shortfall.",
-  "protagonist_arc": "Beginning: Self-reliant conservator manages the museum's collections and takes immediate responsibility for the donated textiles. Pressure: A tight timeline, damaged boxes, and a threatened shipping slot force choices that reveal her habit of doing everything herself. Choice: She must either insist on solo control and risk missing the opening, or trust and organize volunteers and community partners. Changed ending: She expands trust, delegates tasks, accepts imperfect help, and achieves the installation while creating new community ties.",
+  "film_title": "Root & Return",
+  "parallel_story": "A steady greenhouse manager named Mae runs a modest family garden center threatened by a planned road widening that will take her delivery bay and cut foot traffic. To save the business she must rally the town, design a compact reworked storefront display, and negotiate a compromise with a pragmatic town planner while wrestling with fear of public exposure. Through hands-on work, quiet conversations, and a community brunch, Mae moves from freeze to purposeful action and reclaims her role as a local steward.",
+  "movie_style": "3D stylized family-friendly animation with warm, tactile textures: shallow depth of field for intimate close-ups of hands and plant details, wider lenses for community scenes on Main Street; naturalistic sun-through-glass greenhouse lighting that softens to cooler twilight tones for low moments; production design favors weathered wood, galvanized metal benches, clay pots, burlap, chalkboard signage, and small-town storefront facades; color palette progresses from muted earth tones in the opening to brighter greens and sunlit golds by the end. Camera framing emphasizes full-body staging for physical work (three-quarter and medium shots) and extreme close-ups for emotional pivots (callused hands, damp soil, a finger tracing a pot edge). Movement is deliberate\u2014tracking with Mae as she walks the greenhouse aisles, handheld for tense negotiation scenes, and still, composed frames for moments of choice and prayerful reflection.",
+  "external_goal": "Reconfigure and defend the garden center's storefront and delivery bay to keep the business viable as a county road project threatens to take the property; progress is shown through designing and building a compact display, persuading townspeople to support a revised plan, and securing a binding adjustment in the planner's compromise.",
+  "protagonist_arc": "Beginning: Mae is quietly fearful that the county road plan will end the garden center's livelihood. Pressure: As contractors survey the lot and customers express doubt, Mae's agency shrinks; she avoids public meetings. Choice: After a low point where she drives home in the dark, Mae chooses to act\u2014redesigning the storefront, asking for help, and speaking at a community brunch. Changed ending: With a redesigned layout, community backing, and a negotiated compromise, Mae moves from fear to purposeful action, leading hands-on work to rebuild and reopen with renewed stewardship.",
   "supporting_characters": [
     {
-      "id": "rev_daniel",
-      "name": "Pastor Daniel",
-      "role": "community connector / faith community leader",
-      "story_function": "Provides the entry point to a volunteer network and moral support; his relationship shifts from polite acquaintance to practical collaborator who offers resources and steady encouragement."
+      "id": "mason",
+      "name": "Mason",
+      "role": "seasonal assistant",
+      "story_function": "Young seasonal worker Mae mentors; his practical eagerness and occasional bluntness challenge Mae to communicate publicly and trust help; he assists with the physical rebuild and helps stage the market display."
     },
     {
-      "id": "grace_mendez",
-      "name": "Grace Mendez",
-      "role": "community liaison / volunteer organizer",
-      "story_function": "Longtime local volunteer and liaison for the donor family; initially frustrated with slow museum processes, she becomes the protagonist's on-site partner, teaching her to ask and coordinate rather than solo-execute."
+      "id": "clara",
+      "name": "Clara",
+      "role": "longtime customer and friend",
+      "story_function": "A regular customer who knows the town networks; she nudges Mae toward community action, provides a discreet invitation to the church brunch, and rallies neighbors in support."
+    },
+    {
+      "id": "rob",
+      "name": "Rob",
+      "role": "local landscaper / tradesman",
+      "story_function": "Tradesman who trades labor for plants; his familiarity with permits and equipment becomes crucial in designing a compact layout and tightening details during the final build."
+    },
+    {
+      "id": "planner",
+      "name": "Planner",
+      "role": "county town planner (official)",
+      "story_function": "Represents the institutional pressure to take land; in a tense negotiation she remains professional but persuadable; Mae must persuade the planner to accept a revised, less invasive layout."
     }
   ],
   "recurring_locations": [
     {
-      "id": "studio",
-      "name": "Conservation Studio",
+      "id": "greenhouse",
+      "name": "Greenhouse & sales lot",
       "setting_type": "shared_public",
-      "social_domain": "museum workroom",
-      "institution_type": "museum conservation lab",
-      "visual_identity": "long benches under examination lamps, magnifiers, stacks of conservation trays, a sink with carefully labeled jars, and pinned sample swatches; neutral stone-gray counters and canvas aprons.",
-      "story_function": "Primary place for tactile treatment, crisis triage, and small team coordination; most object-focused beats occur here."
+      "social_domain": "small business retail / horticulture",
+      "institution_type": "independent garden center greenhouse and open sales lot",
+      "visual_identity": "Long glass greenhouse with mist rails, wooden benches, hanging baskets, weathered chalk price signs; adjacent gravel parking and compact display area in front of a Main Street storefront.",
+      "story_function": "Primary workplace where daily routines, customer interactions, and the physical reconfiguration of the storefront happen; visible site of threat (survey stakes, contractor flags)."
     },
     {
-      "id": "vault",
-      "name": "Storage Vault & Loading Dock",
+      "id": "propagation_room",
+      "name": "Propagation room",
       "setting_type": "shared_public",
-      "social_domain": "museum logistics",
-      "institution_type": "temperature- and humidity-controlled storage and loading area",
-      "visual_identity": "metal shelving holding labeled flats and crates, narrow aisles, pallet jack, overhead industrial light; outside loading dock shows trucks and courier handoffs.",
-      "story_function": "Where receiving, packing, and transport logistics unfold; a frequent site of visible obstacles (damaged crate, missed pickup)."
+      "social_domain": "horticultural workspace",
+      "institution_type": "potting bench room attached to the greenhouse with heat mats and labeled trays",
+      "visual_identity": "Narrow room with potting benches, seed trays, heat mats, labeled shelving, and a chalkboard schedule; close, intimate textures of soil and trays.",
+      "story_function": "Place for focused, hands-on work and quiet conversations where Mae plans layouts, experiments with compact plant groupings, and mentors Mason."
     },
     {
-      "id": "community_hall",
-      "name": "St. Matthew's Community Hall",
+      "id": "back_office",
+      "name": "Back office / prep area",
       "setting_type": "shared_public",
-      "social_domain": "faith-based community center",
-      "institution_type": "church-run community hall",
-      "visual_identity": "warm wood floors, folding tables with mismatched chairs, bulletin board, shelves with donated fabrics; natural light through frosted windows and a modest kitchen visible in the background.",
-      "story_function": "Where volunteers gather, Pastor Daniel and Grace Mendez mobilize people, and the protagonist learns to coordinate community labor and accept help."
+      "social_domain": "small business operations",
+      "institution_type": "combined office and storage/prep room behind the retail area",
+      "visual_identity": "Cluttered room with ledger/laptop, seed catalogs, cardboard boxes, a second\u2011hand radio, and a coat peg; light from a small window casts rectangle patches on the floor.",
+      "story_function": "Where negotiations are prepared, paperwork is referenced, and where Mae receives phone calls and the cream-colored invitation; an interior staging area for emotional beats."
     },
     {
-      "id": "gallery",
-      "name": "Small Regional Museum Gallery",
+      "id": "main_street",
+      "name": "Main Street storefront",
       "setting_type": "shared_public",
-      "social_domain": "public exhibition space",
-      "institution_type": "museum gallery",
-      "visual_identity": "modular white walls, track lighting, pedestals and wall mounts with discrete labels; a folding reception desk for the opening night.",
-      "story_function": "The final destination for the exhibit installation and the public resolution where community presence and the protagonist's changed posture are visible."
+      "social_domain": "community commerce",
+      "institution_type": "town Main Street with neighboring shops and county survey stakes",
+      "visual_identity": "Narrow sidewalk, neighboring storefronts, survey ribbons and orange flags at the curb, and a compact display of plants against the storefront window.",
+      "story_function": "Public-facing site where contractors stake the lot, neighbors gather, and where Mae's design must function and be defended."
     },
     {
-      "id": "apartment",
-      "name": "Protagonist's Apartment",
-      "setting_type": "private",
-      "social_domain": "personal living space",
-      "institution_type": "small urban apartment",
-      "visual_identity": "compact, tidy one-bedroom with a bookshelf, a worn canvas messenger bag hung by the door, a small nightstand with a closed book, and a simple wooden desk with field notes.",
-      "story_function": "Private place for quiet doubt, decision, and the small rituals that show inner life\u2014where she returns to weigh choices and sleep on them."
+      "id": "farmers_market",
+      "name": "Farmers' market",
+      "setting_type": "shared_public",
+      "social_domain": "community marketplace",
+      "institution_type": "Saturday farmers' market at the town green",
+      "visual_identity": "Canopy tents, folding tables, neighbors milling, chalkboard signs, and fresh produce juxtaposed with Mae's potted displays.",
+      "story_function": "Community hub where Mae solicits signatures, tests compact display ideas, and where Clara helps rally support."
+    },
+    {
+      "id": "customer_yard",
+      "name": "Customer's front yard",
+      "setting_type": "shared_public",
+      "social_domain": "residential consulting",
+      "institution_type": "small-town homeowner's yard where Mae consults on plantings",
+      "visual_identity": "Neat midwestern lawn, picket fence, clay pots on a porch; close personal setting for relationship moments and demonstrations.",
+      "story_function": "Venue for one-on-one persuasion and demonstration of the smaller footprint planting approach; also a place for quiet reckoning."
+    },
+    {
+      "id": "church_hall",
+      "name": "Church fellowship hall",
+      "setting_type": "shared_public",
+      "social_domain": "faith-based community",
+      "institution_type": "local church fellowship hall used for potlucks and community meetings",
+      "visual_identity": "Long folding tables, mismatched chairs, a banner for the brunch, sunlit windows; homey flourishes like paper plates and vases of simple flowers.",
+      "story_function": "A social, semi-official venue where Mae speaks briefly, receives community feedback, and where the brunch becomes a decisive moment to show vulnerability or leadership."
     }
   ],
   "story_beats": [
     {
-      "beat_number": 1,
-      "location_id": "studio",
-      "activity_type": "initial assessment of donated textile group",
-      "setting_logic": "Newly arrived donation is routinely examined in the conservation studio for condition reports before accessioning and exhibition.",
+      "location_id": "greenhouse",
+      "activity_type": "early morning rounds; inspect survey stakes",
+      "setting_logic": "As manager, Mae does a morning walkthrough of plants and checks the lot where county surveyors left flags and stakes overnight.",
       "character_ids": [
         "protagonist"
       ],
-      "visible_action": "Protagonist methodically unwraps a fragile embroidered cloth on the bench under an examination lamp, cataloging with gloved hands and recording notes in her field notebook; she closes a battered accession ledger on a nearby shelf and eyes a calendar with the exhibition opening date circled.",
-      "emotional_turn": "Mixed steadiness \u2014 competent but quietly carrying the deadline; the closed book on the shelf hints at routines she keeps to herself.",
-      "bridge_cue": "closed book on shelf",
-      "narration_anchor": "kept her faith quiet"
+      "visible_action": "Mae kneels between benches, fingers damp soil, notices orange survey ribbons at the greenhouse edge, and slowly lifts a corner of a flagged ribbon to read the contractor's printed note; she freezes, thumb tracing the ribbon.",
+      "emotional_turn": "exposure \u2014 Mae's face tightens as the threat becomes concrete.",
+      "bridge_cue": "",
+      "beat_number": 1
     },
     {
-      "beat_number": 2,
-      "location_id": "vault",
-      "activity_type": "receive and inventory arriving crates from donor family",
-      "setting_logic": "Donor's courier delivers several labeled crates to the museum's loading dock for intake and placement into storage.",
+      "location_id": "propagation_room",
+      "activity_type": "quiet planning with seed trays",
+      "setting_logic": "Mae retreats to experiment with compact arrangements she could display if space is reduced; propagation room is where she tests ideas.",
+      "character_ids": [
+        "protagonist",
+        "mason"
+      ],
+      "visible_action": "Close shot of Mae guiding Mason's hands as they repot a tray into tighter groupings; she draws a small sketch on the chalkboard of a denser display and rubs her thumb over the plan, unease in her posture.",
+      "emotional_turn": "unease \u2014 measured worry while trying to control variables.",
+      "bridge_cue": "",
+      "beat_number": 2
+    },
+    {
+      "location_id": "back_office",
+      "activity_type": "phone calls; pulling the county notice",
+      "setting_logic": "Back office stores mail and notices; Mae checks official paperwork and makes calls from here.",
       "character_ids": [
         "protagonist"
       ],
-      "visible_action": "She signs off on delivery, opens a damaged crate and pulls out soiled padding and a half-tear in a labeled box; while squatting in the harsh dock light she scrolls her phone for the donor's contact and shipment paperwork, face tightening at the unread messages.",
-      "emotional_turn": "Unease grows as physical damage and a looming timeline increase pressure; her scrolling is both search for answers and a private attempt to fix it alone.",
-      "bridge_cue": "scrolling a phone",
-      "narration_anchor": "Every morning she scrolled her phone"
+      "visible_action": "Mae sits at the cluttered desk, opens the county envelope and places a copy beside a seed catalog; she calls Rob and listens, nodding slowly and jotting down a meeting time\u2014recognizing the need to act.",
+      "emotional_turn": "recognition \u2014 a plan seed sprouts in her mind.",
+      "bridge_cue": "",
+      "beat_number": 3
     },
     {
-      "beat_number": 3,
-      "location_id": "studio",
-      "activity_type": "triage treatment and quick stabilization",
-      "setting_logic": "Conservators immediately perform emergency surface cleaning and temporary housings when objects arrive damaged to prevent further deterioration.",
+      "location_id": "main_street",
+      "activity_type": "surveyor visit; neighbor reactions",
+      "setting_logic": "Survey activity is visible on Main Street; neighbors gather to gossip and ask questions of Mae since her shop is affected.",
       "character_ids": [
         "protagonist",
-        "grace_mendez"
+        "clara",
+        "mason"
       ],
-      "visible_action": "Grace Mendez arrives with a small box of family photos and recipe cards; together they pin textiles to temporary boards and apply quick, reversible supports while the protagonist explains each step, speaking in clipped, practical gestures as Grace watches and gently offers memories tied to the cloth.",
-      "emotional_turn": "Exposure and mild connection\u2014she's forced to explain and include someone, allowing a personal stake from the donor side to surface.",
+      "visible_action": "Mae steps onto the sidewalk to speak with an official; Clara stands nearby offering a steadying hand on Mae's arm; Mae gestures at the stakes and points to a compact mock-up Mason holds.",
+      "emotional_turn": "recognition \u2014 Mae becomes more social and starts to show the mock-up idea.",
       "bridge_cue": "",
-      "narration_anchor": "Pastor Daniel stopped her after service"
+      "beat_number": 4
     },
     {
-      "beat_number": 4,
-      "location_id": "community_hall",
-      "activity_type": "meeting with Pastor Daniel and volunteer coordinators",
-      "setting_logic": "The museum reaches out to local community partners for volunteer labor and temporary storage when budgets and timelines are tight.",
+      "location_id": "farmers_market",
+      "activity_type": "market stall demonstration",
+      "setting_logic": "Mae brings a condensed display to the Saturday market to test public reaction and solicit signatures for a revision request.",
       "character_ids": [
         "protagonist",
-        "rev_daniel",
-        "grace_mendez"
+        "mason",
+        "clara"
       ],
-      "visible_action": "At a folding-table meeting, Pastor Daniel offers the hall as a staging area and a network of volunteers; the protagonist listens closely but keeps arms folded, listing exact conservation constraints while the volunteers exchange looks\u2014her precise rules clash with their willing hands.",
-      "emotional_turn": "Rupture between procedural certainty and communal goodwill\u2014the protagonist's reluctance to loosen control is visible in guarded posture.",
+      "visible_action": "Mae actively rearranges pots into a tighter tiered display under a canopy while Mason hands flyers; customers pause, some sign a petition; Mae hesitates when an older customer questions whether smaller will feel welcoming.",
+      "emotional_turn": "exposure \u2014 mixed: public scrutiny but some positive responses.",
       "bridge_cue": "",
-      "narration_anchor": "'He's asking for your whole week.'"
+      "beat_number": 5
     },
     {
-      "beat_number": 5,
-      "location_id": "vault",
-      "activity_type": "logistics setback: missed courier pickup and funding email",
-      "setting_logic": "Courier windows are scheduled from the loading dock; funding shortfalls and missed pickups create real barriers to scheduled transport.",
+      "location_id": "customer_yard",
+      "activity_type": "residential consult to demonstrate compact plantings",
+      "setting_logic": "Mae's work includes yard consults; she brings living proof the smaller footprint can be attractive and durable.",
+      "character_ids": [
+        "protagonist",
+        "clara"
+      ],
+      "visible_action": "Close framing on Mae's hands as she repositions a potted grouping on a porch step while Clara watches; Mae explains placement with calm gestures, Clara's nod encourages Mae's confidence.",
+      "emotional_turn": "recognition \u2014 small successes reinforce Mae's plan.",
+      "bridge_cue": "",
+      "beat_number": 6
+    },
+    {
+      "location_id": "back_office",
+      "activity_type": "receives a church brunch invitation to speak",
+      "setting_logic": "Clara slips Mae a community invitation in the back office after a market conversation; the back office is where Mae sifts community outreach items.",
+      "character_ids": [
+        "protagonist",
+        "clara"
+      ],
+      "visible_action": "Mae opens an invitation handed by Clara and reads 'Community Brunch \u2014 Saturday'; she holds it at chest level, considering whether to speak publicly.",
+      "emotional_turn": "choice \u2014 Mae weighs staying private or accepting a public role.",
+      "bridge_cue": "",
+      "beat_number": 7
+    },
+    {
+      "location_id": "propagation_room",
+      "activity_type": "late-night tinkering with display prototypes",
+      "setting_logic": "Mae works alone after hours in the propagation room to refine her compact display, trying different heights and pot groupings.",
       "character_ids": [
         "protagonist"
       ],
-      "visible_action": "Alone in the vault, she watches a scheduler on a screen mark 'missed pickup'; she opens an email from the museum director indicating a grant shortfall and stares at the empty pallet where crates should be loaded, fingers rubbing the pale scar on her right index pad.",
-      "emotional_turn": "Challenge and constriction\u2014threat of failure makes her jaw set; her internal tendency to carry everything begins to feel like a risk.",
+      "visible_action": "Mae sits close to the bench, comparing two trays and marking one with chalk; her expression mixes pride and doubt as the camera tightens on her face.",
+      "emotional_turn": "recognition \u2014 she sees the design beginning to work.",
       "bridge_cue": "",
-      "narration_anchor": "The words stayed with Maria all week."
+      "beat_number": 8
     },
     {
-      "beat_number": 6,
-      "location_id": "apartment",
-      "activity_type": "isolated night: avoidance and withdrawal",
-      "setting_logic": "After a long day of triage and bureaucracy, staff commonly retreat home to think through options alone.",
+      "location_id": "greenhouse",
+      "activity_type": "repairing old shelving and labels to fit new plan",
+      "setting_logic": "To install denser displays, Mae must adjust physical fixtures in the greenhouse and shop area.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "rob"
+      ],
+      "visible_action": "Close shots of Mae's hands carefully retrieving and straightening fragile plant labels as Mason holds the bench steady and Rob measures for a new shelf placement.",
+      "emotional_turn": "stability \u2014 focused, practical work stabilizes Mae's mood.",
+      "bridge_cue": "",
+      "beat_number": 9
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "final tightening of a display before a contractor meeting",
+      "setting_logic": "Contractors will inspect the revised footprint; Mae makes final small repairs to prove the setup is sound.",
+      "character_ids": [
+        "protagonist",
+        "rob"
+      ],
+      "visible_action": "Mae crouches close and uses a wrench to check a bench's bolts while Rob steadies it; her jaw clenches as she tests its weight and alignment.",
+      "emotional_turn": "exposure \u2014 the practical test reveals vulnerability.",
+      "bridge_cue": "",
+      "beat_number": 10
+    },
+    {
+      "location_id": "back_office",
+      "activity_type": "receives discouraging news; budget shortfall",
+      "setting_logic": "Back office is where financials and grant/permit letters are kept; Mae confronts the numbers here.",
       "character_ids": [
         "protagonist"
       ],
-      "visible_action": "She sits on the edge of her bed, phone face-up on the duvet with multiple missed call indicators; she stares, then turns it face down and moves through a stack of sample mounts, leaving voicemail notifications flashing unanswered\u2014she buries her head in her hands.",
-      "emotional_turn": "Low point\u2014she retreats into self-reliance and avoidance, closing herself off instead of reaching out.",
+      "visible_action": "Mae flips through invoices and a supplier notice; close-up on her face as color drains and she slowly pushes papers away, feeling isolated.",
+      "emotional_turn": "rupture \u2014 a financial blow threatens the plan.",
       "bridge_cue": "",
-      "narration_anchor": "short with her coworkers"
+      "beat_number": 11
     },
     {
-      "beat_number": 7,
-      "location_id": "apartment",
-      "activity_type": "quiet decision to try a different approach",
-      "setting_logic": "Personal reflection at home is the believable place for a professional to reconsider leadership style and choose to reach out.",
+      "location_id": "main_street",
+      "activity_type": "confrontation with a worried neighbor about loss of space",
+      "setting_logic": "Neighbors gather near the flagged curb; tension rises as the town reacts to visible changes.",
+      "character_ids": [
+        "protagonist",
+        "clara"
+      ],
+      "visible_action": "Mae stands by the storefront watching a neighbor gesticulate about disruption; she maintains a small, defensive posture, offering a constrained explanation while inwardly shaken.",
+      "emotional_turn": "stability \u2014 Mae holds composure but feels pressured.",
+      "bridge_cue": "",
+      "beat_number": 12
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "private reflection among plants",
+      "setting_logic": "The greenhouse is Mae's refuge; she goes there to think and physically touch living things when overwhelmed.",
       "character_ids": [
         "protagonist"
       ],
-      "visible_action": "She pads to the small nightstand, opens a drawer and places a worn closed book on it\u2014an old field manual she keeps\u2014then takes a breath, opens her messenger bag, and rehearses a short list of tasks she could hand off.",
-      "emotional_turn": "Choice \u2014 a tentative opening from self-reliance toward connection; placing the book becomes a ritualized marker of decision.",
-      "bridge_cue": "book placed on nightstand",
-      "narration_anchor": "moved her Bible from the shelf to her nightstand"
-    },
-    {
-      "beat_number": 8,
-      "location_id": "community_hall",
-      "activity_type": "mobilizing volunteers and delegating tasks",
-      "setting_logic": "With the hall secured, the protagonist calls contacts to coordinate volunteer shifts, transport, and simple conservation tasks that can be supervised.",
-      "character_ids": [
-        "protagonist",
-        "rev_daniel",
-        "grace_mendez"
-      ],
-      "visible_action": "She stands at a whiteboard and, phone held to her ear, speaks briskly into it\u2014calling the courier, confirming a truck time, and assigning volunteers to plying, measuring, and packing duties; Pastor Daniel listens and nods while Grace Mendez marks names on a roster.",
-      "emotional_turn": "Effort and growing agency\u2014the protagonist actively shares responsibility and uses the phone to coordinate rather than to fix alone.",
-      "bridge_cue": "holding a phone to her ear",
-      "narration_anchor": "She finally called Grace back"
-    },
-    {
-      "beat_number": 9,
-      "location_id": "vault",
-      "activity_type": "coordinated packing and supervised transport",
-      "setting_logic": "Volunteers and museum staff must work together in the loading area to crate the stabilized textiles properly for the final move to the gallery.",
-      "character_ids": [
-        "protagonist",
-        "grace_mendez"
-      ],
-      "visible_action": "Under her direction, volunteers place padded supports, label flats, and strap crates onto a pallet jack; she kneels, adjusting a corner support and then steps back to let a volunteer tighten straps; a courier arrives and exchanges paperwork that Grace Mendez signs with a steady hand.",
-      "emotional_turn": "Reconnection\u2014trust is visible in handing off physical tasks and seeing others carefully execute them.",
+      "visible_action": "Mae cradles a small pot to her chest and exhales, eyes downcast; she straightens her cardigan and stares at the mock-up display, anxiety returning.",
+      "emotional_turn": "exposure \u2014 fear resurfaces in private.",
       "bridge_cue": "",
-      "narration_anchor": "they talked for an hour"
+      "beat_number": 13
     },
     {
-      "beat_number": 10,
-      "location_id": "gallery",
-      "activity_type": "installation and community walkthrough",
-      "setting_logic": "Final installation requires museum staff to supervise placement and donors and partners to review the display before opening.",
+      "location_id": "propagation_room",
+      "activity_type": "tension-filled prep before the brunch speech",
+      "setting_logic": "Mae prepares notes and a few demonstration plants here to bring to the church brunch.",
       "character_ids": [
         "protagonist",
-        "rev_daniel",
-        "grace_mendez"
+        "mason"
       ],
-      "visible_action": "She steps back from the mounted textile as Pastor Daniel and Grace Mendez walk along the panels; a soft, private smile crosses her face as she watches a volunteer gently adjust a mount exactly as she'd shown earlier.",
-      "emotional_turn": "Recognition and warmth\u2014she registers that the work is no longer hers alone and allows herself to take gentle pride; she smiles openly.",
-      "bridge_cue": "smiling expression",
-      "narration_anchor": "Pastor Daniel smiled when Maria told him"
-    },
-    {
-      "beat_number": 11,
-      "location_id": "gallery",
-      "activity_type": "opening reception and community presence",
-      "setting_logic": "The community and museum hold a modest reception for the new exhibit; volunteers, donors, and staff attend to celebrate the opening.",
-      "character_ids": [
-        "protagonist",
-        "rev_daniel",
-        "grace_mendez"
-      ],
-      "visible_action": "Crowd shots: volunteers chatting with visitors, the protagonist greeting a donor family and exchanging a brief, warm hand-squeeze with Grace Mendez; camera varies from medium crowd frames to a close, steady profile of the protagonist watching people engage with the textiles she conserved.",
-      "emotional_turn": "Arrival\u2014the exhibition opens on time and she experiences communal accomplishment rather than solitary achievement.",
+      "visible_action": "Mae composes a short outline on scrap paper, fingers hesitating between lines; Mason offers a steadying nod and arranges demonstration pots into a tote.",
+      "emotional_turn": "unease \u2014 internal doubt before a public moment.",
       "bridge_cue": "",
-      "narration_anchor": "first of many"
+      "beat_number": 14
     },
     {
-      "beat_number": 12,
-      "location_id": "apartment",
-      "activity_type": "post-opening reflection and reached-out relationships",
-      "setting_logic": "After the opening, professionals often return home to process and integrate the experience with personal life.",
+      "location_id": "church_hall",
+      "activity_type": "community brunch seating; Mae sits alone before speaking",
+      "setting_logic": "The church hall hosts the brunch; Mae arrives early to set up and sits in the congregation before the public moment.",
+      "character_ids": [
+        "protagonist",
+        "clara"
+      ],
+      "visible_action": "Wide shot of the hall as people chat; Mae sits quietly clutching her tote of demo plants and rehearsing under her breath, face tight with exposure.",
+      "emotional_turn": "exposure \u2014 public vulnerability is palpable.",
+      "bridge_cue": "",
+      "beat_number": 15
+    },
+    {
+      "location_id": "church_hall",
+      "activity_type": "short speech and Q&A",
+      "setting_logic": "At the brunch community members ask questions; Mae must explain and persuade in a friendly setting.",
+      "character_ids": [
+        "protagonist",
+        "clara",
+        "mason"
+      ],
+      "visible_action": "Close shot of Mae's face as she answers a pointed question; hands tremble slightly while she sets a demo pot on the table to illustrate scale.",
+      "emotional_turn": "exposure \u2014 the Q&A presses her but yields some understanding.",
+      "bridge_cue": "",
+      "beat_number": 16
+    },
+    {
+      "location_id": "main_street",
+      "activity_type": "late-night drive after a discouraging meeting",
+      "setting_logic": "Mae leaves a tense evening meeting and drives home along Main Street; the road and storefronts are visible in headlights.",
       "character_ids": [
         "protagonist"
       ],
-      "visible_action": "Late-night in her apartment: she reaches across to the nightstand, her hand finding the same closed book and pausing there, then opens a simple thank-you message draft on her phone addressed to Pastor Daniel and Grace Mendez.",
-      "emotional_turn": "Reconnection inward \u2014 she honors relationships with a deliberate gesture of thanks and restored humility; she reaches for the book as a grounding object.",
-      "bridge_cue": "reaching hand for book",
-      "narration_anchor": "reaching for the Bible before the phone"
+      "visible_action": "Tight close-up of Mae's hands on the steering wheel; a permit denial sits on the passenger seat. Headlights recede\u2014she arrives home after the long night, shoulders slumped.",
+      "emotional_turn": "low_point \u2014 she is emotionally collapsed and discouraged.",
+      "bridge_cue": "",
+      "beat_number": 17
     },
     {
-      "beat_number": 13,
-      "location_id": "studio",
-      "activity_type": "calm return to studio and steady stewardship",
-      "setting_logic": "With the show running, the conservator resumes regular studio work and records final treatment notes for the archive.",
+      "location_id": "greenhouse",
+      "activity_type": "late-night on the potting bench; brief rest on a narrow cot",
+      "setting_logic": "Mae occasionally naps on a small cot in the greenhouse during long days; it's a familiar, private place for her to process the night.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Mae sits at the edge of the cot, smoothing soil from her hands and mouthing a quiet prayer; close framing shows her taut jaw and the weight of the night.",
+      "emotional_turn": "exposure \u2014 private fear voiced silently.",
+      "bridge_cue": "",
+      "beat_number": 18
+    },
+    {
+      "location_id": "back_office",
+      "activity_type": "considers changing appearance for a public moment",
+      "setting_logic": "Mae keeps a simple 'good dress' hung in the back office for town events; she considers whether to present herself differently for influence.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Mae hesitates before the coat peg where a neatly pressed, good dress hangs; she touches the fabric, inhales, then leaves it; the gesture shows her uncertainty about whether appearance will change outcomes.",
+      "emotional_turn": "exposure \u2014 a symbolic but unresolved choice about presentation.",
+      "bridge_cue": "",
+      "beat_number": 19
+    },
+    {
+      "location_id": "propagation_room",
+      "activity_type": "final prototype work before the planner meeting",
+      "setting_logic": "Mae refines the last demonstration pieces the night before the planner review in the propagation room.",
       "character_ids": [
         "protagonist",
-        "grace_mendez"
+        "mason",
+        "rob"
       ],
-      "visible_action": "Morning light through the studio window as she places the same closed book beside a pillow on the bench used for object rest; Grace Mendez drops by with coffee, they share a brief laugh, and the protagonist slides on her canvas conservation apron and begins a new, measured mending routine.",
-      "emotional_turn": "Arrival and steady connection\u2014she is more open, collaborative, and at peace; the book beside a pillow signals a cycle completed with new companionship.",
-      "bridge_cue": "book beside a pillow",
-      "narration_anchor": "felt less like a rule and more like coming home"
+      "visible_action": "Mae methodically ties root balls with twine and arranges compact tiers while Mason loads a porta-rack; Rob checks bolts and maps measurements\u2014Mae steadies her breath and nods to them.",
+      "emotional_turn": "stability \u2014 careful preparation steadies the group.",
+      "bridge_cue": "",
+      "beat_number": 20
+    },
+    {
+      "location_id": "church_hall",
+      "activity_type": "decision to accept a community role and speak at the petition handoff",
+      "setting_logic": "Mae agreed earlier to a short public turn at the brunch; this is where she accepts the role to present community support to the planner.",
+      "character_ids": [
+        "protagonist",
+        "clara",
+        "mason"
+      ],
+      "visible_action": "Mae stands, places the invitation back into Clara's hands as a sign she will speak at the petition handoff; she breathes visibly and gathers her notes.",
+      "emotional_turn": "choice \u2014 she actively chooses to represent the garden center.",
+      "bridge_cue": "",
+      "beat_number": 21
+    },
+    {
+      "location_id": "main_street",
+      "activity_type": "meeting with the planner at the storefront",
+      "setting_logic": "The planner meets community members on site to judge the impact and accept alternatives; the storefront is the logical place for inspection.",
+      "character_ids": [
+        "protagonist",
+        "planner",
+        "rob"
+      ],
+      "visible_action": "Close-up on Mae as the planner states budget constraints; Mae's fingers tighten around a petition; an overhead shot shows the compressed mock-up against the proposed road line\u2014the planner cites a percentage of frontage loss and Mae visibly flinches at the stark figure.",
+      "emotional_turn": "rupture \u2014 institutional figures and percentages force her to confront trade-offs.",
+      "bridge_cue": "",
+      "beat_number": 22
+    },
+    {
+      "location_id": "church_hall",
+      "activity_type": "public handoff of petition and short pitch",
+      "setting_logic": "Community petitions are often ceremonially presented in a neutral community space; the hall offers witnesses and moral weight.",
+      "character_ids": [
+        "protagonist",
+        "clara",
+        "mason",
+        "planner"
+      ],
+      "visible_action": "Mae stands at a folding table and, with Clara beside her, hands the planner the petition; medium close shows Mae's small, steady speech and hands that do not shake\u2014she meets eyes with neighbors.",
+      "emotional_turn": "exposure \u2014 vulnerable public act with community support.",
+      "bridge_cue": "",
+      "beat_number": 23
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "reaction to planner's conditional compromise",
+      "setting_logic": "Planner agrees to preserve part of the frontage if Mae's compact design and community backing are acceptable; they return to the greenhouse to inspect durability.",
+      "character_ids": [
+        "protagonist",
+        "planner",
+        "rob"
+      ],
+      "visible_action": "Planner outlines conditional approval; Mae exhales, shoulders relax; she steps forward to demonstrate a bench's load-bearing and invites the planner to try lifting a pot\u2014an exchange that becomes collaborative.",
+      "emotional_turn": "exposure \u2014 mixed relief and remaining work to do.",
+      "bridge_cue": "",
+      "beat_number": 24
+    },
+    {
+      "location_id": "propagation_room",
+      "activity_type": "emotional release after the decision",
+      "setting_logic": "After the meeting, the quieter propagation room is where the team decompresses and shows emotion.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "clara"
+      ],
+      "visible_action": "Mae lets tears slip free, her body loosening; Mason steps forward and wraps an arm around her; Clara dabs Mae's cheek with a napkin\u2014close-ups show the release.",
+      "emotional_turn": "recognition \u2014 relief surfaces and the team bonds.",
+      "bridge_cue": "",
+      "beat_number": 25
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "organizing community build day",
+      "setting_logic": "With conditional approval, Mae leads volunteers to install the compact display and new benches across the greenhouse and storefront.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "rob",
+        "clara"
+      ],
+      "visible_action": "Mae directs the crew, hands-on: she kneels to secure a lower shelf, instructs volunteers, and tests placements with satisfied nods as greenery fills the new footprint.",
+      "emotional_turn": "choice \u2014 active, empowered leadership and tangible effort.",
+      "bridge_cue": "",
+      "beat_number": 26
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "preparing for the first busy morning",
+      "setting_logic": "After the build, Mae prepares to welcome customers by airing out the space and showcasing plants.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "clara"
+      ],
+      "visible_action": "Mae moves through the sunroom, unlatching windows and inviting a breeze to circulate as tendrils lift; the group exchanges pleased smiles.",
+      "emotional_turn": "effort \u2014 coordinated action refreshes the space.",
+      "bridge_cue": "",
+      "beat_number": 27
+    },
+    {
+      "location_id": "back_office",
+      "activity_type": "preparing a display dress and presentation for the grand re-open",
+      "setting_logic": "Mae readies a modest presentation area and a 'good dress' to mark the formal reopening and community ceremony.",
+      "character_ids": [
+        "protagonist",
+        "clara"
+      ],
+      "visible_action": "Mae takes the hung good dress and, with quiet ceremony, places it nearby as a symbol of honoring the occasion; she pauses, then returns to arranging seed packets and a small placard.",
+      "emotional_turn": "choice \u2014 Mae embraces a small ritual of renewal.",
+      "bridge_cue": "",
+      "beat_number": 28
+    },
+    {
+      "location_id": "main_street",
+      "activity_type": "grand re-opening with community and neighbors arriving",
+      "setting_logic": "New storefront layout opens to Main Street; neighbors, customers, and local press gather for the reopening.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "clara",
+        "rob"
+      ],
+      "visible_action": "Arrival shots: a neighbor places a warm cup on the counter; a small bouquet of fresh flowers is set at the register; Mae straightens and meets neighbors with calm, grateful expressions.",
+      "emotional_turn": "arrival \u2014 small ritual gestures mark restored purpose.",
+      "bridge_cue": "",
+      "beat_number": 29
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "quiet conversation with Clara after the opening",
+      "setting_logic": "After the bustle, Clara and Mae step into the greenhouse's mist-lit aisle for a personal exchange.",
+      "character_ids": [
+        "protagonist",
+        "clara"
+      ],
+      "visible_action": "Mae leans close and thanks Clara in a low voice; close framing on their faces and Mae's softened posture shows internal change.",
+      "emotional_turn": "recognition \u2014 Mae acknowledges communal support and her changed inner stance.",
+      "bridge_cue": "",
+      "beat_number": 30
+    },
+    {
+      "location_id": "main_street",
+      "activity_type": "regular day as customers browse",
+      "setting_logic": "With the plan in place, the storefront operates under the new compact arrangement and serves regular customers.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "clara",
+        "rob"
+      ],
+      "visible_action": "Mae stands behind the counter, hands clasped over a ledger; customers browse and ask questions; she answers with calm, purposeful gestures\u2014her posture now open and confident.",
+      "emotional_turn": "arrival \u2014 steady, communal functioning resumes.",
+      "bridge_cue": "",
+      "beat_number": 31
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "closing shot; Mae plants seasonal seedlings with her team",
+      "setting_logic": "End-of-day ritual in the greenhouse where planting symbolizes renewal and stewardship.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "clara",
+        "rob"
+      ],
+      "visible_action": "Mae kneels among new seedlings, planting with deliberate, sure movements as Mason and Rob follow her lead; Clara places a small vase of unpressed flowers beside them\u2014Mae's face is calm and purposeful.",
+      "emotional_turn": "arrival \u2014 full reconnection to work and community, purposeful action realized.",
+      "bridge_cue": "",
+      "beat_number": 32
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "very close final detail shot",
+      "setting_logic": "A final intimate image anchors the transformation in tactile terms inside Mae's workplace.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Extreme close-up on Mae's callused hands pressing soil around a tiny seedling; she pauses, exhales, and lets a soft smile surface.",
+      "emotional_turn": "arrival \u2014 quiet satisfaction and renewed purpose.",
+      "bridge_cue": "",
+      "beat_number": 33
+    },
+    {
+      "location_id": "main_street",
+      "activity_type": "epilogue frame with community presence",
+      "setting_logic": "A concluding wide establishes the healed relationship between the shop and the street; the community now visibly supports the center.",
+      "character_ids": [
+        "protagonist",
+        "clara",
+        "mason",
+        "rob"
+      ],
+      "visible_action": "Wide shot of the storefront with neighbors chatting, a small ribbon banner still flutters; Mae stands in the doorway, hands at her sides, watching life pass\u2014purposeful and steady.",
+      "emotional_turn": "arrival \u2014 communal normalcy and Mae's transformed role.",
+      "bridge_cue": "",
+      "beat_number": 34
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "final micro-beat of private prayerful gesture",
+      "setting_logic": "The greenhouse is Mae's private spiritual space; she offers a quiet, non-proselytizing gesture of thanks that reads in body language.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close shot of Mae folding her hands briefly over the soil-streaked surface, then releasing them to continue work\u2014no words, only a composed expression.",
+      "emotional_turn": "recognition \u2014 inward grounding completes the arc.",
+      "bridge_cue": "",
+      "beat_number": 35
+    },
+    {
+      "location_id": "greenhouse",
+      "activity_type": "final steady tableau",
+      "setting_logic": "A calm final frame to close the film where the protagonist's work anchors community life.",
+      "character_ids": [
+        "protagonist",
+        "mason",
+        "clara",
+        "rob"
+      ],
+      "visible_action": "Medium still tableau of Mae and her small team organizing plants on a sunlit bench; the camera holds as they exchange a small, satisfied look.",
+      "emotional_turn": "arrival \u2014 the team and the garden center stand rooted and secure.",
+      "bridge_cue": "",
+      "beat_number": 36
+    },
+    {
+      "location_id": "back_office",
+      "activity_type": "postscript visual of a kept invitation and petition",
+      "setting_logic": "A small, domestic archival touch in the back office shows what Mae preserved from the struggle.",
+      "character_ids": [
+        "protagonist"
+      ],
+      "visible_action": "Close shot of the invitation tucked inside the bound petition on the office shelf next to seed catalogs\u2014a quiet memorial to the choice she made.",
+      "emotional_turn": "arrival \u2014 tangible evidence of change and community trust.",
+      "bridge_cue": "",
+      "beat_number": 37
     }
   ],
   "emotional_spine": {
     "core_transformation": {
-      "from_state": "self_reliance",
-      "to_state": "connection"
+      "from_state": "fear",
+      "to_state": "purposeful_action"
     },
     "emotional_beats": [
       {
-        "beat_number": 1,
-        "narration_anchor": "kept her faith quiet",
-        "story_pressure": "stability",
-        "emotional_valence": "mixed",
-        "agency": 2,
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 1,
         "social_openness": 1,
         "tempo": "still",
         "camera_distance": "close",
         "bridge_cues": [
           {
-            "cue": "closed book on shelf",
-            "cue_type": "material_or_texture",
-            "evidence": "kept her faith quiet, tucked away like a secret"
+            "cue": "whisper",
+            "cue_type": "physical_gesture",
+            "evidence": "\"I did everything right,\" she whispered to the empty room."
           }
-        ]
+        ],
+        "beat_number": 1
       },
       {
-        "beat_number": 2,
-        "narration_anchor": "Every morning she scrolled her phone",
         "story_pressure": "unease",
         "emotional_valence": "negative",
-        "agency": 3,
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 2
+      },
+      {
+        "story_pressure": "recognition",
+        "emotional_valence": "positive",
+        "agency": 2,
         "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [],
+        "beat_number": 3
+      },
+      {
+        "story_pressure": "recognition",
+        "emotional_valence": "positive",
+        "agency": 2,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [],
+        "beat_number": 4
+      },
+      {
+        "story_pressure": "exposure",
+        "emotional_valence": "mixed",
+        "agency": 1,
+        "social_openness": 2,
+        "tempo": "active",
+        "camera_distance": "medium",
+        "bridge_cues": [],
+        "beat_number": 5
+      },
+      {
+        "story_pressure": "recognition",
+        "emotional_valence": "positive",
+        "agency": 2,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 6
+      },
+      {
+        "story_pressure": "choice",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "cream-colored invitation",
+            "cue_type": "material_or_texture",
+            "evidence": "Then the invitation came\u2014cream-colored with gold letters."
+          }
+        ],
+        "beat_number": 7
+      },
+      {
+        "story_pressure": "recognition",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 8
+      },
+      {
+        "story_pressure": "stability",
+        "emotional_valence": "positive",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "medium",
+        "bridge_cues": [],
+        "beat_number": 9
+      },
+      {
+        "story_pressure": "stability",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
         "tempo": "measured",
         "camera_distance": "close",
         "bridge_cues": [
           {
-            "cue": "scrolling a phone",
+            "cue": "wooden presses",
             "cue_type": "tool",
-            "evidence": "Every morning she scrolled her phone"
+            "evidence": "preserving wildflowers in heavy wooden presses."
+          },
+          {
+            "cue": "silver tweezers",
+            "cue_type": "tool",
+            "evidence": "She would arrange the delicate petals with silver tweezers,"
           }
-        ]
+        ],
+        "beat_number": 10
       },
       {
-        "beat_number": 3,
-        "narration_anchor": "Pastor Daniel stopped her after service",
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "tightening the screws",
+            "cue_type": "physical_gesture",
+            "evidence": "tightening the screws to keep them still, frozen in time."
+          }
+        ],
+        "beat_number": 11
+      },
+      {
+        "story_pressure": "rupture",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 12
+      },
+      {
+        "story_pressure": "stability",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "good dress in the closet",
+            "cue_type": "garment_action",
+            "evidence": "she kept her good dress in the closet with the tags still on,"
+          }
+        ],
+        "beat_number": 13
+      },
+      {
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 14
+      },
+      {
+        "story_pressure": "unease",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 15
+      },
+      {
+        "story_pressure": "choice",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 2,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "cream-colored invitation",
+            "cue_type": "material_or_texture",
+            "evidence": "Then the invitation came\u2014cream-colored with gold letters."
+          }
+        ],
+        "beat_number": 16
+      },
+      {
+        "story_pressure": "rupture",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "Fifty",
+            "cue_type": "material_or_texture",
+            "evidence": "Fifty. The number felt like a door swinging shut."
+          }
+        ],
+        "beat_number": 17
+      },
+      {
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "wide",
+        "bridge_cues": [
+          {
+            "cue": "third row, on the aisle",
+            "cue_type": "material_or_texture",
+            "evidence": "At the wedding, Ellen sat in the third row, on the aisle,"
+          }
+        ],
+        "beat_number": 18
+      },
+      {
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 19
+      },
+      {
+        "story_pressure": "low_point",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "drove home in the dark",
+            "cue_type": "material_or_texture",
+            "evidence": "She drove home in the dark."
+          }
+        ],
+        "beat_number": 20
+      },
+      {
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "edge of her bed",
+            "cue_type": "material_or_texture",
+            "evidence": "Sitting on the edge of her bed in her good dress,"
+          },
+          {
+            "cue": "whisper",
+            "cue_type": "physical_gesture",
+            "evidence": "\"Lord,\" she whispered."
+          }
+        ],
+        "beat_number": 21
+      },
+      {
+        "story_pressure": "exposure",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "good dress",
+            "cue_type": "garment_action",
+            "evidence": "Only the quiet weight of a dress she had saved for nothing."
+          }
+        ],
+        "beat_number": 22
+      },
+      {
+        "story_pressure": "stability",
+        "emotional_valence": "negative",
+        "agency": 1,
+        "social_openness": 1,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "wedding brunch",
+            "cue_type": "material_or_texture",
+            "evidence": "The next morning, at the wedding brunch, Ellen sat alone at a corner table."
+          }
+        ],
+        "beat_number": 23
+      },
+      {
+        "story_pressure": "recognition",
+        "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [],
+        "beat_number": 24
+      },
+      {
         "story_pressure": "exposure",
         "emotional_valence": "mixed",
         "agency": 2,
         "social_openness": 3,
         "tempo": "measured",
-        "camera_distance": "medium",
-        "bridge_cues": []
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 25
       },
       {
-        "beat_number": 4,
-        "narration_anchor": "'He's asking for your whole week.'",
         "story_pressure": "rupture",
         "emotional_valence": "mixed",
+        "agency": 2,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 26
+      },
+      {
+        "story_pressure": "recognition",
+        "emotional_valence": "positive",
         "agency": 3,
         "social_openness": 3,
-        "tempo": "still",
-        "camera_distance": "close",
-        "bridge_cues": []
-      },
-      {
-        "beat_number": 5,
-        "narration_anchor": "The words stayed with Maria all week.",
-        "story_pressure": "challenge",
-        "emotional_valence": "negative",
-        "agency": 2,
-        "social_openness": 2,
         "tempo": "measured",
         "camera_distance": "close",
-        "bridge_cues": []
+        "bridge_cues": [
+          {
+            "cue": "weeping",
+            "cue_type": "physical_gesture",
+            "evidence": "Ellen wept, but it was a different kind of weeping now."
+          }
+        ],
+        "beat_number": 27
       },
       {
-        "beat_number": 6,
-        "narration_anchor": "short with her coworkers",
-        "story_pressure": "low_point",
-        "emotional_valence": "negative",
-        "agency": 2,
-        "social_openness": 1,
+        "story_pressure": "recognition",
+        "emotional_valence": "positive",
+        "agency": 3,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 28
+      },
+      {
+        "story_pressure": "choice",
+        "emotional_valence": "positive",
+        "agency": 3,
+        "social_openness": 3,
         "tempo": "active",
         "camera_distance": "medium",
         "bridge_cues": [
           {
-            "cue": "ignoring incoming calls",
+            "cue": "got down on her knees",
             "cue_type": "physical_gesture",
-            "evidence": "avoiding calls from her sister"
-          },
-          {
-            "cue": "unanswered voicemail tone",
-            "cue_type": "material_or_texture",
-            "evidence": "Grace left a third voicemail that went unanswered"
+            "evidence": "She got down on her knees and prayed her truest prayer:"
           }
-        ]
+        ],
+        "beat_number": 29
       },
       {
-        "beat_number": 7,
-        "narration_anchor": "moved her Bible from the shelf to her nightstand",
-        "story_pressure": "choice",
-        "emotional_valence": "mixed",
-        "agency": 5,
-        "social_openness": 4,
-        "tempo": "measured",
-        "camera_distance": "close",
-        "bridge_cues": [
-          {
-            "cue": "book placed on nightstand",
-            "cue_type": "material_or_texture",
-            "evidence": "moved her Bible from the shelf to her nightstand"
-          }
-        ]
-      },
-      {
-        "beat_number": 8,
-        "narration_anchor": "She finally called Grace back",
         "story_pressure": "effort",
         "emotional_valence": "positive",
-        "agency": 5,
-        "social_openness": 5,
+        "agency": 3,
+        "social_openness": 3,
+        "tempo": "measured",
+        "camera_distance": "medium",
+        "bridge_cues": [
+          {
+            "cue": "opened the sunroom windows",
+            "cue_type": "physical_gesture",
+            "evidence": "She opened the sunroom windows, letting the warm breeze scatter the dry leaves."
+          }
+        ],
+        "beat_number": 30
+      },
+      {
+        "story_pressure": "choice",
+        "emotional_valence": "positive",
+        "agency": 3,
+        "social_openness": 3,
         "tempo": "active",
         "camera_distance": "medium",
         "bridge_cues": [
           {
-            "cue": "holding a phone to her ear",
-            "cue_type": "physical_gesture",
-            "evidence": "She finally called Grace back"
+            "cue": "hung her good dress",
+            "cue_type": "garment_action",
+            "evidence": "She hung her good dress where she could wear it on any ordinary Tuesday."
           }
-        ]
+        ],
+        "beat_number": 31
       },
       {
-        "beat_number": 9,
-        "narration_anchor": "they talked for an hour",
         "story_pressure": "reconnection",
         "emotional_valence": "positive",
         "agency": 4,
-        "social_openness": 5,
-        "tempo": "measured",
+        "social_openness": 4,
+        "tempo": "active",
         "camera_distance": "medium",
-        "bridge_cues": []
+        "bridge_cues": [],
+        "beat_number": 32
       },
       {
-        "beat_number": 10,
-        "narration_anchor": "Pastor Daniel smiled when Maria told him",
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 4,
+        "social_openness": 4,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [
+          {
+            "cue": "cup of coffee",
+            "cue_type": "material_or_texture",
+            "evidence": "Ellen sat at her kitchen table with a cup of coffee."
+          },
+          {
+            "cue": "fresh, unpressed flowers",
+            "cue_type": "material_or_texture",
+            "evidence": "She looked at the fresh, unpressed flowers sitting in the morning light."
+          }
+        ],
+        "beat_number": 33
+      },
+      {
         "story_pressure": "recognition",
         "emotional_valence": "positive",
         "agency": 4,
-        "social_openness": 5,
-        "tempo": "still",
-        "camera_distance": "medium",
-        "bridge_cues": [
-          {
-            "cue": "smiling expression",
-            "cue_type": "physical_gesture",
-            "evidence": "Pastor Daniel smiled when Maria told him"
-          }
-        ]
-      },
-      {
-        "beat_number": 11,
-        "narration_anchor": "first of many",
-        "story_pressure": "arrival",
-        "emotional_valence": "positive",
-        "agency": 5,
-        "social_openness": 5,
-        "tempo": "measured",
-        "camera_distance": "varied",
-        "bridge_cues": []
-      },
-      {
-        "beat_number": 12,
-        "narration_anchor": "reaching for the Bible before the phone",
-        "story_pressure": "reconnection",
-        "emotional_valence": "positive",
-        "agency": 5,
-        "social_openness": 5,
+        "social_openness": 4,
         "tempo": "still",
         "camera_distance": "close",
         "bridge_cues": [
           {
-            "cue": "reaching hand for book",
+            "cue": "whisper",
             "cue_type": "physical_gesture",
-            "evidence": "caught herself reaching for the Bible before the phone"
+            "evidence": "\"You never forgot me,\" she whispered, smiling."
           }
-        ]
+        ],
+        "beat_number": 34
       },
       {
-        "beat_number": 13,
-        "narration_anchor": "felt less like a rule and more like coming home",
         "story_pressure": "arrival",
         "emotional_valence": "positive",
-        "agency": 5,
-        "social_openness": 5,
+        "agency": 4,
+        "social_openness": 4,
         "tempo": "still",
         "camera_distance": "close",
-        "bridge_cues": [
-          {
-            "cue": "book beside a pillow",
-            "cue_type": "material_or_texture",
-            "evidence": "the first thing she'd see each morning instead of her phone"
-          }
-        ]
+        "bridge_cues": [],
+        "beat_number": 35
+      },
+      {
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 4,
+        "social_openness": 4,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 36
+      },
+      {
+        "story_pressure": "arrival",
+        "emotional_valence": "positive",
+        "agency": 4,
+        "social_openness": 4,
+        "tempo": "still",
+        "camera_distance": "close",
+        "bridge_cues": [],
+        "beat_number": 37
       }
     ]
   },
-  "visual_story_contract_version": 10
+  "visual_story_contract_version": 11
 }

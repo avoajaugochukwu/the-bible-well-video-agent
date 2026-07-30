@@ -24,28 +24,20 @@ class TwoLaneStoryTests(unittest.TestCase):
         self.assertEqual("".join(snippets), script)
         self.assertEqual(len(snippets), 2)
 
-    def test_snippets_map_chronologically_to_director_beats(self):
-        script = (
-            "She arrived early at the hall. People began to gather. "
-            "The meeting became difficult. She listened before answering. "
-            "The group returned to work. By sunset, the project was ready."
-        )
-        snippets = scene_engine.mechanical_split(script, sentences_per_scene=1)
-        beats = [
-            {"beat_number": 1, "narration_anchor": "She arrived early"},
-            {"beat_number": 2, "narration_anchor": "The meeting became difficult"},
-            {"beat_number": 3, "narration_anchor": "The group returned to work"},
-        ]
-        assigned = scene_engine._assign_snippets_to_beats(snippets, beats)
-        flattened = [
-            scene_number
-            for beat_number in (1, 2, 3)
-            for scene_number, _ in assigned[beat_number]
-        ]
-        self.assertEqual(flattened, list(range(1, len(snippets) + 1)))
-        self.assertTrue(all(assigned[n] for n in (1, 2, 3)))
-        counts = [len(assigned[n]) for n in (1, 2, 3)]
-        self.assertLessEqual(max(counts) - min(counts), 1)
+    def test_break_into_scenes_requires_matching_beat_and_snippet_counts(self):
+        # Beats and snippets must correspond 1:1 by position — no distribution
+        # logic reconciles a mismatch anymore (agents/visual_director scores every
+        # real snippet directly, so a mismatch means something upstream is broken,
+        # not something to silently paper over).
+        snippets = ["First.", "Second.", "Third."]
+        visual_story = {
+            "story_beats": [
+                {"beat_number": 1, "location_id": "x", "character_ids": []},
+                {"beat_number": 2, "location_id": "x", "character_ids": []},
+            ]
+        }
+        with self.assertRaises(ValueError):
+            scene_engine.break_into_scenes(snippets, [], visual_story)
 
     def test_scene_cap_is_lossless(self):
         script = " ".join(f"word{i}" for i in range(1, 76))
@@ -63,17 +55,6 @@ class TwoLaneStoryTests(unittest.TestCase):
         self.assertEqual("".join(snippets), script)
         self.assertEqual(len(snippets), 2)
         self.assertTrue(snippets[0].strip().endswith("ten."))
-
-    def test_every_director_beat_gets_screen_time(self):
-        snippets = [f"Scene {i}. " for i in range(1, 14)]
-        beats = [
-            {"beat_number": i, "narration_anchor": "unused"}
-            for i in range(1, 6)
-        ]
-        assigned = scene_engine._assign_snippets_to_beats(snippets, beats)
-        self.assertTrue(all(assigned[i] for i in range(1, 6)))
-        self.assertEqual(sum(map(len, assigned.values())), len(snippets))
-
 
 if __name__ == "__main__":
     unittest.main()

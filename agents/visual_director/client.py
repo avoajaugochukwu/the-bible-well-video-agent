@@ -10,147 +10,142 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json
 
 
-VISUAL_STORY_CONTRACT_VERSION = 10
+VISUAL_STORY_CONTRACT_VERSION = 11
 MAX_ATTEMPTS = 3
 
 
-EMOTIONAL_SPINE_SCHEMA = {
-    "name": "emotional_spine",
-    "schema": {
-        "type": "object",
-        "properties": {
-            "core_transformation": {
-                "type": "object",
-                "properties": {
-                    "from_state": {
-                        "type": "string",
-                        "enum": [
-                            "withdrawal",
-                            "passivity",
-                            "fear",
-                            "control",
-                            "shame",
-                            "resentment",
-                            "grief",
-                            "self_reliance",
-                        ],
-                    },
-                    "to_state": {
-                        "type": "string",
-                        "enum": [
-                            "connection",
-                            "purposeful_action",
-                            "courage",
-                            "trust",
-                            "acceptance",
-                            "forgiveness",
-                            "hope",
-                            "shared_reliance",
-                        ],
-                    },
-                },
-                "required": ["from_state", "to_state"],
-                "additionalProperties": False,
-            },
-            "emotional_beats": {
-                "type": "array",
-                "minItems": 6,
-                "maxItems": 14,
-                "items": {
+def _spine_schema(count: int) -> dict:
+    return {
+        "name": "emotional_spine",
+        "schema": {
+            "type": "object",
+            "properties": {
+                "core_transformation": {
                     "type": "object",
                     "properties": {
-                        "beat_number": {"type": "integer"},
-                        "narration_anchor": {
-                            "type": "string",
-                            "description": "short verbatim phrase locating this region in the narration",
-                        },
-                        "story_pressure": {
+                        "from_state": {
                             "type": "string",
                             "enum": [
-                                "stability",
-                                "unease",
-                                "exposure",
-                                "rupture",
-                                "low_point",
-                                "challenge",
-                                "recognition",
-                                "choice",
-                                "effort",
-                                "reconnection",
-                                "arrival",
+                                "withdrawal",
+                                "passivity",
+                                "fear",
+                                "control",
+                                "shame",
+                                "resentment",
+                                "grief",
+                                "self_reliance",
                             ],
                         },
-                        "emotional_valence": {
+                        "to_state": {
                             "type": "string",
-                            "enum": ["positive", "mixed", "negative"],
-                        },
-                        "agency": {"type": "integer", "minimum": 1, "maximum": 5},
-                        "social_openness": {
-                            "type": "integer",
-                            "minimum": 1,
-                            "maximum": 5,
-                        },
-                        "tempo": {
-                            "type": "string",
-                            "enum": ["still", "measured", "active"],
-                        },
-                        "camera_distance": {
-                            "type": "string",
-                            "enum": ["wide", "medium", "close", "varied"],
-                        },
-                        "bridge_cues": {
-                            "type": "array",
-                            "maxItems": 3,
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "cue": {"type": "string"},
-                                    "cue_type": {
-                                        "type": "string",
-                                        "enum": [
-                                            "tool",
-                                            "material_or_texture",
-                                            "physical_gesture",
-                                            "garment_action",
-                                        ],
-                                    },
-                                    "evidence": {
-                                        "type": "string",
-                                        "description": (
-                                            "short exact narration quote proving the visible "
-                                            "cue is physically present and affirmed"
-                                        ),
-                                    },
-                                },
-                                "required": ["cue", "cue_type", "evidence"],
-                                "additionalProperties": False,
-                            },
-                            "description": (
-                                "sparse portable visual anchors from this narration phase: "
-                                "tools, materials, textures, or garment actions that can live "
-                                "inside a different plot"
-                            ),
+                            "enum": [
+                                "connection",
+                                "purposeful_action",
+                                "courage",
+                                "trust",
+                                "acceptance",
+                                "forgiveness",
+                                "hope",
+                                "shared_reliance",
+                            ],
                         },
                     },
-                    "required": [
-                        "beat_number",
-                        "narration_anchor",
-                        "story_pressure",
-                        "emotional_valence",
-                        "agency",
-                        "social_openness",
-                        "tempo",
-                        "camera_distance",
-                        "bridge_cues",
-                    ],
+                    "required": ["from_state", "to_state"],
                     "additionalProperties": False,
                 },
+                "emotional_beats": {
+                    "type": "array",
+                    "minItems": count,
+                    "maxItems": count,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "story_pressure": {
+                                "type": "string",
+                                "enum": [
+                                    "stability",
+                                    "unease",
+                                    "exposure",
+                                    "rupture",
+                                    "low_point",
+                                    "challenge",
+                                    "recognition",
+                                    "choice",
+                                    "effort",
+                                    "reconnection",
+                                    "arrival",
+                                ],
+                            },
+                            "emotional_valence": {
+                                "type": "string",
+                                "enum": ["positive", "mixed", "negative"],
+                            },
+                            "agency": {"type": "integer", "minimum": 1, "maximum": 5},
+                            "social_openness": {
+                                "type": "integer",
+                                "minimum": 1,
+                                "maximum": 5,
+                            },
+                            "tempo": {
+                                "type": "string",
+                                "enum": ["still", "measured", "active"],
+                            },
+                            "camera_distance": {
+                                "type": "string",
+                                "enum": ["wide", "medium", "close", "varied"],
+                            },
+                            "bridge_cues": {
+                                "type": "array",
+                                "maxItems": 3,
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "cue": {"type": "string"},
+                                        "cue_type": {
+                                            "type": "string",
+                                            "enum": [
+                                                "tool",
+                                                "material_or_texture",
+                                                "physical_gesture",
+                                                "garment_action",
+                                            ],
+                                        },
+                                        "evidence": {
+                                            "type": "string",
+                                            "description": (
+                                                "short exact quote from THIS snippet proving "
+                                                "the visible cue is physically present and affirmed"
+                                            ),
+                                        },
+                                    },
+                                    "required": ["cue", "cue_type", "evidence"],
+                                    "additionalProperties": False,
+                                },
+                                "description": (
+                                    "sparse portable visual anchors from this snippet: tools, "
+                                    "materials, textures, or garment actions that can live "
+                                    "inside a different plot"
+                                ),
+                            },
+                        },
+                        "required": [
+                            "story_pressure",
+                            "emotional_valence",
+                            "agency",
+                            "social_openness",
+                            "tempo",
+                            "camera_distance",
+                            "bridge_cues",
+                        ],
+                        "additionalProperties": False,
+                    },
+                },
             },
+            "required": ["core_transformation", "emotional_beats"],
+            "additionalProperties": False,
         },
-        "required": ["core_transformation", "emotional_beats"],
-        "additionalProperties": False,
-    },
-}
+    }
+
 
 def _schema(character_ids: list[str], beat_count: int) -> dict:
     character_item = {"type": "string"}
@@ -254,7 +249,6 @@ def _schema(character_ids: list[str], beat_count: int) -> dict:
                     "items": {
                         "type": "object",
                         "properties": {
-                            "beat_number": {"type": "integer"},
                             "location_id": {"type": "string"},
                             "activity_type": {
                                 "type": "string",
@@ -282,7 +276,6 @@ def _schema(character_ids: list[str], beat_count: int) -> dict:
                             },
                         },
                         "required": [
-                            "beat_number",
                             "location_id",
                             "activity_type",
                             "setting_logic",
@@ -310,41 +303,29 @@ def _schema(character_ids: list[str], beat_count: int) -> dict:
     }
 
 
-def _validate_spine(data: dict, script: str) -> list[str]:
+def _validate_spine(data: dict, snippets: list[str]) -> list[str]:
     problems = []
     beats = data.get("emotional_beats") or []
-    numbers = [beat.get("beat_number") for beat in beats]
-    if numbers != list(range(1, len(beats) + 1)):
-        problems.append("emotional beat numbers must be contiguous and start at 1")
-    for beat in beats:
-        anchor = (beat.get("narration_anchor") or "").strip()
-        if not anchor:
-            problems.append(f"emotional beat {beat.get('beat_number')} has no narration anchor")
-        elif anchor not in script:
-            # Quoting normalization can make an otherwise useful anchor inexact.
-            print(
-                f"    director: beat {beat.get('beat_number')} anchor is not exactly verbatim; "
-                "keeping it as a semantic locator",
-                flush=True,
-            )
+    if len(beats) != len(snippets):
+        problems.append(
+            f"emotional_beats must have exactly {len(snippets)} entries, one per "
+            f"narration snippet in order — got {len(beats)}"
+        )
+        return problems
+    for snippet, beat in zip(snippets, beats):
         for cue in beat.get("bridge_cues") or []:
             if len((cue.get("cue") or "").split()) > 6:
                 problems.append(
-                    f"emotional beat {beat.get('beat_number')} bridge cue "
-                    f"{cue.get('cue')!r} is not a compact portable detail"
+                    f"bridge cue {cue.get('cue')!r} is not a compact portable detail"
                 )
             evidence = (cue.get("evidence") or "").strip()
             if not evidence:
-                problems.append(
-                    f"emotional beat {beat.get('beat_number')} bridge cue "
-                    f"{cue.get('cue')!r} has no evidence"
-                )
-            elif evidence not in script:
-                # Same tolerance as narration_anchor above: paraphrase is fine,
-                # _review_bridge_cues is the real groundedness check.
+                problems.append(f"bridge cue {cue.get('cue')!r} has no evidence")
+            elif evidence not in snippet:
+                # Paraphrase is fine; groundedness is a taste call, not a fact check.
                 print(
-                    f"    director: beat {beat.get('beat_number')} bridge cue evidence "
-                    "is not exactly verbatim; keeping it as a semantic locator",
+                    "    director: bridge cue evidence is not exactly verbatim in its "
+                    "snippet; keeping it as a semantic locator",
                     flush=True,
                 )
     return problems
@@ -366,64 +347,58 @@ def _validate(data: dict, character_ids: set[str]) -> list[str]:
     location_ids = [loc.get("id") for loc in locations]
     if len(location_ids) != len(set(location_ids)):
         problems.append("recurring location ids must be unique")
-    beats = data.get("story_beats") or []
-    numbers = [beat.get("beat_number") for beat in beats]
-    if numbers != list(range(1, len(beats) + 1)):
-        problems.append("story beat numbers must be contiguous and start at 1")
     valid_locations = set(location_ids)
-    for beat in beats:
+    for beat in data.get("story_beats") or []:
         if beat.get("location_id") not in valid_locations:
             problems.append(
-                f"beat {beat.get('beat_number')} uses unknown location_id "
-                f"{beat.get('location_id')!r}"
+                f"a story beat uses unknown location_id {beat.get('location_id')!r}"
             )
         unknown = set(beat.get("character_ids") or []) - all_character_ids
         if unknown:
-            problems.append(
-                f"beat {beat.get('beat_number')} uses unknown character ids: {sorted(unknown)}"
-            )
+            problems.append(f"a story beat uses unknown character ids: {sorted(unknown)}")
     return problems
 
 
 def _validate_bridge_cues(data: dict, emotional_beats: list[dict]) -> list[str]:
-    """A director may omit a cue, but may not invent one outside source analysis."""
-    allowed = {
-        beat.get("beat_number"): {
-            cue.get("cue")
-            for cue in beat.get("bridge_cues") or []
-        }
-        for beat in emotional_beats
-    }
+    """A director may omit a cue, but may not invent one outside source analysis.
+    Beats correspond by position, not by a model-supplied number."""
+    story_beats = data.get("story_beats") or []
     problems = []
-    for beat in data.get("story_beats") or []:
-        cue = (beat.get("bridge_cue") or "").strip()
-        if cue and cue not in allowed.get(beat.get("beat_number"), set()):
-            problems.append(
-                f"beat {beat.get('beat_number')} uses unapproved bridge_cue {cue!r}"
-            )
+    for spine_beat, story_beat in zip(emotional_beats, story_beats):
+        allowed = {cue.get("cue") for cue in spine_beat.get("bridge_cues") or []}
+        cue = (story_beat.get("bridge_cue") or "").strip()
+        if cue and cue not in allowed:
+            problems.append(f"a story beat uses unapproved bridge_cue {cue!r}")
     return problems
 
 
-def _build_emotional_spine(script: str) -> dict:
-    """Reduce the narration to an abstract score before any visual story is invented."""
+def _build_emotional_spine(snippets: list[str]) -> dict:
+    """Score every already-cut narration snippet — never invents its own
+    boundaries or count (that drift was the actual cause of scenes not matching
+    their own narration's emotional register: two independent segmentations of
+    the same script, correlated only by count). One emotional_beats entry per
+    snippet, by position, schema-locked to the exact snippet count."""
+    numbered = "\n".join(f"{i}. {s}" for i, s in enumerate(snippets, start=1))
     messages = [
         {
             "role": "system",
             "content": (
                 "You are a story analyst creating an emotional score for a separate visual film. "
-                "Read the Christian narration and divide its progression into 6-14 chronological "
-                "phases. Preserve one short verbatim narration_anchor per phase solely for later "
-                "alignment. Encode story meaning with the categorical fields in the schema. "
-                "For bridge_cues only, extract zero to three sparse, portable visual anchors "
-                "from that phase: a specific tool, material, tactile texture, repeated physical "
-                "gesture, or garment action that could naturally appear inside a different plot. "
-                "Every cue must include a short exact evidence quote from the narration. The "
-                "evidence must affirm that the physical cue is present or performed. Do not turn "
-                "an absent, negated, hypothetical, or figurative object into a cue — a figurative "
-                "door, lock, weight, or light only counts if the evidence depicts the literal "
-                "physical thing, not the metaphor. Portability is mandatory: never propose a cue "
-                "that carries a source event, location, occupation, relationship, celebration, "
-                "social status, or complete tableau along with it. "
+                "Below are the narration's own pre-cut chronological snippets, numbered in order. "
+                "Score EVERY numbered snippet, in the same order, with exactly one emotional_beats "
+                "entry each — never skip, merge, or compress snippets; a short transitional "
+                "snippet still gets its own entry with the closest neutral categorical values "
+                "rather than being dropped. Encode story meaning with the categorical fields in "
+                "the schema. For bridge_cues only, extract zero to three sparse, portable visual "
+                "anchors from that snippet: a specific tool, material, tactile texture, repeated "
+                "physical gesture, or garment action that could naturally appear inside a "
+                "different plot. Every cue must include a short exact evidence quote from THAT "
+                "snippet. The evidence must affirm that the physical cue is present or performed. "
+                "Do not turn an absent, negated, hypothetical, or figurative object into a cue — "
+                "a figurative door, lock, weight, or light only counts if the evidence depicts the "
+                "literal physical thing, not the metaphor. Portability is mandatory: never propose "
+                "a cue that carries a source event, location, occupation, relationship, "
+                "celebration, social status, or complete tableau along with it. "
                 "cue is at most six words and must fit exactly one cue_type. Decontextualize it: "
                 "a gesture names only the movement; a garment action names only the action and "
                 "will use the film character's locked outfit; a material_or_texture names sensory "
@@ -437,9 +412,14 @@ def _build_emotional_spine(script: str) -> dict:
         },
         {
             "role": "user",
-            "content": f"NARRATION:\n{script}",
+            "content": f"NUMBERED NARRATION SNIPPETS:\n{numbered}",
         },
     ]
+    schema = _spine_schema(len(snippets))
+    # Schema size scales with snippet count (no fixed 6-14 cap anymore), so the
+    # token budget must scale with it too, or a long script silently burns the
+    # whole budget on reasoning with no room left for the actual output.
+    token_budget = max(4096, 1000 * len(snippets))
     last_problems = []
     for _ in range(MAX_ATTEMPTS):
         if last_problems:
@@ -447,9 +427,11 @@ def _build_emotional_spine(script: str) -> dict:
                 "role": "user",
                 "content": "Fix the emotional spine:\n" + "\n".join(f"- {p}" for p in last_problems),
             })
-        data = call_llm_json(messages, EMOTIONAL_SPINE_SCHEMA, max_completion_tokens=4096)
-        problems = _validate_spine(data, script)
+        data = call_llm_json(messages, schema, max_completion_tokens=token_budget)
+        problems = _validate_spine(data, snippets)
         if not problems:
+            for i, beat in enumerate(data["emotional_beats"], start=1):
+                beat["beat_number"] = i
             return data
         messages.append({
             "role": "assistant",
@@ -472,13 +454,13 @@ def _profile_for_director(story_dossier: dict) -> dict:
 
 
 def build(
-    script: str,
-    context: dict,
     characters: list[dict],
+    narration_snippets: list[str],
     story_dossier: dict | None = None,
 ) -> dict:
-    """Read the whole script and return the visual-story bible."""
-    emotional_spine = _build_emotional_spine(script)
+    """Score the already-cut narration snippets, then return the visual-story
+    bible with exactly one story beat per snippet."""
+    emotional_spine = _build_emotional_spine(narration_snippets)
     emotional_beats = emotional_spine["emotional_beats"]
     character_ids = [c["id"] for c in characters]
     cast = "\n".join(
@@ -576,9 +558,9 @@ TRACKED CAST:
 ABSTRACT EMOTIONAL SCORE:
 {_score_for_director(emotional_spine)}
 
-Return exactly one story_beat for every numbered emotional beat, preserving the
-beat numbers. Each visible_action must advance the invented external plot. Across
-the full plan, alternate public action, relationship moments, environmental
+Return exactly one story_beat for every numbered emotional beat below, in the same
+order. Each visible_action must advance the invented external plot. Across the
+full plan, alternate public action, relationship moments, environmental
 establishing shots, and quiet reactions so the film feels directed rather than
 formulaic.
 
@@ -595,6 +577,9 @@ Return only the structured visual-story plan.
             ),
         },
     ]
+    # Same scaling concern as the spine call above — story_beats count now
+    # matches the snippet count exactly, no fixed cap, so the budget must scale.
+    token_budget = max(8192, 1200 * len(emotional_beats))
     last_problems = []
     for _ in range(MAX_ATTEMPTS):
         if last_problems:
@@ -608,18 +593,14 @@ Return only the structured visual-story plan.
         data = call_llm_json(
             messages,
             _schema(character_ids, len(emotional_beats)),
-            max_completion_tokens=8192,
+            max_completion_tokens=token_budget,
         )
         problems = _validate(data, set(character_ids))
         if not problems:
             problems = _validate_bridge_cues(data, emotional_beats)
         if not problems:
-            anchors = {
-                beat["beat_number"]: beat["narration_anchor"]
-                for beat in emotional_beats
-            }
-            for beat in data["story_beats"]:
-                beat["narration_anchor"] = anchors[beat["beat_number"]]
+            for i, beat in enumerate(data["story_beats"], start=1):
+                beat["beat_number"] = i
             data["emotional_spine"] = emotional_spine
             data["visual_story_contract_version"] = VISUAL_STORY_CONTRACT_VERSION
             return data

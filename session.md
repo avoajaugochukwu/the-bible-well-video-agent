@@ -392,3 +392,56 @@ them exercised the new i2i path, since it needs real images; only the determinis
 `build_scene_prompt`/`build_fallback_prompt`/`_anonymize_names` pieces are unit-tested.
 `agents/CLAUDE.md` and root `CLAUDE.md` (stage list, Layout, credentials note) updated to
 describe i2i-by-default instead of t2i-only.
+
+## Phase: single shared narration cut, no silent drops (2026-07-29/30)
+
+Gallery review on the 13-scene i2i test surfaced a real bug: scene captions and their own
+emotional register had drifted apart (e.g. a "staring at the ceiling at 2am" scene was
+scored as an active/positive/high-agency beat, matching a totally different, later part of
+the script). Root cause, confirmed by checking narration_anchor offsets against the actual
+script: `agents/visual_director`'s emotional-spine call was independently re-segmenting the
+same narration `scene_engine.cut_narration_scenes()` had already cut — two independent LLM
+chunkings of one script, correlated only by matching counts. The spine silently skipped a
+225-character span of narration entirely, so every beat after that point scored the wrong
+snippet's content.
+
+Fix: narration gets cut exactly ONCE. `visual_director._build_emotional_spine` now takes
+the already-cut snippet list directly, schema-locked to score exactly one entry per
+snippet by position (no free-text `narration_anchor`, no invented 6-14 phase count) — a
+snippet with no strong signal still gets the closest neutral categorical values, never
+gets skipped. `scene_engine._assign_snippets_to_beats` (the distribution-reconciliation
+logic for when counts didn't match) is deleted entirely — beats now always equal snippets
+1:1 by construction, so there's nothing left to reconcile. `author_story_beat` collapsed
+from "N consecutive shots per beat" to one shot per beat (multi-shot was only ever needed
+to cover a many-snippets-per-beat mismatch that can no longer happen). `run.py` gained a
+new stage 2 (NARRATION CUT, cached as `narration-snippets.json`) between CONTEXT and
+DOSSIER; DIRECTOR and SCENES both consume that same list. Net: real code deletion across
+`scene_engine.py`, `visual_director/client.py`, `run.py` — no new mechanism added, per
+explicit instruction to remove rather than add. Also folded in a prompt-only fix for the
+second gallery finding (an anonymous "volunteer coordinator" rendered as a full third
+foreground figure, upstaging a narration-implied 1-on-1 moment): `author_story_beat`'s
+system prompt now explicitly tells the shot planner to keep anonymous figures as
+background texture, never competing with the tracked cast's foreground focus.
+
+Verified live twice: `scratchpad/verify_no_drift.py` (no images, text-only) confirmed every
+beat's categorical score now derives from its own actual snippet — the exact previously-
+wrong beat (2am/ceiling) now scores `low_point/negative/agency=1/still`, a correct match.
+Then a full fresh 12-scene i2i run on the Maria/Pastor Daniel script, then a full fresh
+37-scene run (20 imaged) on the real "Ellen" script (`narration_script_short.txt`) —
+20/20 scenes on real i2i, zero fallbacks.
+
+Two follow-on bugs found and fixed only because the Ellen script was long enough to trigger
+them (both are direct consequences of removing the old 6-14 beat cap — snippet count is no
+longer bounded, so fixed token/timeout budgets sized for ≤14 items broke):
+- `visual_director`'s two LLM calls (spine scoring, film-plan) had fixed
+  `max_completion_tokens` regardless of item count. At 35-39 snippets, the model burned the
+  entire fixed budget on reasoning tokens with zero left for actual output ("OpenAI returned
+  no text content"). Fixed: both now scale with item count (`1000 × snippet_count` for the
+  spine, `1200 × beat_count` for the film plan).
+- `utils/llm.py`'s socket timeout (180s, fixed since before this session) started getting
+  hit once completions got large enough to take longer to generate. Bumped to 300s,
+  matching `whisper_words()`'s existing precedent elsewhere in this codebase.
+
+Both were genuine bugs surfaced by testing at real scale, not scope creep — flagging here
+since a longer script than anything tested this session could plausibly still need a larger
+multiplier; there's no hard ceiling on narration length in this pipeline.

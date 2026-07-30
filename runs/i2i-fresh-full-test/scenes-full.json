@@ -1,0 +1,533 @@
+[
+  {
+    "scene_number": 1,
+    "script_snippet": "\"I did everything right,\" she whispered to the empty room. \"So why am I the one still waiting?\"\n",
+    "director_beat_number": 1,
+    "hero_subject": "Protagonist kneeling in greenhouse inspecting survey ribbons",
+    "image_prompt": "Early morning greenhouse interior. Protagonist kneels between wooden benches, fingertips in damp soil, lifting an orange survey ribbon at the glass edge to reveal a folded contractor note (unreadable). Soft sun through glass, tight face, thumb tracing ribbon, shallow depth close framing.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 2,
+    "script_snippet": "If you have ever turned fifty with no ring on your hand, and lain awake wondering if God simply forgot to write your name in the book, ",
+    "director_beat_number": 2,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior propagation room at late morning light through a small window. Tight medium-close shot: protagonist and Mason leaning over a seed tray as she guides his hands repotting into denser groupings. Small chalkboard sketch behind them; protagonist's thumb rubbing over the drawn plan, shoulders slightly tense, measured worry in posture. Soil, labelled trays, and a heat mat visible in soft shallow focus.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "mason"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 3,
+    "script_snippet": "then stay with Ellen to the very end. ",
+    "director_beat_number": 3,
+    "hero_subject": "Protagonist at desk opening county envelope and making a call, recognizing the need to act",
+    "image_prompt": "Back office, cluttered desk lit by a small window rectangle late morning. Protagonist seated three-quarter view, opening county envelope, places a copy beside a seed catalog, phone to ear, nodding slowly while jotting a meeting time.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 4,
+    "script_snippet": "This story is for you. ",
+    "director_beat_number": 4,
+    "hero_subject": "protagonist",
+    "image_prompt": "Main Street storefront midday with orange survey flags and wooden stakes. Protagonist steps onto sidewalk, three-quarter shot, gesturing at stakes while pointing to a compact mock-up held by Mason; Clara stands close, hand steadying protagonist's arm. A few neighbors watch in soft focus.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 5,
+    "script_snippet": "Subscribe now, so you never miss a story that finds you right where you hurt. ",
+    "director_beat_number": 5,
+    "hero_subject": "protagonist",
+    "image_prompt": "Morning farmers' market under a beige canopy: protagonist kneels, rearranging clay pots into a tight tiered display; mason hands flyers to a passing shopper; clara stands slightly behind, offering a soft supportive smile. A skeptical older customer confronts protagonist.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 6,
+    "script_snippet": "Because what Ellen learned in one quiet night changed her whole life. ",
+    "director_beat_number": 6,
+    "hero_subject": "Protagonist's hands arranging a compact potted grouping on a porch step",
+    "image_prompt": "Customer's front porch at golden late-afternoon light. Tight close-up on protagonist's freckled hands as she repositions a cluster of small pots on the step; Clara watches full-body nearby, nodding, soft smile, shallow depth of field.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 7,
+    "script_snippet": "And it started with a wedding she did not want to go to.\n",
+    "director_beat_number": 7,
+    "hero_subject": "protagonist",
+    "image_prompt": "Back office, afternoon; soft rectangular window light. Medium two-shot: protagonist stands, cardigan open, holding a folded paper at chest level, eyes lowered in thought; Clara stands beside her, gentle hand extended, observing with warm, encouraging smile.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 8,
+    "script_snippet": "Ellen was forty-nine years old, and she liked to say she had waited well.\n",
+    "director_beat_number": 8,
+    "hero_subject": "Protagonist refining compact display",
+    "image_prompt": "Propagation room at night. Protagonist seated at potting bench under warm lamp, comparing two compact trays; she marks one with chalk, leaning forward\u2014pride and doubt in her face. Tight three-quarter close framing on hands and face.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 9,
+    "script_snippet": "She kept her small house quiet. ",
+    "director_beat_number": 9,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior greenhouse late morning sun through glass. Close three-quarter still: protagonist's hands carefully straighten fragile plant labels on a weathered bench; Mason steadies the bench, Rob kneels measuring for a new shelf, focused, calm expressions.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 10,
+    "script_snippet": "Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses. ",
+    "director_beat_number": 10,
+    "hero_subject": "Protagonist testing bench bolts, vulnerability revealed",
+    "image_prompt": "Inside sunlit greenhouse late morning, protagonist crouches in front of a wooden display bench, wrench in hand, jaw clenched as she tightens a bolt; rob steadies bench with both hands. Shallow focus on hands, bolts, glass panes.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 11,
+    "script_snippet": "She would arrange the delicate petals with silver tweezers, tightening the screws to keep them still, frozen in time. ",
+    "director_beat_number": 11,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior back office late-afternoon: tight three-quarter close-up of the protagonist seated at a cluttered desk, flipping through invoices and a supplier notice; her face drains color as she slowly pushes papers away, one hand resting on a ledger, window light rectangle behind.",
+    "scene_type": "revelation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 12,
+    "script_snippet": "She called it preserving. But in truth, she was hiding.\n",
+    "director_beat_number": 12,
+    "hero_subject": "protagonist",
+    "image_prompt": "Main Street storefront outside greenhouse, late morning. Protagonist stands three-quarter view by compact plant display, small defensive posture, hands lightly clasped at waist; an anonymous neighbor gestures emphatically near flagged curb. Clara stands close, steady, supportive. Survey ribbons and orange flags visible; medium lens, shallow depth of field on faces, wider background of neighboring shops and onlookers.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 13,
+    "script_snippet": "She had stopped living years ago and called it holiness. ",
+    "director_beat_number": 13,
+    "hero_subject": "Mae (protagonist)",
+    "image_prompt": "Interior greenhouse midday: protagonist cradles a small clay pot to her chest, eyes downcast, cardigan fingers straightening; she stands three-quarter, looking toward a nearby mock-up storefront display, sun through glass casting soft shafts and plant shadows.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 14,
+    "script_snippet": "She did not travel, and she kept her good dress in the closet with the tags still on, saving it for a day that never came. ",
+    "director_beat_number": 14,
+    "hero_subject": "protagonist",
+    "image_prompt": "Propagation room interior at soft morning light through a small window. Medium two-shot: protagonist seated at pottingbench, fingers hesitating over scrap paper, face tense; mason stands beside her, arranging demonstration pots into a tote with a steadying nod. Shallow depth of field, intimate, tactile details of soil, seed trays, heat mat.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "mason"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 15,
+    "script_snippet": "She measured every year by the one thing she did not have. ",
+    "director_beat_number": 15,
+    "hero_subject": "protagonist",
+    "image_prompt": "Church fellowship hall, late-morning sunlight through windows; wide, slightly elevated shot showing scattered brunch tables and mingling guests. Protagonist sits alone in a chair foreground, shoulders slightly hunched, clutching a tote of demo plants and mouthing rehearsed lines. In midground, Clara stands a few steps away, offering a quiet, encouraging smile and a folded-hands posture. Overall mood: exposed, vulnerable, warm interior light, composed stillness amid low conversation.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 16,
+    "script_snippet": "She called the emptiness patience, because fear sounded like something she would have to fix.\n",
+    "director_beat_number": 16,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior church hall brunch, sunlit morning. Tight close-up three-quarter of the protagonist's face as she answers a pointed question; slight tremor in her hands as she sets a small demo pot on the table. Mason and Clara blurred but attentive in background, warm, intimate lighting.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 17,
+    "script_snippet": "Then the invitation came\u2014cream-colored with gold letters. Her niece was getting married.\n",
+    "director_beat_number": 17,
+    "hero_subject": "Protagonist's hands on the steering wheel after a discouraging meeting",
+    "image_prompt": "Main Street at night seen from inside a parked car: tight close-up of the protagonist's hands gripping a worn steering wheel, permit envelope on passenger seat, blurred receding headlights through windshield, slumped shoulders and tense posture visible.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 18,
+    "script_snippet": "Ellen sat at her kitchen table with the invitation in her hands. Fifty. The number felt like a door swinging shut.\n",
+    "director_beat_number": 18,
+    "hero_subject": "Protagonist seated on cot, smoothing soil from her hands and mouthing a quiet prayer",
+    "image_prompt": "Late-night greenhouse interior at a narrow cot beside a potting bench. Protagonist sits on cot's edge, palms dusty, rubbing soil from fingers, mouth forming a silent prayer; close, intimate three-quarter framing, warm glass light and scattered pots.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 19,
+    "script_snippet": "At the wedding, Ellen sat in the third row, on the aisle, in the seat where they put the ones who came alone. ",
+    "director_beat_number": 19,
+    "hero_subject": "Mae hesitates at the coat peg, touching the good dress but leaving it behind",
+    "image_prompt": "Back office, late afternoon light slanting through small window onto ledger and coat peg. Protagonist stands three-quarter, hand resting on neatly pressed dress, inhaling; she lets fabric fall, shoulders slightly rounded, quiet unresolved choice.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 20,
+    "script_snippet": "When the pastor said the words, till death do you part, something in Ellen's chest folded up small and quiet.\n",
+    "director_beat_number": 20,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior propagation room at night under warm lamp light. Protagonist seated foreground, methodically tying root balls with twine; Mason at left loads a porta-rack; Rob at right crouches checking bolts and maps. Three-quarter medium shot, intimate, steady calm.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 21,
+    "script_snippet": "She drove home in the dark. ",
+    "director_beat_number": 21,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior church fellowship hall at late-morning brunch; protagonist stands three-quarter, hands the cream-colored invitation back to Clara while taking a breath and gathering folded notes; Mason stands beside her offering steadying presence; sunlit window, framed mid-shot.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "clara",
+      "mason"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 22,
+    "script_snippet": "Sitting on the edge of her bed in her good dress, the silence of the house caught up with her.\n\"Lord,\" she whispered. ",
+    "director_beat_number": 22,
+    "hero_subject": "protagonist confronting institutional constraints",
+    "image_prompt": "Main Street storefront midday: extreme close-up of the protagonist's hands tightening around a folded petition in foreground; midground a small, compressed storefront mock-up with orange survey line; planner stands authoritative, pointing at figures; Rob leans in, worried.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "planner",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 23,
+    "script_snippet": "\"Did you write everyone else's name down and just... forget mine?\"\nNo answer came. Only the quiet weight of a dress she had saved for nothing.\n",
+    "director_beat_number": 23,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior church fellowship hall at mid-morning light. Medium-close, waist-up shot of the protagonist standing at a folding table, handing a rolled petition to the planner with Clara at her side and Mason slightly behind\u2014protagonist meets neighbors' eyes, steady hands, warm supportive onlookers blurred in background.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "clara",
+      "mason",
+      "planner"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 24,
+    "script_snippet": "The next morning, at the wedding brunch, Ellen sat alone at a corner table. ",
+    "director_beat_number": 24,
+    "hero_subject": "protagonist",
+    "image_prompt": "Inside sunlit greenhouse afternoon. Protagonist exhales, shoulders relaxing mid-step to brace a weathered wooden bench while Planner reaches down, curious, to lift a clay pot; Rob stands nearby, arms uncrossed, encouraging. Three-quarter medium shot, warm shafts of light, visible plant benches and survey flag ripcords outside glass.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "planner",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 25,
+    "script_snippet": "That was where she met the old woman\u2014a gentle stranger with clear, wise eyes.\n",
+    "director_beat_number": 25,
+    "hero_subject": "protagonist",
+    "image_prompt": "Propagation room interior late afternoon, soft window light. Protagonist seated on potting bench, tears slipping, body loosening. Mason stands close, arm around her shoulder; Clara leans in, dabbing her cheek with a napkin. Intimate close-up framing.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 26,
+    "script_snippet": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly. ",
+    "director_beat_number": 26,
+    "hero_subject": "protagonist",
+    "image_prompt": "Long greenhouse interior, late-morning sun through glass; protagonist kneels securing a lower shelf while directing the crew; mason and rob tighten bench brackets, clara places potted plants on the compact display; medium three-quarter, shallow depth.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "rob",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 27,
+    "script_snippet": "\"And you have been so busy weeping about the lock that you never checked the door. God never locked that door, child. You did. ",
+    "director_beat_number": 27,
+    "hero_subject": "protagonist",
+    "image_prompt": "Greenhouse interior at golden early morning; protagonist unlatches a tall sunroom window, breeze lifting vine tendrils; mason and clara stand nearby, handing a potted tray and smiling; three-quarter medium-wide framing, warm sidelighting, fresh earthy textures.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 28,
+    "script_snippet": "You dressed your fear in Sunday clothes and called it patience. Walk through the door. Stop refusing to live.\"\n",
+    "director_beat_number": 28,
+    "hero_subject": "protagonist placing a hung dress as a ritual of renewal",
+    "image_prompt": "Back office interior at late morning light: medium three-quarter shot of protagonist gently placing a hung 'good dress' on a peg near a small table; Clara stands nearby, hands folded, warm supportive smile; protagonist pauses, then turns to arrange seed packets and a small placard. Soft window light, weathered wood surfaces, modest ceremony, intimate stillness.",
+    "scene_type": "decision",
+    "character_ids": [
+      "protagonist",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 29,
+    "script_snippet": "Ellen wept, but it was a different kind of weeping now. It washed her clean.\n",
+    "director_beat_number": 29,
+    "hero_subject": "protagonist meeting neighbors at reopened storefront",
+    "image_prompt": "Morning light on Main Street storefront; medium-wide three-quarter shot showing a counter at the window. A neighbor places a warm cup on the counter while a small bouquet rests by the register. Protagonist straightens, meeting neighbors with calm, grateful expression; supporting hands: one young man adjusts a compact plant display, an older woman beams, a sturdy man stands nearby with a folded work vest.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 30,
+    "script_snippet": "She went home and looked at her life with new eyes. ",
+    "director_beat_number": 30,
+    "hero_subject": "protagonist",
+    "image_prompt": "Interior greenhouse mist-lit aisle after busy opening; warm shafts of light through glass. Close two-shot, shallow depth of field on their faces and clasped hands. The protagonist leans in, thanking Clara quietly; Clara listens, smiling softly.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "clara"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 31,
+    "script_snippet": "She got down on her knees and prayed her truest prayer: \"Lord, I called my fear your will. Forgive me. Teach me how to start.\"\n",
+    "director_beat_number": 31,
+    "hero_subject": "Mae framed mid-shot behind the counter, hands clasped over a ledger, open confident posture and calm expression.",
+    "image_prompt": "Main Street storefront morning. Medium three-quarter shot: protagonist stands behind low counter, hands clasped over ledger, open confident posture. Mason arranges plants, Clara chats with a customer, Rob lifts a potted bench\u2014neighbors browse.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 32,
+    "script_snippet": "And starting was quiet. She opened the sunroom windows, letting the warm breeze scatter the dry leaves. ",
+    "director_beat_number": 32,
+    "hero_subject": "protagonist",
+    "image_prompt": "Late golden hour inside greenhouse; protagonist kneels planting seedlings with steady hands at foreground, two teammates (mason, rob) mirroring her motions nearby, clara gently places a small vase of wildflowers beside them; calm, purposeful expressions, warm sun through glass, shallow depth of field, intimate three-quarter framing.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 33,
+    "script_snippet": "She hung her good dress where she could wear it on any ordinary Tuesday. ",
+    "director_beat_number": 33,
+    "hero_subject": "Mae's hands pressing soil around a tiny seedling",
+    "image_prompt": "Extreme close-up inside greenhouse at golden morning light: Mae's callused hands carefully press soil around a tiny seedling on a weathered wooden bench; she pauses, exhales, a soft smile surfacing. Shallow depth of field, tactile textures.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 34,
+    "script_snippet": "She was done waiting to live.\n",
+    "director_beat_number": 34,
+    "hero_subject": "protagonist",
+    "image_prompt": "Wide golden-afternoon street view of the storefront and compact plant display; neighbors chat, cups in hand, gentle laughter. Protagonist stands in the doorway, hands at her sides, steady. clara, mason, rob mingle nearby with soft smiles; ribbon flutters.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "clara",
+      "mason",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 35,
+    "script_snippet": "On the morning she turned fifty-one, Ellen sat at her kitchen table with a cup of coffee. ",
+    "director_beat_number": 35,
+    "hero_subject": "protagonist",
+    "image_prompt": "Close, intimate greenhouse shot at soft morning light: Mae's soil-streaked hands fold briefly over a wooden potting bench, cardigan sleeves pushed; shallow depth of field blurs plants and glass behind, then her hands release to resume work.",
+    "scene_type": "spiritual_moment",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 36,
+    "script_snippet": "She looked at the fresh, unpressed flowers sitting in the morning light.\n",
+    "director_beat_number": 36,
+    "hero_subject": "Protagonist and team arranging plants, steady tableau",
+    "image_prompt": "Greenhouse interior at golden morning light, medium still tableau of protagonist and her small team organizing potted plants on a weathered wooden bench; they exchange quiet, satisfied looks\u2014hands pausing on clay pots, soft smiles, rooted calm.",
+    "scene_type": "transformation",
+    "character_ids": [
+      "protagonist",
+      "mason",
+      "clara",
+      "rob"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  },
+  {
+    "scene_number": 37,
+    "script_snippet": "\"You never forgot me,\" she whispered, smiling. \"You were just waiting for me to begin.\"",
+    "director_beat_number": 37,
+    "hero_subject": "kept invitation tucked inside bound petition",
+    "image_prompt": "Extreme close-up of a bound petition on a back-office shelf, late-afternoon light through a small window; a cream invitation peeks from its pages, protagonist's callused hand resting gently nearby, seed catalogs blurred beside it.",
+    "scene_type": "reflection",
+    "character_ids": [
+      "protagonist"
+    ],
+    "prompt_contract_version": 11,
+    "visual_story_contract_version": 11
+  }
+]

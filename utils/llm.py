@@ -25,7 +25,7 @@ def _post_openai(body: dict) -> dict:
         method="POST",
     )
     try:
-        with urllib.request.urlopen(req, timeout=180) as r:
+        with urllib.request.urlopen(req, timeout=300) as r:
             return json.load(r)
     except urllib.error.HTTPError as e:
         raise RuntimeError(f"OpenAI API {e.code}: {e.read().decode()[:800]}")

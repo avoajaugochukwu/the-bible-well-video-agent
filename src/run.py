@@ -133,7 +133,22 @@ def run_pipeline(row_id) -> str | None:
         context = scene_engine.infer_context(script)
         json.dump(context, open(context_path, "w"), indent=2)
 
-    # 2 DOSSIER — read the whole script before casting or directing. Source facts
+    # 2 NARRATION CUT — the ONE place narration gets cut into chronological
+    # snippets (scene_engine.cut_narration_scenes: lossless, verbatim-anchored).
+    # Every later stage (the director's emotional scoring, scene authoring)
+    # consumes this exact list by position instead of re-segmenting the same
+    # script a second time — that double segmentation is what used to let a
+    # scene's caption and its own emotional beat quietly drift apart.
+    narration_snippets_path = os.path.join(rd, "narration-snippets.json")
+    if os.path.exists(narration_snippets_path):
+        narration_snippets = json.load(open(narration_snippets_path))
+    else:
+        print("  narration cut: cut_narration_scenes()...", flush=True)
+        narration_snippets = scene_engine.cut_narration_scenes(script)
+        json.dump(narration_snippets, open(narration_snippets_path, "w"), indent=2)
+        print(f"  narration cut: {len(narration_snippets)} verbatim snippets", flush=True)
+
+    # 3 DOSSIER — read the whole script before casting or directing. Source facts
     # remain evidence-backed; unspecified production details are inferred from the
     # full story's professional, social, and wardrobe vibe.
     dossier_path = os.path.join(rd, "story-dossier.json")
@@ -154,7 +169,7 @@ def run_pipeline(row_id) -> str | None:
             flush=True,
         )
 
-    # 3 SOURCE CAST — characters that exist in the narration. Reference sheets wait
+    # 4 SOURCE CAST — characters that exist in the narration. Reference sheets wait
     # until after the director declares any recurring people invented for its film.
     source_characters_path = os.path.join(rd, "source-characters.json")
     source_characters_current = False
@@ -179,9 +194,11 @@ def run_pipeline(row_id) -> str | None:
             flush=True,
         )
 
-    # 4 DIRECTOR — narration and visuals are separate lanes. The director sees
-    # the categorical emotional score, evidence-backed bridge cues, production
-    # dossier, and source cast. It declares recurring foreground film-only roles.
+    # 5 DIRECTOR — narration and visuals are separate lanes. The director sees
+    # the categorical emotional score (one entry per narration snippet, scored by
+    # position — never its own invented boundaries), evidence-backed bridge cues,
+    # production dossier, and source cast. It declares recurring foreground
+    # film-only roles and returns exactly one story beat per narration snippet.
     visual_story_path = os.path.join(rd, "visual-story.json")
     visual_story_current = False
     if os.path.exists(visual_story_path):
@@ -189,13 +206,13 @@ def run_pipeline(row_id) -> str | None:
         visual_story_current = (
             visual_story.get("visual_story_contract_version")
             == visual_director.VISUAL_STORY_CONTRACT_VERSION
+            and len(visual_story.get("story_beats") or []) == len(narration_snippets)
         )
     if not visual_story_current:
         print("  director: visual_director.build()...", flush=True)
         visual_story = visual_director.build(
-            script,
-            context,
             source_characters,
+            narration_snippets,
             story_dossier=story_dossier,
         )
         json.dump(visual_story, open(visual_story_path, "w"), indent=2)
@@ -205,7 +222,7 @@ def run_pipeline(row_id) -> str | None:
             flush=True,
         )
 
-    # 5 COMPLETE CAST — lock identities for director-invented recurring foreground
+    # 6 COMPLETE CAST — lock identities for director-invented recurring foreground
     # roles, then generate one reference sheet for every source and film character.
     characters_path = os.path.join(rd, "characters.json")
     declared_supporting_ids = {
@@ -251,8 +268,9 @@ def run_pipeline(row_id) -> str | None:
         json.dump(characters, open(characters_path, "w"), indent=2)
         print("  characters: done")
 
-    # 6 SCENES — verbatim narration cuts mapped onto the director's parallel
-    # story. Chunk authors choose shots inside the locked film plan.
+    # 7 SCENES — the pre-cut verbatim narration snippets zipped 1:1 by position
+    # with the director's story beats (guaranteed equal counts). Shot authors
+    # choose one shot per beat inside the locked film plan, never seeing narration.
     # scenes.json is a single evolving artifact — later stages add keys to it
     # (image_url, then start/end/duration_seconds) rather than writing separate
     # files, so resume-checks below inspect the keys already on each scene rather
@@ -273,14 +291,13 @@ def run_pipeline(row_id) -> str | None:
             print("  scenes: cached prompt contract is outdated; redesigning visual metaphors", flush=True)
         print("  scenes: break_into_scenes()...", flush=True)
         scenes = scene_engine.break_into_scenes(
-            script,
+            narration_snippets,
             characters,
-            context=context,
             visual_story=visual_story,
         )
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print(f"  scenes: done ({len(scenes)} scenes)")
-    # 7 IMAGES — agents/scene_compositor, i2i per scene against whichever tracked
+    # 8 IMAGES — agents/scene_compositor, i2i per scene against whichever tracked
     # characters that scene calls for, in parallel (t2i fallback only). No vision-QA anywhere — a human
     # reviews the gallery and judges consistency. The compositor has its own cache
     # contract because final prompt construction can change without changing shot plans.
@@ -304,13 +321,13 @@ def run_pipeline(row_id) -> str | None:
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  images: done")
 
-    # 8 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
+    # 9 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
     gallery_path = os.path.join(rd, "gallery.html")
     if scenes_regenerated or images_regenerated or not os.path.exists(gallery_path):
         heritage_gallery.build_gallery(scenes, gallery_path)
         print(f"  gallery: {gallery_path}")
 
-    # 9 ALIGN — download the row's OWN narration (never a fresh TTS call — that's
+    # 10 ALIGN — download the row's OWN narration (never a fresh TTS call — that's
     # only scene_engine.py's self-test), then real Whisper+DTW alignment against it.
     narration_path = os.path.join(rd, "narration.mp3")
     if not os.path.exists(narration_path):
@@ -340,7 +357,7 @@ def run_pipeline(row_id) -> str | None:
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  align: done")
 
-    # 10 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
+    # 11 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
     # narrationUrl = the row's OWN voice_url (already public, no rehost), words =
     # the same whisper words computed above (remotion's <Captions> highlights
     # whichever word is currently being spoken). Then Remotion Lambda (deploy:site
@@ -375,7 +392,7 @@ def run_pipeline(row_id) -> str | None:
         with open(rendered_mp4, "rb") as src, open(local_copy, "wb") as dst:
             dst.write(src.read())
 
-        # 11 S3 — raw public url, NEVER presigned (that's what gets shared for review).
+        # 12 S3 — raw public url, NEVER presigned (that's what gets shared for review).
         print("  s3: uploading rendered mp4...", flush=True)
         video_url = heritage_s3.put_file(local_copy, f"bible-well/renders/{row_id}.mp4")
         if not video_url:
@@ -384,7 +401,7 @@ def run_pipeline(row_id) -> str | None:
         print(f"  s3: {video_url}")
     video_url = open(video_url_path).read().strip()
 
-    # 12 CLICKUP — update-existing-task only, never create. push_video() itself never
+    # 13 CLICKUP — update-existing-task only, never create. push_video() itself never
     # raises (falls back to a comment on a description-PUT failure) — but if BOTH
     # routes fail it returns False, and we raise here so this run isn't silently
     # marked done with nowhere the video actually landed. Gated so a rerun never

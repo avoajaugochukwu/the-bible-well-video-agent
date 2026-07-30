@@ -19,7 +19,7 @@ import env                     # utils: one .env lookup (checks root .env)
 import align                    # utils: Whisper-word <-> verbatim-scene DTW aligner
 from llm import call_llm_json   # utils: shared OpenAI structured-JSON caller
 
-PROMPT_CONTRACT_VERSION = 10
+PROMPT_CONTRACT_VERSION = 11
 CONTEXT_CONTRACT_VERSION = 2
 
 CONTEXT_SCHEMA = {
@@ -220,9 +220,14 @@ def cut_narration_scenes(
     sentences_per_chunk: int = SENTENCES_PER_CHUNK,
     workers: int = 8,
 ) -> list[str]:
-    """Homestead-style agent cut with lossless anchoring and local fallback."""
+    """Homestead-style agent cut with lossless anchoring and local fallback. This
+    is the ONE place narration gets cut into chronological pieces — every other
+    stage (agents/visual_director's emotional scoring, scene authoring) consumes
+    this exact list by position instead of re-segmenting the same script a second
+    time, so there's no gap a second, independent cut could silently open up."""
     from concurrent.futures import ThreadPoolExecutor
 
+    script = strip_production_cues(script)
     chunks = mechanical_split(script, sentences_per_chunk)
 
     def cut_one(chunk: str) -> list[str]:
@@ -241,71 +246,25 @@ def cut_narration_scenes(
     return segments
 
 
-def _assign_snippets_to_beats(
-    snippets: list[str],
-    story_beats: list[dict],
-) -> dict[int, list[tuple[int, str]]]:
-    """Distribute timing blocks evenly across the ordered parallel story.
-
-    Narration anchors are retained for auditing but deliberately do not determine
-    visual cuts. Depending on source nouns here would reconnect the two lanes and
-    can also starve late film beats when a long narration sentence crosses an
-    anchor. Balanced chronological allocation gives every film beat screen time.
-    """
-    if len(snippets) < len(story_beats):
-        raise ValueError(
-            "parallel story has more beats than available narration timing blocks"
-        )
-    assigned = {beat["beat_number"]: [] for beat in story_beats}
-    base, remainder = divmod(len(snippets), len(story_beats))
-    cursor = 0
-    for beat_index, beat in enumerate(story_beats):
-        count = base + (1 if beat_index < remainder else 0)
-        for offset in range(count):
-            snippet_index = cursor + offset
-            assigned[beat["beat_number"]].append(
-                (snippet_index + 1, snippets[snippet_index])
-            )
-        cursor += count
-    return assigned
-
-
-def _shot_schema(character_ids: list[str], count: int) -> dict:
+def _shot_schema(character_ids: list[str]) -> dict:
     return {
-        "name": "parallel_story_shots",
+        "name": "parallel_story_shot",
         "schema": {
             "type": "object",
             "properties": {
-                "shots": {
+                "hero_subject": {"type": "string"},
+                "image_prompt": {"type": "string"},
+                "character_ids": {
                     "type": "array",
-                    "minItems": count,
-                    "maxItems": count,
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "hero_subject": {"type": "string"},
-                            "image_prompt": {"type": "string"},
-                            "character_ids": {
-                                "type": "array",
-                                "items": (
-                                    {"type": "string", "enum": character_ids}
-                                    if character_ids
-                                    else {"type": "string"}
-                                ),
-                            },
-                            "scene_type": _SCENE_TYPE_PROPERTY,
-                        },
-                        "required": [
-                            "hero_subject",
-                            "image_prompt",
-                            "character_ids",
-                            "scene_type",
-                        ],
-                        "additionalProperties": False,
-                    },
-                }
+                    "items": (
+                        {"type": "string", "enum": character_ids}
+                        if character_ids
+                        else {"type": "string"}
+                    ),
+                },
+                "scene_type": _SCENE_TYPE_PROPERTY,
             },
-            "required": ["shots"],
+            "required": ["hero_subject", "image_prompt", "character_ids", "scene_type"],
             "additionalProperties": False,
         },
     }
@@ -315,11 +274,11 @@ def author_story_beat(
     visual_story: dict,
     story_beat: dict,
     characters: list[dict],
-    shot_count: int,
-) -> list[dict]:
-    """Plan consecutive shots from one director beat without seeing narration."""
-    if shot_count <= 0:
-        return []
+) -> dict:
+    """Plan the one shot for this director beat without seeing narration — one
+    beat now always maps to exactly one narration snippet (see
+    agents/visual_director, which scores every real cut snippet rather than
+    inventing its own count), so one shot per beat is the whole scene."""
     allowed_ids = set(story_beat.get("character_ids") or [])
     character_ids = [c["id"] for c in characters if c["id"] in allowed_ids]
     cast = "\n".join(
@@ -330,14 +289,11 @@ def author_story_beat(
         if c["id"] in allowed_ids
     )
     locations = json.dumps(visual_story.get("recurring_locations") or [], indent=2)
-    beat = json.dumps(
-        {k: v for k, v in story_beat.items() if k != "narration_anchor"},
-        indent=2,
-    )
+    beat = json.dumps(story_beat, indent=2)
     system = f"""
 You are the shot planner for one beat in a coherent Christian animated short film.
-You do not receive the narration and must not reconstruct it. Plan exactly
-{shot_count} consecutive still-image shots that advance the locked movie beat below.
+You do not receive the narration and must not reconstruct it. Plan exactly one
+still-image shot that advances the locked movie beat below.
 
 WHOLE FILM:
 Title: {visual_story.get("film_title", "")}
@@ -355,24 +311,20 @@ LOCKED STORY BEAT:
 TRACKED CAST:
 {cast}
 
-Treat the shots as a short sequence inside one movie, not separate illustrations.
 If LOCKED STORY BEAT has a non-empty bridge_cue, show that exact portable cue
-naturally in one or more shots. It is an intentional point of contact with the
-narration, not permission to reconstruct any source event around it.
+naturally in the shot. It is an intentional point of contact with the narration,
+not permission to reconstruct any source event around it.
 Every stable physical, wardrobe, jewelry, relationship-status, or occupational
 identity detail must come from TRACKED CAST. Do not invent unlisted identity
 markers to make a character feel more specific; specificity comes from action,
 body language, framing, and the established production world.
-Give the sequence a small beginning, development, reaction, and handoff to the next
-beat. Each shot must change at least one of action, framing, social focus, or place
-within the locked location. Mix environmental wides, active medium shots, relationship
-two-shots, reaction close-ups, and useful detail shots. Do not make every shot a lone
-portrait of the protagonist.
 
 The world should feel populated and alive. Anonymous neighbors, customers, coworkers,
 volunteers, congregants, shoppers, and passersby can appear naturally without
-character_ids. character_ids contain only recurring cast members clearly visible in
-that shot.
+character_ids, but keep them as background texture — never let an anonymous figure
+compete with or outweigh the tracked characters who are the beat's actual foreground
+focus. character_ids contain only recurring cast members clearly visible and
+foregrounded in this shot.
 
 image_prompt is 25-45 words and describes only what the image generator should render:
 specific location, visible action, people and body language, time of day, and framing.
@@ -383,98 +335,58 @@ the whole-film movie style is injected later.
 Faith is shown through behavior, relationship, service, reconciliation, prayerful
 posture, and changed choices. Religious objects are not shorthand for an inner state.
 
-Return exactly {shot_count} shots in chronological order.
+Return exactly one shot.
 """.strip()
-    data = call_llm_json(
+    return call_llm_json(
         [
             {"role": "system", "content": system},
-            {"role": "user", "content": f"Plan the {shot_count}-shot sequence."},
+            {"role": "user", "content": "Plan the shot."},
         ],
-        _shot_schema(character_ids, shot_count),
-        max_completion_tokens=8192,
+        _shot_schema(character_ids),
+        max_completion_tokens=2048,
     )
-    return data["shots"]
 
 
 def break_into_scenes(
-    script: str,
+    snippets: list[str],
     characters: list[dict],
-    sentences_per_chunk: int = SENTENCES_PER_CHUNK,
+    visual_story: dict,
     workers: int = 8,
-    context: dict | None = None,
-    visual_story: dict | None = None,
 ) -> list[dict]:
-    """Tile narration verbatim, then plan the parallel film without showing the
-    narration to the shot author."""
+    """Zip the already-cut verbatim narration snippets 1:1 with the director's
+    story beats — guaranteed equal counts, since agents/visual_director scores
+    every one of these same snippets rather than inventing its own boundaries —
+    and plan one shot per beat without showing the shot author any narration."""
     from concurrent.futures import ThreadPoolExecutor
 
-    context = context or infer_context(script)
-    if not visual_story:
-        raise ValueError("break_into_scenes requires the whole-video visual_story plan")
-    print(f"  context: {context.get('setting', 'a churchy, faith-practice setting')}", flush=True)
-
-    clean_script = strip_production_cues(script)
-    snippets = cut_narration_scenes(
-        clean_script,
-        sentences_per_chunk=sentences_per_chunk,
-        workers=workers,
-    )
     story_beats = visual_story.get("story_beats") or []
-    if not story_beats:
-        raise ValueError("visual_story has no story_beats")
-    assignments = _assign_snippets_to_beats(snippets, story_beats)
-    print(
-        f"  -> {len(snippets)} narration scenes mapped across "
-        f"{len(story_beats)} director beats",
-        flush=True,
-    )
+    if len(story_beats) != len(snippets):
+        raise ValueError(
+            f"visual_story has {len(story_beats)} beats but narration was cut into "
+            f"{len(snippets)} snippets — these must match 1:1"
+        )
 
-    active = [
-        (beat, assignments[beat["beat_number"]])
-        for beat in story_beats
-        if assignments[beat["beat_number"]]
+    with ThreadPoolExecutor(max_workers=min(workers, len(story_beats))) as ex:
+        shots = list(ex.map(
+            lambda beat: author_story_beat(visual_story, beat, characters),
+            story_beats,
+        ))
+
+    out = [
+        {
+            "scene_number": i,
+            "script_snippet": snippet,
+            "director_beat_number": i,
+            "hero_subject": shot["hero_subject"],
+            "image_prompt": shot["image_prompt"],
+            "scene_type": shot["scene_type"],
+            "character_ids": shot["character_ids"],
+            "prompt_contract_version": PROMPT_CONTRACT_VERSION,
+            "visual_story_contract_version": visual_story.get("visual_story_contract_version"),
+        }
+        for i, (snippet, shot) in enumerate(zip(snippets, shots), start=1)
     ]
-    with ThreadPoolExecutor(max_workers=min(workers, len(active))) as ex:
-        planned = list(
-            ex.map(
-                lambda item: author_story_beat(
-                    visual_story,
-                    item[0],
-                    characters,
-                    len(item[1]),
-                ),
-                active,
-            )
-        )
-
-    by_scene_number = {}
-    for (beat, slots), shots in zip(active, planned):
-        for (scene_number, snippet), shot in zip(slots, shots):
-            by_scene_number[scene_number] = {
-                "scene_number": scene_number,
-                "script_snippet": snippet,
-                "director_beat_number": beat["beat_number"],
-                "hero_subject": shot["hero_subject"],
-                "image_prompt": shot["image_prompt"],
-                "scene_type": shot["scene_type"],
-                "character_ids": shot["character_ids"],
-                "prompt_contract_version": PROMPT_CONTRACT_VERSION,
-                "visual_story_contract_version": visual_story.get(
-                    "visual_story_contract_version"
-                ),
-            }
-    out = [by_scene_number[i] for i in range(1, len(snippets) + 1)]
     print(f"  -> {len(out)} scenes", flush=True)
-
-    # The deterministic narration splitter must preserve every spoken word.
-    joined = "".join(s["script_snippet"] for s in out)
-    norm = lambda t: re.sub(r"\s+", " ", t).strip()  # noqa: E731
-    if norm(joined) != norm(clean_script):
-        raise RuntimeError(
-            f"break_into_scenes: scene snippets don't reconstruct the input script "
-            f"({len(norm(joined))} vs {len(norm(clean_script))} chars) — narration split bug"
-        )
-
     return out
 
 
@@ -603,19 +515,21 @@ if __name__ == "__main__":
     print("\n4/9 character_sheet.generate_all()...", flush=True)
     characters = character_sheet.generate_all(characters)
 
+    print("\n4b/9 cut_narration_scenes() (the one narration cut, reused below)...", flush=True)
+    snippets = cut_narration_scenes(SAMPLE_SCRIPT)
+    print(f"  -> {len(snippets)} verbatim snippets", flush=True)
+
     print("\n5/9 visual_director.build()...", flush=True)
     visual_story = visual_director.build(
-        SAMPLE_SCRIPT,
-        context,
         characters,
+        snippets,
         story_dossier=story_dossier,
     )
 
     print("\n6/9 break_into_scenes()...", flush=True)
     scenes = break_into_scenes(
-        SAMPLE_SCRIPT,
+        snippets,
         characters,
-        context=context,
         visual_story=visual_story,
     )
     print(f"  -> {len(scenes)} scenes", flush=True)

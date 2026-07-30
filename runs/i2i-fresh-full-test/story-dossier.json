@@ -2,68 +2,56 @@
   "source_facts": {
     "protagonist": [
       {
-        "fact": "Keeps her faith quiet, not integrated into daily life",
-        "evidence": "\"had always kept her faith quiet, tucked away like a secret.\""
+        "fact": "Her name is Ellen; she is forty-nine at the story's start and later turns fifty-one.",
+        "evidence": "\"Ellen was forty-nine years old\"; \"On the morning she turned fifty-one\""
       },
       {
-        "fact": "Has a habit of using her phone first thing in the morning instead of praying",
-        "evidence": "\"Every morning she scrolled her phone before she ever thought to pray.\""
+        "fact": "She is unmarried and has been waiting for marriage for decades.",
+        "evidence": "\"If you have ever turned fifty with no ring on your hand\"; \"She measured every year by the one thing she did not have.\""
       },
       {
-        "fact": "Responds to a pastor's challenge about living faith beyond Sundays",
-        "evidence": "\"'God isn't asking for your Sunday,' he said gently, 'He's asking for your whole week.'\""
+        "fact": "She lives alone in a small house and keeps a sunroom where she preserves wildflowers.",
+        "evidence": "\"She kept her small house quiet.\"; \"Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses.\""
       },
       {
-        "fact": "Experiences internal unrest and sleep disturbance after the challenge",
-        "evidence": "\"staring at the ceiling at 2am more nights than not.\""
+        "fact": "She describes her long inaction as holiness/patience but recognizes it as fear by story end.",
+        "evidence": "\"She had stopped living years ago and called it holiness.\"; \"She called the emptiness patience, because fear sounded like something she would have to fix.\""
       },
       {
-        "fact": "Has a Bible that had been on a shelf and is moved to her nightstand",
-        "evidence": "\"moved her Bible from the shelf to her nightstand, the first thing she'd see each morning instead of her phone.\""
+        "fact": "She attends her niece's wedding alone, sits in the aisle seat reserved for those who come alone, and is emotionally affected.",
+        "evidence": "\"The invitation came... Her niece was getting married.\"; \"At the wedding, Ellen sat in the third row, on the aisle, in the seat where they put the ones who came alone.\""
       },
       {
-        "fact": "Begins to change daily habit: reaches for Bible before phone",
-        "evidence": "\"she caught herself reaching for the Bible before the phone without even thinking about it\""
-      },
-      {
-        "fact": "Small personal spiritual progress is meaningful to her",
-        "evidence": "\"a small, ordinary victory, but hers, and the first of many.\""
+        "fact": "She prays and experiences a quiet conversion: stops waiting and begins to live; opens windows, wears her good dress, and keeps fresh flowers.",
+        "evidence": "\"She got down on her knees and prayed her truest prayer\"; \"She hung her good dress where she could wear it on any ordinary Tuesday.\"; \"She looked at the fresh, unpressed flowers sitting in the morning light.\""
       }
     ],
     "relationships": [
       {
-        "fact": "Has a sister named Grace who is worried and leaves voicemails",
-        "evidence": "\"Her sister Grace left a third voicemail that went unanswered, her voice tight with worry.\""
+        "fact": "She has a niece who gets married and who is the reason for attending the wedding.",
+        "evidence": "\"Her niece was getting married.\""
       },
       {
-        "fact": "Repaired communication with her sister by calling back and talking for an hour",
-        "evidence": "\"She finally called Grace back, and they talked for an hour, longer than they had in months.\""
+        "fact": "She encounters a kindly older woman at the wedding brunch who challenges her perspective.",
+        "evidence": "\"At the wedding brunch, Ellen sat alone at a corner table. That was where she met the old woman\u2014a gentle stranger with clear, wise eyes.\""
       },
       {
-        "fact": "Is part of a church community and interacts with Pastor Daniel",
-        "evidence": "\"Pastor Daniel stopped her after service one Sunday.\""
-      },
-      {
-        "fact": "Receives affirmation from Pastor Daniel when she shares progress",
-        "evidence": "\"Pastor Daniel smiled when Maria told him the following Sunday\""
+        "fact": "She has an ongoing personal relationship with God and addresses God directly in prayer.",
+        "evidence": "\"Lord,\" she whispered...\"; \"'Lord, I called my fear your will. Forgive me. Teach me how to start.'\""
       }
     ],
     "social_world": [
       {
-        "fact": "Attends weekly church services",
-        "evidence": "\"after service one Sunday\""
+        "fact": "She is part of a conservative Christian frame of reference (uses church language, waiting for God's will).",
+        "evidence": "\"till death do you part\" context; \"Lord, did you write everyone else's name down\"; \"she called it holiness\""
       },
       {
-        "fact": "Has coworkers and a workplace where interpersonal friction can occur",
-        "evidence": "\"She found herself short with her coworkers\""
+        "fact": "Her life is small-scale and domestic: house, kitchen table, sunroom, bed.",
+        "evidence": "\"She kept her small house quiet.\"; \"She sat at her kitchen table\"; \"She would arrange the delicate petals...\""
       },
       {
-        "fact": "Uses a smartphone and voicemail as primary communication tools",
-        "evidence": "\"Every morning she scrolled her phone\"; \"left a third voicemail\""
-      },
-      {
-        "fact": "Her daily rhythms involve morning routines (phone, prayer, Bible placement)",
-        "evidence": "\"Every morning she scrolled her phone before she ever thought to pray.\"; \"the first thing she'd see each morning instead of her phone.\""
+        "fact": "She isolates socially (keeps good dress in closet, sits alone at events).",
+        "evidence": "\"She kept her good dress in the closet with the tags still on\"; \"At the wedding brunch, Ellen sat alone at a corner table.\""
       }
     ],
     "occupation": {
@@ -72,85 +60,84 @@
       "evidence": ""
     },
     "unstated_visual_traits": [
-      "age range",
-      "body type",
-      "ethnicity",
-      "hair length and color",
-      "everyday clothing style",
-      "grooming level"
+      "height",
+      "body_type",
+      "skin_tone",
+      "eye_color",
+      "facial_features",
+      "posture",
+      "voice_timbre"
     ]
   },
   "whole_script_vibe": {
-    "social_class_and_lifestyle": "Lower-middle to middle-class urban/suburban life: steady job with coworkers, church community involvement, typical modern conveniences (smartphone, bookshelf).",
-    "professional_energy": "Routine, slightly pressured weekdays with interpersonal friction; not high-powered but responsible daily work life.",
-    "primary_visual_vibe": "Quiet, everyday realism \u2014 warm natural light, domestic interiors, modest church interiors, office cubicles or shared workspace.",
-    "wardrobe_vibe": "Practical smart-casual: muted tones, comfortable fabrics, low-key accessories; nothing flashy.",
+    "social_class_and_lifestyle": "Modest, lower-middle\u2013class small\u2011town/suburban life; domestic, careful with limited travel and resources.",
+    "professional_energy": "Quiet, methodical, reserved \u2014 low-key competence rather than outward ambition.",
+    "primary_visual_vibe": "Warm, muted, sunlit interiors; gentle textures (wood, linen, pressed flowers) and a lived-in, tidy domesticity.",
+    "wardrobe_vibe": "Conservative, timeless, slightly old-fashioned daywear: simple dresses, cardigans, sensible shoes; one 'good dress' kept for special occasions but ultimately worn casually.",
     "credible_social_domains": [
       "local church community",
-      "workplace with coworkers (office or shared professional setting)",
-      "family ties (sibling)",
-      "neighborhood social life"
+      "neighborhood acquaintances",
+      "small civic groups (historical society, library patrons)",
+      "family gatherings (niece, extended family)"
     ],
     "credible_locations": [
-      "modest apartment or small single-family home (bedroom, nightstand)",
-      "church sanctuary and foyer",
-      "office or shared workplace (open-plan or small office)",
-      "city/suburban streets and caf\u00e9s"
+      "small-town main street and neighborhoods",
+      "single-story cottage/suburban house with sunroom",
+      "community church and fellowship hall",
+      "local historical society or small public library reading room"
     ]
   },
   "abstract_casting_signals": {
-    "age_range": "late 20s to early 40s (preferably 30\u201338)",
+    "age_range": "50\u201360",
     "gender": "female",
     "temperament": [
-      "introspective",
-      "steadfast",
-      "slightly anxious under stress"
+      "reflective",
+      "reserved",
+      "steady",
+      "sensitive"
     ],
-    "economic_independence": "financially independent or partly independent (earns own living, supports day-to-day needs)",
+    "economic_independence": "modest, financially independent but not affluent",
     "work_style": [
       "methodical",
-      "responsible",
-      "adaptable"
+      "dependent on routine",
+      "thoughtful",
+      "adaptable once prompted"
     ],
-    "interpersonal_style": "reserved but capable of warmth in close relationships",
-    "wardrobe_formality": "casual-to-smart-casual",
-    "cultural_tone": "contemporary, grounded, community-oriented"
+    "interpersonal_style": "quietly warm, more comfortable in small conversations than large groups",
+    "wardrobe_formality": "conservative-casual (classic daywear)",
+    "cultural_tone": "Christian, small\u2011town, traditional values"
   },
   "cinematic_inference": {
-    "protagonist_occupation": "Conservator / Collections Manager at a regional museum",
+    "protagonist_occupation": "Greenhouse/Nursery Manager (local garden center)",
     "occupation_basis": "creative_inference",
-    "body_design": "5'6\" (168 cm), medium build with lean musculature from lifting crates and working long hours standing; pronounced, capable hands with short, practical nails and a faint pale scar along the pad of the right index finger; neutral posture that tightens when stressed; skin olive-toned with subtle sun freckles across the nose and forearms.",
-    "ethnicity_design": "Colombian-American (Latina), bicultural presence that informs quiet confidence and community ties without defining the profession.",
-    "hair_design": "Dark brown, naturally wavy, shoulder-length usually worn in a low, slightly messy bun for studio work or loose with a middle part for public appearances; a few silvering strands at the temples but overall thick and serviceable.",
-    "wardrobe_design": "Smart-casual practical wardrobe: soft, neutral linen and cotton button shirts; slim, tapered chinos or dark denim; lightweight tweed or utility jacket for gallery visits; comfortable leather ankle boots with non-slip soles; archival-smock lab coat or sleeveless canvas conservation apron for studio scenes; muted, minimal jewelry (thin gold band and small stud earrings); always carries a worn canvas messenger bag containing gloves, field notebook, cotton swabs, and a compact loupe.",
-    "casting_rationale": "A conservator/collections manager fits the profile by combining meticulous, tactile work with interpersonal responsibilities, creating opportunities for quiet intensity and pressured moments. The role supports a grounded, community-oriented cultural tone and a methodical work style while offering strong visual motifs\u2014tools, light, crates\u2014that reveal inner steadiness and controlled anxiety under stress."
+    "body_design": "5'6\" (168 cm), medium build with practical strength and a posture softened by years of bending and lifting; hands with visible calluses and short, tidy nails; light freckles on forearms from sun exposure.",
+    "ethnicity_design": "White, Northern European ancestry (small\u2011town American Midwest visual reference).",
+    "hair_design": "Shoulder\u2011length ash brown with a few silver strands, usually pulled back into a low, practical bun or loose knot with wispy face-framing tendrils; minimal makeup.",
+    "wardrobe_design": "Conservative-casual workwear: tailored chambray button-up shirts, olive and tan utility vests, well-fitted denim or cargo chinos, sturdy leather ankle boots; layered with a soft cardigan or lightweight waxed jacket for off-duty scenes; simple pewter necklace with a small cross (subtle, personal).",
+    "casting_rationale": "Choose an actor who conveys steady calm and interior depth over overt expressiveness; physicality should read as capable and practiced rather than youthful or athletic. The wardrobe and body details support a hands-on, routine job while allowing quiet emotional beats to be visible in small gestures\u2014fixing a plant label, cradling a seedling, or adjusting a customer's posture."
   },
   "director_profile": {
     "stable_identity": [
-      "Age: late 20s to early 40s (preferably 30\u201338)",
-      "Gender: female",
-      "Temperament: introspective, steadfast, slightly anxious under stress",
-      "Economic: financially independent or partly independent",
-      "Work style: methodical, responsible, adaptable",
-      "Interpersonal style: reserved, warm with close contacts",
-      "Cultural tone: contemporary, grounded, community-oriented"
+      "Age: 50\u201360, female",
+      "Temperament: reflective, reserved, steady, sensitive",
+      "Economic: modest, financially independent",
+      "Work style: methodical, routine-oriented, adaptable when prompted",
+      "Religious/cultural tone: Christian, small\u2011town traditional values"
     ],
-    "social_dynamics": "Reserved in larger staff meetings and public events, she is deferential but assertive when collections' integrity is at stake; has a small circle of trusted colleagues (a practical registrar, an idealistic curator, a sympathetic preparator) and routinely negotiates with contractors, donors, and volunteer docents. She mentors interns quietly and becomes quietly protective over objects and people she trusts.",
-    "professional_vibe": "Hands-on specialist who balances meticulous studio treatment with logistics and small-scale diplomacy\u2014methodical in procedure, meticulous with documentation, and pragmatic about budgets and timelines.",
-    "visual_vibe": "Muted, tactile color palette (stone grays, warm olives, indigo) with close-up, object-focused cinematography: gloved hands, magnified surface textures, directional examination lamps, stacked archival crates, and narrow vault corridors that emphasize intimate scale and quiet intensity.",
+    "social_dynamics": "Operates in close-knit, small-group interactions: a pair of seasonal assistants she mentors quietly, regular customers who drop by for advice, a local landscaper who trades favors, and occasional tense exchanges with a corporate supplier. She prefers one-on-one conversations and manages conflict by listening and offering measured, practical solutions.",
+    "professional_vibe": "Calm, efficient stewardship of living things\u2014procedural rhythms (morning watering rounds, propagation logs, seasonal inventory) give her days structure. She's respected locally for knowledge rather than showmanship; decisions are deliberate and informed by years of tacit practice.",
+    "visual_vibe": "Warm, earth-toned palette with weathered wood, galvanized metal, glasshouse light, and mist; visual textures include soil, burlap, clay pots, and green foliage. Cinematic moments focus on close-ups of hands, plant detail, soft natural light through glass, and the quiet choreography of daily routines.",
     "credible_worlds": [
-      "Conservation studio with benches, microscopes, consolidated tools, and a sink area for wet treatments",
-      "Temperature- and humidity-controlled storage vault lined with metal shelving and cardboard flats",
-      "Small regional museum gallery with flexible modular walls and peaked visitor flows",
-      "Loading dock and receiving area where crate logistics and courier handoffs occur",
-      "On-site field visits to local historic homes, churches, or community centers for in-situ assessments",
-      "Pop-up outreach events and donor walkthroughs in civic spaces"
+      "Small independent garden center attached to a Main Street storefront and adjacent greenhouse complex with a modest gravel parking lot and delivery bay.",
+      "On-site propagation room with potting benches, heat mats, seed trays, labeled shelving, and a chalkboard schedule for staff.",
+      "A back office that doubles as a seasonal display prep area\u2014cardboard boxes, seed catalogs, old signage, a second\u2011hand radio, and a small ledger or laptop.",
+      "Local community settings: Sunday church potluck, Saturday farmers\u2019 market where she supplies plants, and residential yards where she consults for plantings."
     ],
-    "parallel_story_rule": "Do not recast the employer as a private religious or family institution; the job remains a museum-based conservator/collections manager and any personal faith or family life belongs to off-duty identity, not the workplace."
+    "parallel_story_rule": "Do not let her off-duty religious or family life replace or become the workplace; keep faith and small\u2011town ties as personal texture that informs choices, not as the employer or central plot driver."
   },
   "occupation_selection": {
-    "job_title": "Conservator / Collections Manager at a regional museum",
-    "rationale": "A conservator/collections manager balances methodical, detail-focused work with occasional high-stakes, human-facing moments\u2014ideal for a reserved, introspective woman who is steadfast and slightly anxious under stress. The day-to-day allows for focused, tactile labor (cleaning, stabilizing, photographing artifacts) that suits a methodical temperament and offers concrete visual interest: studio benches, microscopes, archival crates, examination lights, and hands-in-gloves close-ups. The role also supports varied scenes and relationships\u2014collaborating with curators and installers, coordinating with registrars and registrants, overseeing condition reports and crate movements, doing site visits for loans or conservation treatments, and giving occasional gallery talks or donor walkthroughs. Those elements create dynamic, changing environments (studio, storage vaults, galleries, loading docks, field locations) without relying mainly on paperwork or meetings, and plausibly support financial independence through museum salary or contract work. Casting a conservator avoids obvious occupational tropes while offering a visually rich, credible world for character-driven storytelling."
+    "job_title": "Greenhouse/Nursery Manager (local garden center)",
+    "rationale": "A greenhouse/nursery manager gives the abstract character a lively, tactile workplace that still suits her reflective, steady temperament. The role is methodical and routine-driven (propagation schedules, watering, seasonal cycles) but visually rich and physically active\u2014rows of plants, propagation benches, misting systems, deliveries, and seasonal sales\u2014so scenes can move between quiet, intimate moments and busier customer or staff interactions. It supports modest, independent income and small-group social interactions (regular customers, a couple of seasonal employees, local landscapers) that match her quietly warm, reserved interpersonal style. The job also allows for thoughtful, steady gestures (mending a rootball, cataloging orders, advising a worried new gardener) that reveal sensitivity without relying on large-group leadership, paperwork-heavy sequences, or stereotyped portrayals."
   },
   "story_dossier_contract_version": 12
 }

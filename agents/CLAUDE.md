@@ -80,19 +80,30 @@ exception is the right one.
 
 ## Standing rules specific to this stack
 
-- **Narration and visuals are two separate lanes.** Narration is cut into verbatim visual
-  pacing beats using the homestead pattern: an LLM proposes boundaries, code anchors them
-  losslessly to the source, and a 30-word ceiling prefers sentence or clause boundaries.
-  The narration content never supplies scene props, locations, or actions to the shot
-  planner. `agents/story_dossier` first separates evidence-backed source facts from
-  production inference, chooses one plausible occupation from an abstract character
-  profile, and commits to concrete casting. `agents/visual_director` reduces the source to
-  a categorical emotional score, then invents a standalone contemporary film with its own
-  external goal, recurring social locations, cause-and-effect plot, and resolved ending.
-  `src/scene_engine.py` expands each ordered film beat into shots without receiving
-  narration. Do not turn narration cuts into per-sentence illustration or source-noun
-  prompting. Show emotion through body language and social situation: despair is a woman
-  with her head in her hands during lived activity, not the narrated book in her hands.
+- **Narration and visuals are two separate lanes — but there is only ONE narration
+  cut.** `scene_engine.cut_narration_scenes()` is the single place narration gets sliced
+  into verbatim chronological snippets (homestead pattern: an LLM proposes boundaries,
+  code anchors them losslessly to the source, a 30-word ceiling prefers sentence/clause
+  boundaries). Every later stage consumes that exact list by position — `agents/
+  visual_director`'s emotional-spine call scores each snippet directly (schema-locked to
+  the exact snippet count, one categorical score per snippet, in order — no free-text
+  anchor, no invented phase count), and `src/scene_engine.py`'s shot author gets exactly
+  one beat per snippet. A second, independent segmentation of the same script is exactly
+  the bug that let a scene's caption and its own emotional category quietly drift apart
+  (confirmed 2026-07-29: a spine call that invents its own boundaries can skip a chunk of
+  narration entirely, and downstream beats silently shift out of correspondence with their
+  matching scene — see `session.md`). If a stage has no strong opinion about one snippet,
+  it still scores it with the closest neutral values — it does not skip it. The narration
+  content itself never supplies scene props, locations, or actions to the shot planner.
+  `agents/story_dossier` first separates evidence-backed source facts from production
+  inference, chooses one plausible occupation from an abstract character profile, and
+  commits to concrete casting. `agents/visual_director` invents a standalone contemporary
+  film with its own external goal, recurring social locations, cause-and-effect plot, and
+  resolved ending from that categorical score. `src/scene_engine.py` expands each ordered
+  film beat into one shot without receiving narration. Do not turn narration cuts into
+  per-sentence illustration or source-noun prompting. Show emotion through body language
+  and social situation: despair is a woman with her head in her hands during lived
+  activity, not the narrated book in her hands.
 - **Bridge the two lanes with sparse literal cues.** The source-aware emotional pass may
   extract a few portable tools, materials, textures, gestures, or garment actions from
   each phase. The independent director can select one only where it fits its invented
