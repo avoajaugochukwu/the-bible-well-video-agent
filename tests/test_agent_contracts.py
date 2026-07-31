@@ -126,7 +126,7 @@ class AgentContractTests(unittest.TestCase):
 
         problems = visual_director._validate_bridge_cues(plan["story_beats"], emotional_beats)
 
-        self.assertTrue(any("unapproved bridge_cue" in p for p in problems))
+        self.assertTrue(any("not one of that beat's allowed cues" in p for p in problems))
 
     def test_character_retry_includes_previous_json(self):
         generation_messages = []

@@ -590,11 +590,14 @@ def _validate_bridge_cues(story_beats: list[dict], spine_beats: list[dict]) -> l
     (rule 1: schema is the only reject condition) — this checks the one thing an
     enum can't: that the chosen cue actually belongs to its matching spine beat."""
     problems = []
-    for spine_beat, story_beat in zip(spine_beats, story_beats):
-        allowed = {cue.get("cue") for cue in spine_beat.get("bridge_cues") or []}
+    for i, (spine_beat, story_beat) in enumerate(zip(spine_beats, story_beats), start=1):
+        allowed = sorted({cue.get("cue") for cue in spine_beat.get("bridge_cues") or []})
         cue = (story_beat.get("bridge_cue") or "").strip()
         if cue and cue not in allowed:
-            problems.append(f"a story beat uses unapproved bridge_cue {cue!r}")
+            problems.append(
+                f"beat {i}'s bridge_cue {cue!r} is not one of that beat's allowed cues "
+                f"({allowed if allowed else 'none for this beat — leave bridge_cue empty'})"
+            )
     return problems
 
 
