@@ -127,7 +127,7 @@ def _ingest_worker():
             if row_id in _cancelled_ids:
                 _cancelled_ids.discard(row_id)
             else:
-                supabase_jobs.set_status(row_id, "failed", error=str(e))
+                supabase_jobs.set_status(row_id, "failed", error=str(e), failedStage="prepare")
         finally:
             _current_ingest_row_id = None
             _ingest_queue.task_done()
@@ -200,14 +200,13 @@ def h_ingest(m, body, query):
     row_id = body.get("row_id")
     if not row_id:
         return 400, {"error": "row_id is required"}
-    if supabase_jobs.get_job(row_id) is None:
+    existing = supabase_jobs.get_job(row_id)
+    if existing is None:
         # Placeholder row so this job shows up in the queue list immediately —
-        # otherwise it's invisible until prepare_pipeline() finishes. A row_id
-        # that already has a job (a re-ingest / resume-from-cache case) is left
-        # untouched rather than stomped with a blank placeholder. Best-effort
-        # title/clickup_url lookup so the placeholder shows a real name
-        # instead of the bare row_id — if this read fails, prepare_pipeline()
-        # will raise properly on its own re-fetch, so it's safe to swallow here.
+        # otherwise it's invisible until prepare_pipeline() finishes. Best-effort
+        # title/clickup_url lookup so the placeholder shows a real name instead
+        # of the bare row_id — if this read fails, prepare_pipeline() will raise
+        # properly on its own re-fetch, so it's safe to swallow here.
         title, clickup_url = None, None
         try:
             row = baserow.get_row(row_id)
@@ -215,6 +214,12 @@ def h_ingest(m, body, query):
         except Exception:
             pass
         supabase_jobs.create_queued_job(row_id, title=title, clickup_url=clickup_url)
+    elif existing.get("status") == "failed":
+        # Manual retry of a failed prepare — flip back to 'queued' and clear the
+        # stale error immediately, so the UI shows it's retrying right away
+        # instead of leaving the old "failed" state up until the worker
+        # actually gets to it.
+        supabase_jobs.set_status(row_id, "queued", error=None, failedStage=None)
     _enqueue_ingest(row_id)
     return 202, {"ok": True, "status": "queued", "row_id": row_id,
                  "queue_depth": _ingest_queue.qsize()}

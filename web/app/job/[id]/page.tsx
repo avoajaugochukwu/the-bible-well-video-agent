@@ -8,7 +8,7 @@ import { SceneModal } from "@/components/SceneModal";
 import type { Job, Scene } from "@/lib/types";
 import { activeAssetUrl } from "@/lib/types";
 
-const POLL_STATUSES = new Set(["rendering"]);
+const POLL_STATUSES = new Set(["rendering", "queued"]);
 
 export default function JobPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +18,8 @@ export default function JobPage() {
   const [openScene, setOpenScene] = useState<number | null>(null);
   const [rendering, setRendering] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [retrying, setRetrying] = useState(false);
+  const [pollNonce, setPollNonce] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,7 +39,7 @@ export default function JobPage() {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [id]);
+  }, [id, pollNonce]);
 
   async function triggerRender() {
     setRendering(true);
@@ -49,6 +51,24 @@ export default function JobPage() {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setRendering(false);
+    }
+  }
+
+  async function retryIngest() {
+    setRetrying(true);
+    setError(null);
+    try {
+      await api.retryIngest(id);
+      // Optimistic: h_ingest flips a failed job straight back to 'queued'
+      // server-side, so reflect that immediately instead of leaving the old
+      // "failed" state on screen until the next poll — bumping pollNonce
+      // restarts the fetch/poll loop right away.
+      setJob((j) => (j ? { ...j, status: "queued", error: undefined, failedStage: undefined } : j));
+      setPollNonce((n) => n + 1);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setRetrying(false);
     }
   }
 
@@ -124,13 +144,23 @@ export default function JobPage() {
               View rendered video
             </a>
           )}
-          <button
-            onClick={triggerRender}
-            disabled={rendering || job.status === "rendering"}
-            className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
-          >
-            {job.status === "rendering" ? "Rendering…" : "Render"}
-          </button>
+          {job.status === "failed" && (job.failedStage === "prepare" || (!job.failedStage && job.scenes.length === 0)) ? (
+            <button
+              onClick={retryIngest}
+              disabled={retrying}
+              className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
+            >
+              {retrying ? "Retrying…" : "Retry ingest"}
+            </button>
+          ) : (
+            <button
+              onClick={triggerRender}
+              disabled={rendering || job.status === "rendering"}
+              className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
+            >
+              {job.status === "rendering" ? "Rendering…" : "Render"}
+            </button>
+          )}
           <button
             onClick={handleDelete}
             disabled={deleting}
@@ -148,7 +178,7 @@ export default function JobPage() {
       )}
       {job.error && (
         <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
-          Last render failed: {job.error}
+          Last {job.failedStage === "prepare" ? "ingest" : "render"} failed: {job.error}
         </p>
       )}
 

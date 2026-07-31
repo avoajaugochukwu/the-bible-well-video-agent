@@ -36,6 +36,8 @@ export const api = {
   render: (id: string) => call(`jobs/${id}/render`, { method: "POST" }),
   deleteJob: (id: string) =>
     call<{ ok: boolean; was_in_flight: boolean; note: string | null }>(`jobs/${id}`, { method: "DELETE" }),
+  retryIngest: (id: string) =>
+    call<{ ok: boolean; status: string }>("ingest", { method: "POST", body: JSON.stringify({ row_id: id }) }),
 
   regenerateImage: (id: string, sceneNumber: number, prompt: string) =>
     call<Scene>(`jobs/${id}/scenes/${sceneNumber}/regenerate-image`, {

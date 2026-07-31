@@ -410,7 +410,7 @@ def render_pipeline(row_id) -> str:
     try:
         video_url = _render(row_id, rd, scenes, scenes_path, voice_url, clickup_url)
     except Exception as e:
-        supabase_jobs.set_status(row_id, "failed", error=str(e))
+        supabase_jobs.set_status(row_id, "failed", error=str(e), failedStage="render")
         raise
     supabase_jobs.set_status(row_id, "rendered", renderUrl=video_url)
     return video_url

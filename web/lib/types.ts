@@ -49,6 +49,9 @@ export interface Job {
   scenes: Scene[];
   renderUrl?: string;
   error?: string;
+  /** Which stage the last failure happened in — undefined on older jobs
+   * predating this field, treated as "render" for display. */
+  failedStage?: "prepare" | "render";
 }
 
 export interface JobSummary {
