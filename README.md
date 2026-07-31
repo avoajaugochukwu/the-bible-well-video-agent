@@ -50,7 +50,9 @@ ready. It talks to `src/ingest_server.py`'s API (never directly to
 OpenAI/Supabase/Pexels/video-gen) through one server-side proxy route, so the
 shared secret never reaches the browser.
 
-**Live**: https://the-bible-well-production-ui-production.up.railway.app
+**Live**: https://the-bible-well-video-agent-production.up.railway.app —
+same host as the API (one container, one Railway service; see Railway
+deployment below).
 
 For local dev instead (rarely needed — everything above runs live):
 
@@ -94,21 +96,24 @@ still for that scene. In-house image-to-video service (async submit->poll,
 
 ## Railway deployment
 
-Both pieces run live in the **ui-helpers** Railway project, both deploying
-from `main` on `avoajaugochukwu/the-bible-well-video-agent`:
+One Docker image, one Railway service — deliberately not split across two
+services, that was more to manage than this app warrants. Project
+**ui-helpers**, service **the-bible-well-video-agent**
+(id `b169301e-10ed-42aa-ac16-2ea1c091f8e6`, not the empty
+`the bible well video agent` with-spaces stub in the same project), deploying
+from `main` via the root `Dockerfile`.
 
-- **`src/ingest_server.py`** (the API): service **the-bible-well-video-agent**
-  (id `b169301e-10ed-42aa-ac16-2ea1c091f8e6`) — not the empty
-  `the bible well video agent` (with spaces) service in the same project,
-  that one is an unused stub. Root directory: repo root.
-  URL: https://the-bible-well-video-agent-production.up.railway.app
-- **`web/`** (the UI): service **the-bible-well-production-ui**
-  (id `9dc016b6-b178-49e9-b330-a6ef610d766f`). Root directory: `/web`
-  (isolated monorepo app, same repo). Its `PIPELINE_API_URL` points at the
-  API service above; `INGEST_SECRET` matches the API service's value.
-  URL: https://the-bible-well-production-ui-production.up.railway.app
-
-All credentials this repo's `.env` needs are set as Railway variables on the
-API service, including the production-UI additions (`SUPABASE_URL`,
-`SUPABASE_SECRET_KEY`, `SUPABASE_DB_URL`, `VIDEO_GEN_URL`, `VIDEO_GEN_TOKEN`,
-`PEXELS_API_KEY`) — set 2026-07-31.
+- URL: https://the-bible-well-video-agent-production.up.railway.app
+- `Dockerfile` builds `web/` (Next UI) and the Python pipeline into one
+  image; `docker-entrypoint.sh` runs both processes together —
+  `ingest_server.py` on an internal-only port, the Next UI on Railway's
+  public `$PORT`. The UI's server-side proxy reaches the API over
+  `localhost` (`PIPELINE_API_URL`, set by the entrypoint script itself, not
+  a Railway variable — it's always localhost here).
+- `web/app/ingest/route.ts` and `web/app/health/route.ts` are compatibility
+  passthroughs so n8n's existing webhook against the old bare `/ingest` path
+  keeps working now that the UI owns the public port.
+- All credentials this repo's `.env` needs are Railway variables on this one
+  service, including the production-UI additions (`SUPABASE_URL`,
+  `SUPABASE_SECRET_KEY`, `SUPABASE_DB_URL`, `VIDEO_GEN_URL`,
+  `VIDEO_GEN_TOKEN`, `PEXELS_API_KEY`) — set 2026-07-31.
