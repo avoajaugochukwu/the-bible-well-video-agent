@@ -10,7 +10,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json
 
 
-VISUAL_STORY_CONTRACT_VERSION = 11
+VISUAL_STORY_CONTRACT_VERSION = 12
 MAX_ATTEMPTS = 3
 
 
@@ -60,6 +60,17 @@ def _spine_schema(count: int) -> dict:
                     "items": {
                         "type": "object",
                         "properties": {
+                            "visual_mode": {
+                                "type": "string",
+                                "enum": ["concrete", "abstract"],
+                                "description": (
+                                    "concrete if this snippet names a specific real-world "
+                                    "event, object, or action a camera could show directly "
+                                    "(an invitation, a wedding, a document, someone arriving "
+                                    "or leaving); abstract if it is interior reflection, "
+                                    "interpretation, or a feeling with no literal referent"
+                                ),
+                            },
                             "story_pressure": {
                                 "type": "string",
                                 "enum": [
@@ -129,6 +140,7 @@ def _spine_schema(count: int) -> dict:
                             },
                         },
                         "required": [
+                            "visual_mode",
                             "story_pressure",
                             "emotional_valence",
                             "agency",
@@ -389,7 +401,12 @@ def _build_emotional_spine(snippets: list[str]) -> dict:
                 "entry each — never skip, merge, or compress snippets; a short transitional "
                 "snippet still gets its own entry with the closest neutral categorical values "
                 "rather than being dropped. Encode story meaning with the categorical fields in "
-                "the schema. For bridge_cues only, extract zero to three sparse, portable visual "
+                "the schema. For visual_mode, judge each snippet on its own: concrete when it "
+                "names a specific event, object, or action a camera could show directly as "
+                "written, abstract when it is interior reflection or feeling with nothing literal "
+                "to film. This is independent of every other field — a concrete snippet can carry "
+                "any emotional_valence or story_pressure. For bridge_cues only, extract zero to "
+                "three sparse, portable visual "
                 "anchors from that snippet: a specific tool, material, tactile texture, repeated "
                 "physical gesture, or garment action that could naturally appear inside a "
                 "different plot. Every cue must include a short exact evidence quote from THAT "

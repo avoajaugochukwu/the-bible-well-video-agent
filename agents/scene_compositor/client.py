@@ -193,6 +193,16 @@ def compose_one(scene: dict, characters_by_id: dict, reference_bytes_by_id: dict
     }
 
 
+def regenerate_one(scene: dict, characters: list[dict]) -> dict:
+    """Regenerate a single scene's image outside the full pipeline run — the
+    production UI's per-scene 'edit prompt, regenerate' action. Fetches only
+    the reference images this one scene actually needs, not the whole cast."""
+    characters_by_id = {c["id"]: c for c in characters}
+    present = _present_characters(scene, characters_by_id)
+    reference_bytes_by_id = _fetch_reference_bytes(present)
+    return compose_one(scene, characters_by_id, reference_bytes_by_id)
+
+
 def compose_all(scenes: list[dict], characters: list[dict]) -> list[dict]:
     characters_by_id = {c["id"]: c for c in characters}
     reference_bytes_by_id = _fetch_reference_bytes(characters)

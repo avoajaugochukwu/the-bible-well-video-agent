@@ -39,6 +39,18 @@ class TwoLaneStoryTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             scene_engine.break_into_scenes(snippets, [], visual_story)
 
+    def test_pick_shot_routes_by_visual_mode_not_content(self):
+        parallel_shot = {"hero_subject": "parallel"}
+        literal_shot = {"hero_subject": "literal"}
+        self.assertEqual(
+            scene_engine._pick_shot("concrete", parallel_shot, literal_shot),
+            literal_shot,
+        )
+        self.assertEqual(
+            scene_engine._pick_shot("abstract", parallel_shot, literal_shot),
+            parallel_shot,
+        )
+
     def test_scene_cap_is_lossless(self):
         script = " ".join(f"word{i}" for i in range(1, 76))
         snippets = scene_engine.cap_segments([script], max_words=30)

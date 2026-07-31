@@ -445,3 +445,99 @@ longer bounded, so fixed token/timeout budgets sized for ≤14 items broke):
 Both were genuine bugs surfaced by testing at real scale, not scope creep — flagging here
 since a longer script than anything tested this session could plausibly still need a larger
 multiplier; there's no hard ceiling on narration length in this pipeline.
+
+## Phase: reference-video study + two-lane concrete/abstract shot routing (2026-07-30)
+
+### Reference study: how a real faith-channel video pairs narration and visuals
+
+Watched the first 2 minutes of a comparable published faith-narrative video
+(`fZfa5iXy2ko`) — transcript + Gemini visual analysis — specifically to check how its
+visuals handle philosophical/reflective narration lines, since that's what our own
+parallel-story invention was originally meant to solve. Findings:
+
+- Structure: a ~24s cold-open dramatized dialogue scene, then a switch to third-person
+  narration. The narration itself stays just as philosophical as ours ("before the idea
+  that life could be built instead of endured", "consistency itself was faith") — the
+  simpler-narration idea was not actually what makes their visuals work.
+- The real mechanism: **visuals decouple from narration's abstraction level, not from its
+  subject**. Concrete narration → new literal shot, cuts every ~5-10s. Abstract/
+  philosophical narration → the shot does NOT change to illustrate the metaphor; it holds
+  the same emotive anchor image (a face, folded hands) across multiple abstract sentences,
+  sometimes with a slow push-in for weight. A third mode, symbolic substitution, appears
+  for a few beats (glowing phone in the dark for "unexpected provision", cash on a
+  nightstand for "tomorrow isn't guaranteed") — a concrete prop standing in for an
+  abstraction, still grounded in the same real story, never a separate invented plot.
+- Character continuity carries an age jump (child → adult) via consistent design (hair,
+  face structure, an earring) rather than any special mechanism.
+- This confirmed the diagnosis of our own bug below: the reference video never runs two
+  competing stories. Ours currently does.
+
+### Bug found via gallery review: parallel-story invention overriding literal narration
+
+Reviewing the "Ellen" gallery (37-scene run from the previous phase), scenes 17-20 — the
+narration's actual wedding-invitation backstory (kitchen table, invitation, third pew,
+pastor's vow) — rendered instead as scenes from `visual_director`'s *invented* parallel
+greenhouse/preservation-business film: a cot instead of a kitchen table, a hanging robe
+instead of a wedding dress, two invented men tying root balls instead of a pastor. Root
+cause: `author_story_beat()` (the per-beat shot planner) never receives narration at all
+by design (see the phase above) — it only ever sees the invented film plan, so once
+`visual_director` commits to an unrelated parallel story, there is no signal anywhere in
+the beat-authoring path that could route a genuinely narration-concrete beat back to the
+real event. A user instruction to "fall back to the real scene when it's concrete" could
+not work structurally — nothing downstream of the film-plan call ever sees the narration
+snippet to judge concreteness against.
+
+This is not a narration-writing problem (scripts staying philosophical is fine, confirmed
+by the reference video above) — it's a missing routing mechanism between two visual modes
+that both need to exist.
+
+### Fix: two shot authors per beat, routed by a narration-derived fact, not a comparison
+
+Design settled through discussion before implementing (see conversation): both authors run
+for *every* beat — the parallel-world author still needs every beat to keep its own
+invented film's internal continuity (its beat N depends on what beats 1..N-1 already
+established, even for beats whose output goes unused), so skipping it for concrete beats
+would break the story it's still authoring. A separate upstream tag decides which
+author's output is actually used, decided from the beat's own narration text, never by
+comparing the two finished outputs against each other (would reintroduce the second-judge
+pattern `agents/CLAUDE.md` already rules out).
+
+- `agents/visual_director/client.py`: the emotional-spine pass (`_build_emotional_spine`,
+  the one call that already reads real narration snippets) gains a new required per-beat
+  field, `visual_mode: "concrete" | "abstract"` — schema-enum, one sentence of prompt
+  guidance, judged from that snippet's own text only. `VISUAL_STORY_CONTRACT_VERSION`
+  11 → 12.
+- `src/scene_engine.py`: new `author_literal_beat(snippet, characters)` — mirrors
+  `author_story_beat`'s shot schema and cast-lock rules, but sees only that beat's own
+  narration snippet and never the invented film. `break_into_scenes()` now runs both
+  authors for every beat concurrently, then `_pick_shot(visual_mode, parallel_shot,
+  literal_shot)` — a plain fact lookup — selects which authored shot reaches the
+  compositor. `PROMPT_CONTRACT_VERSION` 11 → 12.
+- `src/gallery.py`: `visual_mode` now shown next to `scene_type` on every card and in the
+  modal, so gallery review can see which lane each scene took.
+- `tests/test_two_lane_story.py`: added `test_pick_shot_routes_by_visual_mode_not_content`
+  covering the new routing function directly (pure function, no LLM mock needed).
+
+Verified live: fresh full run on the same "Ellen" script (`narration_script_short.txt`,
+575 words, same `runs/i2i-fresh-full-test/` output dir reused across this whole testing
+arc) — 39 scenes designed (25 concrete / 14 abstract), first 20 imaged, 20/20 real i2i,
+zero fallbacks. Scenes 17-20 (the same ones that broke before) now correctly route
+`concrete` and render the actual kitchen-table/invitation/church-pew wedding scene instead
+of the greenhouse world:
+
+- scene 17: "invitation came—cream-colored with gold letters" → kitchen table, envelope
+  handed over by a tracked supporting character, warm side light.
+- scene 18: "niece was getting married" → church interior, protagonist in a pew, bride
+  visible at the altar in the background.
+- scene 19: "sat at kitchen table with the invitation... door swinging shut" → kitchen
+  table, envelope held to chest, pensive.
+- scene 20: "at the wedding, third row, on the aisle... where they put the ones who came
+  alone" → church pew, protagonist alone on the aisle, empty seat beside her.
+
+Not done / open: only exercised on one 39-snippet script this phase; no dedicated
+end-to-end test of the two-author routing itself (would need a live/mocked
+`visual_director.build()` + `break_into_scenes()` run, same gap noted in the phase above
+for the rest of this stack). User has separately decided to change future scripts toward
+more concretely-visualizable narration going forward — this fix is what unblocks scripts
+that stay abstract/philosophical in places, not a replacement for that script-writing
+change.

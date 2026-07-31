@@ -2,56 +2,68 @@
   "source_facts": {
     "protagonist": [
       {
-        "fact": "Her name is Ellen; she is forty-nine at the story's start and later turns fifty-one.",
-        "evidence": "\"Ellen was forty-nine years old\"; \"On the morning she turned fifty-one\""
+        "fact": "Ellen was forty-nine years old.",
+        "evidence": "\"Ellen was forty-nine years old\""
       },
       {
-        "fact": "She is unmarried and has been waiting for marriage for decades.",
-        "evidence": "\"If you have ever turned fifty with no ring on your hand\"; \"She measured every year by the one thing she did not have.\""
+        "fact": "On the morning she turned fifty-one she sat at her kitchen table with a cup of coffee.",
+        "evidence": "\"On the morning she turned fifty-one, Ellen sat at her kitchen table with a cup of coffee.\""
       },
       {
-        "fact": "She lives alone in a small house and keeps a sunroom where she preserves wildflowers.",
-        "evidence": "\"She kept her small house quiet.\"; \"Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses.\""
+        "fact": "She kept a small house and spent days in a small sunroom preserving wildflowers in heavy wooden presses.",
+        "evidence": "\"She kept her small house quiet. Her days were spent in her small sunroom, carefully preserving wildflowers in heavy wooden presses.\""
       },
       {
-        "fact": "She describes her long inaction as holiness/patience but recognizes it as fear by story end.",
-        "evidence": "\"She had stopped living years ago and called it holiness.\"; \"She called the emptiness patience, because fear sounded like something she would have to fix.\""
+        "fact": "She stored a 'good dress' in the closet with the tags still on and had saved it for a day that never came.",
+        "evidence": "\"She kept her good dress in the closet with the tags still on, saving it for a day that never came.\""
       },
       {
-        "fact": "She attends her niece's wedding alone, sits in the aisle seat reserved for those who come alone, and is emotionally affected.",
-        "evidence": "\"The invitation came... Her niece was getting married.\"; \"At the wedding, Ellen sat in the third row, on the aisle, in the seat where they put the ones who came alone.\""
+        "fact": "She attended her niece's wedding alone and sat in the third row on the aisle.",
+        "evidence": "\"At the wedding, Ellen sat in the third row, on the aisle, in the seat where they put the ones who came alone.\""
       },
       {
-        "fact": "She prays and experiences a quiet conversion: stops waiting and begins to live; opens windows, wears her good dress, and keeps fresh flowers.",
-        "evidence": "\"She got down on her knees and prayed her truest prayer\"; \"She hung her good dress where she could wear it on any ordinary Tuesday.\"; \"She looked at the fresh, unpressed flowers sitting in the morning light.\""
+        "fact": "She prayed and spoke to the Lord, asking if God forgot her name.",
+        "evidence": "\"'Lord,' she whispered. 'Did you write everyone else's name down and just... forget mine?'\""
+      },
+      {
+        "fact": "She had a transformative conversation with an old woman at the wedding brunch who told her she had been sitting in a locked room.",
+        "evidence": "\"You have been sitting in a locked room for thirty years,\" the old woman said softly... 'God never locked that door, child. You did.'\""
+      },
+      {
+        "fact": "After that encounter Ellen changed: opened windows, hung her good dress so she could wear it any ordinary Tuesday, and stopped waiting to live.",
+        "evidence": "\"She opened the sunroom windows... She hung her good dress where she could wear it on any ordinary Tuesday. She was done waiting to live.\""
+      },
+      {
+        "fact": "She describes her earlier self as having stopped living and calling it holiness, measuring years by what she did not have.",
+        "evidence": "\"She had stopped living years ago and called it holiness... She measured every year by the one thing she did not have. She called the emptiness patience...\""
       }
     ],
     "relationships": [
       {
-        "fact": "She has a niece who gets married and who is the reason for attending the wedding.",
+        "fact": "Ellen is the aunt of the bride (has a niece).",
         "evidence": "\"Her niece was getting married.\""
       },
       {
-        "fact": "She encounters a kindly older woman at the wedding brunch who challenges her perspective.",
-        "evidence": "\"At the wedding brunch, Ellen sat alone at a corner table. That was where she met the old woman\u2014a gentle stranger with clear, wise eyes.\""
+        "fact": "She has a spiritual relationship with God (addresses the Lord, prays for forgiveness and help to start).",
+        "evidence": "\"'Lord,' she whispered... 'Forgive me. Teach me how to start.'\""
       },
       {
-        "fact": "She has an ongoing personal relationship with God and addresses God directly in prayer.",
-        "evidence": "\"Lord,\" she whispered...\"; \"'Lord, I called my fear your will. Forgive me. Teach me how to start.'\""
+        "fact": "She encounters a compassionate older woman at the wedding brunch who acts as catalyst.",
+        "evidence": "\"That was where she met the old woman\u2014a gentle stranger with clear, wise eyes.\""
       }
     ],
     "social_world": [
       {
-        "fact": "She is part of a conservative Christian frame of reference (uses church language, waiting for God's will).",
-        "evidence": "\"till death do you part\" context; \"Lord, did you write everyone else's name down\"; \"she called it holiness\""
+        "fact": "Ellen attends church events (wedding, pastor's words are noted).",
+        "evidence": "\"When the pastor said the words, till death do you part...\""
       },
       {
-        "fact": "Her life is small-scale and domestic: house, kitchen table, sunroom, bed.",
-        "evidence": "\"She kept her small house quiet.\"; \"She sat at her kitchen table\"; \"She would arrange the delicate petals...\""
+        "fact": "She lives a solitary, quiet life centered in her home (sunroom, kitchen table).",
+        "evidence": "\"She kept her small house quiet. Her days were spent in her small sunroom... Ellen sat at her kitchen table with the invitation in her hands.\""
       },
       {
-        "fact": "She isolates socially (keeps good dress in closet, sits alone at events).",
-        "evidence": "\"She kept her good dress in the closet with the tags still on\"; \"At the wedding brunch, Ellen sat alone at a corner table.\""
+        "fact": "She participates in small social gatherings like a wedding brunch where she sits alone.",
+        "evidence": "\"The next morning, at the wedding brunch, Ellen sat alone at a corner table.\""
       }
     ],
     "occupation": {
@@ -61,83 +73,86 @@
     },
     "unstated_visual_traits": [
       "height",
-      "body_type",
-      "skin_tone",
-      "eye_color",
-      "facial_features",
-      "posture",
-      "voice_timbre"
+      "body build",
+      "skin tone",
+      "eye color",
+      "exact hair color and length",
+      "gait",
+      "distinctive facial markings (scars, freckles)",
+      "voice timbre"
     ]
   },
   "whole_script_vibe": {
-    "social_class_and_lifestyle": "Modest, lower-middle\u2013class small\u2011town/suburban life; domestic, careful with limited travel and resources.",
-    "professional_energy": "Quiet, methodical, reserved \u2014 low-key competence rather than outward ambition.",
-    "primary_visual_vibe": "Warm, muted, sunlit interiors; gentle textures (wood, linen, pressed flowers) and a lived-in, tidy domesticity.",
-    "wardrobe_vibe": "Conservative, timeless, slightly old-fashioned daywear: simple dresses, cardigans, sensible shoes; one 'good dress' kept for special occasions but ultimately worn casually.",
+    "social_class_and_lifestyle": "Modest, homeowner in a small-town or small-city setting; conservative, church-centered social life and limited travel.",
+    "professional_energy": "Low-key, introspective, methodical\u2014someone whose daily rhythm values quiet routines and careful, precise tasks.",
+    "primary_visual_vibe": "Soft, warm natural light; muted, slightly worn textures; interiors with sunlit domestic corners and handcrafted details.",
+    "wardrobe_vibe": "Simple, tidy, modest dresses and cardigans; sensible flats; one reserved dress kept for special occasions that becomes everyday-usable when she transforms.",
     "credible_social_domains": [
-      "local church community",
-      "neighborhood acquaintances",
-      "small civic groups (historical society, library patrons)",
-      "family gatherings (niece, extended family)"
+      "church-community gatherings",
+      "neighborhood brunches and small social events",
+      "quiet domestic spaces (sunroom, kitchen)",
+      "local community institutions (library, historical society, community center)"
     ],
     "credible_locations": [
-      "small-town main street and neighborhoods",
-      "single-story cottage/suburban house with sunroom",
-      "community church and fellowship hall",
-      "local historical society or small public library reading room"
+      "small-town main street",
+      "modest single-family house with sunroom",
+      "small community church",
+      "local cafe used for brunches and meetings",
+      "community-run archival/historical room or local library reading room"
     ]
   },
   "abstract_casting_signals": {
-    "age_range": "50\u201360",
+    "age_range": "late 40s to early 60s (primarily 50\u201355)",
     "gender": "female",
     "temperament": [
       "reflective",
       "reserved",
-      "steady",
-      "sensitive"
+      "patient",
+      "quietly resilient"
     ],
-    "economic_independence": "modest, financially independent but not affluent",
+    "economic_independence": "modestly independent (owns a small house, limited travel)",
     "work_style": [
       "methodical",
-      "dependent on routine",
-      "thoughtful",
-      "adaptable once prompted"
+      "precise",
+      "independent",
+      "steady"
     ],
-    "interpersonal_style": "quietly warm, more comfortable in small conversations than large groups",
-    "wardrobe_formality": "conservative-casual (classic daywear)",
-    "cultural_tone": "Christian, small\u2011town, traditional values"
+    "interpersonal_style": "reserved-warm (polite, gentle, slow-to-trust but capable of warmth)",
+    "wardrobe_formality": "conservative-casual (modest dresses, cardigans, functional shoes; one kept 'special' dress)",
+    "cultural_tone": "small-town, traditional Christian milieu with understated domestic aesthetics"
   },
   "cinematic_inference": {
-    "protagonist_occupation": "Greenhouse/Nursery Manager (local garden center)",
+    "protagonist_occupation": "Owner-operator of a small secondhand bookshop and neighborhood reading hub",
     "occupation_basis": "creative_inference",
-    "body_design": "5'6\" (168 cm), medium build with practical strength and a posture softened by years of bending and lifting; hands with visible calluses and short, tidy nails; light freckles on forearms from sun exposure.",
-    "ethnicity_design": "White, Northern European ancestry (small\u2011town American Midwest visual reference).",
-    "hair_design": "Shoulder\u2011length ash brown with a few silver strands, usually pulled back into a low, practical bun or loose knot with wispy face-framing tendrils; minimal makeup.",
-    "wardrobe_design": "Conservative-casual workwear: tailored chambray button-up shirts, olive and tan utility vests, well-fitted denim or cargo chinos, sturdy leather ankle boots; layered with a soft cardigan or lightweight waxed jacket for off-duty scenes; simple pewter necklace with a small cross (subtle, personal).",
-    "casting_rationale": "Choose an actor who conveys steady calm and interior depth over overt expressiveness; physicality should read as capable and practiced rather than youthful or athletic. The wardrobe and body details support a hands-on, routine job while allowing quiet emotional beats to be visible in small gestures\u2014fixing a plant label, cradling a seedling, or adjusting a customer's posture."
+    "body_design": "cisgender female, 5'5\", medium build with gentle posture and hands marked by years of handling books\u2014slightly callused fingertips and faint ink stains; moves with careful, unhurried economy.",
+    "ethnicity_design": "White Northern European descent with a complexion that freckles lightly across the nose and cheeks.",
+    "hair_design": "Short-to-mid length salt-and-pepper hair, usually worn in a loose, practical bob that can be tucked behind the ear; occasionally pinned back with a simple clip for events.",
+    "wardrobe_design": "Conservative-casual capsule: knee-length A-line dresses in muted florals and solid earth tones, several soft cardigans (camel, forest green, worn navy), sensible low-heeled leather ankle boots, patterned tights, a single treasured 'special' tea dress preserved on a padded hanger for author nights; thin reading glasses on a cord and a functional crossbody satchel for receipts and stamps.",
+    "casting_rationale": "The role requires an actor who can convey quiet strength and steady routine through small gestures\u2014sorting, shelving, and hosting\u2014so a mid\u201150s female with lived-in hands and a composed presence provides immediate believability. Her visual design (practical hair, modest wardrobe, subtle signs of bookwork) supports scenes that range from solitary ritual to gentle public leadership without distracting from emotional nuance."
   },
   "director_profile": {
     "stable_identity": [
-      "Age: 50\u201360, female",
-      "Temperament: reflective, reserved, steady, sensitive",
-      "Economic: modest, financially independent",
-      "Work style: methodical, routine-oriented, adaptable when prompted",
-      "Religious/cultural tone: Christian, small\u2011town traditional values"
+      "Late 40s\u2013early 60s woman, primarily 50\u201355",
+      "Methodical, reflective, quietly resilient temperament",
+      "Modestly independent owner of a small-town secondhand bookshop",
+      "Reserved-warm interpersonal style; slow-to-trust but capable of deep loyalty",
+      "Lives in a small, comfortably cluttered house near the shop"
     ],
-    "social_dynamics": "Operates in close-knit, small-group interactions: a pair of seasonal assistants she mentors quietly, regular customers who drop by for advice, a local landscaper who trades favors, and occasional tense exchanges with a corporate supplier. She prefers one-on-one conversations and manages conflict by listening and offering measured, practical solutions.",
-    "professional_vibe": "Calm, efficient stewardship of living things\u2014procedural rhythms (morning watering rounds, propagation logs, seasonal inventory) give her days structure. She's respected locally for knowledge rather than showmanship; decisions are deliberate and informed by years of tacit practice.",
-    "visual_vibe": "Warm, earth-toned palette with weathered wood, galvanized metal, glasshouse light, and mist; visual textures include soil, burlap, clay pots, and green foliage. Cinematic moments focus on close-ups of hands, plant detail, soft natural light through glass, and the quiet choreography of daily routines.",
+    "social_dynamics": "Interacts in steady, low-key rhythms: familiar regulars (a retired schoolteacher, a teenage volunteer, a weary postal clerk), tentative new customers who become confidants, and occasional town officials pressing for change; she mediates with gentle authority, preferring careful listening and measured boundary-setting over confrontation.",
+    "professional_vibe": "Orderly and tactile\u2014cataloguing donations, arranging themed displays, prepping tea for small readings\u2014her shop is a communal slow space where rituals (closing the shop, sweeping, stamping recycled bags) structure both work and solace.",
+    "visual_vibe": "Warm, domestic palette of worn wood, sun-faded spines, handwritten signs, mismatched armchairs, late-afternoon dust motes; camera lingers on hands, bookmarks tucked into well-thumbed novels, the special dress on its hanger, and seasonal window displays that mark town rhythms.",
     "credible_worlds": [
-      "Small independent garden center attached to a Main Street storefront and adjacent greenhouse complex with a modest gravel parking lot and delivery bay.",
-      "On-site propagation room with potting benches, heat mats, seed trays, labeled shelving, and a chalkboard schedule for staff.",
-      "A back office that doubles as a seasonal display prep area\u2014cardboard boxes, seed catalogs, old signage, a second\u2011hand radio, and a small ledger or laptop.",
-      "Local community settings: Sunday church potluck, Saturday farmers\u2019 market where she supplies plants, and residential yards where she consults for plantings."
+      "Morning quiet: she opens the shop, polishes brass bell, empties yesterday's coin jar, and arranges a 'Staff Picks' shelf.",
+      "Community hub: weekly neighborhood reading group around a chipped table with tea, where private confessions and local gossip surface.",
+      "Event night: author reading in the storefront with string lights, the special dress worn, a modest ticket box, and a nervous but proud host.",
+      "Domestic downtime: evenings at home mending book jackets, transcribing notes, or tending a small vegetable patch adjacent to her house.",
+      "Town friction: negotiating with a developer or school librarian over space\u2014subtle public pressure met with principled calm."
     ],
-    "parallel_story_rule": "Do not let her off-duty religious or family life replace or become the workplace; keep faith and small\u2011town ties as personal texture that informs choices, not as the employer or central plot driver."
+    "parallel_story_rule": "When the protagonist is off-duty, keep her domestic and religious cultural texture present but never the employer or primary plot driver; scenes should show personal rituals and community faith as background shaping her moral compass, not as institutional authority."
   },
   "occupation_selection": {
-    "job_title": "Greenhouse/Nursery Manager (local garden center)",
-    "rationale": "A greenhouse/nursery manager gives the abstract character a lively, tactile workplace that still suits her reflective, steady temperament. The role is methodical and routine-driven (propagation schedules, watering, seasonal cycles) but visually rich and physically active\u2014rows of plants, propagation benches, misting systems, deliveries, and seasonal sales\u2014so scenes can move between quiet, intimate moments and busier customer or staff interactions. It supports modest, independent income and small-group social interactions (regular customers, a couple of seasonal employees, local landscapers) that match her quietly warm, reserved interpersonal style. The job also allows for thoughtful, steady gestures (mending a rootball, cataloging orders, advising a worried new gardener) that reveal sensitivity without relying on large-group leadership, paperwork-heavy sequences, or stereotyped portrayals."
+    "job_title": "Owner-operator of a small secondhand bookshop and neighborhood reading hub",
+    "rationale": "This choice balances credibility with strong visual and dramatic range. The owner-operator role fits her steady, methodical habits (sorting donations, cataloguing, arranging displays) and her reserved-warm interpersonal style (slow-to-trust regulars who become friends). It supports modest economic independence and offers autonomous, paced work that suits a mid\u201150s woman who values ritual and continuity. Visually the shop provides rich, filmable detail\u2014narrow aisles, worn wooden shelves, a front\u2011window armchair, handwritten signs, a treasured \u2018special\u2019 dress reserved for events\u2014while enabling varied active scenes: tending customers, hosting an intimate book group, preparing for an author reading, rescuing a rare volume, negotiating with a local schools\u2019 librarian, or quietly confronting a community change (development, illness, or a secret from town records). The setting allows shifting environments (morning quiet, event nights, seasonal displays) and relationships that reveal her patience, resilience, and small-town cultural tone without relying on paperwork or formal institutional constraints."
   },
   "story_dossier_contract_version": 12
 }

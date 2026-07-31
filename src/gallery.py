@@ -21,6 +21,7 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
         url = s.get("image_url")
         lane = s.get("lane")
         scene_type = s.get("scene_type")
+        visual_mode = s.get("visual_mode")
         image_basis = s.get("image_basis") or ""
         basis_kind = s.get("basis_kind") or ""
         mood_designated = bool(s.get("mood_designated"))
@@ -31,6 +32,7 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
             "n": n,
             "lane": lane,
             "scene_type": scene_type,
+            "visual_mode": visual_mode,
             "image_basis": image_basis,
             "basis_kind": basis_kind,
             "mood_designated": mood_designated,
@@ -43,7 +45,8 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
         lane_label = html.escape(lane) if lane else "—"
         meta_html = ""
         if scene_type:
-            meta_html += f'<div class="scene-type">{html.escape(scene_type)}</div>'
+            mode_suffix = f" · {html.escape(visual_mode)}" if visual_mode else ""
+            meta_html += f'<div class="scene-type">{html.escape(scene_type)}{mode_suffix}</div>'
         if image_basis:
             basis_label = "Search" if basis_kind == "search" else "Prompt"
             meta_html += (f'<div class="basis basis-{basis_kind}">'
@@ -342,6 +345,7 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
     modalMood.style.display = s.mood_designated ? '' : 'none';
     var metaParts = [];
     if (s.scene_type) metaParts.push(s.scene_type);
+    if (s.visual_mode) metaParts.push(s.visual_mode);
     modalMeta.textContent = metaParts.join(' · ');
     if (s.image_basis) {{
       var label = s.basis_kind === 'search' ? 'Search' : 'Prompt';

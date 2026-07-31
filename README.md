@@ -58,3 +58,12 @@ See `CLAUDE.md` for the full list and field-by-field details.
 
 `CLAUDE.md` has the full stage-by-stage SOP, Baserow field contract, S3/
 ClickUp specifics, and the multi-lane image routing rules.
+
+## Video-gen API (not currently used)
+
+This pipeline generates still images (gpt-image-2) assembled into a slideshow
+by Remotion — no motion/video model is called anywhere in it today. If that
+changes, the in-house video-gen service is:
+
+- API: https://avoajaugochukwu--open-source-video-gen-web.modal.run
+- Docs (Swagger): https://avoajaugochukwu--open-source-video-gen-web.modal.run/docs

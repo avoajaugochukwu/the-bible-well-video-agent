@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Audio, Img, Sequence, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Audio, Img, OffthreadVideo, Sequence, interpolate, useCurrentFrame} from 'remotion';
 import {SubscribeOverlay, computeSubscribePlacements} from './overlays/SubscribeOverlay';
 import {Captions, type Word} from './overlays/Captions';
 
@@ -89,6 +89,11 @@ const pickTransition = (sceneNumber: number): TransitionKind =>
 export type Scene = {
 	scene_number: number;
 	image_url: string;
+	// Production UI (web/) lets a scene's active asset be a video instead of
+	// a still — video_url + mode:'video' render that clip in place of
+	// image_url; image_url stays required as the fallback/backfill source.
+	video_url?: string;
+	mode?: 'image' | 'video';
 	// Optional: lets a future caller drive per-scene timing from real
 	// narration alignment without changing any logic below.
 	duration_frames?: number;
@@ -182,14 +187,27 @@ const SingleScene: React.FC<{scene: Scene; durationInFrames: number}> = ({
 				transform: `scale(${scale}) translate(${translateXPct}%, ${translateYPct}%)`,
 			}}
 		>
-			<Img
-				src={scene.image_url}
-				style={{
-					width: '100%',
-					height: '100%',
-					objectFit: 'cover',
-				}}
-			/>
+			{scene.mode === 'video' && scene.video_url ? (
+				<OffthreadVideo
+					src={scene.video_url}
+					loop
+					muted
+					style={{
+						width: '100%',
+						height: '100%',
+						objectFit: 'cover',
+					}}
+				/>
+			) : (
+				<Img
+					src={scene.image_url}
+					style={{
+						width: '100%',
+						height: '100%',
+						objectFit: 'cover',
+					}}
+				/>
+			)}
 		</AbsoluteFill>
 	);
 };

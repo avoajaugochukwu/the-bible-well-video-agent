@@ -19,7 +19,7 @@ import env                     # utils: one .env lookup (checks root .env)
 import align                    # utils: Whisper-word <-> verbatim-scene DTW aligner
 from llm import call_llm_json   # utils: shared OpenAI structured-JSON caller
 
-PROMPT_CONTRACT_VERSION = 11
+PROMPT_CONTRACT_VERSION = 12
 CONTEXT_CONTRACT_VERSION = 2
 
 CONTEXT_SCHEMA = {
@@ -347,6 +347,70 @@ Return exactly one shot.
     )
 
 
+def author_literal_beat(snippet: str, characters: list[dict]) -> dict:
+    """Plan the one shot for a beat whose narration names a concrete,
+    visualizable event — the literal counterpart to author_story_beat's
+    parallel-world shot. Sees only this beat's own narration snippet, never
+    the invented film, so it cannot drift onto the wrong story."""
+    character_ids = [c["id"] for c in characters]
+    cast = "\n".join(
+        f'- id "{c["id"]}", role "'
+        f'{"protagonist" if c["id"] == "protagonist" else "recurring supporting character"}'
+        f'": {c["appearance"]}'
+        for c in characters
+    )
+    system = f"""
+You are the shot planner for one beat of a Christian animated short film. This
+beat's narration names a concrete, visualizable event — plan exactly one
+still-image shot that directly depicts what this narration describes.
+
+NARRATION FOR THIS BEAT:
+{snippet}
+
+TRACKED CAST:
+{cast}
+
+Every stable physical, wardrobe, jewelry, relationship-status, or occupational
+identity detail must come from TRACKED CAST. Do not invent unlisted identity
+markers to make a character feel more specific; specificity comes from action,
+body language, framing, and the scene the narration describes.
+
+The world should feel populated and alive. Anonymous neighbors, customers,
+coworkers, and passersby can appear naturally without character_ids, but keep
+them as background texture — never let an anonymous figure compete with or
+outweigh the tracked characters who are the beat's actual foreground focus.
+character_ids contain only recurring cast members clearly visible and
+foregrounded in this shot, actually named or implied by this narration.
+
+image_prompt is 25-45 words and describes only what the image generator should
+render: specific location, visible action, people and body language, time of
+day, and framing. Refer to recurring cast by role, never by given name. Their
+visual appearance is injected later. Use no written signs or readable page
+content. Do not add an art style.
+
+Faith is shown through behavior, relationship, service, reconciliation,
+prayerful posture, and changed choices. Religious objects are not shorthand
+for an inner state.
+
+Return exactly one shot.
+""".strip()
+    return call_llm_json(
+        [
+            {"role": "system", "content": system},
+            {"role": "user", "content": "Plan the shot."},
+        ],
+        _shot_schema(character_ids),
+        max_completion_tokens=2048,
+    )
+
+
+def _pick_shot(visual_mode: str, parallel_shot: dict, literal_shot: dict) -> dict:
+    """Route each beat to its authored shot by narration fact, not by
+    comparing the two outputs — visual_mode comes from agents/visual_director's
+    emotional-spine pass, the one stage that reads the real narration snippet."""
+    return literal_shot if visual_mode == "concrete" else parallel_shot
+
+
 def break_into_scenes(
     snippets: list[str],
     characters: list[dict],
@@ -355,37 +419,57 @@ def break_into_scenes(
 ) -> list[dict]:
     """Zip the already-cut verbatim narration snippets 1:1 with the director's
     story beats — guaranteed equal counts, since agents/visual_director scores
-    every one of these same snippets rather than inventing its own boundaries —
-    and plan one shot per beat without showing the shot author any narration."""
+    every one of these same snippets rather than inventing its own boundaries.
+    Both the parallel-world shot and the literal shot are authored for every
+    beat (the parallel author needs every beat to keep its own invented story
+    coherent, even where its output goes unused), then each beat's own
+    narration-derived visual_mode — never a second call comparing the two
+    outputs — picks which authored shot actually reaches the compositor."""
     from concurrent.futures import ThreadPoolExecutor
 
     story_beats = visual_story.get("story_beats") or []
+    emotional_beats = (visual_story.get("emotional_spine") or {}).get("emotional_beats") or []
     if len(story_beats) != len(snippets):
         raise ValueError(
             f"visual_story has {len(story_beats)} beats but narration was cut into "
             f"{len(snippets)} snippets — these must match 1:1"
         )
+    if len(emotional_beats) != len(snippets):
+        raise ValueError(
+            f"visual_story emotional_spine has {len(emotional_beats)} beats but narration "
+            f"was cut into {len(snippets)} snippets — these must match 1:1"
+        )
 
-    with ThreadPoolExecutor(max_workers=min(workers, len(story_beats))) as ex:
-        shots = list(ex.map(
-            lambda beat: author_story_beat(visual_story, beat, characters),
-            story_beats,
-        ))
+    with ThreadPoolExecutor(max_workers=min(workers * 2, len(story_beats) * 2)) as ex:
+        parallel_futures = [
+            ex.submit(author_story_beat, visual_story, beat, characters)
+            for beat in story_beats
+        ]
+        literal_futures = [
+            ex.submit(author_literal_beat, snippet, characters)
+            for snippet in snippets
+        ]
+        parallel_shots = [f.result() for f in parallel_futures]
+        literal_shots = [f.result() for f in literal_futures]
 
-    out = [
-        {
+    out = []
+    for i, (snippet, emotional_beat, parallel_shot, literal_shot) in enumerate(
+        zip(snippets, emotional_beats, parallel_shots, literal_shots), start=1
+    ):
+        visual_mode = emotional_beat.get("visual_mode")
+        shot = _pick_shot(visual_mode, parallel_shot, literal_shot)
+        out.append({
             "scene_number": i,
             "script_snippet": snippet,
             "director_beat_number": i,
+            "visual_mode": visual_mode,
             "hero_subject": shot["hero_subject"],
             "image_prompt": shot["image_prompt"],
             "scene_type": shot["scene_type"],
             "character_ids": shot["character_ids"],
             "prompt_contract_version": PROMPT_CONTRACT_VERSION,
             "visual_story_contract_version": visual_story.get("visual_story_contract_version"),
-        }
-        for i, (snippet, shot) in enumerate(zip(snippets, shots), start=1)
-    ]
+        })
     print(f"  -> {len(out)} scenes", flush=True)
     return out
 
@@ -454,12 +538,22 @@ def align_scene_durations(scenes: list[dict], words: list[dict], total_duration:
 def to_remotion_scenes(scenes: list[dict], fps: int = 30) -> list[dict]:
     """Scenes (with image_url + duration_seconds from align_scene_durations()) ->
     remotion's Scene shape: [{scene_number, image_url, duration_frames}, ...]
-    — matches remotion/src/HeritageScenes.tsx's optional Scene.duration_frames."""
-    return [{
-        "scene_number": s["scene_number"],
-        "image_url": s["image_url"],
-        "duration_frames": round(s["duration_seconds"] * fps),
-    } for s in scenes]
+    — matches remotion/src/HeritageScenes.tsx's optional Scene.duration_frames.
+    video_url/mode pass through when a scene's active asset is a video (set by
+    the production UI, synced in via supabase_jobs before render) — remotion
+    renders that clip (looped, muted) instead of the still image_url."""
+    out = []
+    for s in scenes:
+        entry = {
+            "scene_number": s["scene_number"],
+            "image_url": s["image_url"],
+            "duration_frames": round(s["duration_seconds"] * fps),
+        }
+        if s.get("mode") == "video" and s.get("video_url"):
+            entry["video_url"] = s["video_url"]
+            entry["mode"] = "video"
+        out.append(entry)
+    return out
 
 
 def build_remotion_payload(scenes: list[dict], narration_url: str | None, fps: int = 30,

@@ -58,6 +58,7 @@ import clickup as heritage_clickup      # src/: push_video()
 import s3 as heritage_s3                # src/: put_file()
 import gallery as heritage_gallery      # src/
 import scene_engine                     # src/
+import supabase_jobs                    # src/: production-UI job row
 import cleanup                          # utils/
 from agents.character_ledger import client as character_ledger
 from agents.character_sheet import client as character_sheet
@@ -95,8 +96,13 @@ def _backfill_missing_images(scenes: list[dict]) -> None:
                 break
 
 
-def run_pipeline(row_id) -> str | None:
-    """row_id is handed to us explicitly (n8n picks it via /ingest, or a human
+def prepare_pipeline(row_id) -> dict:
+    """Stages 1-9: script -> characters -> director -> scenes -> images ->
+    gallery. Ends by upserting a 'ready' job row to Supabase (bible_well_jobs)
+    for the production UI instead of continuing straight into render — a human
+    now reviews/edits scenes there and fires render_pipeline() manually when
+    satisfied, rather than this pipeline rendering unattended every time.
+    row_id is handed to us explicitly (n8n picks it via /ingest, or a human
     passes it on the CLI) — this pipeline never scans or writes Baserow itself,
     only reads the one row it's told to process."""
     row = baserow.get_row(row_id)
@@ -269,9 +275,11 @@ def run_pipeline(row_id) -> str | None:
         print("  characters: done")
 
     # 7 SCENES — the pre-cut verbatim narration snippets zipped 1:1 by position
-    # with the director's story beats (guaranteed equal counts). Shot authors
-    # choose one shot per beat inside the locked film plan, never seeing narration.
-    # scenes.json is a single evolving artifact — later stages add keys to it
+    # with the director's story beats (guaranteed equal counts). Every beat gets
+    # both a parallel-world shot (never sees narration) and a literal shot (sees
+    # only its own snippet); each beat's own visual_mode tag from the emotional
+    # spine picks which one reaches the compositor. scenes.json is a single
+    # evolving artifact — later stages add keys to it
     # (image_url, then start/end/duration_seconds) rather than writing separate
     # files, so resume-checks below inspect the keys already on each scene rather
     # than a stage-specific filename.
@@ -327,6 +335,54 @@ def run_pipeline(row_id) -> str | None:
         heritage_gallery.build_gallery(scenes, gallery_path)
         print(f"  gallery: {gallery_path}")
 
+    print("  job: upserting 'ready' row to Supabase for production-UI review...", flush=True)
+    job_row = supabase_jobs.build_job_payload(row_id, row, scenes)
+    supabase_jobs.upsert_job(job_row)
+    print(f"  job: {job_row['id']} status={job_row['status']}", flush=True)
+
+    return job_row["payload"]
+
+
+def render_pipeline(row_id) -> str:
+    """Stages 10-13: narration download -> Whisper+DTW align -> Remotion Lambda
+    render -> S3 -> ClickUp. Fired manually (production UI's Render button)
+    once prepare_pipeline()'s job has been reviewed/edited. Pulls the current
+    Supabase job row first and syncs its per-scene asset choices (regenerated
+    images, Pexels picks, image/video overrides) onto the local scenes.json
+    before rendering, so UI edits actually reach the final video."""
+    row = baserow.get_row(row_id)
+    rd = os.path.join(RUNS_DIR, str(row_id))
+    if not os.path.exists(rd):
+        raise RuntimeError(f"no runs/{row_id}/ — run prepare_pipeline({row_id!r}) first")
+    voice_url = row.get("voice_url")
+    if not voice_url:
+        raise RuntimeError(f"row {row_id} has no voice_url — voice_status=done but nothing to align")
+    clickup_url = row.get("clickup_url")
+    if not clickup_url:
+        raise RuntimeError(f"row {row_id} has no clickup_url — nowhere to push the finished video")
+
+    scenes_path = os.path.join(rd, "scenes.json")
+    scenes = json.load(open(scenes_path))
+
+    job = supabase_jobs.get_job(row_id)
+    if job is None:
+        raise RuntimeError(f"no Supabase job row for {row_id} — run prepare_pipeline({row_id!r}) first")
+    scenes = supabase_jobs.sync_scenes_from_job(scenes, job)
+    json.dump(scenes, open(scenes_path, "w"), indent=2)
+    print("  job: synced production-UI edits (regenerated images, Pexels picks, "
+          "video overrides) into scenes.json before render", flush=True)
+
+    supabase_jobs.set_status(row_id, "rendering")
+    try:
+        video_url = _render(row_id, rd, scenes, scenes_path, voice_url, clickup_url)
+    except Exception as e:
+        supabase_jobs.set_status(row_id, "failed", error=str(e))
+        raise
+    supabase_jobs.set_status(row_id, "rendered", renderUrl=video_url)
+    return video_url
+
+
+def _render(row_id, rd, scenes, scenes_path, voice_url, clickup_url) -> str:
     # 10 ALIGN — download the row's OWN narration (never a fresh TTS call — that's
     # only scene_engine.py's self-test), then real Whisper+DTW alignment against it.
     narration_path = os.path.join(rd, "narration.mp3")
@@ -427,6 +483,16 @@ def run_pipeline(row_id) -> str | None:
         print(f"  cleanup: pruned {len(removed)} finished run dir(s)")
 
     return video_url
+
+
+def run_pipeline(row_id) -> str | None:
+    """Back-compat: prepare then render in one unattended call, same behavior
+    as before the production UI existed — still what the CLI and the plain
+    `python3 src/run.py <row_id>` flow use. The /ingest HTTP path now calls
+    prepare_pipeline() alone; render_pipeline() is fired separately, manually,
+    from the production UI's Render button."""
+    prepare_pipeline(row_id)
+    return render_pipeline(row_id)
 
 
 if __name__ == "__main__":
