@@ -14,13 +14,18 @@ export async function forward(req: NextRequest, path: string) {
     );
   }
   const target = `${base}/${path}${req.nextUrl.search}`;
+  const contentType = req.headers.get("Content-Type") || "application/json";
   const init: RequestInit = {
     method: req.method,
-    headers: { "x-ingest-secret": secret, "Content-Type": "application/json" },
+    headers: { "x-ingest-secret": secret, "Content-Type": contentType },
   };
   if (req.method !== "GET" && req.method !== "HEAD") {
-    const body = await req.text();
-    if (body) init.body = body;
+    if (contentType.startsWith("application/json")) {
+      const body = await req.text();
+      if (body) init.body = body;
+    } else {
+      init.body = await req.arrayBuffer();
+    }
   }
   const res = await fetch(target, init);
   const text = await res.text();

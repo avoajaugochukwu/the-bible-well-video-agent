@@ -85,6 +85,28 @@ def upload_from_url(url: str, prefix: str = "bible-well") -> str | None:
     return upload_bytes(data, url, prefix) if data else None
 
 
+def upload_media(data: bytes, filename: str, content_type: str, prefix: str = "bible-well") -> str | None:
+    """Upload raw bytes of arbitrary media (image or video) straight from an HTTP
+    upload — unlike upload_bytes() this doesn't sniff/validate as an image, so it
+    also covers video files. Returns the RAW public url, None on failure."""
+    ext = os.path.splitext(filename)[1] or ""
+    c = _cfg()
+    region = c.get("AWS_REGION") or "us-west-2"
+    key = f"{prefix}/{hashlib.md5(data[:65536]).hexdigest()}{ext}"
+    env = {**os.environ, "AWS_ACCESS_KEY_ID": c["AWS_ACCESS_KEY_ID"],
+           "AWS_SECRET_ACCESS_KEY": c["AWS_SECRET_ACCESS_KEY"], "AWS_DEFAULT_REGION": region}
+    tmp = tempfile.NamedTemporaryFile(suffix=ext, delete=False).name
+    try:
+        with open(tmp, "wb") as f:
+            f.write(data)
+        cp = subprocess.run(["aws", "s3", "cp", tmp, f"s3://{BUCKET}/{key}",
+                             "--content-type", content_type, "--only-show-errors"],
+                            env=env, capture_output=True)
+        return f"https://{BUCKET}.s3.{region}.amazonaws.com/{key}" if cp.returncode == 0 else None
+    finally:
+        os.path.exists(tmp) and os.unlink(tmp)
+
+
 def put_file(local: str, key: str) -> str | None:
     """Upload a LOCAL file to S3 under `key`, return its RAW public url. None on failure."""
     c = _cfg()

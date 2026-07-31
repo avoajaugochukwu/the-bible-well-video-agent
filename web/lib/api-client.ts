@@ -66,6 +66,18 @@ export const api = {
       body: JSON.stringify({ kind, url, source }),
     }),
 
+  uploadAsset: async (id: string, sceneNumber: number, kind: "image" | "video", file: File) => {
+    const qs = new URLSearchParams({ kind, filename: file.name });
+    const res = await fetch(`/api/proxy/jobs/${id}/scenes/${sceneNumber}/upload-asset?${qs}`, {
+      method: "POST",
+      headers: { "Content-Type": file.type || "application/octet-stream" },
+      body: file,
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `${res.status} upload-asset`);
+    return data as Scene;
+  },
+
   activateAsset: (id: string, sceneNumber: number, kind: "image" | "video", assetId: string) =>
     call<Scene>(`jobs/${id}/scenes/${sceneNumber}/activate-asset`, {
       method: "POST",

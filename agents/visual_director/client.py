@@ -436,7 +436,7 @@ def _build_emotional_spine(snippets: list[str]) -> dict:
     # Schema size scales with snippet count (no fixed 6-14 cap anymore), so the
     # token budget must scale with it too, or a long script silently burns the
     # whole budget on reasoning with no room left for the actual output.
-    token_budget = max(4096, 1000 * len(snippets))
+    token_budget = min(max(4096, 1000 * len(snippets)), 128000)
     last_problems = []
     for _ in range(MAX_ATTEMPTS):
         if last_problems:
@@ -596,7 +596,7 @@ Return only the structured visual-story plan.
     ]
     # Same scaling concern as the spine call above — story_beats count now
     # matches the snippet count exactly, no fixed cap, so the budget must scale.
-    token_budget = max(8192, 1200 * len(emotional_beats))
+    token_budget = min(max(8192, 1200 * len(emotional_beats)), 128000)
     last_problems = []
     for _ in range(MAX_ATTEMPTS):
         if last_problems:

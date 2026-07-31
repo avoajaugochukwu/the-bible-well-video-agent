@@ -25,9 +25,11 @@ to test against).
   each) -> scenes(break_into_scenes, characters-aware) -> images
   (agents/scene_compositor, gpt-image-2 i2i per scene against each present tracked
   character's reference image — no vision-QA anywhere in this pipeline, match/no-match is a human call
-  off the gallery) -> gallery(build_gallery, non-blocking review) -> download
-  narration -> whisper_words (cached, computed ONCE) ->
-  align(align_scene_durations, real Whisper+DTW) -> remotion/src/scenes.json
+  off the gallery) -> download narration -> whisper_words (cached, computed ONCE)
+  -> align(align_scene_durations, real Whisper+DTW — duration_seconds lands on
+  every scene here, in prepare_pipeline, so the production UI can show it
+  before render) -> gallery(build_gallery, non-blocking review) ->
+  [production UI review/edit] -> render_pipeline(): remotion/src/scenes.json
   (scenes + narrationUrl + the same whisper words, for <Captions>'s current-word
   highlight) -> Remotion Lambda render (deploy:site + render:remote — NEVER local
   `remotion render`, that freezes the machine) -> S3 -> ClickUp -> prune_runs
@@ -97,8 +99,9 @@ def _backfill_missing_images(scenes: list[dict]) -> None:
 
 
 def prepare_pipeline(row_id) -> dict:
-    """Stages 1-9: script -> characters -> director -> scenes -> images ->
-    gallery. Ends by upserting a 'ready' job row to Supabase (bible_well_jobs)
+    """Stages 1-10: script -> characters -> director -> scenes -> images ->
+    narration download + Whisper align (duration_seconds per scene) -> gallery.
+    Ends by upserting a 'ready' job row to Supabase (bible_well_jobs)
     for the production UI instead of continuing straight into render — a human
     now reviews/edits scenes there and fires render_pipeline() manually when
     satisfied, rather than this pipeline rendering unattended every time.
@@ -329,7 +332,37 @@ def prepare_pipeline(row_id) -> dict:
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  images: done")
 
-    # 9 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
+    # 9 NARRATION DURATION — download the row's OWN narration (never a fresh TTS
+    # call) and run real Whisper+DTW alignment now, not at render time, so every
+    # scene carries a real duration_seconds before a human ever sees it in the
+    # production UI — that's how they know how many seconds of video a scene
+    # actually needs before generating or uploading a clip for it. Whisper words
+    # are cached once (whisper-words.json) and reused unchanged by render_pipeline
+    # for the caption payload — never re-transcribed.
+    narration_path = os.path.join(rd, "narration.mp3")
+    if not os.path.exists(narration_path):
+        print("  narration: downloading voice_url...", flush=True)
+        baserow.download(voice_url, narration_path)
+        print("  narration: done")
+
+    whisper_words_path = os.path.join(rd, "whisper-words.json")
+    if os.path.exists(whisper_words_path):
+        _ww = json.load(open(whisper_words_path))
+        words, total_duration = _ww["words"], _ww["total_duration"]
+    else:
+        print("  whisper: whisper_words()...", flush=True)
+        words, total_duration = scene_engine.whisper_words(narration_path)
+        json.dump({"words": words, "total_duration": total_duration},
+                  open(whisper_words_path, "w"), indent=2)
+        print(f"  whisper: done ({len(words)} words, {total_duration:.1f}s)")
+
+    if not scenes or "duration_seconds" not in scenes[0]:
+        print("  align: align_scene_durations() (real Whisper+DTW)...", flush=True)
+        scenes = scene_engine.align_scene_durations(scenes, words, total_duration)
+        json.dump(scenes, open(scenes_path, "w"), indent=2)
+        print("  align: done")
+
+    # 10 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
     gallery_path = os.path.join(rd, "gallery.html")
     if scenes_regenerated or images_regenerated or not os.path.exists(gallery_path):
         heritage_gallery.build_gallery(scenes, gallery_path)
@@ -344,8 +377,9 @@ def prepare_pipeline(row_id) -> dict:
 
 
 def render_pipeline(row_id) -> str:
-    """Stages 10-13: narration download -> Whisper+DTW align -> Remotion Lambda
-    render -> S3 -> ClickUp. Fired manually (production UI's Render button)
+    """Stages 11-13: Remotion Lambda render -> S3 -> ClickUp (narration
+    download + Whisper+DTW align already happened in prepare_pipeline(), stage
+    9). Fired manually (production UI's Render button)
     once prepare_pipeline()'s job has been reviewed/edited. Pulls the current
     Supabase job row first and syncs its per-scene asset choices (regenerated
     images, Pexels picks, image/video overrides) onto the local scenes.json
@@ -383,35 +417,28 @@ def render_pipeline(row_id) -> str:
 
 
 def _render(row_id, rd, scenes, scenes_path, voice_url, clickup_url) -> str:
-    # 10 ALIGN — download the row's OWN narration (never a fresh TTS call — that's
-    # only scene_engine.py's self-test), then real Whisper+DTW alignment against it.
-    narration_path = os.path.join(rd, "narration.mp3")
-    if not os.path.exists(narration_path):
-        print("  narration: downloading voice_url...", flush=True)
-        baserow.download(voice_url, narration_path)
-        print("  narration: done")
-
-    # Whisper words are cached once and reused by BOTH align_scene_durations()
-    # below and the remotion payload's caption words further down —
-    # transcribing the same narration.mp3 twice would double the (CPU-bound,
-    # non-trivial) whisper cost for no reason. Same resumable-artifact pattern
-    # as every other stage here.
+    # ALIGN — narration + whisper words + duration_seconds were already computed
+    # by prepare_pipeline() (stage 9), so the production UI could show every
+    # scene's required clip length before render. Just reload the cached words
+    # for the captions payload below; the fallback here only covers a runs/
+    # dir prepared before this stage existed.
     whisper_words_path = os.path.join(rd, "whisper-words.json")
-    if not os.path.exists(whisper_words_path):
+    if os.path.exists(whisper_words_path):
+        _ww = json.load(open(whisper_words_path))
+        words, total_duration = _ww["words"], _ww["total_duration"]
+    else:
+        narration_path = os.path.join(rd, "narration.mp3")
+        if not os.path.exists(narration_path):
+            print("  narration: downloading voice_url...", flush=True)
+            baserow.download(voice_url, narration_path)
         print("  whisper: whisper_words()...", flush=True)
         words, total_duration = scene_engine.whisper_words(narration_path)
         json.dump({"words": words, "total_duration": total_duration},
                   open(whisper_words_path, "w"), indent=2)
-        print(f"  whisper: done ({len(words)} words, {total_duration:.1f}s)")
-    else:
-        _ww = json.load(open(whisper_words_path))
-        words, total_duration = _ww["words"], _ww["total_duration"]
-
     if not scenes or "duration_seconds" not in scenes[0]:
         print("  align: align_scene_durations() (real Whisper+DTW)...", flush=True)
         scenes = scene_engine.align_scene_durations(scenes, words, total_duration)
         json.dump(scenes, open(scenes_path, "w"), indent=2)
-        print("  align: done")
 
     # 11 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
     # narrationUrl = the row's OWN voice_url (already public, no rehost), words =

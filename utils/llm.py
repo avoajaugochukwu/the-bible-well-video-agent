@@ -24,8 +24,13 @@ def _post_openai(body: dict) -> dict:
         },
         method="POST",
     )
+    # ponytail: a fixed 300s timeout was fine for short scripts but a long
+    # script's schema (one item per narration snippet, no fixed cap) can need
+    # a max_completion_tokens budget in the hundreds of thousands — scale the
+    # read timeout with it instead of guessing one constant for every script length.
+    timeout = min(1800, max(300, body.get("max_completion_tokens", 4096) // 100))
     try:
-        with urllib.request.urlopen(req, timeout=300) as r:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.load(r)
     except urllib.error.HTTPError as e:
         raise RuntimeError(f"OpenAI API {e.code}: {e.read().decode()[:800]}")

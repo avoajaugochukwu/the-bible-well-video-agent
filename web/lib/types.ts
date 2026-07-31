@@ -34,6 +34,9 @@ export interface Scene {
   characterIds: string[];
   heroSubject?: string;
   imagePrompt: string;
+  /** Real Whisper+DTW-aligned narration length for this scene, in seconds —
+   * how long a video clip needs to be to cover it. */
+  durationSeconds?: number;
   asset: SceneAsset;
 }
 

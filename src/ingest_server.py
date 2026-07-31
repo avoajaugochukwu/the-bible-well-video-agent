@@ -47,6 +47,7 @@ sys.path.insert(0, PROJECT_ROOT)  # for agents/ below
 import env             # utils/
 import pexels          # utils/
 import run as pipeline  # src/: prepare_pipeline(), render_pipeline()
+import s3              # src/
 import supabase_jobs   # src/
 import video_gen       # src/
 from agents.scene_compositor import client as scene_compositor  # agents/
@@ -231,6 +232,26 @@ def h_pick_asset(m, body, query):
     return 200, scene
 
 
+def h_upload_asset(m, body, query):
+    row_id, scene_number = m.group("row_id"), int(m.group("scene_number"))
+    kind = (query.get("kind") or [""])[0]
+    if kind not in ("image", "video"):
+        return 400, {"error": "kind must be 'image' or 'video'"}
+    data = body.get("_raw")
+    if not data:
+        return 400, {"error": "file body is required"}
+    filename = (query.get("filename") or ["upload"])[0]
+    content_type = body.get("_content_type") or "application/octet-stream"
+    url = s3.upload_media(data, filename, content_type)
+    if not url:
+        return 502, {"error": "upload failed"}
+    if kind == "image":
+        scene = supabase_jobs.add_scene_image(row_id, scene_number, url, "upload")
+    else:
+        scene = supabase_jobs.add_scene_video(row_id, scene_number, url, "upload")
+    return 200, scene
+
+
 def h_activate_asset(m, body, query):
     row_id, scene_number = m.group("row_id"), int(m.group("scene_number"))
     kind, asset_id = body.get("kind"), body.get("assetId")
@@ -262,6 +283,7 @@ ROUTES = [
     ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/commit-video/?$"), h_commit_video, True),
     ("GET", re.compile(r"^/pexels/search/?$"), h_pexels_search, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/pick-asset/?$"), h_pick_asset, True),
+    ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/upload-asset/?$"), h_upload_asset, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/activate-asset/?$"), h_activate_asset, True),
     ("DELETE", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/asset/(?P<kind>image|video)/(?P<asset_id>[^/]+)/?$"),
      h_delete_asset, True),
@@ -302,12 +324,16 @@ class Handler(BaseHTTPRequestHandler):
             if needs_auth and self.headers.get("x-ingest-secret") != env.require("INGEST_SECRET"):
                 return self._json(401, {"error": "bad secret"})
             length = int(self.headers.get("Content-Length") or 0)
+            raw = self.rfile.read(length) if length else b""
+            content_type = self.headers.get("Content-Type", "")
             body = {}
-            if length:
+            if raw and content_type.startswith("application/json"):
                 try:
-                    body = json.loads(self.rfile.read(length))
+                    body = json.loads(raw)
                 except json.JSONDecodeError:
                     return self._json(400, {"error": "body must be JSON"})
+            elif raw:
+                body = {"_raw": raw, "_content_type": content_type}
             try:
                 status, response = handler(m, body, query)
             except Exception as e:

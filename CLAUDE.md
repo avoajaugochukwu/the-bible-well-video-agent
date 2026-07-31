@@ -41,8 +41,10 @@ reference image per tracked character (`agents/character_ledger`, `agents/charac
 whole-film parallel-story direction (`agents/visual_director`) → verbatim narration timing
 blocks mapped evenly across that film → per-scene images (`agents/scene_compositor`, gpt-image-2
 i2i against each present character's reference sheet, t2i fallback only when a reference is
-missing or the edit call is rejected) → gallery (non-blocking review) →
-download the row's own narration → Whisper+DTW alignment against that real audio → Remotion
+missing or the edit call is rejected) → download the row's own narration → Whisper+DTW
+alignment against that real audio (duration_seconds per scene, so the production UI shows
+how many seconds of clip each scene needs before render) → gallery (non-blocking review) →
+[production UI review/edit, manual render trigger] → Remotion
 Lambda render (narration muxed in via `<Audio>`) → upload the finished mp4 to S3
 (`src/s3.py:put_file()`, RAW public link — **never presigned, always S3, that's what gets
 shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → `prune_runs()` cleanup.
@@ -122,14 +124,20 @@ bad conversation is a better next message, not a new Python gate.
              fallback only when a reference is missing or the edit call is rejected. NO
              automated vision-QA anywhere in this pipeline — a human reviews the gallery
              (step 8) and judges consistency.
-8 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
-             click-to-expand modal, vanilla JS/CSS) for manual review. See that file.
-9 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
+8 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
              hosted Modal whisper service (REMOTION_WHISPER_SERVICE_URL, same one
              senior-finance/finance/remotion calls) + utils/align.py DTW mapped onto each
              scene's verbatim script_snippet. NOT a word-count estimate (tried and
              explicitly rejected — doesn't actually align). NOT local faster-whisper —
-             that package was never installed in this repo's .venv.
+             that package was never installed in this repo's .venv. Runs inside
+             prepare_pipeline() (part of stages 1-9, before the gallery/Supabase job
+             upsert) — not at render time — so every scene's duration_seconds (how many
+             seconds of video/image that scene needs) is already known and shown in the
+             production UI before a human ever generates or uploads a clip for it.
+             Whisper words are cached (whisper-words.json) and reused unchanged by
+             render_pipeline() for the caption payload, never re-transcribed.
+9 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
+             click-to-expand modal, vanilla JS/CSS) for manual review. See that file.
 10 RENDER    remotion/ (standalone Remotion project) on Remotion Lambda (local
              `remotion render` freezes the machine — banned, always deploy:site + render:
              remote). scenes.json is `{scenes, narrationUrl}` — narrationUrl is the row's

@@ -568,7 +568,7 @@ def build_remotion_payload(scenes: list[dict], narration_url: str | None, fps: i
 
 if __name__ == "__main__":
     import gallery as heritage_gallery  # local module, self-test only
-    import tts                          # utils: Voice Generator Service  # noqa
+    import baserow                      # local module: download() for real narration mp3
 
     sys.path.insert(0, os.path.join(HERE, ".."))  # repo root, for agents/ below
     from agents.character_ledger import client as character_ledger
@@ -577,17 +577,10 @@ if __name__ == "__main__":
     from agents.story_dossier import client as story_dossier_agent
     from agents.visual_director import client as visual_director
 
-    SAMPLE_SCRIPT = (
-        "In the 8th century, the city of Chang'an stood as the beating heart of Tang Dynasty "
-        "China, its wide avenues thronged with silk merchants, Buddhist monks, and travelers "
-        "from as far as Persia. Along the Silk Road, camel caravans carried bolts of shimmering "
-        "silk westward, exchanging them for glass, spices, and silver coin from distant lands. "
-        "In the imperial court, poets and scholars debated philosophy beneath painted eaves, "
-        "while the emperor's guard stood watch in lacquered armor, gold-trimmed banners rippling "
-        "in the wind. Far to the west, at a caravanserai on the edge of the desert, traders "
-        "unrolled their wares beneath a vast, star-filled sky, the cool night air carrying the "
-        "scent of woodsmoke and distant lands."
-    )
+    SAMPLE_SCRIPT_PATH = os.path.join(HERE, "..", "she-thought-god-forgot-her-script.txt")
+    SAMPLE_AUDIO_URL_PATH = os.path.join(HERE, "..", "she-thought-god-forgot-her-audio.txt")
+    SAMPLE_SCRIPT = open(SAMPLE_SCRIPT_PATH).read().strip()
+    SAMPLE_AUDIO_URL = open(SAMPLE_AUDIO_URL_PATH).read().strip()
 
     print("Heritage scene_engine self-test: script -> cast -> film plan -> scenes -> images -> narration -> align -> gallery")
     print(f"sample script: {len(SAMPLE_SCRIPT.split())} words", flush=True)
@@ -635,8 +628,8 @@ if __name__ == "__main__":
     scenes = scene_compositor.compose_all(scenes, characters)
 
     narration_path = os.path.join(HERE, "test-narration.mp3")
-    print(f"\n8/9 tts.synthesize() -> {narration_path}...", flush=True)
-    tts.synthesize(SAMPLE_SCRIPT, narration_path)
+    print(f"\n8/9 downloading real narration ({SAMPLE_AUDIO_URL}) -> {narration_path}...", flush=True)
+    baserow.download(SAMPLE_AUDIO_URL, narration_path)
 
     print("\n8b/9 whisper_words() + align_scene_durations() (hosted whisper service + utils/align.py DTW)...",
           flush=True)

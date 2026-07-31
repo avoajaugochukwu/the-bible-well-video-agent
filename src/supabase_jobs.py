@@ -133,6 +133,7 @@ def build_job_payload(row_id, row: dict, scenes: list[dict], status: str = "read
                 "characterIds": s.get("character_ids") or [],
                 "heroSubject": s.get("hero_subject"),
                 "imagePrompt": s.get("image_prompt"),
+                "durationSeconds": s.get("duration_seconds"),
                 "asset": _scene_asset(s),
             }
             for s in scenes

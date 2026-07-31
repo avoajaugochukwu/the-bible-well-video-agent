@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api, type PexelsResult } from "@/lib/api-client";
 import type { AssetHistoryItem, Scene } from "@/lib/types";
 import { activeAssetUrl } from "@/lib/types";
@@ -72,8 +72,23 @@ export function SceneModal({
   const [videoProgress, setVideoProgress] = useState<string | null>(null);
   const [pexelsQuery, setPexelsQuery] = useState("");
   const [pexelsResults, setPexelsResults] = useState<PexelsResult[]>([]);
+  const imageFileInput = useRef<HTMLInputElement>(null);
+  const videoFileInput = useRef<HTMLInputElement>(null);
 
   const active = activeAssetUrl(scene);
+
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, []);
+
+  function upload(kind: "image" | "video", file: File | undefined) {
+    if (!file) return;
+    run(() => api.uploadAsset(jobId, scene.sceneNumber, kind, file), onSceneUpdated);
+  }
 
   async function run<T>(fn: () => Promise<T>, onDone?: (v: T) => void) {
     setBusy(true);
@@ -145,12 +160,19 @@ export function SceneModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4" onClick={onClose}>
       <div
-        className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-neutral-900"
+        className="flex h-[95vh] w-[95vw] max-w-none flex-col overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-neutral-900"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
           <div>
-            <p className="text-sm font-medium">Scene {scene.sceneNumber}</p>
+            <p className="text-sm font-medium">
+              Scene {scene.sceneNumber}
+              {scene.durationSeconds != null && (
+                <span className="ml-2 rounded bg-indigo-100 px-1.5 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                  needs {Math.ceil(scene.durationSeconds)}s
+                </span>
+              )}
+            </p>
             <p className="mt-0.5 line-clamp-1 text-xs text-neutral-500 dark:text-neutral-400">
               {scene.scriptSnippet}
             </p>
@@ -209,6 +231,20 @@ export function SceneModal({
               >
                 {scene.asset.imageHistory.length ? "Regenerate image" : "Generate image"}
               </button>
+              <button
+                disabled={busy}
+                onClick={() => imageFileInput.current?.click()}
+                className="ml-2 mt-3 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium disabled:opacity-50 dark:border-neutral-700"
+              >
+                Upload image
+              </button>
+              <input
+                ref={imageFileInput}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => upload("image", e.target.files?.[0])}
+              />
               <p className="mt-4 text-xs font-medium text-neutral-500 dark:text-neutral-400">History</p>
               <HistoryStrip
                 items={scene.asset.imageHistory}
@@ -235,6 +271,20 @@ export function SceneModal({
               >
                 Generate video from current image
               </button>
+              <button
+                disabled={busy}
+                onClick={() => videoFileInput.current?.click()}
+                className="ml-2 mt-3 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium disabled:opacity-50 dark:border-neutral-700"
+              >
+                Upload video
+              </button>
+              <input
+                ref={videoFileInput}
+                type="file"
+                accept="video/*"
+                className="hidden"
+                onChange={(e) => upload("video", e.target.files?.[0])}
+              />
               {videoProgress && (
                 <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">{videoProgress}</p>
               )}

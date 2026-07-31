@@ -78,7 +78,7 @@ export default function JobPage() {
   const openSceneData = job.scenes.find((s) => s.sceneNumber === openScene) ?? null;
 
   return (
-    <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-10">
+    <main className="w-full flex-1 px-6 py-10">
       <Link href="/" className="text-sm text-indigo-600 hover:underline">
         ← Queue
       </Link>
@@ -123,7 +123,7 @@ export default function JobPage() {
         </p>
       )}
 
-      <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {job.scenes.map((scene) => {
           const active = activeAssetUrl(scene);
           return (
@@ -151,6 +151,11 @@ export default function JobPage() {
                 {active?.kind === "video" && (
                   <span className="absolute right-1.5 top-1.5 rounded bg-indigo-600 px-1.5 py-0.5 text-[10px] font-semibold text-white">
                     video
+                  </span>
+                )}
+                {scene.durationSeconds != null && (
+                  <span className="absolute bottom-1.5 right-1.5 rounded bg-black/60 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                    {Math.ceil(scene.durationSeconds)}s
                   </span>
                 )}
               </div>
