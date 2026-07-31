@@ -50,13 +50,18 @@ ready. It talks to `src/ingest_server.py`'s API (never directly to
 OpenAI/Supabase/Pexels/video-gen) through one server-side proxy route, so the
 shared secret never reaches the browser.
 
+**Live**: https://the-bible-well-production-ui-production.up.railway.app
+
+For local dev instead (rarely needed — everything above runs live):
+
 ```
 cd web && npm run dev      # UI, localhost:3000
 python3 src/ingest_server.py   # API it talks to, localhost:8080
 ```
 
 `web/.env.local` needs `PIPELINE_API_URL` (the ingest_server address) and
-`INGEST_SECRET` (shared with the Python side).
+`INGEST_SECRET` (shared with the Python side) — see the deployed service's
+own vars under Railway deployment below for the live equivalents.
 
 ## Where things end up
 
@@ -89,17 +94,21 @@ still for that scene. In-house image-to-video service (async submit->poll,
 
 ## Railway deployment
 
-`src/ingest_server.py` runs as its own Railway service:
+Both pieces run live in the **ui-helpers** Railway project, both deploying
+from `main` on `avoajaugochukwu/the-bible-well-video-agent`:
 
-- Project: **ui-helpers**, service **the-bible-well-video-agent**
+- **`src/ingest_server.py`** (the API): service **the-bible-well-video-agent**
   (id `b169301e-10ed-42aa-ac16-2ea1c091f8e6`) — not the empty
   `the bible well video agent` (with spaces) service in the same project,
-  that one is an unused stub.
-- URL: https://the-bible-well-video-agent-production.up.railway.app
-- Deploys from `main` on `avoajaugochukwu/the-bible-well-video-agent`. All
-  credentials this repo's `.env` needs are set as Railway variables on that
-  service, including the production-UI additions (`SUPABASE_URL`,
-  `SUPABASE_SECRET_KEY`, `SUPABASE_DB_URL`, `VIDEO_GEN_URL`,
-  `VIDEO_GEN_TOKEN`, `PEXELS_API_KEY`) — set 2026-07-31, waiting on the
-  `character-consistency-agents` branch to merge to `main` and redeploy
-  before the new API routes go live there.
+  that one is an unused stub. Root directory: repo root.
+  URL: https://the-bible-well-video-agent-production.up.railway.app
+- **`web/`** (the UI): service **the-bible-well-production-ui**
+  (id `9dc016b6-b178-49e9-b330-a6ef610d766f`). Root directory: `/web`
+  (isolated monorepo app, same repo). Its `PIPELINE_API_URL` points at the
+  API service above; `INGEST_SECRET` matches the API service's value.
+  URL: https://the-bible-well-production-ui-production.up.railway.app
+
+All credentials this repo's `.env` needs are set as Railway variables on the
+API service, including the production-UI additions (`SUPABASE_URL`,
+`SUPABASE_SECRET_KEY`, `SUPABASE_DB_URL`, `VIDEO_GEN_URL`, `VIDEO_GEN_TOKEN`,
+`PEXELS_API_KEY`) — set 2026-07-31.
