@@ -57,7 +57,7 @@ def delete_job(row_id) -> None:
 def list_jobs() -> list[dict]:
     """Job summaries for the queue view, newest first."""
     params = urllib.parse.urlencode({
-        "select": "id,created_at,status,payload->>title,payload->scenes",
+        "select": "id,created_at,status,payload->>title,payload->scenes,payload->>currentStage",
         "order": "created_at.desc",
     })
     url = f"{env.require('SUPABASE_URL')}/rest/v1/{TABLE}?{params}"
@@ -71,6 +71,7 @@ def list_jobs() -> list[dict]:
             "status": row["status"],
             "title": row.get("title"),
             "sceneCount": len(row.get("scenes") or []),
+            "currentStage": row.get("currentStage"),
         }
         for row in rows
     ]
@@ -123,6 +124,25 @@ def set_status(row_id, status: str, **payload_patch) -> dict | None:
         "id": str(row_id),
         "created_at": payload.get("createdAt") or datetime.now(timezone.utc).isoformat(),
         "status": status,
+        "payload": payload,
+    })
+
+
+def set_stage(row_id, stage: str) -> None:
+    """Lightweight per-stage progress marker (e.g. "Reading script", "Cutting
+    scenes", "Generating scene images...") patched into the job payload without
+    touching status/scenes/anything else — lets the production UI show what
+    prepare_pipeline() is actually doing right now instead of a blanket
+    'preparing'. No-op if the job row doesn't exist (shouldn't happen; the
+    placeholder is always written before the worker starts)."""
+    job = get_job(row_id)
+    if job is None:
+        return
+    payload = {**job, "currentStage": stage}
+    upsert_job({
+        "id": str(row_id),
+        "created_at": payload.get("createdAt") or datetime.now(timezone.utc).isoformat(),
+        "status": payload.get("status", "preparing"),
         "payload": payload,
     })
 

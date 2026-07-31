@@ -52,6 +52,9 @@ export interface Job {
   /** Which stage the last failure happened in — undefined on older jobs
    * predating this field, treated as "render" for display. */
   failedStage?: "prepare" | "render";
+  /** What prepare_pipeline() is doing right now (e.g. "Generating scene
+   * images"), while status is 'preparing'. Cleared once the job is 'ready'. */
+  currentStage?: string;
 }
 
 export interface JobSummary {
@@ -60,6 +63,7 @@ export interface JobSummary {
   status: JobStatus;
   title?: string;
   sceneCount: number;
+  currentStage?: string;
 }
 
 /** Mirrors src/supabase_jobs.py's _resolve_asset — which url actually renders
@@ -81,5 +85,6 @@ export function jobSummary(job: Job): JobSummary {
     status: job.status,
     title: job.title,
     sceneCount: job.scenes.length,
+    currentStage: job.currentStage,
   };
 }

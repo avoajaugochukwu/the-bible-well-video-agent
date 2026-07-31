@@ -54,6 +54,9 @@ export default function QueuePage() {
                   <p className="truncate font-medium">{job.title || job.id}</p>
                   <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
                     {job.sceneCount} scenes · {formatDate(job.createdAt)}
+                    {job.status === "preparing" && job.currentStage && (
+                      <span className="text-amber-700 dark:text-amber-400"> · {job.currentStage}…</span>
+                    )}
                   </p>
                 </div>
                 <StatusBadge status={job.status} />

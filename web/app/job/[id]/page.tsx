@@ -131,6 +131,9 @@ export default function JobPage() {
           <div className="mt-2 flex items-center gap-2">
             <StatusBadge status={job.status} />
             <span className="text-xs text-neutral-500 dark:text-neutral-400">{job.scenes.length} scenes</span>
+            {job.status === "preparing" && job.currentStage && (
+              <span className="text-xs text-amber-700 dark:text-amber-400">· {job.currentStage}…</span>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-3">

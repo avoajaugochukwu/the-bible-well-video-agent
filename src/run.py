@@ -112,6 +112,7 @@ def prepare_pipeline(row_id) -> dict:
     rd = os.path.join(RUNS_DIR, str(row_id))
     os.makedirs(rd, exist_ok=True)
     print(f"== row {row_id}: {row.get('title')!r}\n== run dir: {rd}")
+    supabase_jobs.set_stage(row_id, "Reading script")
 
     row_path = os.path.join(rd, "row.json")
     if not os.path.exists(row_path):
@@ -137,6 +138,7 @@ def prepare_pipeline(row_id) -> dict:
             == scene_engine.CONTEXT_CONTRACT_VERSION
         )
     if not context_current:
+        supabase_jobs.set_stage(row_id, "Analyzing story context")
         if os.path.exists(context_path):
             print("  context: cached contract is outdated; re-analyzing story meaning", flush=True)
         context = scene_engine.infer_context(script)
@@ -152,6 +154,7 @@ def prepare_pipeline(row_id) -> dict:
     if os.path.exists(narration_snippets_path):
         narration_snippets = json.load(open(narration_snippets_path))
     else:
+        supabase_jobs.set_stage(row_id, "Cutting narration into scenes")
         print("  narration cut: cut_narration_scenes()...", flush=True)
         narration_snippets = scene_engine.cut_narration_scenes(script)
         json.dump(narration_snippets, open(narration_snippets_path, "w"), indent=2)
@@ -169,6 +172,7 @@ def prepare_pipeline(row_id) -> dict:
             == story_dossier_agent.STORY_DOSSIER_CONTRACT_VERSION
         )
     if not dossier_current:
+        supabase_jobs.set_stage(row_id, "Building casting dossier")
         print("  dossier: story_dossier.build()...", flush=True)
         story_dossier = story_dossier_agent.build(script)
         json.dump(story_dossier, open(dossier_path, "w"), indent=2)
@@ -190,6 +194,7 @@ def prepare_pipeline(row_id) -> dict:
             for c in source_characters
         )
     if not source_characters_current:
+        supabase_jobs.set_stage(row_id, "Identifying tracked characters")
         print("  source cast: character_ledger.build()...", flush=True)
         source_characters = character_ledger.build(
             script,
@@ -218,6 +223,7 @@ def prepare_pipeline(row_id) -> dict:
             and len(visual_story.get("story_beats") or []) == len(narration_snippets)
         )
     if not visual_story_current:
+        supabase_jobs.set_stage(row_id, "Directing visual story")
         print("  director: visual_director.build()...", flush=True)
         visual_story = visual_director.build(
             source_characters,
@@ -257,6 +263,7 @@ def prepare_pipeline(row_id) -> dict:
             )
         )
     if not characters_current:
+        supabase_jobs.set_stage(row_id, "Casting supporting characters")
         if os.path.exists(characters_path):
             print(
                 "  characters: cast declaration or cached contract changed; regenerating",
@@ -272,6 +279,7 @@ def prepare_pipeline(row_id) -> dict:
             f"  characters: {len(characters)} locked -> {[c['id'] for c in characters]}",
             flush=True,
         )
+        supabase_jobs.set_stage(row_id, "Generating character reference images")
         print("  characters: character_sheet.generate_all()...", flush=True)
         characters = character_sheet.generate_all(characters)
         json.dump(characters, open(characters_path, "w"), indent=2)
@@ -298,6 +306,7 @@ def prepare_pipeline(row_id) -> dict:
         )
     scenes_regenerated = not scenes_current
     if scenes_regenerated:
+        supabase_jobs.set_stage(row_id, "Cutting scenes and writing image prompts")
         if os.path.exists(scenes_path):
             print("  scenes: cached prompt contract is outdated; redesigning visual metaphors", flush=True)
         print("  scenes: break_into_scenes()...", flush=True)
@@ -320,6 +329,7 @@ def prepare_pipeline(row_id) -> dict:
     )
     images_regenerated = not images_current
     if images_regenerated:
+        supabase_jobs.set_stage(row_id, f"Generating {len(scenes)} scene images")
         if scenes and any(s.get("image_url") for s in scenes):
             print("  images: cached compositor contract is outdated; regenerating", flush=True)
         print("  images: scene_compositor.compose_all()...", flush=True)
@@ -341,6 +351,7 @@ def prepare_pipeline(row_id) -> dict:
     # for the caption payload — never re-transcribed.
     narration_path = os.path.join(rd, "narration.mp3")
     if not os.path.exists(narration_path):
+        supabase_jobs.set_stage(row_id, "Downloading narration audio")
         print("  narration: downloading voice_url...", flush=True)
         baserow.download(voice_url, narration_path)
         print("  narration: done")
@@ -350,6 +361,7 @@ def prepare_pipeline(row_id) -> dict:
         _ww = json.load(open(whisper_words_path))
         words, total_duration = _ww["words"], _ww["total_duration"]
     else:
+        supabase_jobs.set_stage(row_id, "Transcribing narration (Whisper)")
         print("  whisper: whisper_words()...", flush=True)
         words, total_duration = scene_engine.whisper_words(narration_path)
         json.dump({"words": words, "total_duration": total_duration},
@@ -357,6 +369,7 @@ def prepare_pipeline(row_id) -> dict:
         print(f"  whisper: done ({len(words)} words, {total_duration:.1f}s)")
 
     if not scenes or "duration_seconds" not in scenes[0]:
+        supabase_jobs.set_stage(row_id, "Aligning scene durations to narration")
         print("  align: align_scene_durations() (real Whisper+DTW)...", flush=True)
         scenes = scene_engine.align_scene_durations(scenes, words, total_duration)
         json.dump(scenes, open(scenes_path, "w"), indent=2)
@@ -365,9 +378,11 @@ def prepare_pipeline(row_id) -> dict:
     # 10 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
     gallery_path = os.path.join(rd, "gallery.html")
     if scenes_regenerated or images_regenerated or not os.path.exists(gallery_path):
+        supabase_jobs.set_stage(row_id, "Building review gallery")
         heritage_gallery.build_gallery(scenes, gallery_path)
         print(f"  gallery: {gallery_path}")
 
+    supabase_jobs.set_stage(row_id, "Finishing up")
     print("  job: upserting 'ready' row to Supabase for production-UI review...", flush=True)
     job_row = supabase_jobs.build_job_payload(row_id, row, scenes)
     supabase_jobs.upsert_job(job_row)
