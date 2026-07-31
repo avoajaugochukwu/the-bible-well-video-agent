@@ -182,62 +182,55 @@ export function SceneModal({
           </button>
         </div>
 
-        {active && (
-          <div className="aspect-video w-full bg-black">
-            {active.kind === "video" ? (
-              <video src={active.url} className="h-full w-full object-contain" controls />
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={active.url} alt="" className="h-full w-full object-contain" />
-            )}
-          </div>
-        )}
+        <div className="flex flex-1 overflow-hidden">
+          <div className="flex w-[60%] flex-col overflow-y-auto border-r border-neutral-200 p-5 dark:border-neutral-800">
+            <div className="aspect-video w-full overflow-hidden rounded-lg bg-black">
+              {active ? (
+                active.kind === "video" ? (
+                  <video src={active.url} className="h-full w-full object-contain" controls />
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={active.url} alt="" className="h-full w-full object-contain" />
+                )
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-sm text-neutral-500">
+                  no image yet
+                </div>
+              )}
+            </div>
 
-        <div className="flex border-b border-neutral-200 px-5 dark:border-neutral-800">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`-mb-px border-b-2 px-3 py-3 text-sm font-medium transition ${
-                tab === t.key
-                  ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
-                  : "border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex-1 overflow-y-auto px-5 py-4">
-          {error && (
-            <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700 dark:bg-red-950 dark:text-red-300">
-              {error}
-            </p>
-          )}
-
-          {tab === "ai-image" && (
-            <div>
-              <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                rows={4}
-                className="w-full rounded-lg border border-neutral-300 bg-white p-3 text-sm dark:border-neutral-700 dark:bg-neutral-800"
-              />
-              <button
-                disabled={busy || !prompt.trim()}
-                onClick={() => run(() => api.regenerateImage(jobId, scene.sceneNumber, prompt), onSceneUpdated)}
-                className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-              >
-                {scene.asset.imageHistory.length ? "Regenerate image" : "Generate image"}
-              </button>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              {active && (
+                <a
+                  href={active.url}
+                  download
+                  className="text-xs font-medium text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                >
+                  Download active {active.kind}
+                </a>
+              )}
               <button
                 disabled={busy}
                 onClick={() => imageFileInput.current?.click()}
-                className="ml-2 mt-3 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium disabled:opacity-50 dark:border-neutral-700"
+                className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium disabled:opacity-50 dark:border-neutral-700"
               >
                 Upload image
               </button>
+              <button
+                disabled={busy}
+                onClick={() => videoFileInput.current?.click()}
+                className="rounded-lg border border-neutral-300 px-3 py-1.5 text-xs font-medium disabled:opacity-50 dark:border-neutral-700"
+              >
+                Upload video
+              </button>
+              {scene.asset.mode === "video" && scene.asset.activeVideoId && (
+                <button
+                  onClick={() => del("video", scene.asset.activeVideoId!)}
+                  className="text-xs font-medium text-red-600 hover:text-red-700"
+                >
+                  Delete video (fall back to image)
+                </button>
+              )}
               <input
                 ref={imageFileInput}
                 type="file"
@@ -245,39 +238,6 @@ export function SceneModal({
                 className="hidden"
                 onChange={(e) => upload("image", e.target.files?.[0])}
               />
-              <p className="mt-4 text-xs font-medium text-neutral-500 dark:text-neutral-400">History</p>
-              <HistoryStrip
-                items={scene.asset.imageHistory}
-                activeId={scene.asset.activeImageId}
-                onActivate={(id) => activate("image", id)}
-                onDelete={(id) => del("image", id)}
-              />
-            </div>
-          )}
-
-          {tab === "ai-video" && (
-            <div>
-              <textarea
-                value={videoPrompt}
-                onChange={(e) => setVideoPrompt(e.target.value)}
-                rows={2}
-                placeholder="Optional motion prompt — what moves (camera / subject). Leave blank for automatic motion."
-                className="w-full rounded-lg border border-neutral-300 bg-white p-3 text-sm dark:border-neutral-700 dark:bg-neutral-800"
-              />
-              <button
-                disabled={busy || !active}
-                onClick={generateVideo}
-                className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-              >
-                Generate video from current image
-              </button>
-              <button
-                disabled={busy}
-                onClick={() => videoFileInput.current?.click()}
-                className="ml-2 mt-3 rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium disabled:opacity-50 dark:border-neutral-700"
-              >
-                Upload video
-              </button>
               <input
                 ref={videoFileInput}
                 type="file"
@@ -285,87 +245,135 @@ export function SceneModal({
                 className="hidden"
                 onChange={(e) => upload("video", e.target.files?.[0])}
               />
-              {videoProgress && (
-                <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">{videoProgress}</p>
-              )}
-              {!active && (
-                <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-                  Generate or pick an image first — video is generated from a scene&apos;s image.
+            </div>
+          </div>
+
+          <div className="flex w-[40%] flex-col overflow-hidden">
+            <div className="flex border-b border-neutral-200 px-5 dark:border-neutral-800">
+              {TABS.map((t) => (
+                <button
+                  key={t.key}
+                  onClick={() => setTab(t.key)}
+                  className={`-mb-px border-b-2 px-3 py-3 text-sm font-medium transition ${
+                    tab === t.key
+                      ? "border-indigo-500 text-indigo-600 dark:text-indigo-400"
+                      : "border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-5 py-4">
+              {error && (
+                <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700 dark:bg-red-950 dark:text-red-300">
+                  {error}
                 </p>
               )}
-              <p className="mt-4 text-xs font-medium text-neutral-500 dark:text-neutral-400">History</p>
-              <HistoryStrip
-                items={scene.asset.videoHistory}
-                activeId={scene.asset.activeVideoId ?? undefined}
-                onActivate={(id) => activate("video", id)}
-                onDelete={(id) => del("video", id)}
-              />
-            </div>
-          )}
 
-          {(tab === "pexels-image" || tab === "pexels-video") && (
-            <div>
-              <div className="flex gap-2">
-                <input
-                  value={pexelsQuery}
-                  onChange={(e) => setPexelsQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && searchPexels()}
-                  placeholder="Search Pexels — e.g. mountains, city street"
-                  className="flex-1 rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-800"
-                />
-                <button
-                  disabled={busy || !pexelsQuery.trim()}
-                  onClick={searchPexels}
-                  className="rounded-lg bg-neutral-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900"
-                >
-                  Search
-                </button>
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {pexelsResults.map((r) => (
+              {tab === "ai-image" && (
+                <div>
+                  <textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    rows={4}
+                    className="w-full rounded-lg border border-neutral-300 bg-white p-3 text-sm dark:border-neutral-700 dark:bg-neutral-800"
+                  />
                   <button
-                    key={r.id}
-                    onClick={() => pickPexels(r)}
-                    className="group relative aspect-video overflow-hidden rounded-md bg-neutral-100 dark:bg-neutral-800"
+                    disabled={busy || !prompt.trim()}
+                    onClick={() => run(() => api.regenerateImage(jobId, scene.sceneNumber, prompt), onSceneUpdated)}
+                    className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={r.thumbnail_url || r.url}
-                      alt=""
-                      className="h-full w-full object-cover transition group-hover:scale-105"
-                    />
-                    {r.photographer && (
-                      <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">
-                        {r.photographer}
-                      </span>
-                    )}
+                    {scene.asset.imageHistory.length ? "Regenerate image" : "Generate image"}
                   </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+                  <p className="mt-4 text-xs font-medium text-neutral-500 dark:text-neutral-400">History</p>
+                  <HistoryStrip
+                    items={scene.asset.imageHistory}
+                    activeId={scene.asset.activeImageId}
+                    onActivate={(id) => activate("image", id)}
+                    onDelete={(id) => del("image", id)}
+                  />
+                </div>
+              )}
 
-        <div className="flex items-center justify-between border-t border-neutral-200 px-5 py-3 dark:border-neutral-800">
-          {active ? (
-            <a
-              href={active.url}
-              download
-              className="text-xs font-medium text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
-            >
-              Download active {active.kind}
-            </a>
-          ) : (
-            <span />
-          )}
-          {scene.asset.mode === "video" && scene.asset.activeVideoId && (
-            <button
-              onClick={() => del("video", scene.asset.activeVideoId!)}
-              className="text-xs font-medium text-red-600 hover:text-red-700"
-            >
-              Delete video (fall back to image)
-            </button>
-          )}
+              {tab === "ai-video" && (
+                <div>
+                  <textarea
+                    value={videoPrompt}
+                    onChange={(e) => setVideoPrompt(e.target.value)}
+                    rows={2}
+                    placeholder="Optional motion prompt — what moves (camera / subject). Leave blank for automatic motion."
+                    className="w-full rounded-lg border border-neutral-300 bg-white p-3 text-sm dark:border-neutral-700 dark:bg-neutral-800"
+                  />
+                  <button
+                    disabled={busy || !active}
+                    onClick={generateVideo}
+                    className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+                  >
+                    Generate video from current image
+                  </button>
+                  {videoProgress && (
+                    <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">{videoProgress}</p>
+                  )}
+                  {!active && (
+                    <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+                      Generate or pick an image first — video is generated from a scene&apos;s image.
+                    </p>
+                  )}
+                  <p className="mt-4 text-xs font-medium text-neutral-500 dark:text-neutral-400">History</p>
+                  <HistoryStrip
+                    items={scene.asset.videoHistory}
+                    activeId={scene.asset.activeVideoId ?? undefined}
+                    onActivate={(id) => activate("video", id)}
+                    onDelete={(id) => del("video", id)}
+                  />
+                </div>
+              )}
+
+              {(tab === "pexels-image" || tab === "pexels-video") && (
+                <div>
+                  <div className="flex gap-2">
+                    <input
+                      value={pexelsQuery}
+                      onChange={(e) => setPexelsQuery(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && searchPexels()}
+                      placeholder="Search Pexels…"
+                      className="flex-1 rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-800"
+                    />
+                    <button
+                      disabled={busy || !pexelsQuery.trim()}
+                      onClick={searchPexels}
+                      className="rounded-lg bg-neutral-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900"
+                    >
+                      Search
+                    </button>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    {pexelsResults.map((r) => (
+                      <button
+                        key={r.id}
+                        onClick={() => pickPexels(r)}
+                        className="group relative aspect-video overflow-hidden rounded-md bg-neutral-100 dark:bg-neutral-800"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={r.thumbnail_url || r.url}
+                          alt=""
+                          className="h-full w-full object-cover transition group-hover:scale-105"
+                        />
+                        {r.photographer && (
+                          <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1.5 py-0.5 text-[10px] text-white">
+                            {r.photographer}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
