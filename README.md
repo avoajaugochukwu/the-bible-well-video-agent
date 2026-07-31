@@ -28,18 +28,35 @@ Start the server:
 python3 src/ingest_server.py
 ```
 
-Once a job is ingested (either path), the whole pipeline runs unattended —
-no manual steps in between:
-
-```
-Baserow read -> scene breakdown -> multi-lane images -> gallery (review only)
-  -> download narration -> Whisper+DTW align -> Remotion Lambda render
-  -> upload to S3 -> push video url to ClickUp
-```
+Ingest only **prepares** now (`prepare_pipeline()`): Baserow read -> scene
+breakdown -> multi-lane images -> gallery, then it stops and writes a `ready`
+job row to Supabase for human review — it no longer renders automatically.
+Render (`render_pipeline()`: narration download -> Whisper+DTW align ->
+Remotion Lambda render -> upload to S3 -> push video url to ClickUp) is a
+separate manual step, fired from the production review UI (`web/`, see
+below) once scenes have been reviewed/edited. `python3 src/run.py <row_id>`
+on its own still chains prepare+render unattended, for back-compat.
 
 Each row's artifacts land in `runs/<row_id>/`. If a run fails partway, rerun
 the same command — completed stages are skipped, so it resumes where it
 broke instead of redoing work.
+
+## Production review UI
+
+`web/` is a separate Next.js app (own `package.json`) for reviewing a
+prepared job before render: per-scene prompt edit + regenerate, generate a
+video from a scene's image, attach a Pexels image/video, then Render when
+ready. It talks to `src/ingest_server.py`'s API (never directly to
+OpenAI/Supabase/Pexels/video-gen) through one server-side proxy route, so the
+shared secret never reaches the browser.
+
+```
+cd web && npm run dev      # UI, localhost:3000
+python3 src/ingest_server.py   # API it talks to, localhost:8080
+```
+
+`web/.env.local` needs `PIPELINE_API_URL` (the ingest_server address) and
+`INGEST_SECRET` (shared with the Python side).
 
 ## Where things end up
 
@@ -59,11 +76,30 @@ See `CLAUDE.md` for the full list and field-by-field details.
 `CLAUDE.md` has the full stage-by-stage SOP, Baserow field contract, S3/
 ClickUp specifics, and the multi-lane image routing rules.
 
-## Video-gen API (not currently used)
+## Video-gen API
 
-This pipeline generates still images (gpt-image-2) assembled into a slideshow
-by Remotion — no motion/video model is called anywhere in it today. If that
-changes, the in-house video-gen service is:
+Scenes are still images (gpt-image-2) by default, assembled into a slideshow
+by Remotion. The production UI can optionally turn one scene's image into a
+short video clip (`src/video_gen.py`), which then renders in place of the
+still for that scene. In-house image-to-video service (async submit->poll,
+`VIDEO_GEN_URL`/`VIDEO_GEN_TOKEN` in `.env`):
 
 - API: https://avoajaugochukwu--open-source-video-gen-web.modal.run
 - Docs (Swagger): https://avoajaugochukwu--open-source-video-gen-web.modal.run/docs
+
+## Railway deployment
+
+`src/ingest_server.py` runs as its own Railway service:
+
+- Project: **ui-helpers**, service **the-bible-well-video-agent**
+  (id `b169301e-10ed-42aa-ac16-2ea1c091f8e6`) — not the empty
+  `the bible well video agent` (with spaces) service in the same project,
+  that one is an unused stub.
+- URL: https://the-bible-well-video-agent-production.up.railway.app
+- Deploys from `main` on `avoajaugochukwu/the-bible-well-video-agent`. All
+  credentials this repo's `.env` needs are set as Railway variables on that
+  service, including the production-UI additions (`SUPABASE_URL`,
+  `SUPABASE_SECRET_KEY`, `SUPABASE_DB_URL`, `VIDEO_GEN_URL`,
+  `VIDEO_GEN_TOKEN`, `PEXELS_API_KEY`) — set 2026-07-31, waiting on the
+  `character-consistency-agents` branch to merge to `main` and redeploy
+  before the new API routes go live there.
