@@ -19,7 +19,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
         n = s.get("scene_number")
         snippet = html.escape(s.get("script_snippet", ""))
         url = s.get("image_url")
-        lane = s.get("lane")
         scene_type = s.get("scene_type")
         visual_mode = s.get("visual_mode")
         image_basis = s.get("image_basis") or ""
@@ -30,7 +29,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
             "url": url,
             "snippet": s.get("script_snippet", ""),
             "n": n,
-            "lane": lane,
             "scene_type": scene_type,
             "visual_mode": visual_mode,
             "image_basis": image_basis,
@@ -41,8 +39,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
             img_html = f'<img src="{html.escape(url)}" alt="Scene {n}" loading="lazy">'
         else:
             img_html = '<div class="missing">image failed</div>'
-        lane_class = f"lane-{lane}" if lane else "lane-none"
-        lane_label = html.escape(lane) if lane else "—"
         meta_html = ""
         if scene_type:
             mode_suffix = f" · {html.escape(visual_mode)}" if visual_mode else ""
@@ -55,7 +51,7 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
         card_class = "card mood-designated" if mood_designated else "card"
         cards.append(f"""
         <figure class="{card_class}" data-idx="{idx}">
-          <div class="thumb">{img_html}<span class="badge">{n}</span><span class="lane-badge {lane_class}">{lane_label}</span>{mood_badge}</div>
+          <div class="thumb">{img_html}<span class="badge">{n}</span>{mood_badge}</div>
           <figcaption>{snippet}{meta_html}</figcaption>
         </figure>""")
 
@@ -75,10 +71,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
     --text: #f0e6d8;
     --muted: #b8a88f;
     --accent: #c9973f;
-    --lane-archival: #c9973f;
-    --lane-stock: #4fa8a0;
-    --lane-graphic: #8b7cc9;
-    --lane-krea: #c0654a;
     --mood: #5fb26a;
   }}
   * {{ box-sizing: border-box; }}
@@ -195,30 +187,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
     font-size: 0.68rem;
     letter-spacing: 0.03em;
   }}
-  .lane-badge {{
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    color: #14110f;
-    background: var(--muted);
-  }}
-  .thumb .lane-badge {{
-    position: absolute;
-    top: 8px;
-    right: 8px;
-  }}
-  .lane-badge.lane-archival {{ background: var(--lane-archival); }}
-  .lane-badge.lane-stock {{ background: var(--lane-stock); }}
-  .lane-badge.lane-graphic-map {{ background: var(--lane-graphic); }}
-  .lane-badge.lane-graphic-document {{ background: var(--lane-graphic); }}
-  .lane-badge.lane-krea {{ background: var(--lane-krea); }}
-  .lane-badge.lane-none {{ background: var(--muted); color: var(--bg); }}
-
   /* Modal / lightbox */
   #modal {{
     display: none;
@@ -313,7 +281,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
     <button class="close" aria-label="Close">&times;</button>
     <div class="modal-inner">
       <div class="scene-num" id="modal-scene-num"></div>
-      <span class="lane-badge" id="modal-lane"></span>
       <span class="mood-badge" id="modal-mood" style="position:static; display:none;">CULTURAL ANCHOR</span>
       <img id="modal-img" src="" alt="">
       <div class="caption" id="modal-caption"></div>
@@ -328,7 +295,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
   var modalImg = document.getElementById('modal-img');
   var modalCaption = document.getElementById('modal-caption');
   var modalSceneNum = document.getElementById('modal-scene-num');
-  var modalLane = document.getElementById('modal-lane');
   var modalMeta = document.getElementById('modal-meta');
   var modalBasis = document.getElementById('modal-basis');
   var modalMood = document.getElementById('modal-mood');
@@ -340,8 +306,6 @@ def build_gallery(scenes: list[dict], out_path: str) -> None:
     modalImg.alt = 'Scene ' + s.n;
     modalCaption.textContent = s.snippet;
     modalSceneNum.textContent = 'Scene ' + s.n;
-    modalLane.className = 'lane-badge ' + (s.lane ? 'lane-' + s.lane : 'lane-none');
-    modalLane.textContent = s.lane || '—';
     modalMood.style.display = s.mood_designated ? '' : 'none';
     var metaParts = [];
     if (s.scene_type) metaParts.push(s.scene_type);
@@ -396,16 +360,16 @@ if __name__ == "__main__":
     sample = [
         {"scene_number": 1, "script_snippet": "A sample opening line about carrying old worry.",
          "image_url": "https://picsum.photos/seed/1/1280/720",
-         "lane": "krea", "scene_type": "spiritual_moment",
+         "scene_type": "spiritual_moment", "visual_mode": "abstract",
          "image_basis": "a person straining to carry a heavy, crumbling stone", "basis_kind": "prompt"},
         {"scene_number": 2, "script_snippet": "A second scene about surrendering control.",
          "image_url": None,
-         "lane": "krea", "scene_type": "transformation",
+         "scene_type": "transformation", "visual_mode": "concrete",
          "image_basis": "a person in a car seat as a radiant light takes the wheel",
          "basis_kind": "prompt", "mood_designated": True},
         {"scene_number": 3, "script_snippet": "A closing scene about breaking free.",
          "image_url": "https://picsum.photos/seed/3/1280/720",
-         "lane": "krea", "scene_type": "revelation",
+         "scene_type": "revelation", "visual_mode": "abstract",
          "image_basis": "chains shaped like dollar signs shattering around a person",
          "basis_kind": "prompt"},
     ]

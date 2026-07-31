@@ -59,8 +59,8 @@ Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)`
 - Row fields consumed: `title`, `script`, `voice_url` (narration audio — see note below on
   sound), `clickup_url` (the task to push the finished video url onto).
 - **Sound**: `voice_url` is narration ONLY — confirmed against a real row, no separate SFX/
-  ambience field exists. Building/tagging a sound library is unscoped future work (Phase 6 in
-  `HERITAGE_PLAN.md`), deliberately deprioritized to last.
+  ambience field exists. Building/tagging a sound library is unscoped future work,
+  deliberately deprioritized to last.
 
 ## Agent development philosophy
 
@@ -104,19 +104,31 @@ bad conversation is a better next message, not a new Python gate.
              validate -> retry-with-feedback loop. Then agents/character_sheet:
              generate_all() makes one full-body reference image per tracked character
              (gpt-image-2 t2i, quality=low). characters.json.
-5 DIRECTOR   agents/visual_director:build() — two-pass whole-video design. Pass one sees the
-             narration but can emit only categorical emotional signals plus alignment anchors.
-             Pass two sees only the categorical score, concrete cast, and plot-free dossier
-             handoff; it invents a coherent standalone film with an external goal, credible
-             institutions, and one ordered story beat per emotional phase. A source-aware
-             semantic reviewer catches literal overlap and repeated administrative staging.
-             visual-story.json.
+5 DIRECTOR   agents/visual_director:build() — three-pass whole-video design, chunked so no
+             single call's output has to scale past the model's completion-token cap. Pass
+             one scores every narration snippet with categorical emotional signals only, in
+             chunks of CHUNK_SIZE scored IN PARALLEL (each snippet judged on its own text,
+             no cross-chunk dependency). Pass two, ONE call, decides the whole world once —
+             film_title, external_goal, supporting_characters, recurring_locations — using
+             the categorical score, concrete cast, and plot-free dossier handoff; nothing
+             else can be introduced after this. Pass three authors one story beat per
+             emotional-spine entry, in chunks of CHUNK_SIZE processed SEQUENTIALLY (unlike
+             pass one, plot causality means each chunk must know what the last one did) —
+             each chunk carries forward a model-authored rolling story_recap plus a
+             deterministic location-use tally, and only the final chunk is told to resolve
+             the external goal. visual-story.json.
 6 SCENES     src/scene_engine.py:cut_narration_scenes() uses an LLM to propose visual-change
              boundaries in sentence-aligned chunks, anchors those boundaries losslessly to
              the verbatim narration, and caps long beats at 30 words using natural punctuation
              where possible. Cuts are evenly distributed across the ordered director beats.
-             author_story_beat() runs per beat in parallel and sees only the film plan, never
-             narration; it returns chronological image_prompt + character_ids shots.
+             Each beat carries a visual_mode tag (concrete/abstract) from the director's
+             emotional-spine pass, scored from that beat's own narration text. _pick_shot()
+             routes on that tag: concrete beats get author_literal_beat() (sees only its own
+             snippet, never the invented parallel film); abstract beats get
+             author_story_beat() (parallel-world shot, sees only the film plan, never
+             narration) — author_story_beat() still runs for every beat regardless, since it
+             needs continuity across its own invented plot even for beats ultimately
+             rendered literally. Both return chronological image_prompt + character_ids shots.
 7 IMAGES     agents/scene_compositor:compose_all() — per scene, IN PARALLEL, gpt-image-2
              images.edit() conditioned on every present character's reference image
              (identity from the image, not restated text). Reference images are fetched
@@ -138,12 +150,10 @@ bad conversation is a better next message, not a new Python gate.
              render_pipeline() for the caption payload, never re-transcribed.
 9 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
              click-to-expand modal, vanilla JS/CSS) for manual review. See that file.
-10 RENDER    remotion/ (standalone Remotion project) on Remotion Lambda (local
-             `remotion render` freezes the machine — banned, always deploy:site + render:
-             remote). scenes.json is `{scenes, narrationUrl}` — narrationUrl is the row's
-             OWN voice_url (already a public S3 url, no rehost needed) muxed in via a plain
-             `<Audio src={narrationUrl}>` in HeritageScenes.tsx. Remotion has no character/
-             style awareness at all — it just renders whatever image_url each scene carries.
+10 RENDER    remotion/ (standalone Remotion project) on Remotion Lambda. Renders whatever
+             image_url/video_url each scene carries, narration muxed in via `<Audio>`. See
+             `remotion/CLAUDE.md` for render mechanics (banned-local-render rule,
+             scenes.json shape, OffthreadVideo).
 11 S3        src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
              public-read) — ALWAYS push the finished video here for review, never hand back
              a presigned link or a local-only file path.
@@ -153,80 +163,12 @@ bad conversation is a better next message, not a new Python gate.
              writes back to Baserow after this.
 ```
 
-Steps 1-11 are wired into one `run.py` command (`src/run.py`, Phase 5 in
-`HERITAGE_PLAN.md`) — run it with `python3 src/run.py <row_id>` from the repo root, or trigger
-it over HTTP via `POST /ingest` (`src/ingest_server.py`, JSON body `{"row_id": ...}`).
-
-## Credentials
-
-- **repo-root `.env`** (this pipeline's only env file, checked by `utils/env.py`'s
-  `_ENV_FILES` list):
-  - `BASE_ROW_URL`, `BASEROW_EMAIL`, `BASEROW_PASSWORD`, `BASEROW_TABLE_ID` — copied from
-    `space-cluster/.env`, same Baserow instance/table (id `2`) and creds.
-  - `OPENAI_API_KEY` — for `scene_engine.py`'s scene-breakdown LLM calls (gpt-5-mini).
-  - `AWS_REGION`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` — for `src/s3.py` (see
-    AWS/S3 note below).
-  - `CLICKUP_API` (ClickUp personal token, `pk_...`, no "Bearer" prefix).
-  - `REMOTION_WHISPER_SERVICE_URL` — hosted Modal whisper transcription microservice,
-    `scene_engine.py:whisper_words()` POSTs the narration file to `{url}/v1/transcribe`.
-    Same service `senior-finance/finance/remotion` calls; no local model/GPU needed.
-  - `PERPLEXITY_API_KEY`, `APIFY_TOKEN`, `TTS_ENDPOINT`, `TTS_VOICE` — pre-existing keys,
-    not all currently consumed by this pipeline.
-- **Krea image-gen token** (`IMAGE_API_TOKEN`) is read by `src/krea.py:krea_edit_photo()` from
-  its own hardcoded path in `sleep-stories/.env.local` — unaffected by this repo's layout,
-  don't duplicate it into the root `.env`. Still unused — this pipeline's i2i goes through
-  gpt-image-2's own `images.edit()` (`src/gpt_image.py:edit_image()`) instead of Krea, so
-  this token stays here undisturbed rather than becoming load-bearing.
-- **AWS/S3 — bucket is ours, creds are this pipeline's own copy.** The `yt-heritage-media`
-  bucket (see `## S3` below) was created fresh for this pipeline and is NOT shared with
-  `yt-cold-case-media` or any other bucket. `src/s3.py`'s `_cfg()` reads
-  `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`/`AWS_REGION` via `utils/env.py`, from keys
-  that live directly in the root `.env` — same underlying AWS account/key as before, just
-  physically relocated into the root `.env` instead of a hardcoded path into a sibling
-  project's `.env.local`. Not a new IAM user, just where the keys now live.
-
-## Baserow
-
-Table id `2` (shared instance, same one `space-cluster` uses). Read-only from this pipeline's
-side — `src/baserow.py` has exactly one call, `get_row(row_id)`, no write/PATCH function exists.
-Fields consumed:
-
-| field              | type          | meaning                                              |
-|--------------------|---------------|-------------------------------------------------------|
-| `script`           | text          | the script, verbatim — never edited by this pipeline   |
-| `voice_url`        | text          | narration audio url (mp3), narration ONLY, no SFX      |
-| `clickup_url`      | text          | ClickUp task to push the finished video url onto       |
-
-- `channel`/`script_status`/`voice_status`/`video_processed` are read by nobody here — this
-  pipeline doesn't scan or gate on them, since the caller (n8n) already picked the row_id it
-  hands us. Whatever process owns those fields upstream is out of this repo's scope.
-- If `run.py`/`get_row(row_id)` is handed a row whose `script` or `voice_url` is actually empty,
-  it raises immediately rather than silently no-op'ing — there's no other row to fall back to.
-
-## ClickUp
-
-- List: **"Christian Story"**, id `901113620100`, in "Team Space", workspace "Karl's
-  Workspace" — same ClickUp account/token as `space-cluster`.
-- `src/clickup.py:push_video(clickup_url, video_url)`: GET task -> prepend
-  `"🎬 VIDEO: <url>"` to its description -> PUT task; falls back to POST-ing a comment if the
-  description PUT fails. Never raises into the caller — returns `True`/`False` so a ClickUp
-  hiccup never blocks the pipeline.
-- The task to update comes from the Baserow row's own `clickup_url` field — this pipeline
-  never creates a new ClickUp task, only appends to one that already exists.
-
-## S3
-
-- Bucket: **`yt-heritage-media`** — us-west-2, public-read policy, 7-day lifecycle. Created
-  fresh for this pipeline (not shared with `yt-cold-case-media`), same shape/policy mirrored
-  exactly from the cold-case bucket.
-- `src/s3.py` is `shared/s3.py` copied almost verbatim: same `upload_bytes` /
-  `upload_from_url` / `put_file` / `first_uploadable` functions, `BUCKET` swapped to
-  `yt-heritage-media` and the default `prefix` swapped from `"cold-case"` to `"heritage"`.
-- **Rule: the finished video always goes to S3 as a RAW public url, never presigned, never a
-  local-only file path.** `put_file()` only ever returns a raw public link (the bucket is
-  public-read) — that's what gets pushed to ClickUp for review.
-- **7-day lifecycle** — once render is built, the pushed video url goes dead after a week;
-  pull it promptly or re-render.
+`src/run.py` exposes this as two calls: `prepare_pipeline(row_id)` (stages 1-9, script through
+gallery — what `POST /ingest` enqueues) and `render_pipeline(row_id)` (stages 10-12, fired
+manually from the production UI's Render button once a human has reviewed/edited the job).
+`python3 src/run.py <row_id>` on the CLI runs both back-to-back for a plain unattended pass.
+See `README.md` for the production UI (`web/`) and Railway deployment. Credentials, and the
+Baserow/ClickUp/S3/Supabase/video-gen integration details, live in `src/CLAUDE.md`.
 
 ## Scene generation + character agents (owned elsewhere — read, don't edit here)
 
@@ -238,29 +180,32 @@ artifacts force stale cached work to regenerate when any authored interface chan
 ## Layout
 
 ```
-heritage-decoded/
-├── src/            pipeline code: run.py (entrypoint), baserow.py, clickup.py, s3.py,
-│                   scene_engine.py, gpt_image.py, krea.py, gallery.py
+the-bible-well/
+├── src/            pipeline code: run.py (entrypoint: prepare_pipeline/render_pipeline),
+│                   ingest_server.py (HTTP API, see its ROUTES list), baserow.py, clickup.py,
+│                   s3.py, supabase_jobs.py, video_gen.py, scene_engine.py, gpt_image.py,
+│                   krea.py, gallery.py
 ├── agents/         character-consistency agents (plain importable Python packages, no
 │                   subprocess bridge — this repo has no cross-language boundary):
-│                   character_ledger/ (which characters are worth tracking), character_sheet/
-│                   (one full-body reference image per tracked character),
-│                   visual_director/ (categorical emotional score + standalone film plan),
-│                   scene_compositor/ (per-scene i2i via reference images, t2i fallback)
+│                   story_dossier/ (casting + plot-free director profile), character_ledger/
+│                   (which characters are worth tracking), character_sheet/ (one full-body
+│                   reference image per tracked character), visual_director/ (categorical
+│                   emotional score + standalone film plan), scene_compositor/ (per-scene
+│                   i2i via reference images, t2i fallback)
 ├── utils/          stdlib-only / low-dependency helpers: env.py (env-var lookup),
 │                   llm.py (shared OpenAI structured-JSON caller, used by scene_engine.py
 │                   and agents/), align.py (DTW aligner), images.py (image fetcher),
-│                   tts.py (TTS client), cleanup.py (prune_runs)
+│                   pexels.py (Pexels search), tts.py (TTS client), cleanup.py (prune_runs)
 ├── remotion/       standalone Remotion project (Lambda render), incl. node_modules/ — no
-│                   character/style awareness, just renders each scene's image_url
+│                   character/style awareness, just renders each scene's image_url/video_url
+├── web/            production review UI (Next.js) — queue + per-scene edit view, talks to
+│                   ingest_server.py through its own server-side proxy. See README.md.
 ├── runs/           per-row run artifacts (runs/<row_id>/), pruned after 24h once done
-├── .env            all credentials (Baserow, OpenAI, AWS, ClickUp, etc.), one file
+├── .env            all credentials (Baserow, OpenAI, AWS, ClickUp, Supabase, etc.), one file
 ├── .venv/          one virtualenv, referenced by src/run.py via a PROJECT_ROOT-style
 │                   constant one level up from src/
-├── .claude/        slash commands. Commands are discovered from cwd, so any subprocess
-│                   call to `claude -p` should explicitly set cwd to this root.
-├── scratchpad/     scratch working files
-└── HERITAGE_PLAN.md   historical build-log / design record
+├── Dockerfile, docker-entrypoint.sh   one image, one Railway service — see README.md
+└── session.md      prose build-log / design record
 ```
 
 `src/*.py` files that need `utils/` (env, align, images, tts, cleanup) add a small
@@ -270,5 +215,6 @@ near the top rather than converting to a proper Python package — this repo has
 `if __name__ == "__main__":` self-test blocks that must keep working when run directly
 (e.g. `python3 src/scene_engine.py`).
 
-Driven directly: run `python3 src/run.py` in the foreground, one row at a time — no
-background daemon.
+CLI usage is direct and one row at a time: `python3 src/run.py <row_id>` in the foreground.
+The deployed service (`src/ingest_server.py`) is a persistent HTTP server with two FIFO
+worker queues (prepare, render) so a slow render never blocks a new `/ingest` call.

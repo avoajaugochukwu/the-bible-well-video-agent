@@ -67,7 +67,7 @@ own vars under Railway deployment below for the live equivalents.
 
 ## Where things end up
 
-- **Video**: uploaded to S3 (`yt-heritage-media` bucket), raw public url,
+- **Video**: uploaded to S3 (`yt-bible-well-media` bucket), raw public url,
   7-day lifecycle — pull it promptly.
 - **ClickUp**: the row's `clickup_url` task gets `🎬 VIDEO: <s3 url>`
   prepended to its description (or a comment, if the description update
