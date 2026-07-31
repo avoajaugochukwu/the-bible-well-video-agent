@@ -82,6 +82,21 @@ def call_llm_json(
     if choice.get("finish_reason") == "content_filter":
         raise RuntimeError(f"OpenAI refused the request (content_filter): {resp}")
     text = (choice.get("message") or {}).get("content") or ""
+    if not text.strip() and choice.get("finish_reason") == "length":
+        # gpt-5's reasoning tokens are billed out of the same max_completion_tokens
+        # budget as the visible answer — a hard call can spend the ENTIRE budget
+        # reasoning and leave nothing to actually write the JSON (finish_reason
+        # 'length', content ''), not because the answer itself is long. Retry once
+        # with a much bigger budget before giving up; a genuinely oversized
+        # schema/prompt still fails clearly on the second attempt.
+        body["max_completion_tokens"] = min(max_completion_tokens * 4, 128000)
+        resp = _post_openai(body)
+        if resp.get("error"):
+            raise RuntimeError(f"OpenAI API error: {resp['error']}")
+        choice = (resp.get("choices") or [{}])[0]
+        if choice.get("finish_reason") == "content_filter":
+            raise RuntimeError(f"OpenAI refused the request (content_filter): {resp}")
+        text = (choice.get("message") or {}).get("content") or ""
     if not text.strip():
         raise RuntimeError(f"OpenAI returned no text content: {resp}")
     return _extract_json(text)
