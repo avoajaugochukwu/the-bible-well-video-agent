@@ -58,6 +58,42 @@ _ingest_queue = queue.Queue()
 _render_queue = queue.Queue()
 _current_ingest_row_id = None
 _current_render_row_id = None
+# Mirrored alongside each Queue so _ensure_resumed() can tell "already waiting
+# to run" apart from "stranded" without Queue.queue's own internals.
+_ingest_queue_ids = set()
+_render_queue_ids = set()
+_resumed_once = False
+
+
+def _enqueue_ingest(row_id) -> None:
+    _ingest_queue_ids.add(row_id)
+    _ingest_queue.put(row_id)
+
+
+def _enqueue_render(row_id) -> None:
+    _render_queue_ids.add(row_id)
+    _render_queue.put(row_id)
+
+
+def _ensure_resumed() -> None:
+    """Same problem military's ensureResumed()/requeueRunning() solves: the
+    ingest/render queues are in-memory only, so a job stranded mid-flight by a
+    process restart (crash, Railway redeploy) would otherwise sit at its last
+    status forever with nothing to resume it. Runs once per process boot, on
+    the first GET /jobs (no client-side polling anywhere — a human has to load
+    the queue page for this to fire, same as military's page-load trigger)."""
+    global _resumed_once
+    if _resumed_once:
+        return
+    _resumed_once = True
+    for summary in supabase_jobs.list_jobs():
+        row_id, status = summary["id"], summary["status"]
+        if status == "queued" and row_id != _current_ingest_row_id and row_id not in _ingest_queue_ids:
+            print(f"resume: re-enqueuing stranded prepare job {row_id!r}", flush=True)
+            _enqueue_ingest(row_id)
+        elif status == "rendering" and row_id != _current_render_row_id and row_id not in _render_queue_ids:
+            print(f"resume: re-enqueuing stranded render job {row_id!r}", flush=True)
+            _enqueue_render(row_id)
 
 
 def _ingest_worker():
@@ -65,11 +101,13 @@ def _ingest_worker():
     while True:
         row_id = _ingest_queue.get()
         _current_ingest_row_id = row_id
+        _ingest_queue_ids.discard(row_id)
         try:
             pipeline.prepare_pipeline(row_id)
-        except Exception:
+        except Exception as e:
             print(f"ingest: prepare_pipeline({row_id!r}) raised:", flush=True)
             traceback.print_exc()
+            supabase_jobs.set_status(row_id, "failed", error=str(e))
         finally:
             _current_ingest_row_id = None
             _ingest_queue.task_done()
@@ -80,6 +118,7 @@ def _render_worker():
     while True:
         row_id = _render_queue.get()
         _current_render_row_id = row_id
+        _render_queue_ids.discard(row_id)
         try:
             pipeline.render_pipeline(row_id)
         except Exception:
@@ -132,12 +171,19 @@ def h_ingest(m, body, query):
     row_id = body.get("row_id")
     if not row_id:
         return 400, {"error": "row_id is required"}
-    _ingest_queue.put(row_id)
+    if supabase_jobs.get_job(row_id) is None:
+        # Placeholder row so this job shows up in the queue list immediately —
+        # otherwise it's invisible until prepare_pipeline() finishes. A row_id
+        # that already has a job (a re-ingest / resume-from-cache case) is left
+        # untouched rather than stomped with a blank placeholder.
+        supabase_jobs.create_queued_job(row_id)
+    _enqueue_ingest(row_id)
     return 202, {"ok": True, "status": "queued", "row_id": row_id,
                  "queue_depth": _ingest_queue.qsize()}
 
 
 def h_list_jobs(m, body, query):
+    _ensure_resumed()
     return 200, {"jobs": supabase_jobs.list_jobs()}
 
 
@@ -152,7 +198,12 @@ def h_render(m, body, query):
     row_id = m.group("row_id")
     if supabase_jobs.get_job(row_id) is None:
         return 404, {"error": "job not found"}
-    _render_queue.put(row_id)
+    # Set immediately (not just once render_pipeline() actually starts) so a
+    # job waiting its turn in _render_queue is already visible as "rendering"
+    # rather than still showing "ready" — closes the same invisibility gap
+    # h_ingest's placeholder closes on the prepare side.
+    supabase_jobs.set_status(row_id, "rendering")
+    _enqueue_render(row_id)
     return 202, {"ok": True, "status": "rendering", "row_id": row_id,
                  "queue_depth": _render_queue.qsize()}
 

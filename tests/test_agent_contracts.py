@@ -124,7 +124,7 @@ class AgentContractTests(unittest.TestCase):
             }]
         }
 
-        problems = visual_director._validate_bridge_cues(plan, emotional_beats)
+        problems = visual_director._validate_bridge_cues(plan["story_beats"], emotional_beats)
 
         self.assertTrue(any("unapproved bridge_cue" in p for p in problems))
 

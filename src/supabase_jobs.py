@@ -116,6 +116,22 @@ def set_status(row_id, status: str, **payload_patch) -> dict | None:
     })
 
 
+def create_queued_job(row_id) -> dict:
+    """Write a minimal 'queued' placeholder row immediately on /ingest, before
+    prepare_pipeline() has done any work — so the job shows up in the queue
+    list right away instead of being invisible until prepare finishes.
+    prepare_pipeline()'s own build_job_payload()/upsert_job() call overwrites
+    this with the real payload (scenes, title, etc.) once it's done. Caller
+    must check get_job(row_id) is None first — never call this on a row that
+    already has a job, or it would wipe out real progress with a placeholder."""
+    now = datetime.now(timezone.utc).isoformat()
+    payload = {
+        "id": str(row_id), "createdAt": now, "status": "queued",
+        "title": None, "clickupUrl": None, "scenes": [], "renderUrl": None, "error": None,
+    }
+    return upsert_job({"id": str(row_id), "created_at": now, "status": "queued", "payload": payload})
+
+
 def build_job_payload(row_id, row: dict, scenes: list[dict], status: str = "ready") -> dict:
     now = datetime.now(timezone.utc).isoformat()
     payload = {

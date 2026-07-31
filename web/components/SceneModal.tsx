@@ -72,10 +72,30 @@ export function SceneModal({
   const [videoProgress, setVideoProgress] = useState<string | null>(null);
   const [pexelsQuery, setPexelsQuery] = useState("");
   const [pexelsResults, setPexelsResults] = useState<PexelsResult[]>([]);
+  const [copied, setCopied] = useState(false);
   const imageFileInput = useRef<HTMLInputElement>(null);
   const videoFileInput = useRef<HTMLInputElement>(null);
 
   const active = activeAssetUrl(scene);
+
+  async function downloadActive() {
+    if (!active) return;
+    const res = await fetch(active.url);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = active.url.split("/").pop() || `scene-${scene.sceneNumber}`;
+    a.click();
+    URL.revokeObjectURL(blobUrl);
+  }
+
+  function copyActiveUrl() {
+    if (!active) return;
+    navigator.clipboard.writeText(active.url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  }
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -168,8 +188,8 @@ export function SceneModal({
             <p className="text-sm font-medium">
               Scene {scene.sceneNumber}
               {scene.durationSeconds != null && (
-                <span className="ml-2 rounded bg-indigo-100 px-1.5 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                  needs {Math.ceil(scene.durationSeconds)}s
+                <span className="ml-2 rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                  {Math.ceil(scene.durationSeconds)}s
                 </span>
               )}
             </p>
@@ -201,13 +221,28 @@ export function SceneModal({
 
             <div className="mt-3 flex flex-wrap items-center gap-3">
               {active && (
-                <a
-                  href={active.url}
-                  download
-                  className="text-xs font-medium text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
-                >
-                  Download active {active.kind}
-                </a>
+                <>
+                  <button
+                    onClick={downloadActive}
+                    className="text-xs font-medium text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  >
+                    Download active {active.kind}
+                  </button>
+                  <button
+                    onClick={copyActiveUrl}
+                    title="Copy url"
+                    className="text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                  >
+                    {copied ? (
+                      <span className="text-xs font-medium">Copied</span>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                        <rect x="9" y="9" width="13" height="13" rx="2" />
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                      </svg>
+                    )}
+                  </button>
+                </>
               )}
               <button
                 disabled={busy}
