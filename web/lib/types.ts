@@ -2,7 +2,7 @@
 // Supabase (bible_well_jobs), payload is this whole Job as JSONB — same
 // single-table-JSONB pattern as military/lib/review/types.ts.
 
-export type JobStatus = "queued" | "ready" | "rendering" | "rendered" | "failed";
+export type JobStatus = "queued" | "preparing" | "ready" | "rendering" | "rendered" | "failed";
 
 export type AssetSource = "gpt-image" | "pexels" | "upload" | "video-gen";
 

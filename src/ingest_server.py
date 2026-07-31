@@ -97,7 +97,7 @@ def _ensure_resumed() -> None:
     _resumed_once = True
     for summary in supabase_jobs.list_jobs():
         row_id, status = summary["id"], summary["status"]
-        if status == "queued" and row_id != _current_ingest_row_id and row_id not in _ingest_queue_ids:
+        if status in ("queued", "preparing") and row_id != _current_ingest_row_id and row_id not in _ingest_queue_ids:
             print(f"resume: re-enqueuing stranded prepare job {row_id!r}", flush=True)
             _enqueue_ingest(row_id)
         elif status == "rendering" and row_id != _current_render_row_id and row_id not in _render_queue_ids:
@@ -116,6 +116,11 @@ def _ingest_worker():
             _ingest_queue.task_done()
             continue
         _current_ingest_row_id = row_id
+        # Distinct from 'queued' (waiting its turn) — otherwise a job actively
+        # being prepared looks identical to one that hasn't started, which is
+        # exactly the "is this actually running or stuck?" confusion the
+        # queue/job pages can't resolve without cross-checking /health.
+        supabase_jobs.set_status(row_id, "preparing")
         try:
             pipeline.prepare_pipeline(row_id)
             if row_id in _cancelled_ids:

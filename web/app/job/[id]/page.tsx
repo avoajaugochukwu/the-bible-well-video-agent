@@ -8,7 +8,7 @@ import { SceneModal } from "@/components/SceneModal";
 import type { Job, Scene } from "@/lib/types";
 import { activeAssetUrl } from "@/lib/types";
 
-const POLL_STATUSES = new Set(["rendering", "queued"]);
+const POLL_STATUSES = new Set(["rendering", "queued", "preparing"]);
 
 export default function JobPage() {
   const { id } = useParams<{ id: string }>();
