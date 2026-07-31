@@ -43,6 +43,17 @@ def upsert_job(row: dict) -> dict:
         return json.loads(r.read().decode())[0]
 
 
+def delete_job(row_id) -> None:
+    """Hard-delete a job row — the queue page's kill switch. Note this only
+    ever removes the tracking row; it cannot stop an already in-flight
+    prepare_pipeline()/render_pipeline() call (see ingest_server.py's
+    h_delete_job for how cancellation of a still-queued job is handled)."""
+    url = f"{env.require('SUPABASE_URL')}/rest/v1/{TABLE}?id=eq.{row_id}"
+    req = urllib.request.Request(url, method="DELETE", headers=_headers())
+    with urllib.request.urlopen(req, timeout=30):
+        pass
+
+
 def list_jobs() -> list[dict]:
     """Job summaries for the queue view, newest first."""
     params = urllib.parse.urlencode({
@@ -116,7 +127,7 @@ def set_status(row_id, status: str, **payload_patch) -> dict | None:
     })
 
 
-def create_queued_job(row_id) -> dict:
+def create_queued_job(row_id, title: str | None = None, clickup_url: str | None = None) -> dict:
     """Write a minimal 'queued' placeholder row immediately on /ingest, before
     prepare_pipeline() has done any work — so the job shows up in the queue
     list right away instead of being invisible until prepare finishes.
@@ -127,7 +138,7 @@ def create_queued_job(row_id) -> dict:
     now = datetime.now(timezone.utc).isoformat()
     payload = {
         "id": str(row_id), "createdAt": now, "status": "queued",
-        "title": None, "clickupUrl": None, "scenes": [], "renderUrl": None, "error": None,
+        "title": title, "clickupUrl": clickup_url, "scenes": [], "renderUrl": None, "error": None,
     }
     return upsert_job({"id": str(row_id), "created_at": now, "status": "queued", "payload": payload})
 

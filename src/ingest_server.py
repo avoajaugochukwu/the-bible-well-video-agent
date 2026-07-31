@@ -44,6 +44,7 @@ sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(PROJECT_ROOT, "utils"))
 sys.path.insert(0, PROJECT_ROOT)  # for agents/ below
 
+import baserow          # src/
 import env             # utils/
 import pexels          # utils/
 import run as pipeline  # src/: prepare_pipeline(), render_pipeline()
@@ -63,6 +64,14 @@ _current_render_row_id = None
 _ingest_queue_ids = set()
 _render_queue_ids = set()
 _resumed_once = False
+# Job ids the user hit Delete on. Checked when a worker dequeues a job (skips
+# it entirely, zero cost, if it hadn't started yet) and again after a pipeline
+# call returns (deletes the row the pipeline just re-wrote) — there is no way
+# to interrupt an ALREADY in-flight prepare_pipeline()/render_pipeline() call
+# (no cancellation checks inside the pipeline itself), so a job caught mid-run
+# still finishes and still spends whatever it was going to spend; this only
+# stops it from reappearing in the list afterward.
+_cancelled_ids = set()
 
 
 def _enqueue_ingest(row_id) -> None:
@@ -100,14 +109,25 @@ def _ingest_worker():
     global _current_ingest_row_id
     while True:
         row_id = _ingest_queue.get()
-        _current_ingest_row_id = row_id
         _ingest_queue_ids.discard(row_id)
+        if row_id in _cancelled_ids:
+            _cancelled_ids.discard(row_id)
+            print(f"ingest: {row_id!r} was deleted before it started — skipping", flush=True)
+            _ingest_queue.task_done()
+            continue
+        _current_ingest_row_id = row_id
         try:
             pipeline.prepare_pipeline(row_id)
+            if row_id in _cancelled_ids:
+                _cancelled_ids.discard(row_id)
+                supabase_jobs.delete_job(row_id)
         except Exception as e:
             print(f"ingest: prepare_pipeline({row_id!r}) raised:", flush=True)
             traceback.print_exc()
-            supabase_jobs.set_status(row_id, "failed", error=str(e))
+            if row_id in _cancelled_ids:
+                _cancelled_ids.discard(row_id)
+            else:
+                supabase_jobs.set_status(row_id, "failed", error=str(e))
         finally:
             _current_ingest_row_id = None
             _ingest_queue.task_done()
@@ -117,13 +137,22 @@ def _render_worker():
     global _current_render_row_id
     while True:
         row_id = _render_queue.get()
-        _current_render_row_id = row_id
         _render_queue_ids.discard(row_id)
+        if row_id in _cancelled_ids:
+            _cancelled_ids.discard(row_id)
+            print(f"render: {row_id!r} was deleted before it started — skipping", flush=True)
+            _render_queue.task_done()
+            continue
+        _current_render_row_id = row_id
         try:
             pipeline.render_pipeline(row_id)
+            if row_id in _cancelled_ids:
+                _cancelled_ids.discard(row_id)
+                supabase_jobs.delete_job(row_id)
         except Exception:
             print(f"render: render_pipeline({row_id!r}) raised:", flush=True)
             traceback.print_exc()
+            _cancelled_ids.discard(row_id)
         finally:
             _current_render_row_id = None
             _render_queue.task_done()
@@ -175,8 +204,17 @@ def h_ingest(m, body, query):
         # Placeholder row so this job shows up in the queue list immediately —
         # otherwise it's invisible until prepare_pipeline() finishes. A row_id
         # that already has a job (a re-ingest / resume-from-cache case) is left
-        # untouched rather than stomped with a blank placeholder.
-        supabase_jobs.create_queued_job(row_id)
+        # untouched rather than stomped with a blank placeholder. Best-effort
+        # title/clickup_url lookup so the placeholder shows a real name
+        # instead of the bare row_id — if this read fails, prepare_pipeline()
+        # will raise properly on its own re-fetch, so it's safe to swallow here.
+        title, clickup_url = None, None
+        try:
+            row = baserow.get_row(row_id)
+            title, clickup_url = row.get("title"), row.get("clickup_url")
+        except Exception:
+            pass
+        supabase_jobs.create_queued_job(row_id, title=title, clickup_url=clickup_url)
     _enqueue_ingest(row_id)
     return 202, {"ok": True, "status": "queued", "row_id": row_id,
                  "queue_depth": _ingest_queue.qsize()}
@@ -192,6 +230,21 @@ def h_get_job(m, body, query):
     if job is None:
         return 404, {"error": "job not found"}
     return 200, job
+
+
+def h_delete_job(m, body, query):
+    row_id = m.group("row_id")
+    in_flight = row_id in (_current_ingest_row_id, _current_render_row_id)
+    _cancelled_ids.add(row_id)
+    _ingest_queue_ids.discard(row_id)
+    _render_queue_ids.discard(row_id)
+    supabase_jobs.delete_job(row_id)
+    return 200, {
+        "ok": True, "deleted": row_id,
+        "was_in_flight": in_flight,
+        "note": ("this job's current run will still finish (and still spend whatever it was "
+                 "going to spend) — it just won't reappear once it's done") if in_flight else None,
+    }
 
 
 def h_render(m, body, query):
@@ -327,6 +380,7 @@ ROUTES = [
     ("POST", re.compile(r"^/ingest/?$"), h_ingest, True),
     ("GET", re.compile(r"^/jobs/?$"), h_list_jobs, True),
     ("GET", re.compile(rf"^/jobs/{_ROW}/?$"), h_get_job, True),
+    ("DELETE", re.compile(rf"^/jobs/{_ROW}/?$"), h_delete_job, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/render/?$"), h_render, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/regenerate-image/?$"), h_regenerate_image, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/generate-video/?$"), h_generate_video, True),

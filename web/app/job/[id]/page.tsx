@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -12,10 +12,12 @@ const POLL_STATUSES = new Set(["rendering"]);
 
 export default function JobPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [job, setJob] = useState<Job | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [openScene, setOpenScene] = useState<number | null>(null);
   const [rendering, setRendering] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -47,6 +49,26 @@ export default function JobPage() {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
       setRendering(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (
+      !confirm(
+        "Delete this job? If it's currently ingesting/rendering, the current run still finishes (and " +
+          "still spends whatever it was going to spend) — it just won't reappear once it's done.",
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      await api.deleteJob(id);
+      router.push("/");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+      setDeleting(false);
     }
   }
 
@@ -108,6 +130,13 @@ export default function JobPage() {
             className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
           >
             {job.status === "rendering" ? "Rendering…" : "Render"}
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="rounded-lg border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50 dark:border-red-900 dark:hover:bg-red-950"
+          >
+            {deleting ? "Deleting…" : "Delete"}
           </button>
         </div>
       </div>

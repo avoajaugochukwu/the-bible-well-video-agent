@@ -34,6 +34,8 @@ export const api = {
   listJobs: () => call<{ jobs: JobSummary[] }>("jobs").then((r) => r.jobs),
   getJob: (id: string) => call<Job>(`jobs/${id}`),
   render: (id: string) => call(`jobs/${id}/render`, { method: "POST" }),
+  deleteJob: (id: string) =>
+    call<{ ok: boolean; was_in_flight: boolean; note: string | null }>(`jobs/${id}`, { method: "DELETE" }),
 
   regenerateImage: (id: string, sceneNumber: number, prompt: string) =>
     call<Scene>(`jobs/${id}/scenes/${sceneNumber}/regenerate-image`, {

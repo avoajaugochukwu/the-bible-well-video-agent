@@ -5,6 +5,12 @@ import { api } from "@/lib/api-client";
 import { StatusBadge } from "@/components/StatusBadge";
 import type { JobSummary } from "@/lib/types";
 
+function formatDate(iso: string) {
+  return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(
+    new Date(iso),
+  );
+}
+
 export default function QueuePage() {
   const [jobs, setJobs] = useState<JobSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +53,7 @@ export default function QueuePage() {
                 <div className="min-w-0">
                   <p className="truncate font-medium">{job.title || job.id}</p>
                   <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-                    {job.sceneCount} scenes · {new Date(job.createdAt).toLocaleString()}
+                    {job.sceneCount} scenes · {formatDate(job.createdAt)}
                   </p>
                 </div>
                 <StatusBadge status={job.status} />
