@@ -67,11 +67,6 @@ from agents.scene_compositor import client as scene_compositor
 from agents.story_dossier import client as story_dossier_agent
 from agents.visual_director import client as visual_director
 
-# TEMPORARY — set back to False to generate images again. Skips both gpt-image-2
-# stages (character reference sheets, per-scene images) so a run can be checked
-# for scene quality/ordering/durations without paying per scene.
-SKIP_IMAGES = False
-
 # Cooperative cancellation. ingest_server.py replaces this with a lookup into its
 # own _cancelled_ids set; a plain CLI run has nothing to cancel it, so the
 # default always says no.
@@ -236,15 +231,9 @@ def prepare_pipeline(row_id) -> dict:
         flush=True,
     )
     _stage(row_id, "Generating character reference images")
-    # Skipped by the same SKIP_IMAGES dry run as the scene images below — these are
-    # gpt-image-2 calls too, and nothing downstream of a skipped image stage reads
-    # the reference urls (scene authoring uses the written profiles, not the sheets).
-    if SKIP_IMAGES:
-        print(f"  characters: SKIP_IMAGES set — skipping {len(characters)} reference sheet(s)", flush=True)
-    else:
-        print("  characters: character_sheet.generate_all()...", flush=True)
-        characters = character_sheet.generate_all(characters)
-        print("  characters: done")
+    print("  characters: character_sheet.generate_all()...", flush=True)
+    characters = character_sheet.generate_all(characters)
+    print("  characters: done")
 
     # 7 SCENES — the pre-cut verbatim narration snippets zipped 1:1 by position
     # with the director's story beats (guaranteed equal counts). Every beat gets
@@ -275,19 +264,16 @@ def prepare_pipeline(row_id) -> dict:
     # The count lives in the job's total/completed counters now, so the label
     # stays a plain verb the UI can show as-is.
     _stage(row_id, "Generating images")
-    if SKIP_IMAGES:
-        print(f"  images: SKIP_IMAGES set — skipping {len(scenes)} image(s)", flush=True)
-    else:
-        print("  images: scene_compositor.compose_all()...", flush=True)
-        scenes = scene_compositor.compose_all(
-            scenes, characters, row_id=row_id, is_cancelled=lambda: is_cancelled(row_id),
-        )
-        miss = [s["scene_number"] for s in scenes if not s["image_url"]]
-        if miss:
-            print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
-                  f"{len(miss)} MISSING, backfilling from neighbor: {miss}", flush=True)
-            _backfill_missing_images(scenes)
-        print("  images: done")
+    print("  images: scene_compositor.compose_all()...", flush=True)
+    scenes = scene_compositor.compose_all(
+        scenes, characters, row_id=row_id, is_cancelled=lambda: is_cancelled(row_id),
+    )
+    miss = [s["scene_number"] for s in scenes if not s["image_url"]]
+    if miss:
+        print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
+              f"{len(miss)} MISSING, backfilling from neighbor: {miss}", flush=True)
+        _backfill_missing_images(scenes)
+    print("  images: done")
 
     # 9 NARRATION DURATION — real Whisper+DTW alignment now, not at render time,
     # so every scene carries a real duration_seconds before a human ever sees it
