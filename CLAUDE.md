@@ -3,7 +3,7 @@
 The operating SOP, self-contained. Everything an agent needs to run this is in this file.
 
 This repo holds one pipeline — Christian Story — laid out with standard project directory
-names (`src/`, `utils/`, `remotion/`, `runs/`) at the repo root. There is no separate
+names (`src/`, `utils/`, `remotion/`) at the repo root. There is no separate
 sub-folder for the pipeline and no cross-pipeline `shared/` folder to keep in sync.
 
 ## What this project does
@@ -26,10 +26,8 @@ Output per run → one rendered video, one ClickUp task updated with the video u
 ## Current status
 
 Full pipeline is wired end-to-end via `src/run.py <row_id>` — row_id is a required arg (or the
-`row_id` field of an `/ingest` POST body when triggered over HTTP): each stage writes an
-artifact into `runs/<row_id>/` and is skipped on rerun if that artifact already exists, so a
-failure mid-run resumes exactly where it broke instead of re-paying for completed stages.
-`agents/` (character_ledger, character_sheet, scene_compositor — plain importable Python
+`row_id` field of an `/ingest` POST body when triggered over HTTP). **Nothing is kept on
+local disk** — see "State and resume" below. `agents/` (character_ledger, character_sheet, scene_compositor — plain importable Python
 packages, no subprocess bridge needed since this whole repo is already Python) is where the
 character-consistency work lives, separate from `src/scene_engine.py`'s scene-breakdown LLM
 calls. There is **no vision-QA anywhere in this pipeline** — whether a generated image actually
@@ -47,8 +45,36 @@ how many seconds of clip each scene needs before render) →
 [production UI review/edit, manual render trigger] → Remotion
 Lambda render (narration muxed in via `<Audio>`) → upload the finished mp4 to S3
 (`src/s3.py:put_file()`, RAW public link — **never presigned, always S3, that's what gets
-shared for review**) → ClickUp push (`src/clickup.py:push_video()`) → `prune_runs()` cleanup.
+shared for review**) → ClickUp push (`src/clickup.py:push_video()`).
 Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)` only.
+
+## State and resume
+
+The container's filesystem is throwaway — Railway has no volume, so a redeploy wipes it.
+There is no `runs/` directory any more and no stage reads or writes a local artifact.
+
+- **The Supabase job row (`bible_well_jobs.payload`) is the only durable state.** Scenes are
+  published there before image generation starts and each image lands on its scene as it's
+  produced; the character ledger rides along on the same payload (the production UI's
+  regenerate-image route needs it). `render_pipeline()` reads its scenes straight back out
+  (`supabase_jobs.scenes_from_job()`) — that's the only path.
+- **A failed or interrupted prepare re-runs the whole prepare, images included.** Deliberate:
+  resume happens rarely, and resume-specific skip logic isn't worth carrying. Everything
+  upstream of the scene list (context, narration cut, dossier, cast, director) is in-memory
+  only, so there is nothing stale and no contract-version cache check left anywhere.
+- **Two payload flags are correctness gates, not optimizations.** `renderUrl` stops a rerun
+  re-paying for a full Remotion Lambda render; `clickupPushedAt` stops it prepending
+  "🎬 VIDEO: …" to the same ClickUp task a second time (`push_video()` prepends
+  unconditionally and nothing detects the duplicate). Both are set the moment the thing they
+  guard has actually happened. `tests/check_render_gates.py` pins both down.
+- **Deferred, not built: an artifact store.** If re-running a whole prepare after a failure
+  starts costing real money often enough to notice — that rising retry cost is the signal —
+  the escalation is to persist the upstream intermediates outside the payload: S3 objects
+  under `bible-well/runs/<row_id>/<name>.json` in the existing `yt-bible-well-media` bucket
+  (mind its 7-day lifecycle), or a `bible_well_run_artifacts` table. They are deliberately
+  NOT in `payload`: `visual-story.json` + `scenes.json` + `whisper-words.json` would take it
+  from ~130KB to ~600KB against ~15 full read-modify-writes per run plus 5-second UI polling,
+  and Postgres cannot partially update jsonb.
 
 ## Inputs
 
@@ -90,8 +116,8 @@ bad conversation is a better next message, not a new Python gate.
 1 BASEROW    src/baserow.py: get_row(row_id) reads the one row the caller specified —
              no scanning, no gating on video_processed. Read-only.
 2 CONTEXT    scene_engine.py:infer_context() — OpenAI gpt-5-mini, reasoning_effort=low.
-             Setting/spiritual_theme/emotional_palette for the script, cached in
-             context.json and reused by every later stage.
+             Setting/spiritual_theme/emotional_palette for the script, held in memory and
+             passed into every later stage.
 3 DOSSIER    agents/story_dossier:build(script) reads the whole script before casting. It
              separates quoted source facts from abstract casting signals, generates five
              occupation candidates, selects one, then creates concrete body/ethnicity/hair/
@@ -103,7 +129,8 @@ bad conversation is a better next message, not a new Python gate.
              character only if they recur across multiple beats. Generate -> deterministic
              validate -> retry-with-feedback loop. Then agents/character_sheet:
              generate_all() makes one full-body reference image per tracked character
-             (gpt-image-2 t2i, quality=low). characters.json.
+             (gpt-image-2 t2i, quality=low). Stored on the job payload — the production
+             UI's regenerate-image route reads it back from there.
 5 DIRECTOR   agents/visual_director:build() — three-pass whole-video design, chunked so no
              single call's output has to scale past the model's completion-token cap. Pass
              one scores every narration snippet with categorical emotional signals only, in
@@ -116,7 +143,7 @@ bad conversation is a better next message, not a new Python gate.
              pass one, plot causality means each chunk must know what the last one did) —
              each chunk carries forward a model-authored rolling story_recap plus a
              deterministic location-use tally, and only the final chunk is told to resolve
-             the external goal. visual-story.json.
+             the external goal. In memory only.
 6 SCENES     src/scene_engine.py:cut_narration_scenes() uses an LLM to propose visual-change
              boundaries in sentence-aligned chunks, anchors those boundaries losslessly to
              the verbatim narration, and caps long beats at 30 words using natural punctuation
@@ -146,8 +173,8 @@ bad conversation is a better next message, not a new Python gate.
              upsert) — not at render time — so every scene's duration_seconds (how many
              seconds of video/image that scene needs) is already known and shown in the
              production UI before a human ever generates or uploads a clip for it.
-             Whisper words are cached (whisper-words.json) and reused unchanged by
-             render_pipeline() for the caption payload, never re-transcribed.
+             The narration mp3 is a tempfile, always unlinked; render_pipeline()
+             re-transcribes for its caption payload rather than caching words anywhere.
 9 RENDER     remotion/ (standalone Remotion project) on Remotion Lambda. Renders whatever
              image_url/video_url each scene carries, narration muxed in via `<Audio>`. See
              `remotion/CLAUDE.md` for render mechanics (banned-local-render rule,
@@ -172,8 +199,7 @@ Baserow/ClickUp/S3/Supabase/video-gen integration details, live in `src/CLAUDE.m
 
 `src/scene_engine.py` (scene breakdown + classification), plus everything under `agents/`,
 are their own unit with their own operating rules — see
-`agents/CLAUDE.md`. Contract versions on context, character, visual-story, and scene
-artifacts force stale cached work to regenerate when any authored interface changes.
+`agents/CLAUDE.md`.
 
 ## Layout
 
@@ -192,12 +218,11 @@ the-bible-well/
 ├── utils/          stdlib-only / low-dependency helpers: env.py (env-var lookup),
 │                   llm.py (shared OpenAI structured-JSON caller, used by scene_engine.py
 │                   and agents/), align.py (DTW aligner), images.py (image fetcher),
-│                   pexels.py (Pexels search), tts.py (TTS client), cleanup.py (prune_runs)
+│                   pexels.py (Pexels search), tts.py (TTS client)
 ├── remotion/       standalone Remotion project (Lambda render), incl. node_modules/ — no
 │                   character/style awareness, just renders each scene's image_url/video_url
 ├── web/            production review UI (Next.js) — queue + per-scene edit view, talks to
 │                   ingest_server.py through its own server-side proxy. See README.md.
-├── runs/           per-row run artifacts (runs/<row_id>/), pruned after 24h once done
 ├── .env            all credentials (Baserow, OpenAI, AWS, ClickUp, Supabase, etc.), one file
 ├── .venv/          one virtualenv, referenced by src/run.py via a PROJECT_ROOT-style
 │                   constant one level up from src/
@@ -205,7 +230,7 @@ the-bible-well/
 └── session.md      prose build-log / design record
 ```
 
-`src/*.py` files that need `utils/` (env, align, images, tts, cleanup) add a small
+`src/*.py` files that need `utils/` (env, align, images, tts) add a small
 `sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "utils"))`
 near the top rather than converting to a proper Python package — this repo has no
 `setup.py`/`pyproject.toml` and several `utils/*.py` files have their own

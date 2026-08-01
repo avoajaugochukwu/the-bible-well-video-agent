@@ -54,8 +54,6 @@ import supabase_jobs   # src/
 import video_gen       # src/
 from agents.scene_compositor import client as scene_compositor  # agents/
 
-RUNS_DIR = os.path.join(os.path.dirname(HERE), "runs")
-
 _ingest_queue = queue.Queue()
 _render_queue = queue.Queue()
 _current_ingest_row_id = None
@@ -68,9 +66,10 @@ _resumed_once = False
 # Job ids the user hit Delete/Cancel on. Checked when a worker dequeues a job
 # (skips it entirely, zero cost, if it hadn't started yet), at every stage
 # boundary inside prepare_pipeline (run.py's _stage -> is_cancelled below, so an
-# in-flight prepare stops at the NEXT stage instead of running to the end), and
-# again after a pipeline call returns. A render, and whichever prepare stage is
-# already running, still finishes and still spends what it was going to spend.
+# in-flight prepare stops at the NEXT stage instead of running to the end), after
+# every finished image inside compose_all (the one stage long and expensive
+# enough that waiting for its boundary defeats the point), and again after a
+# pipeline call returns. A render still runs to completion.
 _cancelled_ids = set()
 pipeline.is_cancelled = lambda row_id: row_id in _cancelled_ids
 
@@ -185,8 +184,8 @@ def _handle_shutdown_signal(signum, frame):
     just makes the shutdown visible in logs instead of the process vanishing
     mid-write with no trace, and exits
     promptly so Railway doesn't have to wait out the SIGKILL grace period.
-    Whatever was in flight resumes from its cached runs/ artifacts (or from
-    scratch if the run dir didn't survive) via _ensure_resumed() on next boot."""
+    Whatever was in flight is re-enqueued by _ensure_resumed() on next boot and
+    prepared again from scratch — nothing is cached on local disk."""
     in_flight = [r for r in (_current_ingest_row_id, _current_render_row_id) if r]
     if in_flight:
         print(f"{signal.Signals(signum).name} received — job(s) {in_flight} still in "
@@ -196,11 +195,14 @@ def _handle_shutdown_signal(signum, frame):
     sys.exit(0)
 
 
-def _characters_for(row_id) -> list[dict]:
-    path = os.path.join(RUNS_DIR, str(row_id), "characters.json")
-    if not os.path.exists(path):
-        raise RuntimeError(f"no runs/{row_id}/characters.json — prepare_pipeline hasn't run yet")
-    return json.load(open(path))
+def _characters_for(job: dict) -> list[dict]:
+    """The character ledger lives in the job payload (written by
+    prepare_pipeline), not on local disk — nothing on disk survives a redeploy,
+    which used to 500 this route on every restart."""
+    characters = job.get("characters")
+    if not characters:
+        raise RuntimeError(f"job {job.get('id')!r} has no character ledger — re-run prepare for it")
+    return characters
 
 
 def _job_scene(job: dict, scene_number: int) -> dict:
@@ -285,9 +287,9 @@ def h_delete_job(m, body, query):
     return 200, {
         "ok": True, "deleted": row_id,
         "was_in_flight": in_flight,
-        "note": ("an in-flight prepare stops at the next stage boundary (the stage already "
-                 "running still finishes and still spends what it was going to spend); a "
-                 "render runs to completion") if in_flight else None,
+        "note": ("an in-flight prepare stops at the next stage boundary, or at the next "
+                 "finished image if it's generating them; a render runs to completion")
+        if in_flight else None,
     }
 
 
@@ -314,7 +316,7 @@ def h_regenerate_image(m, body, query):
     if job is None:
         return 404, {"error": "job not found"}
     job_scene = _job_scene(job, scene_number)
-    characters = _characters_for(row_id)
+    characters = _characters_for(job)
     result = scene_compositor.regenerate_one(
         {"scene_number": scene_number, "image_prompt": prompt,
          "character_ids": job_scene.get("characterIds") or []},

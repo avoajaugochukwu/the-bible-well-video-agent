@@ -60,6 +60,13 @@ export interface Job {
    * so the UI can show a real bar instead of a spinner. */
   total?: number;
   completed?: number;
+  /** The locked character ledger (ids, appearance, reference image urls). Lives
+   * on the payload because the container keeps nothing on disk and the
+   * regenerate-image route needs it. Opaque to the UI. */
+  characters?: unknown[];
+  /** Set once the finished video url has been prepended to the ClickUp task —
+   * the gate that stops a second render pass prepending it twice. */
+  clickupPushedAt?: string;
 }
 
 export interface JobSummary {

@@ -174,8 +174,8 @@ def create_queued_job(row_id, title: str | None = None, clickup_url: str | None 
     """Write a minimal 'queued' placeholder row immediately on /ingest, before
     prepare_pipeline() has done any work — so the job shows up in the queue
     list right away instead of being invisible until prepare finishes.
-    prepare_pipeline()'s own build_job_payload()/upsert_job() call overwrites
-    this with the real payload (scenes, title, etc.) once it's done. Caller
+    prepare_pipeline()'s own upsert_scenes() call fills in the real payload
+    (scenes, characters, title) once it has one. Caller
     must check get_job(row_id) is None first — never call this on a row that
     already has a job, or it would wipe out real progress with a placeholder."""
     now = datetime.now(timezone.utc).isoformat()
@@ -217,6 +217,38 @@ def build_job_payload(row_id, row: dict, scenes: list[dict], status: str = "read
         "error": None,
     }
     return {"id": str(row_id), "created_at": now, "status": status, "payload": payload}
+
+
+@_locked
+def upsert_scenes(row_id, row: dict, scenes: list[dict], status: str = "ready", **payload_patch) -> dict:
+    """prepare_pipeline's two whole-scene-list writes (once before image
+    generation, once at the end). Rebuilds the payload from `scenes`, but keeps
+    what the row already holds and a rebuild can't know about:
+
+    - every scene's asset history and active pointer — scenes are visible and
+      editable in the UI while status is 'preparing', so a human regenerating an
+      image mid-prepare must not lose it to the write at the end of the run;
+    - renderUrl / clickupPushedAt — the gates that stop a rerun re-paying for a
+      Lambda render or prepending the video line to the same ClickUp task twice.
+
+    A scene with no history yet is seeded from its own image_url as usual, so
+    duration_seconds and any neighbor-backfilled image still land."""
+    existing = get_job(row_id) or {}
+    fresh = build_job_payload(row_id, row, scenes, status=status)["payload"]
+    by_number = {s["sceneNumber"]: s for s in existing.get("scenes") or []}
+    for scene in fresh["scenes"]:
+        old_asset = (by_number.get(scene["sceneNumber"]) or {}).get("asset") or {}
+        if old_asset.get("imageHistory") or old_asset.get("videoHistory"):
+            scene["asset"] = old_asset
+    payload = {
+        **existing, **fresh, **payload_patch,
+        "createdAt": existing.get("createdAt") or fresh["createdAt"],
+        "renderUrl": existing.get("renderUrl") or fresh["renderUrl"],
+    }
+    payload["completed"] = sum(1 for s in payload["scenes"] if s["asset"]["imageHistory"])
+    upsert_job({"id": str(row_id), "created_at": payload["createdAt"],
+                "status": payload["status"], "payload": payload})
+    return payload
 
 
 def _save(job: dict) -> None:
@@ -348,36 +380,18 @@ def _resolve_asset(asset: dict) -> dict:
 
 
 def scenes_from_job(job: dict) -> list[dict]:
-    """Same per-scene fields sync_scenes_from_job() merges onto a local
-    scenes.json, but built straight from the Supabase job payload alone — for
-    when runs/<row_id>/scenes.json isn't on disk (e.g. a Railway redeploy
-    wiped the ephemeral run dir between prepare_pipeline() finishing and a
-    manually triggered render, which can be hours or days later). Supabase is
-    the durable source of truth for scene_number/image_url/duration_seconds
-    (+ video_url/mode) — everything to_remotion_scenes() actually needs."""
+    """The job payload -> the pipeline's own scene shape (snake_case). This is
+    render_pipeline()'s ONLY source of scenes: nothing is kept on local disk, and
+    render can fire hours or days after prepare (manual review in between), so
+    Supabase is the durable source of truth for scene_number/image_url/
+    duration_seconds (+ video_url/mode) — everything to_remotion_scenes() needs,
+    including every production-UI edit (regenerated images, Pexels picks, video
+    overrides)."""
     out = []
     for s in job.get("scenes") or []:
         scene = {"scene_number": s["sceneNumber"], "image_url": None,
                   "duration_seconds": s.get("durationSeconds")}
         scene.update(_resolve_asset(s["asset"]))
-        out.append(scene)
-    return out
-
-
-def sync_scenes_from_job(scenes: list[dict], job: dict) -> list[dict]:
-    """Merge the production UI's per-scene edits (Supabase job.scenes, camelCase,
-    asset history + mode) back onto the pipeline's own scenes.json shape
-    (snake_case) before render — without this, render_pipeline() renders
-    whatever scene_compositor first produced, ignoring every regenerate/
-    Pexels/video-gen edit made in the UI. Matched by scene_number; a scene
-    present locally but missing from the job (shouldn't happen) passes through
-    unchanged rather than erroring — render still needs to produce a video."""
-    by_number = {s["sceneNumber"]: s for s in job.get("scenes") or []}
-    out = []
-    for scene in scenes:
-        job_scene = by_number.get(scene["scene_number"])
-        if job_scene and job_scene.get("asset"):
-            scene = {**scene, **_resolve_asset(job_scene["asset"])}
         out.append(scene)
     return out
 
@@ -403,6 +417,7 @@ if __name__ == "__main__":
     print("ok  SUPABASE_URL/SUPABASE_SECRET_KEY are set (no live API call — smoke test only)")
 
     edited_job = {
+        "id": "row-selftest",
         "scenes": [
             {"sceneNumber": 1, "asset": {
                 "imageHistory": [{"id": "seed-1", "url": "https://example.com/a.png", "prompt": "p"},
@@ -416,14 +431,10 @@ if __name__ == "__main__":
             }},
         ],
     }
-    local_scenes = [
-        {"scene_number": 1, "image_url": "https://example.com/a.png"},
-        {"scene_number": 2, "image_url": "https://example.com/b.png"},
-    ]
-    synced = sync_scenes_from_job(local_scenes, edited_job)
+    synced = scenes_from_job(edited_job)
     assert synced[0]["mode"] == "video"
     assert synced[0]["video_url"] == "https://example.com/a.mp4"
     assert synced[0]["image_url"] == "https://example.com/a2.png"  # regenerated image, not the seed
     assert synced[1]["mode"] == "image"
     assert "video_url" not in synced[1]
-    print("ok  sync_scenes_from_job resolves active image/video per scene correctly")
+    print("ok  scenes_from_job resolves active image/video per scene correctly")

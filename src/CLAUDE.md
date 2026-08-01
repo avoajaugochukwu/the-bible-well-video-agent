@@ -11,7 +11,12 @@ The deployed service (`src/ingest_server.py`) is a persistent HTTP server with t
 worker queues (prepare, render) so a slow render never blocks a new `/ingest` call — see its
 `ROUTES` list for what the API can do.
 
-`src/*.py` files that need `utils/` (env, align, images, tts, cleanup) add a small
+Nothing is written to local disk: there is no `runs/` directory and no stage-artifact cache.
+The Supabase job row is the only durable state, so a failed prepare re-runs in full (see root
+`CLAUDE.md`'s "State and resume"). Scratch files (the narration mp3, generated PNGs, the
+rendered mp4 before upload) go through `tempfile` and are always unlinked.
+
+`src/*.py` files that need `utils/` (env, align, images, tts) add a small
 `sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "utils"))`
 near the top rather than converting to a proper Python package — this repo has no
 `setup.py`/`pyproject.toml` and several `utils/*.py` files have their own
@@ -90,6 +95,11 @@ Fields consumed:
   languages, keep them in sync manually.
 - Per-scene asset history (`imageHistory`/`videoHistory`) is append-only — regenerate/Pexels
   pick/video-gen/upload never overwrites a prior entry, only adds one and moves the active
-  pointer (`activateAsset`), so the UI can always pick an older one back.
+  pointer (`activateAsset`), so the UI can always pick an older one back. `upsert_scenes()`
+  is the one function that rewrites the whole scene list (prepare_pipeline calls it twice);
+  it merges rather than overwrites, so an image a human regenerated while the job was still
+  `preparing` survives, as do the `renderUrl`/`clickupPushedAt` gates.
+- Payload fields beyond `web/lib/types.ts`'s visible `Job`: `characters` (the locked ledger,
+  read back by the regenerate-image route) and `clickupPushedAt` (the push-once gate).
 - `video_gen.py` is an async submit/poll client (`POST /generate` -> `job_id`,
   `GET /status/{job_id}` -> `video.url` when done) for an in-house image-to-video Modal API.

@@ -37,9 +37,11 @@ separate manual step, fired from the production review UI (`web/`, see
 below) once scenes have been reviewed/edited. `python3 src/run.py <row_id>`
 on its own still chains prepare+render unattended, for back-compat.
 
-Each row's artifacts land in `runs/<row_id>/`. If a run fails partway, rerun
-the same command — completed stages are skipped, so it resumes where it
-broke instead of redoing work.
+Nothing is kept on local disk (Railway has no volume, so a redeploy wipes it).
+The Supabase job row is the only durable state: scenes and their images land
+there as they're produced, and render reads them straight back out. If a
+prepare fails partway, rerun the same command — it re-does the whole prepare,
+images included.
 
 ## Production review UI
 

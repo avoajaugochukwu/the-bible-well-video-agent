@@ -2,10 +2,9 @@
 __pycache__/
 *.pyc
 scratchpad/
-**/runs/*/*.mp3
-**/runs/*/*.mp4
 .env
 **/.env
 **/.env.local
 .claude/scheduled_tasks.lock
 .DS_Store
+runs/

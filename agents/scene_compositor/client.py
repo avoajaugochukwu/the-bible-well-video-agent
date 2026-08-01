@@ -219,10 +219,15 @@ def _persist(row_id, scene: dict) -> None:
         print(f"    scene {scene.get('scene_number')}: progress write failed ({ex})", flush=True)
 
 
-def compose_all(scenes: list[dict], characters: list[dict], row_id=None) -> list[dict]:
+def compose_all(scenes: list[dict], characters: list[dict], row_id=None, is_cancelled=None) -> list[dict]:
     """row_id is optional — pass it and every finished image is written to that
     job's Supabase row as it lands (progress), leave it out (self-tests, any
-    non-job caller) and this behaves exactly as before."""
+    non-job caller) and this behaves exactly as before.
+
+    is_cancelled is checked after every finished image: cancelling a job during
+    this stage is exactly the case where cost runs away (one image per scene,
+    ~111 of them), so pending scenes are dropped instead of waiting for the next
+    stage boundary. Whatever was already generated stays persisted."""
     characters_by_id = {c["id"]: c for c in characters}
     reference_bytes_by_id = _fetch_reference_bytes(characters)
     with ThreadPoolExecutor(max_workers=8) as ex:
@@ -236,6 +241,13 @@ def compose_all(scenes: list[dict], characters: list[dict], row_id=None) -> list
             results[futures[fut]] = scene
             if row_id is not None and scene.get("image_url"):
                 _persist(row_id, scene)
+            if is_cancelled is not None and is_cancelled():
+                for f in futures:
+                    f.cancel()   # the ~8 already in flight still finish; the rest never start
+                # Imported here, not at module scope: src/run.py imports this
+                # module, so a top-level import back would be circular.
+                from run import Cancelled  # src/
+                raise Cancelled(f"job {row_id} cancelled during image generation")
     return results
 
 
