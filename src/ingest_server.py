@@ -107,7 +107,19 @@ def _ensure_resumed() -> None:
     if _resumed_once:
         return
     _resumed_once = True
-    for summary in supabase_jobs.list_jobs():
+    try:
+        summaries = supabase_jobs.list_jobs()
+    except Exception:
+        # Never let this kill the process. It runs at boot, before serve_forever(),
+        # so an exception here exits Python -> the entrypoint's `wait -n` returns ->
+        # the container exits -> Railway restarts it -> same failure. One unreachable
+        # Supabase call at the wrong moment becomes a permanent crash loop. Serving
+        # without a resume sweep is strictly better than not serving at all, and
+        # _resumed_once stays True so this doesn't retry on every request.
+        print("resume: could not list jobs, skipping the resume sweep:", flush=True)
+        traceback.print_exc()
+        return
+    for summary in summaries:
         row_id, status = summary["id"], summary["status"]
         if status in ("queued", "preparing") and row_id != _current_ingest_row_id and row_id not in _ingest_queue_ids:
             print(f"resume: re-enqueuing stranded prepare job {row_id!r}", flush=True)

@@ -25,6 +25,10 @@ NEXT_PID=$!
 # instead so ingest_server.py's own handler gets to run.
 trap 'kill -TERM "$PIPELINE_PID" "$NEXT_PID" 2>/dev/null' TERM INT
 
+# set -e would abort the script on `wait -n`'s non-zero return — i.e. exactly when
+# a child dies, which is the one case the lines below exist to handle — leaving the
+# surviving process to be hard-SIGKILLed instead of getting the clean TERM above.
+set +e
 wait -n "$PIPELINE_PID" "$NEXT_PID"
 EXIT_CODE=$?
 kill "$PIPELINE_PID" "$NEXT_PID" 2>/dev/null
