@@ -74,14 +74,26 @@ _cancelled_ids = set()
 pipeline.is_cancelled = lambda row_id: row_id in _cancelled_ids
 
 
-def _enqueue_ingest(row_id) -> None:
+# Both return False when the row is already waiting or already running, so a
+# double click (or n8n firing twice) is a no-op instead of a second full run.
+# Nothing is cached any more, so an accidental duplicate prepare re-pays for the
+# whole pipeline — dossier, director, every scene image — and the single worker
+# thread runs them back to back rather than racing, so it bills twice and looks
+# like one slow job.
+def _enqueue_ingest(row_id) -> bool:
+    if row_id in _ingest_queue_ids or row_id == _current_ingest_row_id:
+        return False
     _ingest_queue_ids.add(row_id)
     _ingest_queue.put(row_id)
+    return True
 
 
-def _enqueue_render(row_id) -> None:
+def _enqueue_render(row_id) -> bool:
+    if row_id in _render_queue_ids or row_id == _current_render_row_id:
+        return False
     _render_queue_ids.add(row_id)
     _render_queue.put(row_id)
+    return True
 
 
 def _ensure_resumed() -> None:
@@ -260,9 +272,10 @@ def h_ingest(m, body, query):
         # instead of leaving the old "failed" state up until the worker
         # actually gets to it.
         supabase_jobs.set_status(row_id, "queued", error=None, failedStage=None)
-    _enqueue_ingest(row_id)
+    queued = _enqueue_ingest(row_id)
     return 202, {"ok": True, "status": "queued", "row_id": row_id,
-                 "queue_depth": _ingest_queue.qsize()}
+                 "queue_depth": _ingest_queue.qsize(),
+                 "note": None if queued else "already queued or preparing — not enqueued again"}
 
 
 def h_list_jobs(m, body, query):
@@ -302,9 +315,10 @@ def h_render(m, body, query):
     # rather than still showing "ready" — closes the same invisibility gap
     # h_ingest's placeholder closes on the prepare side.
     supabase_jobs.set_status(row_id, "rendering")
-    _enqueue_render(row_id)
+    queued = _enqueue_render(row_id)
     return 202, {"ok": True, "status": "rendering", "row_id": row_id,
-                 "queue_depth": _render_queue.qsize()}
+                 "queue_depth": _render_queue.qsize(),
+                 "note": None if queued else "already queued or rendering — not enqueued again"}
 
 
 def h_regenerate_image(m, body, query):
