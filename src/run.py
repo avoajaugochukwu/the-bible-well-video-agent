@@ -70,7 +70,7 @@ from agents.visual_director import client as visual_director
 # TEMPORARY — set back to False to generate images again. Skips both gpt-image-2
 # stages (character reference sheets, per-scene images) so a run can be checked
 # for scene quality/ordering/durations without paying per scene.
-SKIP_IMAGES = True
+SKIP_IMAGES = False
 
 # Cooperative cancellation. ingest_server.py replaces this with a lookup into its
 # own _cancelled_ids set; a plain CLI run has nothing to cancel it, so the
