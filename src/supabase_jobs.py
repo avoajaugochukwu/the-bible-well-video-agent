@@ -9,9 +9,11 @@ payload matches web/lib/types.ts's `Job` shape exactly (camelCase) — this is
 the one place Python constructs that shape, so keep it in sync with types.ts
 by hand; there's no shared schema between the two languages.
 """
+import functools
 import json
 import os
 import sys
+import threading
 import urllib.parse
 import urllib.request
 import uuid
@@ -21,6 +23,21 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 import env  # utils/
 
 TABLE = "bible_well_jobs"
+
+_LOCK = threading.Lock()
+
+
+def _locked(fn):
+    """Every function below marked with this re-reads the WHOLE payload, mutates
+    it and writes it back — everything this app stores is one jsonb blob, so two
+    of them running at once silently lose one another's edits (the pipeline's
+    ingest worker writing scene images while an HTTP handler regenerates one is
+    the real case). One process, so one plain lock is enough."""
+    @functools.wraps(fn)
+    def wrapper(*args, **kwargs):
+        with _LOCK:
+            return fn(*args, **kwargs)
+    return wrapper
 
 
 def _headers() -> dict:
@@ -57,7 +74,8 @@ def delete_job(row_id) -> None:
 def list_jobs() -> list[dict]:
     """Job summaries for the queue view, newest first."""
     params = urllib.parse.urlencode({
-        "select": "id,created_at,status,payload->>title,payload->scenes,payload->>currentStage",
+        "select": "id,created_at,status,payload->>title,payload->scenes,payload->>currentStage,"
+                  "payload->>clickupUrl,payload->total,payload->completed",
         "order": "created_at.desc",
     })
     url = f"{env.require('SUPABASE_URL')}/rest/v1/{TABLE}?{params}"
@@ -72,6 +90,9 @@ def list_jobs() -> list[dict]:
             "title": row.get("title"),
             "sceneCount": len(row.get("scenes") or []),
             "currentStage": row.get("currentStage"),
+            "clickupUrl": row.get("clickupUrl"),
+            "total": row.get("total"),
+            "completed": row.get("completed"),
         }
         for row in rows
     ]
@@ -111,6 +132,7 @@ def _scene_asset(scene: dict) -> dict:
     }
 
 
+@_locked
 def set_status(row_id, status: str, **payload_patch) -> dict | None:
     """Fetch the existing job, patch status (+ any other payload fields, e.g.
     renderUrl/error), re-upsert. Returns None if the row doesn't exist yet —
@@ -128,6 +150,7 @@ def set_status(row_id, status: str, **payload_patch) -> dict | None:
     })
 
 
+@_locked
 def set_stage(row_id, stage: str) -> None:
     """Lightweight per-stage progress marker (e.g. "Reading script", "Cutting
     scenes", "Generating scene images...") patched into the job payload without
@@ -185,6 +208,11 @@ def build_job_payload(row_id, row: dict, scenes: list[dict], status: str = "read
             }
             for s in scenes
         ],
+        # Progress counters for the UI. Written once here with the scene list
+        # (prepare_pipeline calls this BEFORE image generation, so scenes are
+        # visible while they fill in) and kept current by add_scene_image().
+        "total": len(scenes),
+        "completed": sum(1 for s in scenes if s.get("image_url")),
         "renderUrl": None,
         "error": None,
     }
@@ -211,9 +239,13 @@ def _new_asset_id(prefix: str) -> str:
     return f"{prefix}-{uuid.uuid4().hex[:8]}"
 
 
+@_locked
 def add_scene_image(row_id, scene_number: int, url: str, source: str, prompt: str | None = None) -> dict:
     """Append a new image to a scene's history and make it active — never
-    overwrites a prior entry, so the UI can always pick an older one back."""
+    overwrites a prior entry, so the UI can always pick an older one back.
+    Also refreshes the job's `completed` counter (scenes that have an image),
+    which is what the production UI's progress bar counts while the compositor
+    is still working through the scene list."""
     job = get_job(row_id)
     if job is None:
         raise RuntimeError(f"no job for {row_id}")
@@ -227,10 +259,14 @@ def add_scene_image(row_id, scene_number: int, url: str, source: str, prompt: st
     scene["asset"]["mode"] = "image"
     if prompt:
         scene["imagePrompt"] = prompt
+    # Derived, not incremented: a regenerate on an already-done scene must not
+    # push the counter past `total`.
+    job["completed"] = sum(1 for s in job.get("scenes") or [] if s["asset"]["imageHistory"])
     _save(job)
     return scene
 
 
+@_locked
 def add_scene_video(row_id, scene_number: int, url: str, source: str) -> dict:
     """Append a new video to a scene's history and make it active (mode:
     'video' — video wins render precedence while active). The scene's image
@@ -251,6 +287,7 @@ def add_scene_video(row_id, scene_number: int, url: str, source: str) -> dict:
     return scene
 
 
+@_locked
 def activate_scene_asset(row_id, scene_number: int, kind: str, asset_id: str) -> dict:
     """Pick any past image or video back into the active slot — the 'user
     picks from history' behavior. Doesn't touch history, just the pointer."""
@@ -268,6 +305,7 @@ def activate_scene_asset(row_id, scene_number: int, kind: str, asset_id: str) ->
     return scene
 
 
+@_locked
 def delete_scene_asset(row_id, scene_number: int, kind: str, asset_id: str) -> dict:
     """Hard-delete one history item. If it was active, falls back to the most
     recent remaining item of the same kind (or None) — deleting the active
@@ -307,6 +345,23 @@ def _resolve_asset(asset: dict) -> dict:
     else:
         resolved["mode"] = "image"
     return resolved
+
+
+def scenes_from_job(job: dict) -> list[dict]:
+    """Same per-scene fields sync_scenes_from_job() merges onto a local
+    scenes.json, but built straight from the Supabase job payload alone — for
+    when runs/<row_id>/scenes.json isn't on disk (e.g. a Railway redeploy
+    wiped the ephemeral run dir between prepare_pipeline() finishing and a
+    manually triggered render, which can be hours or days later). Supabase is
+    the durable source of truth for scene_number/image_url/duration_seconds
+    (+ video_url/mode) — everything to_remotion_scenes() actually needs."""
+    out = []
+    for s in job.get("scenes") or []:
+        scene = {"scene_number": s["sceneNumber"], "image_url": None,
+                  "duration_seconds": s.get("durationSeconds")}
+        scene.update(_resolve_asset(s["asset"]))
+        out.append(scene)
+    return out
 
 
 def sync_scenes_from_job(scenes: list[dict], job: dict) -> list[dict]:

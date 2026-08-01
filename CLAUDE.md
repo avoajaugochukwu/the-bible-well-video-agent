@@ -33,7 +33,7 @@ failure mid-run resumes exactly where it broke instead of re-paying for complete
 packages, no subprocess bridge needed since this whole repo is already Python) is where the
 character-consistency work lives, separate from `src/scene_engine.py`'s scene-breakdown LLM
 calls. There is **no vision-QA anywhere in this pipeline** — whether a generated image actually
-matches its character(s) is a human call made off the gallery review, not an automated gate.
+matches its character(s) is a human call made off the production UI review, not an automated gate.
 
 Stage order: Baserow read (given row_id) → context → whole-script production dossier →
 character ledger + one full-body
@@ -43,7 +43,7 @@ blocks mapped evenly across that film → per-scene images (`agents/scene_compos
 i2i against each present character's reference sheet, t2i fallback only when a reference is
 missing or the edit call is rejected) → download the row's own narration → Whisper+DTW
 alignment against that real audio (duration_seconds per scene, so the production UI shows
-how many seconds of clip each scene needs before render) → gallery (non-blocking review) →
+how many seconds of clip each scene needs before render) →
 [production UI review/edit, manual render trigger] → Remotion
 Lambda render (narration muxed in via `<Audio>`) → upload the finished mp4 to S3
 (`src/s3.py:put_file()`, RAW public link — **never presigned, always S3, that's what gets
@@ -134,37 +134,35 @@ bad conversation is a better next message, not a new Python gate.
              (identity from the image, not restated text). Reference images are fetched
              and shrunk once per character, reused across scenes. Plain t2i is the
              fallback only when a reference is missing or the edit call is rejected. NO
-             automated vision-QA anywhere in this pipeline — a human reviews the gallery
-             (step 8) and judges consistency.
+             automated vision-QA anywhere in this pipeline — a human reviews the images in
+             the production UI (web/) and judges consistency.
 8 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
              hosted Modal whisper service (REMOTION_WHISPER_SERVICE_URL, same one
              senior-finance/finance/remotion calls) + utils/align.py DTW mapped onto each
              scene's verbatim script_snippet. NOT a word-count estimate (tried and
              explicitly rejected — doesn't actually align). NOT local faster-whisper —
              that package was never installed in this repo's .venv. Runs inside
-             prepare_pipeline() (part of stages 1-9, before the gallery/Supabase job
+             prepare_pipeline() (part of stages 1-9, before the Supabase job
              upsert) — not at render time — so every scene's duration_seconds (how many
              seconds of video/image that scene needs) is already known and shown in the
              production UI before a human ever generates or uploads a clip for it.
              Whisper words are cached (whisper-words.json) and reused unchanged by
              render_pipeline() for the caption payload, never re-transcribed.
-9 GALLERY    src/gallery.py: scenes + generated image urls -> one gallery.html (grid,
-             click-to-expand modal, vanilla JS/CSS) for manual review. See that file.
-10 RENDER    remotion/ (standalone Remotion project) on Remotion Lambda. Renders whatever
+9 RENDER     remotion/ (standalone Remotion project) on Remotion Lambda. Renders whatever
              image_url/video_url each scene carries, narration muxed in via `<Audio>`. See
              `remotion/CLAUDE.md` for render mechanics (banned-local-render rule,
              scenes.json shape, OffthreadVideo).
-11 S3        src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
+10 S3        src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
              public-read) — ALWAYS push the finished video here for review, never hand back
              a presigned link or a local-only file path.
-12 CLICKUP   src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
+11 CLICKUP   src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
              clickup_url task description (falls back to a comment on failure), same
              update-existing-task pattern as space-cluster. Last stage — nothing
              writes back to Baserow after this.
 ```
 
 `src/run.py` exposes this as two calls: `prepare_pipeline(row_id)` (stages 1-9, script through
-gallery — what `POST /ingest` enqueues) and `render_pipeline(row_id)` (stages 10-12, fired
+narration alignment — what `POST /ingest` enqueues) and `render_pipeline(row_id)` (stages 9-11, fired
 manually from the production UI's Render button once a human has reviewed/edited the job).
 `python3 src/run.py <row_id>` on the CLI runs both back-to-back for a plain unattended pass.
 See `README.md` for the production UI (`web/`) and Railway deployment. Credentials, and the
@@ -172,8 +170,8 @@ Baserow/ClickUp/S3/Supabase/video-gen integration details, live in `src/CLAUDE.m
 
 ## Scene generation + character agents (owned elsewhere — read, don't edit here)
 
-`src/scene_engine.py` (scene breakdown + classification) and `src/gallery.py` (review HTML),
-plus everything under `agents/`, are their own unit with their own operating rules — see
+`src/scene_engine.py` (scene breakdown + classification), plus everything under `agents/`,
+are their own unit with their own operating rules — see
 `agents/CLAUDE.md`. Contract versions on context, character, visual-story, and scene
 artifacts force stale cached work to regenerate when any authored interface changes.
 
@@ -183,8 +181,7 @@ artifacts force stale cached work to regenerate when any authored interface chan
 the-bible-well/
 ├── src/            pipeline code: run.py (entrypoint: prepare_pipeline/render_pipeline),
 │                   ingest_server.py (HTTP API, see its ROUTES list), baserow.py, clickup.py,
-│                   s3.py, supabase_jobs.py, video_gen.py, scene_engine.py, gpt_image.py,
-│                   krea.py, gallery.py
+│                   s3.py, supabase_jobs.py, video_gen.py, scene_engine.py, gpt_image.py
 ├── agents/         character-consistency agents (plain importable Python packages, no
 │                   subprocess bridge — this repo has no cross-language boundary):
 │                   story_dossier/ (casting + plot-free director profile), character_ledger/

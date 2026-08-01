@@ -3,14 +3,27 @@
 // the shared pipeline secret never reaches client JS.
 import type { AssetSource, Job, JobSummary, Scene } from "./types";
 
+// Parse before checking res.ok loses the real error whenever the body isn't JSON
+// — a dead/hung pipeline API makes Next return its own HTML 500, and `res.json()`
+// turns that into "Unexpected end of JSON input", burying the actual cause.
+async function parse<T>(res: Response, path: string): Promise<T> {
+  const text = await res.text();
+  let data: { error?: string } | null = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    // non-JSON body (Next error page, proxy crash) — surface a slice of it verbatim
+  }
+  if (!res.ok) throw new Error(data?.error || `${res.status} ${path}: ${text.slice(0, 200)}`);
+  return data as T;
+}
+
 async function call<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/api/proxy/${path}`, {
     ...init,
     headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || `${res.status} ${path}`);
-  return data as T;
+  return parse<T>(res, path);
 }
 
 export interface PexelsResult {
@@ -77,9 +90,7 @@ export const api = {
       headers: { "Content-Type": file.type || "application/octet-stream" },
       body: file,
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || `${res.status} upload-asset`);
-    return data as Scene;
+    return parse<Scene>(res, "upload-asset");
   },
 
   activateAsset: (id: string, sceneNumber: number, kind: "image" | "video", assetId: string) =>

@@ -4,7 +4,7 @@ character's own reference image, conditioned via edit, not from restated
 appearance text in the prompt — the prompt only carries the scene's visible
 action. Reference images are downloaded + shrunk once per character and reused
 across every scene that includes them. NO vision-QA anywhere in this app —
-matching is a human call made off the gallery review (src/gallery.py). Falls
+matching is a human call made off the production UI review. Falls
 back to plain t2i (gpt-image-2 generate, full appearance text) only if a
 character has no usable reference image, or if an edit call is rejected.
 """
@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.join(ROOT, "src"))
 sys.path.insert(0, os.path.join(ROOT, "utils"))
 
 import gpt_image      # src/
+import supabase_jobs  # src/
 from images import ImageFetcher, shrink_for_upload  # utils/
 
 COMPOSITOR_CONTRACT_VERSION = 5
@@ -145,7 +146,7 @@ def compose_one(scene: dict, characters_by_id: dict, reference_bytes_by_id: dict
     generate, full appearance text) when none are present, or a character is
     missing a reference, or the edit call itself is rejected. Fail-open: on
     generation error, image_url is None rather than raising. image_basis/basis_kind
-    match src/gallery.py's existing display contract (image_basis = the actual
+    match the production UI's existing display contract (image_basis = the actual
     prompt used, for review)."""
     present = _present_characters(scene, characters_by_id)
     references = [reference_bytes_by_id[c["id"]] for c in present if c["id"] in reference_bytes_by_id]
@@ -203,7 +204,25 @@ def regenerate_one(scene: dict, characters: list[dict]) -> dict:
     return compose_one(scene, characters_by_id, reference_bytes_by_id)
 
 
-def compose_all(scenes: list[dict], characters: list[dict]) -> list[dict]:
+def _persist(row_id, scene: dict) -> None:
+    """Land one finished image in the Supabase job row as soon as it exists, so
+    the production UI fills in during the ~20-minute image stage instead of
+    showing nothing until the whole run ends. Never raises into the pipeline —
+    same posture as src/clickup.py: a Supabase hiccup must not throw away an
+    image that has already been paid for."""
+    try:
+        supabase_jobs.add_scene_image(
+            row_id, scene["scene_number"], scene["image_url"], "gpt-image",
+            prompt=scene.get("image_prompt"),
+        )
+    except Exception as ex:
+        print(f"    scene {scene.get('scene_number')}: progress write failed ({ex})", flush=True)
+
+
+def compose_all(scenes: list[dict], characters: list[dict], row_id=None) -> list[dict]:
+    """row_id is optional — pass it and every finished image is written to that
+    job's Supabase row as it lands (progress), leave it out (self-tests, any
+    non-job caller) and this behaves exactly as before."""
     characters_by_id = {c["id"]: c for c in characters}
     reference_bytes_by_id = _fetch_reference_bytes(characters)
     with ThreadPoolExecutor(max_workers=8) as ex:
@@ -213,7 +232,10 @@ def compose_all(scenes: list[dict], characters: list[dict]) -> list[dict]:
         }
         results = [None] * len(scenes)
         for fut in as_completed(futures):
-            results[futures[fut]] = fut.result()
+            scene = fut.result()
+            results[futures[fut]] = scene
+            if row_id is not None and scene.get("image_url"):
+                _persist(row_id, scene)
     return results
 
 

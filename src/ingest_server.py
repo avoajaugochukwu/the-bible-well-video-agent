@@ -7,7 +7,7 @@ Two jobs:
    required: the caller (n8n) owns row selection and closes its own side of
    the job the moment it fires this request, so this pipeline never scans or
    writes Baserow itself, only reads the one row it's told to process.
-   Ingest only PREPARES now (stages 1-9: script -> images -> gallery) — it no
+   Ingest only PREPARES now (stages 1-9: script -> images -> align) — it no
    longer renders automatically. A human reviews/edits scenes in the
    production UI (web/) and fires render separately.
 
@@ -32,6 +32,7 @@ import json
 import os
 import queue
 import re
+import signal
 import sys
 import threading
 import traceback
@@ -64,14 +65,14 @@ _current_render_row_id = None
 _ingest_queue_ids = set()
 _render_queue_ids = set()
 _resumed_once = False
-# Job ids the user hit Delete on. Checked when a worker dequeues a job (skips
-# it entirely, zero cost, if it hadn't started yet) and again after a pipeline
-# call returns (deletes the row the pipeline just re-wrote) — there is no way
-# to interrupt an ALREADY in-flight prepare_pipeline()/render_pipeline() call
-# (no cancellation checks inside the pipeline itself), so a job caught mid-run
-# still finishes and still spends whatever it was going to spend; this only
-# stops it from reappearing in the list afterward.
+# Job ids the user hit Delete/Cancel on. Checked when a worker dequeues a job
+# (skips it entirely, zero cost, if it hadn't started yet), at every stage
+# boundary inside prepare_pipeline (run.py's _stage -> is_cancelled below, so an
+# in-flight prepare stops at the NEXT stage instead of running to the end), and
+# again after a pipeline call returns. A render, and whichever prepare stage is
+# already running, still finishes and still spends what it was going to spend.
 _cancelled_ids = set()
+pipeline.is_cancelled = lambda row_id: row_id in _cancelled_ids
 
 
 def _enqueue_ingest(row_id) -> None:
@@ -88,9 +89,9 @@ def _ensure_resumed() -> None:
     """Same problem military's ensureResumed()/requeueRunning() solves: the
     ingest/render queues are in-memory only, so a job stranded mid-flight by a
     process restart (crash, Railway redeploy) would otherwise sit at its last
-    status forever with nothing to resume it. Runs once per process boot, on
-    the first GET /jobs (no client-side polling anywhere — a human has to load
-    the queue page for this to fire, same as military's page-load trigger)."""
+    status forever with nothing to resume it. Called once at process boot
+    (main below) and again defensively on the first GET /jobs — guarded by
+    _resumed_once so it's a no-op the second time either way."""
     global _resumed_once
     if _resumed_once:
         return
@@ -120,19 +121,32 @@ def _ingest_worker():
         # being prepared looks identical to one that hasn't started, which is
         # exactly the "is this actually running or stuck?" confusion the
         # queue/job pages can't resolve without cross-checking /health.
-        supabase_jobs.set_status(row_id, "preparing")
         try:
+            supabase_jobs.set_status(row_id, "preparing")
             pipeline.prepare_pipeline(row_id)
             if row_id in _cancelled_ids:
                 _cancelled_ids.discard(row_id)
                 supabase_jobs.delete_job(row_id)
+        except pipeline.Cancelled as e:
+            # Expected, not a failure — h_delete_job already removed the row, so
+            # there's nothing to mark and no traceback worth printing.
+            _cancelled_ids.discard(row_id)
+            print(f"ingest: {e}", flush=True)
         except Exception as e:
             print(f"ingest: prepare_pipeline({row_id!r}) raised:", flush=True)
             traceback.print_exc()
             if row_id in _cancelled_ids:
                 _cancelled_ids.discard(row_id)
             else:
-                supabase_jobs.set_status(row_id, "failed", error=str(e), failedStage="prepare")
+                # ponytail: this worker thread is the ONLY one that ever runs a
+                # prepare — if a Supabase blip escapes here the `while True` loop
+                # exits, the thread is gone for the life of the process, and every
+                # later /ingest silently queues forever. Losing one status write is
+                # survivable; losing the worker is not.
+                try:
+                    supabase_jobs.set_status(row_id, "failed", error=str(e), failedStage="prepare")
+                except Exception:
+                    traceback.print_exc()
         finally:
             _current_ingest_row_id = None
             _ingest_queue.task_done()
@@ -161,6 +175,25 @@ def _render_worker():
         finally:
             _current_render_row_id = None
             _render_queue.task_done()
+
+
+def _handle_shutdown_signal(signum, frame):
+    """Railway sends SIGTERM on every redeploy/restart, forwarded here by
+    docker-entrypoint.sh's trap. prepare_pipeline()'s cancellation checks only
+    fire between stages, and render_pipeline() has none — an in-flight call
+    can't be finished gracefully in a signal handler, so this doesn't try. It
+    just makes the shutdown visible in logs instead of the process vanishing
+    mid-write with no trace, and exits
+    promptly so Railway doesn't have to wait out the SIGKILL grace period.
+    Whatever was in flight resumes from its cached runs/ artifacts (or from
+    scratch if the run dir didn't survive) via _ensure_resumed() on next boot."""
+    in_flight = [r for r in (_current_ingest_row_id, _current_render_row_id) if r]
+    if in_flight:
+        print(f"{signal.Signals(signum).name} received — job(s) {in_flight} still in "
+              "flight, can't finish mid-signal, will resume on next boot", flush=True)
+    else:
+        print(f"{signal.Signals(signum).name} received — no job in flight, exiting", flush=True)
+    sys.exit(0)
 
 
 def _characters_for(row_id) -> list[dict]:
@@ -252,8 +285,9 @@ def h_delete_job(m, body, query):
     return 200, {
         "ok": True, "deleted": row_id,
         "was_in_flight": in_flight,
-        "note": ("this job's current run will still finish (and still spend whatever it was "
-                 "going to spend) — it just won't reappear once it's done") if in_flight else None,
+        "note": ("an in-flight prepare stops at the next stage boundary (the stage already "
+                 "running still finishes and still spends what it was going to spend); a "
+                 "render runs to completion") if in_flight else None,
     }
 
 
@@ -472,8 +506,11 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, _handle_shutdown_signal)
+    signal.signal(signal.SIGINT, _handle_shutdown_signal)
     port = int(env.get("PORT", "8080"))
     threading.Thread(target=_ingest_worker, daemon=True).start()
     threading.Thread(target=_render_worker, daemon=True).start()
+    _ensure_resumed()
     print(f"ingest server listening on :{port}", flush=True)
     ThreadingHTTPServer(("0.0.0.0", port), Handler).serve_forever()

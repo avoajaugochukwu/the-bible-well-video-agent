@@ -25,11 +25,10 @@ to test against).
   each) -> scenes(break_into_scenes, characters-aware) -> images
   (agents/scene_compositor, gpt-image-2 i2i per scene against each present tracked
   character's reference image — no vision-QA anywhere in this pipeline, match/no-match is a human call
-  off the gallery) -> download narration -> whisper_words (cached, computed ONCE)
+  off the production UI) -> download narration -> whisper_words (cached, computed ONCE)
   -> align(align_scene_durations, real Whisper+DTW — duration_seconds lands on
   every scene here, in prepare_pipeline, so the production UI can show it
-  before render) -> gallery(build_gallery, non-blocking review) ->
-  [production UI review/edit] -> render_pipeline(): remotion/src/scenes.json
+  before render) -> [production UI review/edit] -> render_pipeline(): remotion/src/scenes.json
   (scenes + narrationUrl + the same whisper words, for <Captions>'s current-word
   highlight) -> Remotion Lambda render (deploy:site + render:remote — NEVER local
   `remotion render`, that freezes the machine) -> S3 -> ClickUp -> prune_runs
@@ -58,7 +57,6 @@ if PROJECT_ROOT not in sys.path:
 import baserow                          # src/
 import clickup as heritage_clickup      # src/: push_video()
 import s3 as heritage_s3                # src/: put_file()
-import gallery as heritage_gallery      # src/
 import scene_engine                     # src/
 import supabase_jobs                    # src/: production-UI job row
 import cleanup                          # utils/
@@ -69,6 +67,27 @@ from agents.story_dossier import client as story_dossier_agent
 from agents.visual_director import client as visual_director
 
 DONE_MARKER = "done.marker"
+
+# Cooperative cancellation. ingest_server.py replaces this with a lookup into its
+# own _cancelled_ids set; a plain CLI run has nothing to cancel it, so the
+# default always says no.
+is_cancelled = lambda row_id: False
+
+
+class Cancelled(Exception):
+    """The job was cancelled, so prepare_pipeline stopped at the next stage
+    boundary. Everything finished before that point is kept — runs/ artifacts on
+    disk, scenes and images already written to the job row."""
+
+
+def _stage(row_id, stage: str) -> None:
+    """One stage boundary: bail out if the job was cancelled while the previous
+    stage was running, otherwise publish what we're about to do. Cancelling
+    during a stage doesn't interrupt it — an in-flight compose_all still finishes
+    the images it already started paying for."""
+    if is_cancelled(row_id):
+        raise Cancelled(f"job {row_id} cancelled before {stage!r}")
+    supabase_jobs.set_stage(row_id, stage)
 
 
 def run_node(cmd: list[str], extra_env: dict | None = None, timeout: int = 3600) -> str:
@@ -99,8 +118,8 @@ def _backfill_missing_images(scenes: list[dict]) -> None:
 
 
 def prepare_pipeline(row_id) -> dict:
-    """Stages 1-10: script -> characters -> director -> scenes -> images ->
-    narration download + Whisper align (duration_seconds per scene) -> gallery.
+    """Stages 1-9: script -> characters -> director -> scenes -> images ->
+    narration download + Whisper align (duration_seconds per scene).
     Ends by upserting a 'ready' job row to Supabase (bible_well_jobs)
     for the production UI instead of continuing straight into render — a human
     now reviews/edits scenes there and fires render_pipeline() manually when
@@ -112,7 +131,7 @@ def prepare_pipeline(row_id) -> dict:
     rd = os.path.join(RUNS_DIR, str(row_id))
     os.makedirs(rd, exist_ok=True)
     print(f"== row {row_id}: {row.get('title')!r}\n== run dir: {rd}")
-    supabase_jobs.set_stage(row_id, "Reading script")
+    _stage(row_id, "Reading script")
 
     row_path = os.path.join(rd, "row.json")
     if not os.path.exists(row_path):
@@ -138,7 +157,7 @@ def prepare_pipeline(row_id) -> dict:
             == scene_engine.CONTEXT_CONTRACT_VERSION
         )
     if not context_current:
-        supabase_jobs.set_stage(row_id, "Analyzing story context")
+        _stage(row_id, "Analyzing story context")
         if os.path.exists(context_path):
             print("  context: cached contract is outdated; re-analyzing story meaning", flush=True)
         context = scene_engine.infer_context(script)
@@ -154,7 +173,7 @@ def prepare_pipeline(row_id) -> dict:
     if os.path.exists(narration_snippets_path):
         narration_snippets = json.load(open(narration_snippets_path))
     else:
-        supabase_jobs.set_stage(row_id, "Cutting narration into scenes")
+        _stage(row_id, "Cutting narration into scenes")
         print("  narration cut: cut_narration_scenes()...", flush=True)
         narration_snippets = scene_engine.cut_narration_scenes(script)
         json.dump(narration_snippets, open(narration_snippets_path, "w"), indent=2)
@@ -172,7 +191,7 @@ def prepare_pipeline(row_id) -> dict:
             == story_dossier_agent.STORY_DOSSIER_CONTRACT_VERSION
         )
     if not dossier_current:
-        supabase_jobs.set_stage(row_id, "Building casting dossier")
+        _stage(row_id, "Building casting dossier")
         print("  dossier: story_dossier.build()...", flush=True)
         story_dossier = story_dossier_agent.build(script)
         json.dump(story_dossier, open(dossier_path, "w"), indent=2)
@@ -194,7 +213,7 @@ def prepare_pipeline(row_id) -> dict:
             for c in source_characters
         )
     if not source_characters_current:
-        supabase_jobs.set_stage(row_id, "Identifying tracked characters")
+        _stage(row_id, "Identifying tracked characters")
         print("  source cast: character_ledger.build()...", flush=True)
         source_characters = character_ledger.build(
             script,
@@ -223,7 +242,7 @@ def prepare_pipeline(row_id) -> dict:
             and len(visual_story.get("story_beats") or []) == len(narration_snippets)
         )
     if not visual_story_current:
-        supabase_jobs.set_stage(row_id, "Directing visual story")
+        _stage(row_id, "Directing visual story")
         print("  director: visual_director.build()...", flush=True)
         visual_story = visual_director.build(
             source_characters,
@@ -263,7 +282,7 @@ def prepare_pipeline(row_id) -> dict:
             )
         )
     if not characters_current:
-        supabase_jobs.set_stage(row_id, "Casting supporting characters")
+        _stage(row_id, "Casting supporting characters")
         if os.path.exists(characters_path):
             print(
                 "  characters: cast declaration or cached contract changed; regenerating",
@@ -279,7 +298,7 @@ def prepare_pipeline(row_id) -> dict:
             f"  characters: {len(characters)} locked -> {[c['id'] for c in characters]}",
             flush=True,
         )
-        supabase_jobs.set_stage(row_id, "Generating character reference images")
+        _stage(row_id, "Generating character reference images")
         print("  characters: character_sheet.generate_all()...", flush=True)
         characters = character_sheet.generate_all(characters)
         json.dump(characters, open(characters_path, "w"), indent=2)
@@ -306,7 +325,7 @@ def prepare_pipeline(row_id) -> dict:
         )
     scenes_regenerated = not scenes_current
     if scenes_regenerated:
-        supabase_jobs.set_stage(row_id, "Cutting scenes and writing image prompts")
+        _stage(row_id, "Cutting scenes and writing image prompts")
         if os.path.exists(scenes_path):
             print("  scenes: cached prompt contract is outdated; redesigning visual metaphors", flush=True)
         print("  scenes: break_into_scenes()...", flush=True)
@@ -317,10 +336,20 @@ def prepare_pipeline(row_id) -> dict:
         )
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print(f"  scenes: done ({len(scenes)} scenes)")
+
+    # Publish the scenes NOW, before ~20 minutes of image generation — otherwise
+    # the production UI sits on "0 scenes" for the whole image stage, and an
+    # interruption throws away scenes that were already paid for. Images land one
+    # at a time from compose_all() below (supabase_jobs.add_scene_image), so the
+    # grid fills in as they arrive instead of appearing all at once at the end.
+    supabase_jobs.upsert_job(
+        supabase_jobs.build_job_payload(row_id, row, scenes, status="preparing")
+    )
+
     # 8 IMAGES — agents/scene_compositor, i2i per scene against whichever tracked
     # characters that scene calls for, in parallel (t2i fallback only). No vision-QA anywhere — a human
-    # reviews the gallery and judges consistency. The compositor has its own cache
-    # contract because final prompt construction can change without changing shot plans.
+    # reviews the images in the production UI and judges consistency. The compositor has its
+    # own cache contract because final prompt construction can change without changing shot plans.
     images_current = bool(scenes) and all(
         s.get("image_url")
         and s.get("compositor_contract_version")
@@ -329,11 +358,13 @@ def prepare_pipeline(row_id) -> dict:
     )
     images_regenerated = not images_current
     if images_regenerated:
-        supabase_jobs.set_stage(row_id, f"Generating {len(scenes)} scene images")
+        # The count lives in the job's total/completed counters now, so the label
+        # stays a plain verb the UI can show as-is.
+        _stage(row_id, "Generating images")
         if scenes and any(s.get("image_url") for s in scenes):
             print("  images: cached compositor contract is outdated; regenerating", flush=True)
         print("  images: scene_compositor.compose_all()...", flush=True)
-        scenes = scene_compositor.compose_all(scenes, characters)
+        scenes = scene_compositor.compose_all(scenes, characters, row_id=row_id)
         miss = [s["scene_number"] for s in scenes if not s["image_url"]]
         if miss:
             print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
@@ -351,7 +382,7 @@ def prepare_pipeline(row_id) -> dict:
     # for the caption payload — never re-transcribed.
     narration_path = os.path.join(rd, "narration.mp3")
     if not os.path.exists(narration_path):
-        supabase_jobs.set_stage(row_id, "Downloading narration audio")
+        _stage(row_id, "Downloading narration audio")
         print("  narration: downloading voice_url...", flush=True)
         baserow.download(voice_url, narration_path)
         print("  narration: done")
@@ -361,7 +392,7 @@ def prepare_pipeline(row_id) -> dict:
         _ww = json.load(open(whisper_words_path))
         words, total_duration = _ww["words"], _ww["total_duration"]
     else:
-        supabase_jobs.set_stage(row_id, "Transcribing narration (Whisper)")
+        _stage(row_id, "Transcribing narration (Whisper)")
         print("  whisper: whisper_words()...", flush=True)
         words, total_duration = scene_engine.whisper_words(narration_path)
         json.dump({"words": words, "total_duration": total_duration},
@@ -369,21 +400,19 @@ def prepare_pipeline(row_id) -> dict:
         print(f"  whisper: done ({len(words)} words, {total_duration:.1f}s)")
 
     if not scenes or "duration_seconds" not in scenes[0]:
-        supabase_jobs.set_stage(row_id, "Aligning scene durations to narration")
+        _stage(row_id, "Aligning scene durations to narration")
         print("  align: align_scene_durations() (real Whisper+DTW)...", flush=True)
         scenes = scene_engine.align_scene_durations(scenes, words, total_duration)
         json.dump(scenes, open(scenes_path, "w"), indent=2)
         print("  align: done")
 
-    # 10 GALLERY — manual-review HTML, non-blocking (never waits on human approval).
-    gallery_path = os.path.join(rd, "gallery.html")
-    if scenes_regenerated or images_regenerated or not os.path.exists(gallery_path):
-        supabase_jobs.set_stage(row_id, "Building review gallery")
-        heritage_gallery.build_gallery(scenes, gallery_path)
-        print(f"  gallery: {gallery_path}")
-
-    supabase_jobs.set_stage(row_id, "Finishing up")
-    print("  job: upserting 'ready' row to Supabase for production-UI review...", flush=True)
+    # Essentially a status flip to 'ready' now — scenes and images are already in
+    # the row (published above, then filled in one by one by compose_all). This
+    # rewrite is still what carries duration_seconds and any neighbor-backfilled
+    # image over, and normalizes the row against the authoritative local
+    # scenes.json on a cached rerun where compose_all never ran.
+    _stage(row_id, "Finishing up")
+    print("  job: flipping the Supabase row to 'ready' for production-UI review...", flush=True)
     job_row = supabase_jobs.build_job_payload(row_id, row, scenes)
     supabase_jobs.upsert_job(job_row)
     print(f"  job: {job_row['id']} status={job_row['status']}", flush=True)
@@ -397,12 +426,13 @@ def render_pipeline(row_id) -> str:
     9). Fired manually (production UI's Render button)
     once prepare_pipeline()'s job has been reviewed/edited. Pulls the current
     Supabase job row first and syncs its per-scene asset choices (regenerated
-    images, Pexels picks, image/video overrides) onto the local scenes.json
-    before rendering, so UI edits actually reach the final video."""
+    images, Pexels picks, image/video overrides) onto scenes.json before
+    rendering, so UI edits actually reach the final video. Supabase, not
+    runs/<row_id>/, is the durable source of truth here: render can fire hours
+    or days after prepare (manual review in between), and Railway's
+    filesystem is ephemeral across redeploys — if the local run dir didn't
+    survive, scenes are rebuilt straight from the job row instead of failing."""
     row = baserow.get_row(row_id)
-    rd = os.path.join(RUNS_DIR, str(row_id))
-    if not os.path.exists(rd):
-        raise RuntimeError(f"no runs/{row_id}/ — run prepare_pipeline({row_id!r}) first")
     voice_url = row.get("voice_url")
     if not voice_url:
         raise RuntimeError(f"row {row_id} has no voice_url — voice_status=done but nothing to align")
@@ -410,13 +440,19 @@ def render_pipeline(row_id) -> str:
     if not clickup_url:
         raise RuntimeError(f"row {row_id} has no clickup_url — nowhere to push the finished video")
 
-    scenes_path = os.path.join(rd, "scenes.json")
-    scenes = json.load(open(scenes_path))
-
     job = supabase_jobs.get_job(row_id)
     if job is None:
         raise RuntimeError(f"no Supabase job row for {row_id} — run prepare_pipeline({row_id!r}) first")
-    scenes = supabase_jobs.sync_scenes_from_job(scenes, job)
+
+    rd = os.path.join(RUNS_DIR, str(row_id))
+    os.makedirs(rd, exist_ok=True)
+    scenes_path = os.path.join(rd, "scenes.json")
+    if os.path.exists(scenes_path):
+        scenes = supabase_jobs.sync_scenes_from_job(json.load(open(scenes_path)), job)
+    else:
+        print(f"  job: runs/{row_id}/scenes.json missing (redeploy since prepare?) — "
+              "rebuilding scenes from the Supabase job row", flush=True)
+        scenes = supabase_jobs.scenes_from_job(job)
     json.dump(scenes, open(scenes_path, "w"), indent=2)
     print("  job: synced production-UI edits (regenerated images, Pexels picks, "
           "video overrides) into scenes.json before render", flush=True)

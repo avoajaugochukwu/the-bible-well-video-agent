@@ -38,11 +38,6 @@ near the top rather than converting to a proper Python package — this repo has
   - `PEXELS_API_KEY` — `utils/pexels.py` search.
   - `PERPLEXITY_API_KEY`, `APIFY_TOKEN`, `TTS_ENDPOINT`, `TTS_VOICE` — pre-existing keys,
     not all currently consumed by this pipeline.
-- **Krea image-gen token** (`IMAGE_API_TOKEN`) is read by `src/krea.py:krea_edit_photo()` from
-  its own hardcoded path in `sleep-stories/.env.local` — unaffected by this repo's layout,
-  don't duplicate it into the root `.env`. Still unused — this pipeline's i2i goes through
-  gpt-image-2's own `images.edit()` (`src/gpt_image.py:edit_image()`) instead of Krea, so
-  this token stays here undisturbed rather than becoming load-bearing.
 - **AWS/S3 — bucket is ours, creds are this pipeline's own copy.** `src/s3.py`'s `_cfg()`
   reads `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`/`AWS_REGION` via `utils/env.py`, from
   keys that live directly in the root `.env`.

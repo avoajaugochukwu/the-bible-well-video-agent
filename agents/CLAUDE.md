@@ -7,9 +7,8 @@ agents in this directory are built and how they're allowed to change.
 
 ## Ownership
 
-`src/scene_engine.py` (scene breakdown + classification) and `src/gallery.py` (review
-HTML) are built and maintained as their own unit, closely coupled to this directory's
-narration/visual lane split. `agents/story_dossier`, `agents/visual_director`,
+`src/scene_engine.py` (scene breakdown + classification) is built and maintained as its
+own unit, closely coupled to this directory's narration/visual lane split. `agents/story_dossier`, `agents/visual_director`,
 `agents/character_ledger`, `agents/character_sheet`, and `agents/scene_compositor` are
 their own unit too. Contract versions on context, character, visual-story, and scene
 artifacts force stale cached work to regenerate when any authored interface changes.
@@ -148,7 +147,7 @@ exception is the right one.
   prompt. `COMPOSITOR_CONTRACT_VERSION` invalidates images when final prompt construction
   changes.
 - **No automated vision-QA, anywhere.** Whether a generated image matches its expected
-  character(s) is a human call made off the gallery review (`src/gallery.py`), not a
+  character(s) is a human call made off the production UI review, not a
   gpt-4o vision gate — keeps cost down; this is a story pipeline, not a verification
   pipeline.
 - **i2i by default, t2i as fallback only.** `agents/scene_compositor` generates each scene
@@ -160,8 +159,7 @@ exception is the right one.
   and reused across every scene that character appears in. Falls back to plain t2i
   (`gpt_image.py:generate_image()`, full appearance text via `build_fallback_prompt`) only
   when a present character has no usable reference image, or the edit call itself is
-  rejected. `src/krea.py`'s own img2img (`krea_edit_photo()`) remains unused — this pipeline
-  now does i2i through gpt-image-2's own edit endpoint instead.
+  rejected.
 
 **Anti-Jesus regression bias (known gpt-image-2 failure mode):** faith-themed image
 generators default ANY unspecified secondary character into a long-haired, bearded Jesus

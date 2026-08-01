@@ -29,7 +29,7 @@ python3 src/ingest_server.py
 ```
 
 Ingest only **prepares** now (`prepare_pipeline()`): Baserow read -> scene
-breakdown -> multi-lane images -> gallery, then it stops and writes a `ready`
+breakdown -> multi-lane images -> narration alignment, then it stops and writes a `ready`
 job row to Supabase for human review — it no longer renders automatically.
 Render (`render_pipeline()`: narration download -> Whisper+DTW align ->
 Remotion Lambda render -> upload to S3 -> push video url to ClickUp) is a

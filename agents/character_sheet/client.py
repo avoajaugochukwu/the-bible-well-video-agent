@@ -1,7 +1,7 @@
 """Character-sheet agent: one full-body reference image per tracked character,
 generated once via gpt-image-2 t2i (src/gpt_image.py, quality=low — kept cheap on
 purpose). No automated vision-QA — whether a reference is good enough is a human call
-made off the gallery review, same as the rest of this pipeline's image QA today.
+made off the production UI review, same as the rest of this pipeline's image QA today.
 """
 import os
 import sys

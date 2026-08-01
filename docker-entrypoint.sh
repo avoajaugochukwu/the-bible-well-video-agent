@@ -18,6 +18,13 @@ export PIPELINE_API_URL="http://localhost:$PIPELINE_PORT"
 (cd web && npx next start -p "$PORT") &
 NEXT_PID=$!
 
+# Railway sends SIGTERM on every redeploy/restart. Without a trap, bash's
+# default disposition kills this script immediately without ever reaching
+# the `kill`/`exit` lines below, orphaning both children to be hard-SIGKILLed
+# by the container runtime with no chance to log anything. Forward the signal
+# instead so ingest_server.py's own handler gets to run.
+trap 'kill -TERM "$PIPELINE_PID" "$NEXT_PID" 2>/dev/null' TERM INT
+
 wait -n "$PIPELINE_PID" "$NEXT_PID"
 EXIT_CODE=$?
 kill "$PIPELINE_PID" "$NEXT_PID" 2>/dev/null

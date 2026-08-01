@@ -3,8 +3,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
-import { StatusBadge } from "@/components/StatusBadge";
 import { SceneModal } from "@/components/SceneModal";
+import { jobPercent, jobState, relTime, TONE_STYLE } from "@/lib/job-state";
 import type { Job, Scene } from "@/lib/types";
 import { activeAssetUrl } from "@/lib/types";
 
@@ -24,14 +24,25 @@ export default function JobPage() {
   useEffect(() => {
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout>;
+    // Tracked here rather than read off `job` state: the closure would see a stale
+    // value, and this is the only thing that decides whether to keep polling.
+    let lastStatus: string | null = null;
     async function load() {
       try {
         const j = await api.getJob(id);
         if (cancelled) return;
         setJob(j);
+        setError(null);
+        lastStatus = j.status;
         if (POLL_STATUSES.has(j.status)) timer = setTimeout(load, 5000);
       } catch (e) {
-        if (!cancelled) setError(e instanceof Error ? e.message : String(e));
+        if (cancelled) return;
+        setError(e instanceof Error ? e.message : String(e));
+        // Re-arm through the failure. Rescheduling only on success meant one blip
+        // (Next restarting, a dropped keep-alive socket) froze the page on stale
+        // data forever — the job kept moving, the screen didn't, and the banner
+        // never cleared even once the API came back.
+        if (lastStatus === null || POLL_STATUSES.has(lastStatus)) timer = setTimeout(load, 5000);
       }
     }
     load();
@@ -75,8 +86,8 @@ export default function JobPage() {
   async function handleDelete() {
     if (
       !confirm(
-        "Delete this job? If it's currently ingesting/rendering, the current run still finishes (and " +
-          "still spends whatever it was going to spend) — it just won't reappear once it's done.",
+        "Delete this job? An in-flight ingest stops at the next stage boundary (the stage already " +
+          "running still finishes and still spends what it was going to spend); a render runs to completion.",
       )
     ) {
       return;
@@ -118,6 +129,9 @@ export default function JobPage() {
   }
 
   const openSceneData = job.scenes.find((s) => s.sceneNumber === openScene) ?? null;
+  // Same words the queue row shows — see lib/job-state.ts.
+  const state = jobState(job);
+  const style = TONE_STYLE[state.tone];
 
   return (
     <main className="w-full flex-1 px-6 py-10">
@@ -126,15 +140,27 @@ export default function JobPage() {
       </Link>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">{job.title || job.id}</h1>
-          <div className="mt-2 flex items-center gap-2">
-            <StatusBadge status={job.status} />
-            <span className="text-xs text-neutral-500 dark:text-neutral-400">{job.scenes.length} scenes</span>
-            {job.status === "preparing" && job.currentStage && (
-              <span className="text-xs text-amber-700 dark:text-amber-400">· {job.currentStage}…</span>
-            )}
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${style.dot}`} />
+            <span className={`text-xs font-semibold uppercase tracking-wide ${style.text}`}>{state.label}</span>
+            <span className="text-[11px] text-neutral-500 dark:text-neutral-400">{relTime(job.createdAt)}</span>
           </div>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight">{job.title || job.id}</h1>
+          <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">{state.detail}</p>
+          {(job.total ?? 0) > 0 && (
+            <div className="mt-2 flex max-w-md items-center gap-2">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-800">
+                <div
+                  className={`h-full rounded-full transition-all ${style.bar}`}
+                  style={{ width: `${jobPercent(job)}%` }}
+                />
+              </div>
+              <span className="shrink-0 text-[11px] tabular-nums text-neutral-500 dark:text-neutral-400">
+                {job.completed ?? 0}/{job.total}
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-3">
           {job.renderUrl && (
@@ -158,7 +184,9 @@ export default function JobPage() {
           ) : (
             <button
               onClick={triggerRender}
-              disabled={rendering || job.status === "rendering"}
+              // Scenes are on screen before their images exist now — don't let a
+              // half-prepared job be sent to Lambda.
+              disabled={rendering || job.status === "rendering" || job.status === "preparing" || job.status === "queued"}
               className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
             >
               {job.status === "rendering" ? "Rendering…" : "Render"}
@@ -202,6 +230,13 @@ export default function JobPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={active.url} alt="" className="h-full w-full object-cover" />
                   )
+                ) : job.status === "preparing" ? (
+                  // Scenes are published before their images exist now, so an
+                  // empty tile means "still coming", not "failed" — it fills in
+                  // on one of the next polls.
+                  <div className="flex h-full w-full animate-pulse items-center justify-center bg-neutral-200 text-xs text-neutral-400 dark:bg-neutral-800">
+                    generating…
+                  </div>
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-xs text-neutral-400">
                     no image

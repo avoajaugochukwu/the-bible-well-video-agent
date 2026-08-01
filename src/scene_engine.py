@@ -567,7 +567,6 @@ def build_remotion_payload(scenes: list[dict], narration_url: str | None, fps: i
 
 
 if __name__ == "__main__":
-    import gallery as heritage_gallery  # local module, self-test only
     import baserow                      # local module: download() for real narration mp3
 
     sys.path.insert(0, os.path.join(HERE, ".."))  # repo root, for agents/ below
@@ -582,7 +581,7 @@ if __name__ == "__main__":
     SAMPLE_SCRIPT = open(SAMPLE_SCRIPT_PATH).read().strip()
     SAMPLE_AUDIO_URL = open(SAMPLE_AUDIO_URL_PATH).read().strip()
 
-    print("Heritage scene_engine self-test: script -> cast -> film plan -> scenes -> images -> narration -> align -> gallery")
+    print("Heritage scene_engine self-test: script -> cast -> film plan -> scenes -> images -> narration -> align")
     print(f"sample script: {len(SAMPLE_SCRIPT.split())} words", flush=True)
 
     print("\n1/7 infer_context()...", flush=True)
@@ -639,15 +638,11 @@ if __name__ == "__main__":
         print(f"  scene {s['scene_number']}: {s['duration_seconds']:.2f}s "
               f"(matched={s['matched']})", flush=True)
 
-    gallery_path = os.path.join(HERE, "test-gallery.html")
-    print(f"\n9/9 build_gallery() -> {gallery_path}", flush=True)
-    heritage_gallery.build_gallery(scenes, gallery_path)
-
     remotion_scenes_path = os.path.join(HERE, "..", "remotion", "src", "scenes.json")
     payload = build_remotion_payload(scenes, narration_url=None, words=words)  # local mp3 path, unusable by Lambda
     json.dump(payload, open(remotion_scenes_path, "w"), indent=2)
     print(f"      -> {remotion_scenes_path} ({sum(s['duration_frames'] for s in payload['scenes'])} "
           f"total frames @ 30fps, {len(words)} caption words)")
 
-    print(f"\nok  {len(scenes)} scenes, real narration-aligned durations, gallery + "
+    print(f"\nok  {len(scenes)} scenes, real narration-aligned durations, "
           f"render scenes.json written")
