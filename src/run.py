@@ -231,9 +231,15 @@ def prepare_pipeline(row_id) -> dict:
         flush=True,
     )
     _stage(row_id, "Generating character reference images")
-    print("  characters: character_sheet.generate_all()...", flush=True)
-    characters = character_sheet.generate_all(characters)
-    print("  characters: done")
+    # Skipped by the same SKIP_IMAGES dry run as the scene images below — these are
+    # gpt-image-2 calls too, and nothing downstream of a skipped image stage reads
+    # the reference urls (scene authoring uses the written profiles, not the sheets).
+    if os.getenv("SKIP_IMAGES"):
+        print(f"  characters: SKIP_IMAGES set — skipping {len(characters)} reference sheet(s)", flush=True)
+    else:
+        print("  characters: character_sheet.generate_all()...", flush=True)
+        characters = character_sheet.generate_all(characters)
+        print("  characters: done")
 
     # 7 SCENES — the pre-cut verbatim narration snippets zipped 1:1 by position
     # with the director's story beats (guaranteed equal counts). Every beat gets
@@ -264,16 +270,23 @@ def prepare_pipeline(row_id) -> dict:
     # The count lives in the job's total/completed counters now, so the label
     # stays a plain verb the UI can show as-is.
     _stage(row_id, "Generating images")
-    print("  images: scene_compositor.compose_all()...", flush=True)
-    scenes = scene_compositor.compose_all(
-        scenes, characters, row_id=row_id, is_cancelled=lambda: is_cancelled(row_id),
-    )
-    miss = [s["scene_number"] for s in scenes if not s["image_url"]]
-    if miss:
-        print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
-              f"{len(miss)} MISSING, backfilling from neighbor: {miss}", flush=True)
-        _backfill_missing_images(scenes)
-    print("  images: done")
+    # ponytail: dry-run switch. Set SKIP_IMAGES=1 to run everything else for real
+    # — scenes, durations, the whole job row — and skip the one stage that costs
+    # per scene, so the scene grid can be reviewed before paying for images.
+    # Env var rather than commented-out code: flip it on Railway, no redeploy.
+    if os.getenv("SKIP_IMAGES"):
+        print(f"  images: SKIP_IMAGES set — skipping {len(scenes)} image(s)", flush=True)
+    else:
+        print("  images: scene_compositor.compose_all()...", flush=True)
+        scenes = scene_compositor.compose_all(
+            scenes, characters, row_id=row_id, is_cancelled=lambda: is_cancelled(row_id),
+        )
+        miss = [s["scene_number"] for s in scenes if not s["image_url"]]
+        if miss:
+            print(f"  images: {len(scenes) - len(miss)}/{len(scenes)} generated, "
+                  f"{len(miss)} MISSING, backfilling from neighbor: {miss}", flush=True)
+            _backfill_missing_images(scenes)
+        print("  images: done")
 
     # 9 NARRATION DURATION — real Whisper+DTW alignment now, not at render time,
     # so every scene carries a real duration_seconds before a human ever sees it
