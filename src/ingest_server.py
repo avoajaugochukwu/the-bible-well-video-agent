@@ -418,18 +418,23 @@ def h_regenerate_character_image(m, body, query):
         )
         if variant is None:
             return 404, {"error": f"variant {variant_id!r} not found on character {character_id!r}"}
-        result = character_sheet.generate_variant_one(character, {**variant, "outfit_prompt": prompt})
+        # prompt is used VERBATIM (no re-wrapping) — the UI shows/edits the
+        # exact reference_prompt that was actually used last time, so what a
+        # human sees is what gets sent.
+        result = character_sheet.generate_variant_one(character, variant, prompt=prompt)
         if not result.get("image_url"):
             return 502, {"error": "image generation failed"}
         updated = supabase_jobs.update_character_variant(
-            row_id, character_id, variant_id, image_url=result["image_url"], outfit_prompt=prompt,
+            row_id, character_id, variant_id,
+            image_url=result["image_url"], reference_prompt=result["reference_prompt"],
         )
         return 200, updated
     result = character_sheet.generate_one(character, prompt=prompt)
     if not result.get("reference_image_url"):
         return 502, {"error": "image generation failed"}
     updated = supabase_jobs.update_character(
-        row_id, character_id, reference_image_url=result["reference_image_url"],
+        row_id, character_id,
+        reference_image_url=result["reference_image_url"], reference_prompt=result["reference_prompt"],
     )
     return 200, updated
 

@@ -225,6 +225,29 @@ def compile_visual_profile(profile: dict) -> str:
     )
 
 
+def compile_identity_profile(profile: dict) -> str:
+    """Same fields as compile_visual_profile, minus clothing — the part of a
+    locked profile that must stay IDENTICAL across every wardrobe variant
+    (agents/character_wardrobe generates per-context clothing separately). Used
+    to anchor a variant's i2i prompt with concrete age/build/face/hair text
+    alongside the reference-image conditioning, instead of relying on a bare
+    'same build' instruction — a generic instruction with no concrete text
+    backing it is exactly what let body weight drift between variants."""
+    return (
+        f"{profile.get('age')}-year-old {profile.get('ethnicity')} "
+        f"{profile.get('gender')}, {profile.get('height')}, {profile.get('build')}, "
+        f"{profile.get('skin_tone')}; {profile.get('face_shape')} face, "
+        f"{profile.get('cheek_structure')}, {profile.get('eye_description')}, "
+        f"{profile.get('nose_description')}, {profile.get('lip_description')}, "
+        f"{profile.get('age_markers')}, {profile.get('eyewear')}; "
+        f"{profile.get('hair_color')} {profile.get('hair_texture')} hair, "
+        f"{profile.get('hair_length')}, {profile.get('haircut')}, "
+        f"{profile.get('hair_part')}, {profile.get('hair_end_shape')}, "
+        f"{profile.get('hair_position')}, {profile.get('hair_accessory')}."
+        f" {profile.get('accessories')}."
+    )
+
+
 def _materialize_appearances(data: dict) -> dict:
     return {
         "characters": [

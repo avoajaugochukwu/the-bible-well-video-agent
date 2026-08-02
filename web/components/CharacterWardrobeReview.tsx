@@ -1,54 +1,8 @@
 "use client";
 import { useState } from "react";
 import { api } from "@/lib/api-client";
-import type { Character, CharacterVariant } from "@/lib/types";
-
-function Thumb({
-  url,
-  label,
-  prompt,
-  busy,
-  onPromptChange,
-  onRegenerate,
-}: {
-  url?: string | null;
-  label: string;
-  prompt: string;
-  busy: boolean;
-  onPromptChange: (v: string) => void;
-  onRegenerate: () => void;
-}) {
-  return (
-    <div className="w-56 shrink-0 rounded-xl border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900">
-      <div className="aspect-[3/4] w-full overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-800">
-        {url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={url} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-center text-xs text-neutral-400">
-            {busy ? "generating…" : "no image yet"}
-          </div>
-        )}
-      </div>
-      <p className="mt-2 truncate text-xs font-semibold" title={label}>
-        {label}
-      </p>
-      <textarea
-        value={prompt}
-        onChange={(e) => onPromptChange(e.target.value)}
-        rows={3}
-        className="mt-2 w-full rounded-lg border border-neutral-300 bg-white p-2 text-[11px] leading-snug dark:border-neutral-700 dark:bg-neutral-800"
-      />
-      <button
-        disabled={busy || !prompt.trim()}
-        onClick={onRegenerate}
-        className="mt-2 w-full rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
-      >
-        {busy ? "Regenerating…" : "Regenerate"}
-      </button>
-    </div>
-  );
-}
+import { CharacterModal, type CharacterModalTarget } from "@/components/CharacterModal";
+import type { Character } from "@/lib/types";
 
 export function CharacterWardrobeReview({
   jobId,
@@ -61,59 +15,9 @@ export function CharacterWardrobeReview({
   onCharacterUpdated: (character: Character) => void;
   onApproved: () => void;
 }) {
-  const [prompts, setPrompts] = useState<Record<string, string>>({});
-  const [busyKey, setBusyKey] = useState<string | null>(null);
+  const [open, setOpen] = useState<{ characterId: string; target: CharacterModalTarget } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [approving, setApproving] = useState(false);
-
-  function promptFor(key: string, fallback?: string | null) {
-    return prompts[key] ?? fallback ?? "";
-  }
-  function setPrompt(key: string, value: string) {
-    setPrompts((p) => ({ ...p, [key]: value }));
-  }
-
-  async function regenerateBase(character: Character) {
-    const key = `${character.id}::base`;
-    const prompt = promptFor(key, character.appearance).trim();
-    if (!prompt) return;
-    setBusyKey(key);
-    setError(null);
-    try {
-      const updated = (await api.regenerateCharacterImage(jobId, character.id, prompt)) as Character;
-      onCharacterUpdated(updated);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setBusyKey(null);
-    }
-  }
-
-  async function regenerateVariant(character: Character, variant: CharacterVariant) {
-    const key = `${character.id}::${variant.variant_id}`;
-    const prompt = promptFor(key, variant.outfit_prompt).trim();
-    if (!prompt) return;
-    setBusyKey(key);
-    setError(null);
-    try {
-      // The backend returns just the updated variant here, not the whole
-      // character — merge it into a fresh copy for the parent's job state.
-      const updated = (await api.regenerateCharacterImage(
-        jobId,
-        character.id,
-        prompt,
-        variant.variant_id,
-      )) as CharacterVariant;
-      onCharacterUpdated({
-        ...character,
-        variants: character.variants.map((v) => (v.variant_id === variant.variant_id ? updated : v)),
-      });
-    } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
-    } finally {
-      setBusyKey(null);
-    }
-  }
 
   async function approve() {
     setApproving(true);
@@ -127,14 +31,16 @@ export function CharacterWardrobeReview({
     }
   }
 
+  const openCharacter = open ? characters.find((c) => c.id === open.characterId) : undefined;
+
   return (
     <div className="mt-8 rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold">Review character wardrobe</h2>
           <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
-            Confirm each character&apos;s everyday look and every significant-context outfit before
-            scene images generate. Approving doesn&apos;t require every thumbnail to be finished.
+            Click any thumbnail to view it full-size, edit its prompt, and regenerate. Approving
+            doesn&apos;t require every thumbnail to be finished.
           </p>
         </div>
         <button
@@ -152,7 +58,7 @@ export function CharacterWardrobeReview({
         </p>
       )}
 
-      <div className="mt-6 space-y-8">
+      <div className="mt-6 space-y-6">
         {characters.map((character) => (
           <div key={character.id}>
             <h3 className="text-sm font-semibold">
@@ -163,36 +69,66 @@ export function CharacterWardrobeReview({
                 </span>
               )}
             </h3>
-            <div className="mt-3 flex gap-4 overflow-x-auto pb-1">
-              <Thumb
-                url={character.reference_image_url}
-                label="Everyday (base)"
-                prompt={promptFor(`${character.id}::base`, character.appearance)}
-                busy={busyKey === `${character.id}::base`}
-                onPromptChange={(v) => setPrompt(`${character.id}::base`, v)}
-                onRegenerate={() => regenerateBase(character)}
-              />
+            {/* flex-wrap, not overflow-x-auto: every variant stays visible at
+                once, no hidden/scrolled-off thumbnails. */}
+            <div className="mt-3 flex flex-wrap gap-3">
+              <div className="flex w-20 flex-col items-center gap-1">
+                <button
+                  onClick={() => setOpen({ characterId: character.id, target: { kind: "base" } })}
+                  className="h-20 w-20 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-800"
+                >
+                  {character.reference_image_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={character.reference_image_url} alt="" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-[9px] text-neutral-400">
+                      no image
+                    </div>
+                  )}
+                </button>
+                <span className="truncate text-[10px] text-neutral-500 dark:text-neutral-400">Everyday</span>
+              </div>
               {character.variants.map((variant) => (
-                <Thumb
-                  key={variant.variant_id}
-                  url={variant.image_url}
-                  label={variant.context_label}
-                  prompt={promptFor(`${character.id}::${variant.variant_id}`, variant.outfit_prompt)}
-                  busy={busyKey === `${character.id}::${variant.variant_id}`}
-                  onPromptChange={(v) => setPrompt(`${character.id}::${variant.variant_id}`, v)}
-                  onRegenerate={() => regenerateVariant(character, variant)}
-                />
+                <div key={variant.variant_id} className="flex w-20 flex-col items-center gap-1">
+                  <button
+                    onClick={() =>
+                      setOpen({ characterId: character.id, target: { kind: "variant", variantId: variant.variant_id } })
+                    }
+                    className="h-20 w-20 overflow-hidden rounded-lg border border-neutral-200 bg-neutral-100 dark:border-neutral-800 dark:bg-neutral-800"
+                  >
+                    {variant.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={variant.image_url} alt="" className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center px-1 text-center text-[9px] text-neutral-400">
+                        no image
+                      </div>
+                    )}
+                  </button>
+                  <span className="w-full truncate text-center text-[10px] text-neutral-500 dark:text-neutral-400" title={variant.context_label}>
+                    {variant.context_label}
+                  </span>
+                </div>
               ))}
               {character.variants.length === 0 && (
                 <p className="self-center text-xs text-neutral-400">
-                  No significant wardrobe contexts needed — everyday outfit used everywhere this
-                  character appears.
+                  No significant wardrobe contexts needed — everyday outfit used everywhere.
                 </p>
               )}
             </div>
           </div>
         ))}
       </div>
+
+      {open && openCharacter && (
+        <CharacterModal
+          jobId={jobId}
+          character={openCharacter}
+          initialTarget={open.target}
+          onClose={() => setOpen(null)}
+          onCharacterUpdated={onCharacterUpdated}
+        />
+      )}
     </div>
   );
 }

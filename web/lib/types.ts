@@ -44,7 +44,13 @@ export interface CharacterVariant {
   variant_id: string;
   /** Short human-readable phrase for a production reviewer, e.g. "Wedding guest". */
   context_label: string;
+  /** Compact clothing-only sentence agents/character_wardrobe decided on. */
   outfit_prompt?: string;
+  /** The FULL prompt actually sent to gpt-image-2 for this variant's image
+   * (style scaffold + the character's locked identity text + outfit_prompt) —
+   * what the review UI shows/edits, so what you see is what gets sent on
+   * regenerate. Always set once generation has run, even if it failed. */
+  reference_prompt?: string;
   image_url?: string | null;
   /** Which scenes this variant applies to — every other scene the character
    * appears in uses the base reference_image_url. */
@@ -61,6 +67,9 @@ export interface Character {
   role?: string;
   appearance?: string;
   reference_image_url?: string | null;
+  /** The FULL prompt actually sent for the base image (style scaffold +
+   * appearance) — same reasoning as CharacterVariant.reference_prompt. */
+  reference_prompt?: string;
   variants: CharacterVariant[];
 }
 
