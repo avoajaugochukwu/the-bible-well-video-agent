@@ -1,7 +1,7 @@
 "use client";
 // Browser-side calls, all routed through /api/proxy/* (see app/api/proxy) so
 // the shared pipeline secret never reaches client JS.
-import type { AssetSource, Job, JobSummary, Scene } from "./types";
+import type { AssetSource, Character, CharacterVariant, Job, JobSummary, Scene } from "./types";
 
 // Parse before checking res.ok loses the real error whenever the body isn't JSON
 // — a dead/hung pipeline API makes Next return its own HTML 500, and `res.json()`
@@ -56,6 +56,18 @@ export const api = {
     call<Scene>(`jobs/${id}/scenes/${sceneNumber}/regenerate-image`, {
       method: "POST",
       body: JSON.stringify({ prompt }),
+    }),
+
+  approveWardrobe: (id: string) =>
+    call<{ ok: boolean; status: string }>(`jobs/${id}/approve-wardrobe`, { method: "POST" }),
+
+  // Returns the whole updated Character when variantId is omitted (a base-image
+  // regenerate), or just the updated CharacterVariant when variantId is passed
+  // — mirrors src/ingest_server.py's h_regenerate_character_image exactly.
+  regenerateCharacterImage: (id: string, characterId: string, prompt: string, variantId?: string) =>
+    call<Character | CharacterVariant>(`jobs/${id}/characters/${characterId}/regenerate-image`, {
+      method: "POST",
+      body: JSON.stringify({ prompt, variantId: variantId ?? null }),
     }),
 
   generateVideo: (id: string, sceneNumber: number, prompt?: string) =>

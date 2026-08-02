@@ -45,6 +45,12 @@ export function jobState(job: JobStateInput): JobState {
   switch (job.status) {
     case "queued":
       return { label: "QUEUED", detail: "Waiting its turn in the ingest queue", tone: "idle" };
+    case "awaiting_wardrobe_approval":
+      return {
+        label: "REVIEW WARDROBE",
+        detail: "Review character outfits before scene images generate",
+        tone: "ready",
+      };
     case "preparing": {
       // currentStage is already a sentence-cased verb phrase ("Generating
       // images"), so it doubles as both the label and the head of the detail.

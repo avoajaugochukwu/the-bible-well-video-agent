@@ -23,13 +23,17 @@ to test against).
 
   baserow(get_row) -> context(infer_context) -> characters(agents/character_ledger
   + agents/character_sheet — who's worth tracking, one full-body reference image
-  each) -> scenes(break_into_scenes, characters-aware) -> images
-  (agents/scene_compositor, gpt-image-2 i2i per scene against each present tracked
-  character's reference image — no vision-QA anywhere in this pipeline, match/no-match is a human call
-  off the production UI) -> download narration -> whisper_words
+  each) -> scenes(break_into_scenes, characters-aware) -> wardrobe
+  (agents/character_wardrobe — which significant recurring contexts need their
+  own outfit variant, one i2i variant reference image each) -> [production UI:
+  human approves the wardrobe review before any scene image is generated] ->
+  images (agents/scene_compositor, gpt-image-2 i2i per scene against each
+  present tracked character's base or wardrobe-variant reference image — no
+  vision-QA anywhere in this pipeline, match/no-match is a human call off the
+  production UI) -> download narration -> whisper_words
   -> align(align_scene_durations, real Whisper+DTW — duration_seconds lands on
-  every scene here, in prepare_pipeline, so the production UI can show it
-  before render) -> [production UI review/edit] -> render_pipeline(): remotion/src/scenes.json
+  every scene here, in prepare_images_and_align, so the production UI can show
+  it before render) -> [production UI review/edit] -> render_pipeline(): remotion/src/scenes.json
   (scenes + narrationUrl + whisper words, for <Captions>'s current-word
   highlight) -> Remotion Lambda render (deploy:site + render:remote — NEVER local
   `remotion render`, that freezes the machine) -> S3 -> ClickUp
@@ -63,6 +67,7 @@ import scene_engine                     # src/
 import supabase_jobs                    # src/: production-UI job row
 from agents.character_ledger import client as character_ledger
 from agents.character_sheet import client as character_sheet
+from agents.character_wardrobe import client as character_wardrobe
 from agents.scene_compositor import client as scene_compositor
 from agents.story_dossier import client as story_dossier_agent
 from agents.visual_director import client as visual_director
@@ -134,19 +139,22 @@ def _transcribe(voice_url: str) -> tuple[list[dict], float]:
         os.path.exists(path) and os.unlink(path)
 
 
-def prepare_pipeline(row_id) -> dict:
-    """Stages 1-9: script -> characters -> director -> scenes -> images ->
-    narration download + Whisper align (duration_seconds per scene).
-    Ends by upserting a 'ready' job row to Supabase (bible_well_jobs)
-    for the production UI instead of continuing straight into render — a human
-    now reviews/edits scenes there and fires render_pipeline() manually when
-    satisfied, rather than this pipeline rendering unattended every time.
-    row_id is handed to us explicitly (n8n picks it via /ingest, or a human
-    passes it on the CLI) — this pipeline never scans or writes Baserow itself,
-    only reads the one row it's told to process.
+def prepare_cast_and_scenes(row_id) -> dict:
+    """Stages 1-7: script -> context -> narration cut -> dossier -> cast ->
+    director -> scenes -> wardrobe variants. Ends by upserting an
+    'awaiting_wardrobe_approval' job row to Supabase (bible_well_jobs) instead of
+    generating any scene images — a human reviews the character wardrobe (base
+    image + each significant-context variant) in the production UI and fires
+    POST /jobs/{row_id}/approve-wardrobe once satisfied, which is what runs
+    prepare_images_and_align() below. row_id is handed to us explicitly (n8n
+    picks it via /ingest, or a human passes it on the CLI) — this pipeline never
+    scans or writes Baserow itself, only reads the one row it's told to process.
 
-    Nothing here is cached on disk, so a retry re-runs every stage — including
-    image generation. That's the accepted trade for having no volume to lose."""
+    Nothing here is cached on disk, so a retry re-runs every stage through
+    scene-cutting. Wardrobe itself IS idempotent though: if the job already has
+    characters carrying non-empty variants (this stage already completed once),
+    that decision is reused rather than re-paid for — same posture as
+    render_pipeline's renderUrl check."""
     row = baserow.get_row(row_id)
     print(f"== row {row_id}: {row.get('title')!r}")
     _stage(row_id, "Reading script")
@@ -249,20 +257,74 @@ def prepare_pipeline(row_id) -> dict:
     )
     print(f"  scenes: done ({len(scenes)} scenes)")
 
-    # Publish the scenes NOW, before ~20 minutes of image generation — otherwise
-    # the production UI sits on "0 scenes" for the whole image stage, and an
-    # interruption throws away scenes that were already paid for. Images land one
-    # at a time from compose_all() below (supabase_jobs.add_scene_image), so the
-    # grid fills in as they arrive instead of appearing all at once at the end.
-    # The character ledger rides along here because it's the only copy that
-    # survives a restart, and the UI's per-scene regenerate needs it.
-    supabase_jobs.upsert_scenes(row_id, row, scenes, status="preparing", characters=characters)
+    # 7.5 WARDROBE — one whole-film decision per character: which SIGNIFICANT
+    # recurring contexts (a wedding, a work uniform) need their own outfit
+    # variant, everyday scenes keep the base reference. Idempotent: a resumed
+    # job that already ran this once reuses its decision rather than re-paying
+    # for it (character_wardrobe.decide() + generate_variants_all() both spend
+    # real OpenAI money).
+    existing = supabase_jobs.get_job(row_id)
+    already_decided = bool(existing) and any(
+        (c.get("variants") or []) for c in (existing.get("characters") or [])
+    )
+    if already_decided:
+        print("  wardrobe: variants already decided on a prior run — reusing", flush=True)
+        characters = existing["characters"]
+    else:
+        _stage(row_id, "Deciding wardrobe variants")
+        print("  wardrobe: character_wardrobe.decide()...", flush=True)
+        characters = character_wardrobe.decide(characters, scenes, story_dossier=story_dossier)
+        _stage(row_id, "Generating wardrobe variant images")
+        print("  wardrobe: character_sheet.generate_variants_all()...", flush=True)
+        characters = character_sheet.generate_variants_all(characters)
+        print(
+            "  wardrobe: "
+            + ", ".join(f"{c['id']}: {len(c.get('variants') or [])} variant(s)" for c in characters),
+            flush=True,
+        )
+
+    # Publish scenes + characters (with wardrobe variants) and STOP — no scene
+    # image has been generated yet. A human reviews/edits/approves the wardrobe
+    # in the production UI; POST /jobs/{row_id}/approve-wardrobe is what enqueues
+    # prepare_images_and_align() to actually spend on scene image generation.
+    _stage(row_id, "Awaiting wardrobe approval")
+    payload = supabase_jobs.upsert_scenes(
+        row_id, row, scenes, status="awaiting_wardrobe_approval", characters=characters,
+    )
+    print(f"  job: {payload['id']} status={payload['status']} — waiting for wardrobe approval", flush=True)
+    return payload
+
+
+def prepare_images_and_align(row_id) -> dict:
+    """Stages 8-9: images -> narration download + Whisper align
+    (duration_seconds per scene). Fired once a human has approved the wardrobe
+    review (production UI's approve-wardrobe action) or the CLI auto-approved
+    it. Reads scenes/characters straight back out of the Supabase job row
+    rather than from in-memory state — nothing survives on local disk between
+    prepare_cast_and_scenes() and this call, and a restart can land here on its
+    own via ingest_server.py's resume sweep. Ends by upserting a 'ready' job
+    row for production-UI review — the human render trigger is unchanged.
+
+    Deliberately never re-passes `characters=` to upsert_scenes: any human edit
+    made during wardrobe review (a regenerated base image or variant) must
+    survive this write untouched."""
+    row = baserow.get_row(row_id)
+    voice_url = row.get("voice_url")
+    if not voice_url:
+        raise RuntimeError(f"row {row_id} has no voice_url — voice_status=done but nothing to align")
+
+    job = supabase_jobs.get_job(row_id)
+    if job is None:
+        raise RuntimeError(f"no Supabase job row for {row_id} — run prepare_cast_and_scenes({row_id!r}) first")
+    scenes = supabase_jobs.full_scenes_from_job(job)
+    characters = job.get("characters") or []
 
     # 8 IMAGES — agents/scene_compositor, i2i per scene against whichever tracked
-    # characters that scene calls for, in parallel (t2i fallback only). No vision-QA anywhere — a human
-    # reviews the images in the production UI and judges consistency.
-    # The count lives in the job's total/completed counters now, so the label
-    # stays a plain verb the UI can show as-is.
+    # characters (and, where the wardrobe stage assigned one, wardrobe variant)
+    # that scene calls for, in parallel (t2i fallback only). No vision-QA
+    # anywhere — a human reviews the images in the production UI and judges
+    # consistency. The count lives in the job's total/completed counters now,
+    # so the label stays a plain verb the UI can show as-is.
     _stage(row_id, "Generating images")
     print("  images: scene_compositor.compose_all()...", flush=True)
     scenes = scene_compositor.compose_all(
@@ -413,13 +475,22 @@ def _render(row_id, job, scenes, voice_url, clickup_url) -> str:
     return video_url
 
 
-def run_pipeline(row_id) -> str | None:
-    """Back-compat: prepare then render in one unattended call, same behavior
-    as before the production UI existed — still what the CLI and the plain
-    `python3 src/run.py <row_id>` flow use. The /ingest HTTP path now calls
-    prepare_pipeline() alone; render_pipeline() is fired separately, manually,
-    from the production UI's Render button."""
-    prepare_pipeline(row_id)
+def run_pipeline(row_id, auto_approve_wardrobe: bool = True) -> str | None:
+    """Back-compat: prepare then render in one unattended call — the CLI's
+    `python3 src/run.py <row_id>` contract. auto_approve_wardrobe=True (the
+    CLI default) skips the human wardrobe-review gate and runs straight
+    through, same "unattended local/dev" posture this entrypoint always had.
+    ingest_server.py never calls this function — it calls
+    prepare_cast_and_scenes()/prepare_images_and_align() directly, so the
+    production/UI path always hard-pauses for wardrobe approval regardless of
+    this default."""
+    prepare_cast_and_scenes(row_id)
+    if not auto_approve_wardrobe:
+        return None
+    supabase_jobs.set_status(
+        row_id, "preparing", wardrobeApprovedAt=datetime.now(timezone.utc).isoformat(),
+    )
+    prepare_images_and_align(row_id)
     return render_pipeline(row_id)
 
 

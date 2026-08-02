@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { api, type PexelsResult } from "@/lib/api-client";
-import type { AssetHistoryItem, Scene } from "@/lib/types";
-import { activeAssetUrl } from "@/lib/types";
+import type { AssetHistoryItem, Character, Scene } from "@/lib/types";
+import { activeAssetUrl, resolveCharacterRefsUsed } from "@/lib/types";
 
 type Tab = "ai-image" | "ai-video" | "pexels-image" | "pexels-video";
 
@@ -56,11 +56,13 @@ function HistoryStrip({
 export function SceneModal({
   jobId,
   scene,
+  characters,
   onClose,
   onSceneUpdated,
 }: {
   jobId: string;
   scene: Scene;
+  characters: Character[];
   onClose: () => void;
   onSceneUpdated: (scene: Scene) => void;
 }) {
@@ -196,6 +198,13 @@ export function SceneModal({
             <p className="mt-0.5 line-clamp-1 text-xs text-neutral-500 dark:text-neutral-400">
               {scene.scriptSnippet}
             </p>
+            {resolveCharacterRefsUsed(scene, characters).length > 0 && (
+              <p className="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
+                {resolveCharacterRefsUsed(scene, characters)
+                  .map((ref) => `${ref.label}: ${ref.contextLabel}`)
+                  .join("  ·  ")}
+              </p>
+            )}
           </div>
           <button onClick={onClose} className="text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200">
             ✕

@@ -22,7 +22,7 @@ import gpt_image      # src/
 import supabase_jobs  # src/
 from images import ImageFetcher, shrink_for_upload  # utils/
 
-COMPOSITOR_CONTRACT_VERSION = 5
+COMPOSITOR_CONTRACT_VERSION = 6
 SCENE_STYLE_PREFIX = (
     "A horizontal 16:9 3D animated film still, Pixar style with soft-matte "
     "detailed textures. "
@@ -123,33 +123,79 @@ def build_fallback_prompt(scene: dict, characters_by_id: dict) -> str:
     )
 
 
+def _reference_key(character_id: str, variant_id: str | None) -> str:
+    """A variant's bytes never collide with its own character's base bytes in
+    the reference_bytes_by_id cache."""
+    return f"{character_id}::{variant_id}" if variant_id else character_id
+
+
+def _variant_lookup(characters: list[dict]) -> dict[tuple[str, int], str]:
+    """Deterministic fact, not an LLM decision: which wardrobe variant (if any)
+    applies to a given (character_id, scene_number) pair — inverted once from
+    each variant's own scene_numbers list (agents/character_wardrobe's output)."""
+    lookup: dict[tuple[str, int], str] = {}
+    for c in characters:
+        for v in c.get("variants") or []:
+            for n in v.get("scene_numbers") or []:
+                lookup[(c["id"], n)] = v["variant_id"]
+    return lookup
+
+
 def _fetch_reference_bytes(characters: list[dict]) -> dict[str, bytes]:
-    """Download + shrink each tracked character's reference sheet ONCE, reused by
-    every scene that includes them (see utils/images.py:shrink_for_upload — trims
-    resolution/bytes before every edit call, not per scene)."""
+    """Download + shrink each tracked character's base reference sheet AND every
+    wardrobe variant's own reference image, ONCE, reused by every scene that
+    needs them (see utils/images.py:shrink_for_upload — trims resolution/bytes
+    before every edit call, not per scene)."""
     urls = {
         c["id"]: c["reference_image_url"]
         for c in characters
         if c.get("reference_image_url")
     }
+    for c in characters:
+        for v in c.get("variants") or []:
+            if v.get("image_url"):
+                urls[_reference_key(c["id"], v["variant_id"])] = v["image_url"]
     fetched = ImageFetcher().fetch_many(list(urls.values()))
     out = {}
-    for char_id, url in urls.items():
+    for key, url in urls.items():
         data = fetched.get(url)
         if data:
-            out[char_id] = shrink_for_upload(data)
+            out[key] = shrink_for_upload(data)
     return out
 
 
-def compose_one(scene: dict, characters_by_id: dict, reference_bytes_by_id: dict) -> dict:
+def compose_one(
+    scene: dict,
+    characters_by_id: dict,
+    reference_bytes_by_id: dict,
+    variant_lookup: dict | None = None,
+) -> dict:
     """i2i when every present character has a usable reference image; t2i (plain
     generate, full appearance text) when none are present, or a character is
     missing a reference, or the edit call itself is rejected. Fail-open: on
     generation error, image_url is None rather than raising. image_basis/basis_kind
     match the production UI's existing display contract (image_basis = the actual
-    prompt used, for review)."""
+    prompt used, for review). `variant_lookup` (defaults to {}, fully backward
+    compatible) picks a character's wardrobe-variant reference over their base one
+    where the scene calls for it — falling back to the base reference if that
+    variant's image isn't available (still generating, or failed) rather than
+    failing the whole scene over one missing variant image. `character_refs_used`
+    on the result records which reference each present character actually
+    resolved to, for the production UI's per-scene audit display."""
+    variant_lookup = variant_lookup or {}
     present = _present_characters(scene, characters_by_id)
-    references = [reference_bytes_by_id[c["id"]] for c in present if c["id"] in reference_bytes_by_id]
+    scene_number = scene.get("scene_number")
+    references = []
+    character_refs_used = []
+    for c in present:
+        variant_id = variant_lookup.get((c["id"], scene_number))
+        bytes_ = reference_bytes_by_id.get(_reference_key(c["id"], variant_id)) if variant_id else None
+        if bytes_ is None:
+            variant_id = None
+            bytes_ = reference_bytes_by_id.get(c["id"])
+        if bytes_ is not None:
+            references.append(bytes_)
+        character_refs_used.append({"character_id": c["id"], "variant_id": variant_id})
     use_edit = bool(references) and len(references) == len(present)
 
     prompt = build_scene_prompt(scene, characters_by_id).rstrip(". ")
@@ -182,6 +228,7 @@ def compose_one(scene: dict, characters_by_id: dict, reference_bytes_by_id: dict
                 "image_basis": fallback,
                 "basis_kind": "prompt",
                 "generation_method": "failed",
+                "character_refs_used": character_refs_used,
                 "compositor_contract_version": COMPOSITOR_CONTRACT_VERSION,
             }
     return {
@@ -190,6 +237,7 @@ def compose_one(scene: dict, characters_by_id: dict, reference_bytes_by_id: dict
         "image_basis": prompt_with_constraints,
         "basis_kind": "prompt",
         "generation_method": generation_method,
+        "character_refs_used": character_refs_used,
         "compositor_contract_version": COMPOSITOR_CONTRACT_VERSION,
     }
 
@@ -201,7 +249,8 @@ def regenerate_one(scene: dict, characters: list[dict]) -> dict:
     characters_by_id = {c["id"]: c for c in characters}
     present = _present_characters(scene, characters_by_id)
     reference_bytes_by_id = _fetch_reference_bytes(present)
-    return compose_one(scene, characters_by_id, reference_bytes_by_id)
+    variant_lookup = _variant_lookup(present)
+    return compose_one(scene, characters_by_id, reference_bytes_by_id, variant_lookup)
 
 
 def _persist(row_id, scene: dict) -> None:
@@ -214,6 +263,7 @@ def _persist(row_id, scene: dict) -> None:
         supabase_jobs.add_scene_image(
             row_id, scene["scene_number"], scene["image_url"], "gpt-image",
             prompt=scene.get("image_prompt"),
+            character_refs_used=scene.get("character_refs_used"),
         )
     except Exception as ex:
         print(f"    scene {scene.get('scene_number')}: progress write failed ({ex})", flush=True)
@@ -230,9 +280,10 @@ def compose_all(scenes: list[dict], characters: list[dict], row_id=None, is_canc
     stage boundary. Whatever was already generated stays persisted."""
     characters_by_id = {c["id"]: c for c in characters}
     reference_bytes_by_id = _fetch_reference_bytes(characters)
+    variant_lookup = _variant_lookup(characters)
     with ThreadPoolExecutor(max_workers=8) as ex:
         futures = {
-            ex.submit(compose_one, s, characters_by_id, reference_bytes_by_id): i
+            ex.submit(compose_one, s, characters_by_id, reference_bytes_by_id, variant_lookup): i
             for i, s in enumerate(scenes)
         }
         results = [None] * len(scenes)

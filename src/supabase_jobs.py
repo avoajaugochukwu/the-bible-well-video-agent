@@ -75,7 +75,7 @@ def list_jobs() -> list[dict]:
     """Job summaries for the queue view, newest first."""
     params = urllib.parse.urlencode({
         "select": "id,created_at,status,payload->>title,payload->scenes,payload->>currentStage,"
-                  "payload->>clickupUrl,payload->total,payload->completed",
+                  "payload->>clickupUrl,payload->total,payload->completed,payload->>wardrobeApprovedAt",
         "order": "created_at.desc",
     })
     url = f"{env.require('SUPABASE_URL')}/rest/v1/{TABLE}?{params}"
@@ -93,6 +93,9 @@ def list_jobs() -> list[dict]:
             "clickupUrl": row.get("clickupUrl"),
             "total": row.get("total"),
             "completed": row.get("completed"),
+            # ingest_server.py's _ensure_resumed() reads this to tell a stranded
+            # 'preparing' job's phase apart (wardrobe-decide vs. image-generate).
+            "wardrobeApprovedAt": row.get("wardrobeApprovedAt"),
         }
         for row in rows
     ]
@@ -123,6 +126,7 @@ def _scene_asset(scene: dict) -> dict:
             "url": scene["image_url"],
             "source": "gpt-image",
             "prompt": scene.get("image_prompt"),
+            "characterRefsUsed": scene.get("character_refs_used") or [],
             "createdAt": datetime.now(timezone.utc).isoformat(),
         }],
         "videoHistory": [],
@@ -267,17 +271,61 @@ def _find_scene(job: dict, scene_number: int) -> dict:
     raise RuntimeError(f"scene {scene_number} not found in job {job.get('id')!r}")
 
 
+def _find_character(job: dict, character_id: str) -> dict:
+    for c in job.get("characters") or []:
+        if c.get("id") == character_id:
+            return c
+    raise RuntimeError(f"character {character_id!r} not found in job {job.get('id')!r}")
+
+
+@_locked
+def update_character(row_id, character_id: str, **patch) -> dict:
+    """Merge-patch one character's own fields (e.g. a regenerated
+    reference_image_url after the production UI's per-character 'edit prompt,
+    regenerate' action on the BASE image). Never touches `variants` — see
+    update_character_variant for that."""
+    job = get_job(row_id)
+    if job is None:
+        raise RuntimeError(f"no job for {row_id}")
+    character = _find_character(job, character_id)
+    character.update(patch)
+    _save(job)
+    return character
+
+
+@_locked
+def update_character_variant(row_id, character_id: str, variant_id: str, **patch) -> dict:
+    """Merge-patch one wardrobe variant's own fields (e.g. a regenerated
+    image_url/outfit_prompt after the production UI's per-variant 'edit
+    prompt, regenerate' action)."""
+    job = get_job(row_id)
+    if job is None:
+        raise RuntimeError(f"no job for {row_id}")
+    character = _find_character(job, character_id)
+    for variant in character.get("variants") or []:
+        if variant.get("variant_id") == variant_id:
+            variant.update(patch)
+            _save(job)
+            return variant
+    raise RuntimeError(f"variant {variant_id!r} not found on character {character_id!r} in job {job.get('id')!r}")
+
+
 def _new_asset_id(prefix: str) -> str:
     return f"{prefix}-{uuid.uuid4().hex[:8]}"
 
 
 @_locked
-def add_scene_image(row_id, scene_number: int, url: str, source: str, prompt: str | None = None) -> dict:
+def add_scene_image(row_id, scene_number: int, url: str, source: str, prompt: str | None = None,
+                     character_refs_used: list[dict] | None = None) -> dict:
     """Append a new image to a scene's history and make it active — never
     overwrites a prior entry, so the UI can always pick an older one back.
     Also refreshes the job's `completed` counter (scenes that have an image),
     which is what the production UI's progress bar counts while the compositor
-    is still working through the scene list."""
+    is still working through the scene list. `character_refs_used` (which
+    reference — base or wardrobe variant — each present character actually
+    resolved to) is stored per history item, not scene-level: a later regenerate
+    can pick a different variant than an earlier attempt did, and the
+    production UI's per-scene audit display always reads the ACTIVE item."""
     job = get_job(row_id)
     if job is None:
         raise RuntimeError(f"no job for {row_id}")
@@ -285,6 +333,7 @@ def add_scene_image(row_id, scene_number: int, url: str, source: str, prompt: st
     asset_id = _new_asset_id("img")
     scene["asset"]["imageHistory"].append({
         "id": asset_id, "url": url, "source": source, "prompt": prompt,
+        "characterRefsUsed": character_refs_used or [],
         "createdAt": datetime.now(timezone.utc).isoformat(),
     })
     scene["asset"]["activeImageId"] = asset_id
@@ -377,6 +426,28 @@ def _resolve_asset(asset: dict) -> dict:
     else:
         resolved["mode"] = "image"
     return resolved
+
+
+def full_scenes_from_job(job: dict) -> list[dict]:
+    """The full mid-pipeline scene shape (snake_case) reconstructed from the job
+    payload — used by run.py's prepare_images_and_align() to hand scenes back
+    to agents/scene_compositor after the wardrobe-approval gate, since nothing
+    survives on local disk between prepare_cast_and_scenes() and this call.
+    Unlike scenes_from_job() (render's minimal image/video-url shape), this
+    keeps every field scene_compositor.compose_all() actually reads."""
+    return [
+        {
+            "scene_number": s["sceneNumber"],
+            "script_snippet": s.get("scriptSnippet"),
+            "scene_type": s.get("sceneType"),
+            "visual_mode": s.get("visualMode"),
+            "character_ids": s.get("characterIds") or [],
+            "hero_subject": s.get("heroSubject"),
+            "image_prompt": s.get("imagePrompt"),
+            "duration_seconds": s.get("durationSeconds"),
+        }
+        for s in job.get("scenes") or []
+    ]
 
 
 def scenes_from_job(job: dict) -> list[dict]:

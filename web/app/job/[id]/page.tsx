@@ -3,10 +3,11 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/api-client";
+import { CharacterWardrobeReview } from "@/components/CharacterWardrobeReview";
 import { SceneModal } from "@/components/SceneModal";
 import { jobPercent, jobState, relTime, TONE_STYLE } from "@/lib/job-state";
-import type { Job, Scene } from "@/lib/types";
-import { activeAssetUrl } from "@/lib/types";
+import type { Character, Job, Scene } from "@/lib/types";
+import { activeAssetUrl, resolveCharacterRefsUsed } from "@/lib/types";
 
 const POLL_STATUSES = new Set(["rendering", "queued", "preparing"]);
 
@@ -107,6 +108,21 @@ export default function JobPage() {
     setJob((j) => (j ? { ...j, scenes: j.scenes.map((s) => (s.sceneNumber === updated.sceneNumber ? updated : s)) } : j));
   }
 
+  function updateCharacter(updated: Character) {
+    setJob((j) =>
+      j ? { ...j, characters: (j.characters || []).map((c) => (c.id === updated.id ? updated : c)) } : j,
+    );
+  }
+
+  function handleWardrobeApproved() {
+    // Optimistic, same idiom as retryIngest/triggerRender: h_approve_wardrobe
+    // flips the row to 'preparing' server-side immediately, so reflect that
+    // now instead of waiting on the next poll, and resume polling since the
+    // job is actively spending again.
+    setJob((j) => (j ? { ...j, status: "preparing" } : j));
+    setPollNonce((n) => n + 1);
+  }
+
   if (error && !job) {
     return (
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12">
@@ -185,8 +201,15 @@ export default function JobPage() {
             <button
               onClick={triggerRender}
               // Scenes are on screen before their images exist now — don't let a
-              // half-prepared job be sent to Lambda.
-              disabled={rendering || job.status === "rendering" || job.status === "preparing" || job.status === "queued"}
+              // half-prepared job (or one still waiting on wardrobe approval)
+              // be sent to Lambda.
+              disabled={
+                rendering ||
+                job.status === "rendering" ||
+                job.status === "preparing" ||
+                job.status === "queued" ||
+                job.status === "awaiting_wardrobe_approval"
+              }
               className="rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 disabled:opacity-50"
             >
               {job.status === "rendering" ? "Rendering…" : "Render"}
@@ -213,9 +236,19 @@ export default function JobPage() {
         </p>
       )}
 
+      {job.status === "awaiting_wardrobe_approval" && (
+        <CharacterWardrobeReview
+          jobId={job.id}
+          characters={job.characters || []}
+          onCharacterUpdated={updateCharacter}
+          onApproved={handleWardrobeApproved}
+        />
+      )}
+
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {job.scenes.map((scene) => {
           const active = activeAssetUrl(scene);
+          const characterRefs = resolveCharacterRefsUsed(scene, job.characters || []);
           return (
             <button
               key={scene.sceneNumber}
@@ -230,10 +263,11 @@ export default function JobPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={active.url} alt="" className="h-full w-full object-cover" />
                   )
-                ) : job.status === "preparing" ? (
+                ) : job.status === "preparing" || job.status === "awaiting_wardrobe_approval" ? (
                   // Scenes are published before their images exist now, so an
-                  // empty tile means "still coming", not "failed" — it fills in
-                  // on one of the next polls.
+                  // empty tile means "still coming" (or "waiting on wardrobe
+                  // approval"), not "failed" — it fills in on one of the next
+                  // polls once image generation actually starts.
                   <div className="flex h-full w-full animate-pulse items-center justify-center bg-neutral-200 text-xs text-neutral-400 dark:bg-neutral-800">
                     generating…
                   </div>
@@ -270,6 +304,19 @@ export default function JobPage() {
                     </span>
                   )}
                 </div>
+                {characterRefs.length > 0 && (
+                  <div className="mt-1.5 flex flex-wrap gap-1">
+                    {characterRefs.map((ref) => (
+                      <span
+                        key={ref.characterId}
+                        title={`${ref.label} — ${ref.contextLabel}`}
+                        className="truncate rounded bg-indigo-50 px-1.5 py-0.5 text-[10px] text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300"
+                      >
+                        {ref.label} — {ref.contextLabel}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </button>
           );
@@ -280,6 +327,7 @@ export default function JobPage() {
         <SceneModal
           jobId={job.id}
           scene={openSceneData}
+          characters={job.characters || []}
           onClose={() => setOpenScene(null)}
           onSceneUpdated={updateScene}
         />

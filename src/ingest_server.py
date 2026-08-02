@@ -37,6 +37,7 @@ import sys
 import threading
 import traceback
 import urllib.parse
+from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -48,10 +49,11 @@ sys.path.insert(0, PROJECT_ROOT)  # for agents/ below
 import baserow          # src/
 import env             # utils/
 import pexels          # utils/
-import run as pipeline  # src/: prepare_pipeline(), render_pipeline()
+import run as pipeline  # src/: prepare_cast_and_scenes(), prepare_images_and_align(), render_pipeline()
 import s3              # src/
 import supabase_jobs   # src/
 import video_gen       # src/
+from agents.character_sheet import client as character_sheet    # agents/
 from agents.scene_compositor import client as scene_compositor  # agents/
 
 _ingest_queue = queue.Queue()
@@ -80,11 +82,17 @@ pipeline.is_cancelled = lambda row_id: row_id in _cancelled_ids
 # whole pipeline — dossier, director, every scene image — and the single worker
 # thread runs them back to back rather than racing, so it bills twice and looks
 # like one slow job.
-def _enqueue_ingest(row_id) -> bool:
+def _enqueue_ingest(row_id, phase: str = "prepare") -> bool:
+    """phase='prepare' runs prepare_cast_and_scenes() (stages 1-7 + wardrobe,
+    ends at 'awaiting_wardrobe_approval'); phase='images' runs
+    prepare_images_and_align() (stages 8-9, fired by h_approve_wardrobe once a
+    human — or _ensure_resumed(), on a crash after approval — says go).
+    Dedup key stays row_id regardless of phase: a row can only have one queued
+    ingest task at a time either way."""
     if row_id in _ingest_queue_ids or row_id == _current_ingest_row_id:
         return False
     _ingest_queue_ids.add(row_id)
-    _ingest_queue.put(row_id)
+    _ingest_queue.put((row_id, phase))
     return True
 
 
@@ -121,9 +129,18 @@ def _ensure_resumed() -> None:
         return
     for summary in summaries:
         row_id, status = summary["id"], summary["status"]
-        if status in ("queued", "preparing") and row_id != _current_ingest_row_id and row_id not in _ingest_queue_ids:
+        # 'awaiting_wardrobe_approval' is deliberately NOT handled here — that
+        # status means the job is correctly sitting still, waiting on a human,
+        # and a restart must not re-enqueue anything for it.
+        if status == "queued" and row_id != _current_ingest_row_id and row_id not in _ingest_queue_ids:
             print(f"resume: re-enqueuing stranded prepare job {row_id!r}", flush=True)
-            _enqueue_ingest(row_id)
+            _enqueue_ingest(row_id, phase="prepare")
+        elif status == "preparing" and row_id != _current_ingest_row_id and row_id not in _ingest_queue_ids:
+            # 'preparing' now covers two different in-flight phases — tell them
+            # apart by whether wardrobe was already approved before the crash.
+            phase = "images" if summary.get("wardrobeApprovedAt") else "prepare"
+            print(f"resume: re-enqueuing stranded {phase} job {row_id!r}", flush=True)
+            _enqueue_ingest(row_id, phase=phase)
         elif status == "rendering" and row_id != _current_render_row_id and row_id not in _render_queue_ids:
             print(f"resume: re-enqueuing stranded render job {row_id!r}", flush=True)
             _enqueue_render(row_id)
@@ -132,7 +149,7 @@ def _ensure_resumed() -> None:
 def _ingest_worker():
     global _current_ingest_row_id
     while True:
-        row_id = _ingest_queue.get()
+        row_id, phase = _ingest_queue.get()
         _ingest_queue_ids.discard(row_id)
         if row_id in _cancelled_ids:
             _cancelled_ids.discard(row_id)
@@ -140,13 +157,19 @@ def _ingest_worker():
             _ingest_queue.task_done()
             continue
         _current_ingest_row_id = row_id
-        # Distinct from 'queued' (waiting its turn) — otherwise a job actively
-        # being prepared looks identical to one that hasn't started, which is
-        # exactly the "is this actually running or stuck?" confusion the
-        # queue/job pages can't resolve without cross-checking /health.
         try:
-            supabase_jobs.set_status(row_id, "preparing")
-            pipeline.prepare_pipeline(row_id)
+            if phase == "prepare":
+                # Distinct from 'queued' (waiting its turn) — otherwise a job
+                # actively being prepared looks identical to one that hasn't
+                # started, which is exactly the "is this actually running or
+                # stuck?" confusion the queue/job pages can't resolve without
+                # cross-checking /health.
+                supabase_jobs.set_status(row_id, "preparing")
+                pipeline.prepare_cast_and_scenes(row_id)
+            else:
+                # phase == "images": h_approve_wardrobe already flipped status
+                # to 'preparing' (+ wardrobeApprovedAt) before enqueueing this.
+                pipeline.prepare_images_and_align(row_id)
             if row_id in _cancelled_ids:
                 _cancelled_ids.discard(row_id)
                 supabase_jobs.delete_job(row_id)
@@ -156,7 +179,7 @@ def _ingest_worker():
             _cancelled_ids.discard(row_id)
             print(f"ingest: {e}", flush=True)
         except Exception as e:
-            print(f"ingest: prepare_pipeline({row_id!r}) raised:", flush=True)
+            print(f"ingest: phase={phase!r} for {row_id!r} raised:", flush=True)
             traceback.print_exc()
             if row_id in _cancelled_ids:
                 _cancelled_ids.discard(row_id)
@@ -350,8 +373,65 @@ def h_regenerate_image(m, body, query):
     )
     if not result.get("image_url"):
         return 502, {"error": "image generation failed", "detail": result.get("generation_method")}
-    scene = supabase_jobs.add_scene_image(row_id, scene_number, result["image_url"], "gpt-image", prompt=prompt)
+    scene = supabase_jobs.add_scene_image(
+        row_id, scene_number, result["image_url"], "gpt-image", prompt=prompt,
+        character_refs_used=result.get("character_refs_used"),
+    )
     return 200, scene
+
+
+def h_approve_wardrobe(m, body, query):
+    row_id = m.group("row_id")
+    job = supabase_jobs.get_job(row_id)
+    if job is None:
+        return 404, {"error": "job not found"}
+    if job.get("status") != "awaiting_wardrobe_approval":
+        return 409, {"error": f"job status is {job.get('status')!r}, not awaiting_wardrobe_approval"}
+    # Set immediately (not just once prepare_images_and_align() actually
+    # starts) so a job waiting its turn in the ingest queue is already visible
+    # as "preparing" — same "close the invisibility gap" reasoning as h_render.
+    # wardrobeApprovedAt is the crash-resume marker _ensure_resumed() checks to
+    # tell a stranded 'preparing' job's phase apart.
+    supabase_jobs.set_status(row_id, "preparing", wardrobeApprovedAt=datetime.now(timezone.utc).isoformat())
+    queued = _enqueue_ingest(row_id, phase="images")
+    return 202, {"ok": True, "status": "preparing", "row_id": row_id,
+                 "queue_depth": _ingest_queue.qsize(),
+                 "note": None if queued else "already queued or preparing — not enqueued again"}
+
+
+def h_regenerate_character_image(m, body, query):
+    row_id, character_id = m.group("row_id"), m.group("character_id")
+    prompt = (body.get("prompt") or "").strip()
+    variant_id = body.get("variantId")
+    if not prompt:
+        return 400, {"error": "prompt is required"}
+    job = supabase_jobs.get_job(row_id)
+    if job is None:
+        return 404, {"error": "job not found"}
+    characters = _characters_for(job)
+    character = next((c for c in characters if c.get("id") == character_id), None)
+    if character is None:
+        return 404, {"error": f"character {character_id!r} not found"}
+    if variant_id:
+        variant = next(
+            (v for v in (character.get("variants") or []) if v.get("variant_id") == variant_id), None,
+        )
+        if variant is None:
+            return 404, {"error": f"variant {variant_id!r} not found on character {character_id!r}"}
+        result = character_sheet.generate_variant_one(character, {**variant, "outfit_prompt": prompt})
+        if not result.get("image_url"):
+            return 502, {"error": "image generation failed"}
+        updated = supabase_jobs.update_character_variant(
+            row_id, character_id, variant_id, image_url=result["image_url"], outfit_prompt=prompt,
+        )
+        return 200, updated
+    result = character_sheet.generate_one(character, prompt=prompt)
+    if not result.get("reference_image_url"):
+        return 502, {"error": "image generation failed"}
+    updated = supabase_jobs.update_character(
+        row_id, character_id, reference_image_url=result["reference_image_url"],
+    )
+    return 200, updated
 
 
 def h_generate_video(m, body, query):
@@ -446,6 +526,7 @@ def h_delete_asset(m, body, query):
 
 _ROW = r"(?P<row_id>[^/]+)"
 _SCENE = r"(?P<scene_number>\d+)"
+_CHARACTER = r"(?P<character_id>[^/]+)"
 
 ROUTES = [
     ("GET", re.compile(r"^/health/?$"), h_health, False),
@@ -454,6 +535,9 @@ ROUTES = [
     ("GET", re.compile(rf"^/jobs/{_ROW}/?$"), h_get_job, True),
     ("DELETE", re.compile(rf"^/jobs/{_ROW}/?$"), h_delete_job, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/render/?$"), h_render, True),
+    ("POST", re.compile(rf"^/jobs/{_ROW}/approve-wardrobe/?$"), h_approve_wardrobe, True),
+    ("POST", re.compile(rf"^/jobs/{_ROW}/characters/{_CHARACTER}/regenerate-image/?$"),
+     h_regenerate_character_image, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/regenerate-image/?$"), h_regenerate_image, True),
     ("POST", re.compile(rf"^/jobs/{_ROW}/scenes/{_SCENE}/generate-video/?$"), h_generate_video, True),
     ("GET", re.compile(r"^/video-status/(?P<job_id>[^/]+)/?$"), h_video_status, True),
