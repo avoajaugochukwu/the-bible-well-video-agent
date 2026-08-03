@@ -17,11 +17,18 @@ import gpt_image  # src/
 from images import ImageFetcher, shrink_for_upload  # utils/
 from agents.character_ledger import client as character_ledger  # agents/: compile_identity_profile
 
-CHARACTER_SHEET_CONTRACT_VERSION = 2
+CHARACTER_SHEET_CONTRACT_VERSION = 3
+# Portrait, not the pipeline's 16:9 scene-frame ratio — a single standing full-body
+# figure fills a tall canvas far better than a wide one (src/gpt_image.py's SIZE is
+# for video frames, not character references). Same pixel count as SIZE, just
+# rotated — gpt-image-2 already accepts SIZE's non-enum "1280x720" string, so its
+# portrait flip is the same size class, not a guess at a new one.
+CHARACTER_SHEET_SIZE = "720x1280"
 REFERENCE_SCAFFOLD = (
     "A full-body 3D animated character reference, Pixar style with soft-matte detailed "
     "textures. One adult, complete head-to-shoes front view, neutral standing pose, "
-    "plain light-gray studio background, no writing or logos"
+    "filling the frame edge-to-edge as a single unified illustration in one pose from "
+    "one camera angle, plain light-gray studio background, no writing or logos"
 )
 VARIANT_MATCH_INSTRUCTION = (
     " Same face, hairstyle, and build as shown in the reference image — only the "
@@ -56,7 +63,7 @@ def generate_one(character: dict, prompt: str | None = None) -> dict:
     further wrapping — what the human sees and edits IS what gets sent)."""
     reference_prompt = prompt or build_reference_prompt(character)
     try:
-        url = gpt_image.generate_image(reference_prompt)
+        url = gpt_image.generate_image(reference_prompt, size=CHARACTER_SHEET_SIZE)
         print(f"    character '{character['id']}': ✓", flush=True)
         return {
             **character,
@@ -106,7 +113,7 @@ def generate_variant_one(character: dict, variant: dict, prompt: str | None = No
               "✗ could not fetch base reference image", flush=True)
         return {**variant, "reference_prompt": reference_prompt, "image_url": None}
     try:
-        url = gpt_image.edit_image(reference_prompt, [shrink_for_upload(base_bytes)])
+        url = gpt_image.edit_image(reference_prompt, [shrink_for_upload(base_bytes)], size=CHARACTER_SHEET_SIZE)
         print(f"    character '{character['id']}' variant '{variant['variant_id']}': ✓", flush=True)
         return {**variant, "reference_prompt": reference_prompt, "image_url": url}
     except Exception as ex:

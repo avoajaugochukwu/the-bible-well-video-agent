@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json
 
 
-STORY_DOSSIER_CONTRACT_VERSION = 12
+STORY_DOSSIER_CONTRACT_VERSION = 13
 
 _FACT_SCHEMA = {
     "type": "object",
@@ -272,7 +272,11 @@ def _choose_occupation(abstract_profile: dict) -> dict:
                 "content": (
                     "Propose exactly five distinct, plausible occupations for an adult "
                     "character from an abstract profile. Create real range across work "
-                    "settings, responsibilities, colleagues, and customers. Avoid obvious "
+                    "settings, responsibilities, colleagues, and customers — include "
+                    "contemporary office, corporate, and professional-services roles as "
+                    "readily as retail, healthcare, education, or trades; do not skew the "
+                    "set toward outdoor, agricultural, or manual-labor work by default. "
+                    "Avoid obvious "
                     "one-trait stereotypes and do not repeat the same profession family. "
                     "Treat religion, family background, and cultural tone as personal context, "
                     "not evidence for choosing a religious or family institution as employer. "
@@ -294,8 +298,11 @@ def _choose_occupation(abstract_profile: dict) -> dict:
                     "Choose one occupation for a parallel visual film. Balance credibility "
                     "with visual range and prefer the least obvious non-stereotyped casting "
                     "that still fits the abstract character. The work world should support "
-                    "active scenes, varied relationships, and changing environments without "
-                    "depending mainly on paperwork, approvals, or formal meetings. Do not "
+                    "active scenes, varied relationships, and changing environments — a "
+                    "contemporary office or corporate role qualifies just as well as any "
+                    "other setting as long as it isn't reduced to a single desk shot; do not "
+                    "default away from office/corporate work toward outdoor or manual-labor "
+                    "occupations for the sake of visual variety. Do not "
                     "promote religious, family, or cultural affiliation into the employer; "
                     "those belong to personal identity unless occupation was explicitly known."
                 ),

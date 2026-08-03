@@ -23,10 +23,14 @@ SIZE = "1280x720"
 QUALITY = "low"
 
 
-def edit_image(prompt: str, reference_images: list[bytes], retries: int = 4) -> str:
+def edit_image(prompt: str, reference_images: list[bytes], retries: int = 4, size: str = SIZE) -> str:
     """i2i: edit gpt-image-2's own reference conditioning using one or more
     character reference images, so identity comes from the image rather than
-    restated appearance text. Returns the new still's raw public S3 URL."""
+    restated appearance text. Returns the new still's raw public S3 URL.
+
+    ``size`` defaults to the pipeline's scene-frame ratio (16:9) but callers whose
+    output isn't a video frame (e.g. a portrait full-body character reference) can
+    pass one of gpt-image-2's other supported sizes."""
     from openai import OpenAI
 
     full_prompt = prompt[:5000]
@@ -45,7 +49,7 @@ def edit_image(prompt: str, reference_images: list[bytes], retries: int = 4) -> 
             files = [open(p, "rb") for p in tmp_paths]
             try:
                 res = client.images.edit(
-                    model=MODEL, image=files, prompt=full_prompt, size=SIZE, quality=QUALITY,
+                    model=MODEL, image=files, prompt=full_prompt, size=size, quality=QUALITY,
                 )
                 break
             except Exception as ex:
@@ -74,12 +78,15 @@ def edit_image(prompt: str, reference_images: list[bytes], retries: int = 4) -> 
             os.path.exists(p) and os.unlink(p)
 
 
-def generate_image(prompt: str, negative_prompt: str = "", retries: int = 4) -> str:
+def generate_image(prompt: str, negative_prompt: str = "", retries: int = 4, size: str = SIZE) -> str:
     """Generate one still and return its raw public S3 URL.
 
     ``negative_prompt`` remains for compatibility with old callers but is ignored:
     the API does not support it, and folding explicit safety terms into the ordinary
-    prompt was a source of moderation false positives.
+    prompt was a source of moderation false positives. ``size`` defaults to the
+    pipeline's scene-frame ratio (16:9) but callers whose output isn't a video frame
+    (e.g. a portrait full-body character reference) can pass one of gpt-image-2's
+    other supported sizes.
     """
     from openai import OpenAI
 
@@ -89,7 +96,7 @@ def generate_image(prompt: str, negative_prompt: str = "", retries: int = 4) -> 
     res = None
     for attempt in range(retries):
         try:
-            res = client.images.generate(model=MODEL, prompt=full_prompt, size=SIZE, quality=QUALITY)
+            res = client.images.generate(model=MODEL, prompt=full_prompt, size=size, quality=QUALITY)
             break
         except Exception as ex:
             status = getattr(ex, "status_code", None)

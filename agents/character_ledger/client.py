@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json  # utils/
 
 MAX_ATTEMPTS = 5
-CHARACTER_CONTRACT_VERSION = 15
+CHARACTER_CONTRACT_VERSION = 16
 
 _VISUAL_PROFILE_PROPERTIES = {
     "age": {"type": "integer", "description": "one exact production age"},
@@ -193,7 +193,11 @@ _SYSTEM = (
     "fixed states. Set hair_accessory to exactly 'no hair accessory'. Set accessories to exactly "
     "'no accessories': pocket items, handheld objects, bags, and other small additions are "
     "scene props and must never be locked onto a character. Use 'no jewelry' unless the script "
-    "explicitly makes one stable worn item identity- or plot-critical. Preserve credible family "
+    "explicitly makes one stable worn item identity- or plot-critical. Give the cast a real "
+    "spread of clothing color across inner_top and outer_layer — real wardrobes include "
+    "blues, greens, reds, warm neutrals, and patterns, not just gray, beige, tan, and olive. "
+    "Age alone is never a reason to default a character into a muted or drab palette. "
+    "Preserve credible family "
     "resemblance when the script establishes relatives. Keep the profile reusable and free "
     "of names, story events, relationships, occupation, religion, emotional history, locations, "
     "and scene props. 'Full-body' is framing, never body size. Body shape must not encode age, "
@@ -346,7 +350,9 @@ def build_director_cast(
                 "hair_accessory to exactly 'no hair accessory' and accessories to exactly "
                 "'no accessories'. Use 'no jewelry' unless the declaration explicitly requires "
                 "one stable identity-critical item. Do not add bags, pocket objects, handheld "
-                "props, event costumes, alternate outfits, or story actions. Describe each field "
+                "props, event costumes, alternate outfits, or story actions. Give this cast a real "
+                "spread of clothing color — blues, greens, reds, warm neutrals, patterns — never "
+                "default every character to gray, beige, tan, or olive regardless of age. Describe each field "
                 "with enough concrete visual detail to be redrawable, and make sure no new "
                 "character shares near-identical age, coloring, and build with another new "
                 "character or with anyone in the existing cast. Return only JSON."
