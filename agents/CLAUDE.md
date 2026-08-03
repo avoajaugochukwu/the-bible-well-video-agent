@@ -91,7 +91,7 @@ exception is the right one.
   the bug that let a scene's caption and its own emotional category quietly drift apart
   (confirmed 2026-07-29: a spine call that invents its own boundaries can skip a chunk of
   narration entirely, and downstream beats silently shift out of correspondence with their
-  matching scene — see `session.md`). If a stage has no strong opinion about one snippet,
+  matching scene). If a stage has no strong opinion about one snippet,
   it still scores it with the closest neutral values — it does not skip it. The narration
   content itself never supplies scene props, locations, or actions to the shot planner.
   `agents/story_dossier` first separates evidence-backed source facts from production

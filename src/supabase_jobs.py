@@ -63,8 +63,9 @@ def upsert_job(row: dict) -> dict:
 def delete_job(row_id) -> None:
     """Hard-delete a job row — the queue page's kill switch. Note this only
     ever removes the tracking row; it cannot stop an already in-flight
-    prepare_pipeline()/render_pipeline() call (see ingest_server.py's
-    h_delete_job for how cancellation of a still-queued job is handled)."""
+    prepare_cast_and_scenes()/prepare_images_and_align()/render_pipeline() call
+    (see ingest_server.py's h_delete_job for how cancellation of a still-queued
+    job is handled)."""
     url = f"{env.require('SUPABASE_URL')}/rest/v1/{TABLE}?id=eq.{row_id}"
     req = urllib.request.Request(url, method="DELETE", headers=_headers())
     with urllib.request.urlopen(req, timeout=30):
@@ -140,8 +141,8 @@ def _scene_asset(scene: dict) -> dict:
 def set_status(row_id, status: str, **payload_patch) -> dict | None:
     """Fetch the existing job, patch status (+ any other payload fields, e.g.
     renderUrl/error), re-upsert. Returns None if the row doesn't exist yet —
-    render_pipeline() should always find one here, prepare_pipeline() writes
-    it first."""
+    render_pipeline() should always find one here, prepare_cast_and_scenes()
+    writes it first."""
     payload = get_job(row_id)
     if payload is None:
         return None
@@ -159,9 +160,10 @@ def set_stage(row_id, stage: str) -> None:
     """Lightweight per-stage progress marker (e.g. "Reading script", "Cutting
     scenes", "Generating scene images...") patched into the job payload without
     touching status/scenes/anything else — lets the production UI show what
-    prepare_pipeline() is actually doing right now instead of a blanket
-    'preparing'. No-op if the job row doesn't exist (shouldn't happen; the
-    placeholder is always written before the worker starts)."""
+    prepare_cast_and_scenes()/prepare_images_and_align() is actually doing
+    right now instead of a blanket 'preparing'. No-op if the job row doesn't
+    exist (shouldn't happen; the placeholder is always written before the
+    worker starts)."""
     job = get_job(row_id)
     if job is None:
         return
@@ -176,10 +178,10 @@ def set_stage(row_id, stage: str) -> None:
 
 def create_queued_job(row_id, title: str | None = None, clickup_url: str | None = None) -> dict:
     """Write a minimal 'queued' placeholder row immediately on /ingest, before
-    prepare_pipeline() has done any work — so the job shows up in the queue
-    list right away instead of being invisible until prepare finishes.
-    prepare_pipeline()'s own upsert_scenes() call fills in the real payload
-    (scenes, characters, title) once it has one. Caller
+    prepare_cast_and_scenes() has done any work — so the job shows up in the
+    queue list right away instead of being invisible until prepare finishes.
+    prepare_cast_and_scenes()'s own upsert_scenes() call fills in the real
+    payload (scenes, characters, title) once it has one. Caller
     must check get_job(row_id) is None first — never call this on a row that
     already has a job, or it would wipe out real progress with a placeholder."""
     now = datetime.now(timezone.utc).isoformat()
@@ -213,8 +215,9 @@ def build_job_payload(row_id, row: dict, scenes: list[dict], status: str = "read
             for s in scenes
         ],
         # Progress counters for the UI. Written once here with the scene list
-        # (prepare_pipeline calls this BEFORE image generation, so scenes are
-        # visible while they fill in) and kept current by add_scene_image().
+        # (prepare_cast_and_scenes calls this BEFORE image generation, so
+        # scenes are visible while they fill in) and kept current by
+        # add_scene_image().
         "total": len(scenes),
         "completed": sum(1 for s in scenes if s.get("image_url")),
         "renderUrl": None,
@@ -225,9 +228,10 @@ def build_job_payload(row_id, row: dict, scenes: list[dict], status: str = "read
 
 @_locked
 def upsert_scenes(row_id, row: dict, scenes: list[dict], status: str = "ready", **payload_patch) -> dict:
-    """prepare_pipeline's two whole-scene-list writes (once before image
-    generation, once at the end). Rebuilds the payload from `scenes`, but keeps
-    what the row already holds and a rebuild can't know about:
+    """prepare_cast_and_scenes()'s whole-scene-list write (before wardrobe
+    approval) and prepare_images_and_align()'s (at the very end, flipping to
+    'ready') each call this once. Rebuilds the payload from `scenes`, but
+    keeps what the row already holds and a rebuild can't know about:
 
     - every scene's asset history and active pointer — scenes are visible and
       editable in the UI while status is 'preparing', so a human regenerating an

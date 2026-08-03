@@ -3,21 +3,25 @@
 Two jobs:
 
 1. Ingest trigger — POST /ingest (x-ingest-secret header, JSON {"row_id": ...})
-   enqueues prepare_pipeline(row_id) and returns immediately. row_id is
+   enqueues prepare_cast_and_scenes(row_id) and returns immediately. row_id is
    required: the caller (n8n) owns row selection and closes its own side of
    the job the moment it fires this request, so this pipeline never scans or
    writes Baserow itself, only reads the one row it's told to process.
-   Ingest only PREPARES now (stages 1-9: script -> images -> align) — it no
-   longer renders automatically. A human reviews/edits scenes in the
-   production UI (web/) and fires render separately.
+   Ingest PREPARES in two gated phases now (stages 1-7: script -> scenes ->
+   wardrobe, then a hard stop at 'awaiting_wardrobe_approval'; stages 8-9:
+   images -> align, fired by POST /jobs/{id}/approve-wardrobe) — it no longer
+   renders automatically. A human reviews the wardrobe, then the scenes, in
+   the production UI (web/) and fires render separately.
 
 2. Production-UI API — everything the production UI (web/) needs to review
-   and edit a prepared job before rendering: list/read jobs, regenerate a
-   scene's image, generate/commit a video for a scene, search/pick Pexels
-   assets, activate or delete a history item, and trigger render manually.
-   Every route below is behind the same x-ingest-secret header as /ingest
-   (except GET /health) — this service does real spend (OpenAI, video-gen,
-   Remotion Lambda) on these calls, it is not a read-only API.
+   and edit a prepared job before rendering: list/read jobs, approve the
+   wardrobe review, regenerate a character's (or wardrobe variant's) image,
+   regenerate a scene's image, generate/commit a video for a scene,
+   search/pick Pexels assets, activate or delete a history item, and trigger
+   render manually. Every route below is behind the same x-ingest-secret
+   header as /ingest (except GET /health) — this service does real spend
+   (OpenAI, video-gen, Remotion Lambda) on these calls, it is not a
+   read-only API.
 
 Stdlib only (http.server + threading + queue + re), no new dependency to
 deploy — matches every other src/*.py file in this repo.
@@ -67,11 +71,12 @@ _render_queue_ids = set()
 _resumed_once = False
 # Job ids the user hit Delete/Cancel on. Checked when a worker dequeues a job
 # (skips it entirely, zero cost, if it hadn't started yet), at every stage
-# boundary inside prepare_pipeline (run.py's _stage -> is_cancelled below, so an
-# in-flight prepare stops at the NEXT stage instead of running to the end), after
-# every finished image inside compose_all (the one stage long and expensive
-# enough that waiting for its boundary defeats the point), and again after a
-# pipeline call returns. A render still runs to completion.
+# boundary inside prepare_cast_and_scenes/prepare_images_and_align (run.py's
+# _stage -> is_cancelled below, so an in-flight prepare stops at the NEXT stage
+# instead of running to the end), after every finished image inside
+# compose_all (the one stage long and expensive enough that waiting for its
+# boundary defeats the point), and again after a pipeline call returns. A
+# render still runs to completion.
 _cancelled_ids = set()
 pipeline.is_cancelled = lambda row_id: row_id in _cancelled_ids
 
@@ -225,8 +230,9 @@ def _render_worker():
 
 def _handle_shutdown_signal(signum, frame):
     """Railway sends SIGTERM on every redeploy/restart, forwarded here by
-    docker-entrypoint.sh's trap. prepare_pipeline()'s cancellation checks only
-    fire between stages, and render_pipeline() has none — an in-flight call
+    docker-entrypoint.sh's trap. prepare_cast_and_scenes()/
+    prepare_images_and_align()'s cancellation checks only fire between stages,
+    and render_pipeline() has none — an in-flight call
     can't be finished gracefully in a signal handler, so this doesn't try. It
     just makes the shutdown visible in logs instead of the process vanishing
     mid-write with no trace, and exits
@@ -243,9 +249,10 @@ def _handle_shutdown_signal(signum, frame):
 
 
 def _characters_for(job: dict) -> list[dict]:
-    """The character ledger lives in the job payload (written by
-    prepare_pipeline), not on local disk — nothing on disk survives a redeploy,
-    which used to 500 this route on every restart."""
+    """The character ledger (base reference + wardrobe variants) lives in the
+    job payload (written by prepare_cast_and_scenes), not on local disk —
+    nothing on disk survives a redeploy, which used to 500 this route on every
+    restart."""
     characters = job.get("characters")
     if not characters:
         raise RuntimeError(f"job {job.get('id')!r} has no character ledger — re-run prepare for it")
@@ -290,9 +297,10 @@ def h_ingest(m, body, query):
     existing = supabase_jobs.get_job(row_id)
     if existing is None:
         # Placeholder row so this job shows up in the queue list immediately —
-        # otherwise it's invisible until prepare_pipeline() finishes. Best-effort
-        # title/clickup_url lookup so the placeholder shows a real name instead
-        # of the bare row_id — if this read fails, prepare_pipeline() will raise
+        # otherwise it's invisible until prepare_cast_and_scenes() finishes.
+        # Best-effort title/clickup_url lookup so the placeholder shows a real
+        # name instead of the bare row_id — if this read fails,
+        # prepare_cast_and_scenes() will raise
         # properly on its own re-fetch, so it's safe to swallow here.
         title, clickup_url = None, None
         try:

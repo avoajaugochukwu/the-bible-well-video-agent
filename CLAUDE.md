@@ -27,54 +27,26 @@ Output per run → one rendered video, one ClickUp task updated with the video u
 
 Full pipeline is wired end-to-end via `src/run.py <row_id>` — row_id is a required arg (or the
 `row_id` field of an `/ingest` POST body when triggered over HTTP). **Nothing is kept on
-local disk** — see "State and resume" below. `agents/` (character_ledger, character_sheet, scene_compositor — plain importable Python
-packages, no subprocess bridge needed since this whole repo is already Python) is where the
-character-consistency work lives, separate from `src/scene_engine.py`'s scene-breakdown LLM
-calls. There is **no vision-QA anywhere in this pipeline** — whether a generated image actually
-matches its character(s) is a human call made off the production UI review, not an automated gate.
+local disk** — see `docs/architecture.md`'s "State and resume". `agents/` (story_dossier,
+character_ledger, character_sheet, character_wardrobe, visual_director, scene_compositor —
+plain importable Python packages, no subprocess bridge needed since this whole repo is
+already Python) is where the character-consistency work lives, separate from
+`src/scene_engine.py`'s scene-breakdown LLM calls. There is **no vision-QA anywhere in this
+pipeline** — whether a generated image actually matches its character(s) is a human call
+made off the production UI review, not an automated gate.
 
-Stage order: Baserow read (given row_id) → context → whole-script production dossier →
-character ledger + one full-body
-reference image per tracked character (`agents/character_ledger`, `agents/character_sheet`) →
-whole-film parallel-story direction (`agents/visual_director`) → verbatim narration timing
-blocks mapped evenly across that film → per-scene images (`agents/scene_compositor`, gpt-image-2
-i2i against each present character's reference sheet, t2i fallback only when a reference is
-missing or the edit call is rejected) → download the row's own narration → Whisper+DTW
-alignment against that real audio (duration_seconds per scene, so the production UI shows
-how many seconds of clip each scene needs before render) →
-[production UI review/edit, manual render trigger] → Remotion
-Lambda render (narration muxed in via `<Audio>`) → upload the finished mp4 to S3
-(`src/s3.py:put_file()`, RAW public link — **never presigned, always S3, that's what gets
-shared for review**) → ClickUp push (`src/clickup.py:push_video()`).
-Baserow is never written back to — read-only, `src/baserow.py:get_row(row_id)` only.
-
-## State and resume
-
-The container's filesystem is throwaway — Railway has no volume, so a redeploy wipes it.
-There is no `runs/` directory any more and no stage reads or writes a local artifact.
-
-- **The Supabase job row (`bible_well_jobs.payload`) is the only durable state.** Scenes are
-  published there before image generation starts and each image lands on its scene as it's
-  produced; the character ledger rides along on the same payload (the production UI's
-  regenerate-image route needs it). `render_pipeline()` reads its scenes straight back out
-  (`supabase_jobs.scenes_from_job()`) — that's the only path.
-- **A failed or interrupted prepare re-runs the whole prepare, images included.** Deliberate:
-  resume happens rarely, and resume-specific skip logic isn't worth carrying. Everything
-  upstream of the scene list (context, narration cut, dossier, cast, director) is in-memory
-  only, so there is nothing stale and no contract-version cache check left anywhere.
-- **Two payload flags are correctness gates, not optimizations.** `renderUrl` stops a rerun
-  re-paying for a full Remotion Lambda render; `clickupPushedAt` stops it prepending
-  "🎬 VIDEO: …" to the same ClickUp task a second time (`push_video()` prepends
-  unconditionally and nothing detects the duplicate). Both are set the moment the thing they
-  guard has actually happened. `tests/check_render_gates.py` pins both down.
-- **Deferred, not built: an artifact store.** If re-running a whole prepare after a failure
-  starts costing real money often enough to notice — that rising retry cost is the signal —
-  the escalation is to persist the upstream intermediates outside the payload: S3 objects
-  under `bible-well/runs/<row_id>/<name>.json` in the existing `yt-bible-well-media` bucket
-  (mind its 7-day lifecycle), or a `bible_well_run_artifacts` table. They are deliberately
-  NOT in `payload`: `visual-story.json` + `scenes.json` + `whisper-words.json` would take it
-  from ~130KB to ~600KB against ~15 full read-modify-writes per run plus 5-second UI polling,
-  and Postgres cannot partially update jsonb.
+Stage order: Baserow read → context → whole-script production dossier → character ledger +
+one full-body reference image per tracked character → whole-film parallel-story direction →
+verbatim narration timing blocks → **wardrobe variants for significant recurring contexts
+(a wedding, a work uniform), then a hard human-approval gate before any scene image
+generates** → per-scene images (i2i against each present character's base or wardrobe-variant
+reference, t2i fallback only when a reference is missing or the edit call is rejected) →
+Whisper+DTW alignment against the row's own narration → [production UI review/edit, manual
+render trigger] → Remotion Lambda render → upload to S3 (RAW public link — **never
+presigned**) → ClickUp push. Baserow is never written back to — read-only,
+`src/baserow.py:get_row(row_id)` only. Full stage-by-stage detail (including the
+wardrobe-approval gate's exact mechanics) and the state/resume contract:
+**see `docs/architecture.md`.**
 
 ## Inputs
 
@@ -110,90 +82,19 @@ bad conversation is a better next message, not a new Python gate.
   by the same upstream process that writes the script), we're just appending the video url to
   it, same as `space-cluster/front/clickup.py`'s `push_video()`.
 
-## Pipeline stages
+## Docs
 
-```
-1 BASEROW    src/baserow.py: get_row(row_id) reads the one row the caller specified —
-             no scanning, no gating on video_processed. Read-only.
-2 CONTEXT    scene_engine.py:infer_context() — OpenAI gpt-5-mini, reasoning_effort=low.
-             Setting/spiritual_theme/emotional_palette for the script, held in memory and
-             passed into every later stage.
-3 DOSSIER    agents/story_dossier:build(script) reads the whole script before casting. It
-             separates quoted source facts from abstract casting signals, generates five
-             occupation candidates, selects one, then creates concrete body/ethnicity/hair/
-             wardrobe design and a plot-free director profile. The casting generator never
-             sees source events; its reviewer sees source facts only to catch contradictions.
-4 CHARACTERS agents/character_ledger:build(script, context, story_dossier) reads the whole script
-             and decides which characters are worth tracking as a recurring visual
-             identity — protagonist always, Jesus only if he actually appears, any other
-             character only if they recur across multiple beats. Generate -> deterministic
-             validate -> retry-with-feedback loop. Then agents/character_sheet:
-             generate_all() makes one full-body reference image per tracked character
-             (gpt-image-2 t2i, quality=low). Stored on the job payload — the production
-             UI's regenerate-image route reads it back from there.
-5 DIRECTOR   agents/visual_director:build() — three-pass whole-video design, chunked so no
-             single call's output has to scale past the model's completion-token cap. Pass
-             one scores every narration snippet with categorical emotional signals only, in
-             chunks of CHUNK_SIZE scored IN PARALLEL (each snippet judged on its own text,
-             no cross-chunk dependency). Pass two, ONE call, decides the whole world once —
-             film_title, external_goal, supporting_characters, recurring_locations — using
-             the categorical score, concrete cast, and plot-free dossier handoff; nothing
-             else can be introduced after this. Pass three authors one story beat per
-             emotional-spine entry, in chunks of CHUNK_SIZE processed SEQUENTIALLY (unlike
-             pass one, plot causality means each chunk must know what the last one did) —
-             each chunk carries forward a model-authored rolling story_recap plus a
-             deterministic location-use tally, and only the final chunk is told to resolve
-             the external goal. In memory only.
-6 SCENES     src/scene_engine.py:cut_narration_scenes() uses an LLM to propose visual-change
-             boundaries in sentence-aligned chunks, anchors those boundaries losslessly to
-             the verbatim narration, and caps long beats at 30 words using natural punctuation
-             where possible. Cuts are evenly distributed across the ordered director beats.
-             Each beat carries a visual_mode tag (concrete/abstract) from the director's
-             emotional-spine pass, scored from that beat's own narration text. _pick_shot()
-             routes on that tag: concrete beats get author_literal_beat() (sees only its own
-             snippet, never the invented parallel film); abstract beats get
-             author_story_beat() (parallel-world shot, sees only the film plan, never
-             narration) — author_story_beat() still runs for every beat regardless, since it
-             needs continuity across its own invented plot even for beats ultimately
-             rendered literally. Both return chronological image_prompt + character_ids shots.
-7 IMAGES     agents/scene_compositor:compose_all() — per scene, IN PARALLEL, gpt-image-2
-             images.edit() conditioned on every present character's reference image
-             (identity from the image, not restated text). Reference images are fetched
-             and shrunk once per character, reused across scenes. Plain t2i is the
-             fallback only when a reference is missing or the edit call is rejected. NO
-             automated vision-QA anywhere in this pipeline — a human reviews the images in
-             the production UI (web/) and judges consistency.
-8 ALIGN      scene_engine.py:align_scene_durations() — real word timestamps from the
-             hosted Modal whisper service (REMOTION_WHISPER_SERVICE_URL, same one
-             senior-finance/finance/remotion calls) + utils/align.py DTW mapped onto each
-             scene's verbatim script_snippet. NOT a word-count estimate (tried and
-             explicitly rejected — doesn't actually align). NOT local faster-whisper —
-             that package was never installed in this repo's .venv. Runs inside
-             prepare_pipeline() (part of stages 1-9, before the Supabase job
-             upsert) — not at render time — so every scene's duration_seconds (how many
-             seconds of video/image that scene needs) is already known and shown in the
-             production UI before a human ever generates or uploads a clip for it.
-             The narration mp3 is a tempfile, always unlinked; render_pipeline()
-             re-transcribes for its caption payload rather than caching words anywhere.
-9 RENDER     remotion/ (standalone Remotion project) on Remotion Lambda. Renders whatever
-             image_url/video_url each scene carries, narration muxed in via `<Audio>`. See
-             `remotion/CLAUDE.md` for render mechanics (banned-local-render rule,
-             scenes.json shape, OffthreadVideo).
-10 S3        src/s3.py:put_file() uploads the rendered mp4 -> RAW public url (bucket is
-             public-read) — ALWAYS push the finished video here for review, never hand back
-             a presigned link or a local-only file path.
-11 CLICKUP   src/clickup.py: push_video() PUTs "🎬 VIDEO: <s3 url>" onto the row's
-             clickup_url task description (falls back to a comment on failure), same
-             update-existing-task pattern as space-cluster. Last stage — nothing
-             writes back to Baserow after this.
-```
-
-`src/run.py` exposes this as two calls: `prepare_pipeline(row_id)` (stages 1-9, script through
-narration alignment — what `POST /ingest` enqueues) and `render_pipeline(row_id)` (stages 9-11, fired
-manually from the production UI's Render button once a human has reviewed/edited the job).
-`python3 src/run.py <row_id>` on the CLI runs both back-to-back for a plain unattended pass.
-See `README.md` for the production UI (`web/`) and Railway deployment. Credentials, and the
-Baserow/ClickUp/S3/Supabase/video-gen integration details, live in `src/CLAUDE.md`.
+- **`docs/architecture.md`** — the full numbered pipeline-stage breakdown (Baserow through
+  ClickUp, including the wardrobe stage and its human-approval gate) and the state/resume
+  contract (what's durable, what's in-memory, what each payload gate guards). Read this
+  before changing stage order, `src/run.py`, or `src/supabase_jobs.py`.
+- **`docs/changelog/`** — one dated file per month (e.g. `2026-08.md`), a prose build-log
+  of what changed and why. Add an entry here for any non-trivial change, same spirit as
+  the old `session.md` (now retired).
+- **`agents/CLAUDE.md`** — the character-consistency stack's own operating philosophy and
+  standing rules (see below).
+- **`src/CLAUDE.md`**, **`web/AGENTS.md`**, **`remotion/CLAUDE.md`** — directory-scoped
+  instructions for their own trees.
 
 ## Scene generation + character agents (owned elsewhere — read, don't edit here)
 
@@ -205,29 +106,33 @@ are their own unit with their own operating rules — see
 
 ```
 the-bible-well/
-├── src/            pipeline code: run.py (entrypoint: prepare_pipeline/render_pipeline),
-│                   ingest_server.py (HTTP API, see its ROUTES list), baserow.py, clickup.py,
-│                   s3.py, supabase_jobs.py, video_gen.py, scene_engine.py, gpt_image.py
+├── src/            pipeline code: run.py (entrypoint: prepare_cast_and_scenes/
+│                   prepare_images_and_align/render_pipeline), ingest_server.py (HTTP API,
+│                   see its ROUTES list), baserow.py, clickup.py, s3.py, supabase_jobs.py,
+│                   video_gen.py, scene_engine.py, gpt_image.py
 ├── agents/         character-consistency agents (plain importable Python packages, no
 │                   subprocess bridge — this repo has no cross-language boundary):
 │                   story_dossier/ (casting + plot-free director profile), character_ledger/
 │                   (which characters are worth tracking), character_sheet/ (one full-body
-│                   reference image per tracked character), visual_director/ (categorical
-│                   emotional score + standalone film plan), scene_compositor/ (per-scene
-│                   i2i via reference images, t2i fallback)
+│                   reference image per tracked character + per-variant reference images),
+│                   character_wardrobe/ (which contexts need their own outfit variant),
+│                   visual_director/ (categorical emotional score + standalone film plan),
+│                   scene_compositor/ (per-scene i2i via reference images, t2i fallback)
 ├── utils/          stdlib-only / low-dependency helpers: env.py (env-var lookup),
 │                   llm.py (shared OpenAI structured-JSON caller, used by scene_engine.py
 │                   and agents/), align.py (DTW aligner), images.py (image fetcher),
 │                   pexels.py (Pexels search), tts.py (TTS client)
 ├── remotion/       standalone Remotion project (Lambda render), incl. node_modules/ — no
 │                   character/style awareness, just renders each scene's image_url/video_url
-├── web/            production review UI (Next.js) — queue + per-scene edit view, talks to
-│                   ingest_server.py through its own server-side proxy. See README.md.
+├── web/            production review UI (Next.js) — queue + per-scene edit view + character
+│                   wardrobe review, talks to ingest_server.py through its own server-side
+│                   proxy. See README.md.
+├── docs/           architecture.md (full stage breakdown + state/resume contract),
+│                   changelog/ (one dated file per month — see CLAUDE.md's "Docs" section)
 ├── .env            all credentials (Baserow, OpenAI, AWS, ClickUp, Supabase, etc.), one file
 ├── .venv/          one virtualenv, referenced by src/run.py via a PROJECT_ROOT-style
 │                   constant one level up from src/
-├── Dockerfile, docker-entrypoint.sh   one image, one Railway service — see README.md
-└── session.md      prose build-log / design record
+└── Dockerfile, docker-entrypoint.sh   one image, one Railway service — see README.md
 ```
 
 `src/*.py` files that need `utils/` (env, align, images, tts) add a small

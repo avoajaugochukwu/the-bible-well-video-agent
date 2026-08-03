@@ -79,10 +79,10 @@ is_cancelled = lambda row_id: False
 
 
 class Cancelled(Exception):
-    """The job was cancelled, so prepare_pipeline stopped — at the next stage
-    boundary, or at the next finished image inside compose_all. Everything
-    finished before that point is kept: scenes and images already written to the
-    job row."""
+    """The job was cancelled, so prepare_cast_and_scenes()/
+    prepare_images_and_align() stopped — at the next stage boundary, or at the
+    next finished image inside compose_all. Everything finished before that
+    point is kept: scenes and images already written to the job row."""
 
 
 def _stage(row_id, stage: str) -> None:
@@ -364,10 +364,10 @@ def prepare_images_and_align(row_id) -> dict:
 
 
 def render_pipeline(row_id) -> str:
-    """Stages 11-13: Remotion Lambda render -> S3 -> ClickUp (narration
-    download + Whisper+DTW align already happened in prepare_pipeline(), stage
-    9). Fired manually (production UI's Render button)
-    once prepare_pipeline()'s job has been reviewed/edited. Scenes come straight
+    """Stages 10-12: Remotion Lambda render -> S3 -> ClickUp (narration
+    download + Whisper+DTW align already happened in
+    prepare_images_and_align(), stage 9). Fired manually (production UI's
+    Render button) once the job has been reviewed/edited. Scenes come straight
     out of the Supabase job row — the only place they live — so every per-scene
     asset choice made in the UI (regenerated images, Pexels picks, image/video
     overrides) reaches the final video, and a render fired hours or days after
@@ -382,7 +382,10 @@ def render_pipeline(row_id) -> str:
 
     job = supabase_jobs.get_job(row_id)
     if job is None:
-        raise RuntimeError(f"no Supabase job row for {row_id} — run prepare_pipeline({row_id!r}) first")
+        raise RuntimeError(
+            f"no Supabase job row for {row_id} — run prepare_cast_and_scenes({row_id!r}) "
+            f"then prepare_images_and_align({row_id!r}) first"
+        )
 
     scenes = supabase_jobs.scenes_from_job(job)
     print(f"  job: {len(scenes)} scenes from the Supabase row, including every "
@@ -399,7 +402,7 @@ def render_pipeline(row_id) -> str:
 
 
 def _render(row_id, job, scenes, voice_url, clickup_url) -> str:
-    # 11 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
+    # 10 RENDER — write remotion/src/scenes.json ({scenes, narrationUrl, words}),
     # narrationUrl = the row's OWN voice_url (already public, no rehost), words =
     # whisper words for remotion's <Captions> (highlights whichever word is
     # currently being spoken) — re-transcribed here rather than cached anywhere,
@@ -412,9 +415,9 @@ def _render(row_id, job, scenes, voice_url, clickup_url) -> str:
     # a full Lambda render's worth of real money, spent silently.
     video_url = job.get("renderUrl")
     if not video_url:
-        # duration_seconds already came from prepare_pipeline's align stage via the
-        # job row (that's what the production UI shows per scene); only the caption
-        # words need computing here.
+        # duration_seconds already came from prepare_images_and_align's align
+        # stage via the job row (that's what the production UI shows per
+        # scene); only the caption words need computing here.
         words, _ = _transcribe(voice_url)
 
         remotion_scenes_path = os.path.join(RENDER_DIR, "src", "scenes.json")
@@ -440,7 +443,7 @@ def _render(row_id, job, scenes, voice_url, clickup_url) -> str:
         if not os.path.exists(rendered_mp4):
             raise RuntimeError(f"render:remote reported success but {rendered_mp4} is missing")
 
-        # 12 S3 — raw public url, NEVER presigned (that's what gets shared for review).
+        # 11 S3 — raw public url, NEVER presigned (that's what gets shared for review).
         print("  s3: uploading rendered mp4...", flush=True)
         video_url = heritage_s3.put_file(rendered_mp4, f"bible-well/renders/{row_id}.mp4")
         if not video_url:
@@ -451,7 +454,7 @@ def _render(row_id, job, scenes, voice_url, clickup_url) -> str:
         supabase_jobs.set_status(row_id, "rendering", renderUrl=video_url)
         print(f"  s3: {video_url}")
 
-    # 13 CLICKUP — update-existing-task only, never create. push_video() itself never
+    # 12 CLICKUP — update-existing-task only, never create. push_video() itself never
     # raises (falls back to a comment on a description-PUT failure) — but if BOTH
     # routes fail it returns False, and we raise here so this run isn't silently
     # marked done with nowhere the video actually landed. This is the pipeline's

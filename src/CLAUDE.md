@@ -96,10 +96,13 @@ Fields consumed:
 - Per-scene asset history (`imageHistory`/`videoHistory`) is append-only — regenerate/Pexels
   pick/video-gen/upload never overwrites a prior entry, only adds one and moves the active
   pointer (`activateAsset`), so the UI can always pick an older one back. `upsert_scenes()`
-  is the one function that rewrites the whole scene list (prepare_pipeline calls it twice);
-  it merges rather than overwrites, so an image a human regenerated while the job was still
-  `preparing` survives, as do the `renderUrl`/`clickupPushedAt` gates.
-- Payload fields beyond `web/lib/types.ts`'s visible `Job`: `characters` (the locked ledger,
-  read back by the regenerate-image route) and `clickupPushedAt` (the push-once gate).
+  is the one function that rewrites the whole scene list (`prepare_cast_and_scenes()` and
+  `prepare_images_and_align()` each call it once); it merges rather than overwrites, so an
+  image a human regenerated while the job was still `preparing` survives, as do the
+  `renderUrl`/`clickupPushedAt`/`wardrobeApprovedAt` gates.
+- Payload fields beyond `web/lib/types.ts`'s visible `Job`: `characters` (the locked ledger +
+  wardrobe variants, read back by the regenerate-image/regenerate-character-image routes)
+  and `clickupPushedAt`/`wardrobeApprovedAt` (the two push-once/resume gates). See
+  `docs/architecture.md` for the full gate list.
 - `video_gen.py` is an async submit/poll client (`POST /generate` -> `job_id`,
   `GET /status/{job_id}` -> `video.url` when done) for an in-house image-to-video Modal API.

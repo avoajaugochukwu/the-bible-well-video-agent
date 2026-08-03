@@ -28,14 +28,16 @@ Start the server:
 python3 src/ingest_server.py
 ```
 
-Ingest only **prepares** now (`prepare_pipeline()`): Baserow read -> scene
-breakdown -> multi-lane images -> narration alignment, then it stops and writes a `ready`
-job row to Supabase for human review — it no longer renders automatically.
-Render (`render_pipeline()`: narration download -> Whisper+DTW align ->
-Remotion Lambda render -> upload to S3 -> push video url to ClickUp) is a
-separate manual step, fired from the production review UI (`web/`, see
-below) once scenes have been reviewed/edited. `python3 src/run.py <row_id>`
-on its own still chains prepare+render unattended, for back-compat.
+Ingest only **prepares** now (`prepare_cast_and_scenes()`): Baserow read -> scene
+breakdown -> wardrobe variants, then it stops and writes an `awaiting_wardrobe_approval`
+job row to Supabase — a human reviews/edits the character wardrobe in the production UI
+and approves before any scene image generates. Approving fires `prepare_images_and_align()`
+(multi-lane images -> narration alignment), landing on `ready` for the usual scene review.
+Render (`render_pipeline()`: narration download -> Whisper+DTW align -> Remotion Lambda
+render -> upload to S3 -> push video url to ClickUp) is a separate manual step, fired from
+the production review UI (`web/`, see below) once scenes have been reviewed/edited.
+`python3 src/run.py <row_id>` on its own still chains all three unattended (auto-approving
+the wardrobe gate), for back-compat. See `docs/architecture.md` for the full stage list.
 
 Nothing is kept on local disk (Railway has no volume, so a redeploy wipes it).
 The Supabase job row is the only durable state: scenes and their images land
