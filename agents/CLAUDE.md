@@ -94,7 +94,7 @@ mental-model tax: to predict or fix a frame you'd have to know which of two plac
 "won," and that is exactly the ambiguity the single-responsibility split exists to
 kill. The shot authors in `src/scene_engine.py` are pure renderers — they assemble the
 upstream decisions (location, cast+staging, recognition anchor, expression) into one
-`image_prompt` and decide none of them. Concretely, as of 2026-08-04: `casting_director`
+`image_prompt` and decide none of them. Concretely: `casting_director`
 owns ALL who-is-in-frame + how-the-crowd-is-staged-and-dressed (for concrete AND abstract
 beats); `location_scout` owns where + its real-world scale; `recognition_director` owns
 the one iconic PLACE/OBJECT anchor and never people; `emotion_scout` owns the expression.
@@ -180,7 +180,7 @@ exception is the right one.
   the occasion). Concrete beats are cast from their narration; abstract beats are cast
   from the world + their emotional stakes only, never narration (they stay narration-blind
   per the lane rule above). Its standing calls: **leaving the protagonist out is an
-  aggressive standing preference (user-directed, stated repeatedly)** — she appears in
+  aggressive standing preference** — she appears in
   many beats already, so whenever a beat can stand on its own without her (it names an
   event, an occasion, other people, a place, or an object the shot can be built around)
   she is left out, and this holds even when the line is phrased as her watching/attending/
