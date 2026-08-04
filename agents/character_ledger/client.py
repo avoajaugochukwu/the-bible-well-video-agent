@@ -329,8 +329,6 @@ def build_director_cast(
     ]
     film_handoff = {
         "film_title": visual_story.get("film_title"),
-        "parallel_story": visual_story.get("parallel_story"),
-        "external_goal": visual_story.get("external_goal"),
         "supporting_characters": declarations,
         "recurring_locations": visual_story.get("recurring_locations") or [],
     }

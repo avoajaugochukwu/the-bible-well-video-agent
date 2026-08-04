@@ -207,6 +207,9 @@ def build_job_payload(row_id, row: dict, scenes: list[dict], status: str = "read
                 "sceneType": s.get("scene_type"),
                 "visualMode": s.get("visual_mode"),
                 "characterIds": s.get("character_ids") or [],
+                "location": s.get("location"),
+                "recognitionCue": s.get("recognition_cue"),
+                "staging": s.get("staging_note"),
                 "heroSubject": s.get("hero_subject"),
                 "imagePrompt": s.get("image_prompt"),
                 "durationSeconds": s.get("duration_seconds"),
@@ -435,10 +438,10 @@ def _resolve_asset(asset: dict) -> dict:
 def full_scenes_from_job(job: dict) -> list[dict]:
     """The full mid-pipeline scene shape (snake_case) reconstructed from the job
     payload — used by run.py's prepare_images_and_align() to hand scenes back
-    to agents/scene_compositor after the wardrobe-approval gate, since nothing
+    to agents/scene_renderer after the wardrobe-approval gate, since nothing
     survives on local disk between prepare_cast_and_scenes() and this call.
     Unlike scenes_from_job() (render's minimal image/video-url shape), this
-    keeps every field scene_compositor.compose_all() actually reads."""
+    keeps every field scene_renderer.compose_all() actually reads."""
     return [
         {
             "scene_number": s["sceneNumber"],
@@ -446,6 +449,9 @@ def full_scenes_from_job(job: dict) -> list[dict]:
             "scene_type": s.get("sceneType"),
             "visual_mode": s.get("visualMode"),
             "character_ids": s.get("characterIds") or [],
+            "location": s.get("location"),
+            "recognition_cue": s.get("recognitionCue"),
+            "staging_note": s.get("staging"),
             "hero_subject": s.get("heroSubject"),
             "image_prompt": s.get("imagePrompt"),
             "duration_seconds": s.get("durationSeconds"),

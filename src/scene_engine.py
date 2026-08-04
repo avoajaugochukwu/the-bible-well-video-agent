@@ -1,9 +1,14 @@
 """Build timed narration scenes for a separately directed visual story.
 
 Narration is divided into verbatim spoken-length blocks without considering its
-visual nouns. A whole-film plan from agents/visual_director is expanded into the
-same number of chronological shots. The shot author never receives narration,
-preventing literal caption illustration while preserving exact timing text.
+visual nouns. A whole-film plan from agents/world_builder (built from
+agents/emotion_scout's categorical score) is expanded into the same number of
+chronological shots. The shot author never receives narration, preventing
+literal caption illustration while preserving exact timing text. Each beat is
+staged against a location (agents/location_scout) and, where the occasion
+calls for it, a recognition anchor (agents/recognition_director) — both
+assigned ahead of authoring so the one shot author call can honor them rather
+than guessing at composition on its own.
 """
 import json
 import os
@@ -13,13 +18,18 @@ import urllib.error
 import urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.path.join(HERE, "..", "utils"))
+sys.path.insert(0, ROOT)
 
 import env                     # utils: one .env lookup (checks root .env)
 import align                    # utils: Whisper-word <-> verbatim-scene DTW aligner
 from llm import call_llm_json   # utils: shared OpenAI structured-JSON caller
+from agents.location_scout import client as location_scout
+from agents.recognition_director import client as recognition_director
+from agents.casting_director import client as casting_director
 
-PROMPT_CONTRACT_VERSION = 12
+PROMPT_CONTRACT_VERSION = 21
 CONTEXT_CONTRACT_VERSION = 2
 
 CONTEXT_SCHEMA = {
@@ -222,7 +232,7 @@ def cut_narration_scenes(
 ) -> list[str]:
     """Homestead-style agent cut with lossless anchoring and local fallback. This
     is the ONE place narration gets cut into chronological pieces — every other
-    stage (agents/visual_director's emotional scoring, scene authoring) consumes
+    stage (agents/emotion_scout's emotional scoring, scene authoring) consumes
     this exact list by position instead of re-segmenting the same script a second
     time, so there's no gap a second, independent cut could silently open up."""
     from concurrent.futures import ThreadPoolExecutor
@@ -246,85 +256,124 @@ def cut_narration_scenes(
     return segments
 
 
-def _shot_schema(character_ids: list[str]) -> dict:
+def _shot_schema() -> dict:
+    """Both shot authors are pure renderers now — who is in frame is decided
+    upstream by agents/casting_director, so the shot itself carries no
+    character_ids field; it is grafted onto the scene from the casting pass."""
     return {
-        "name": "parallel_story_shot",
+        "name": "story_shot",
         "schema": {
             "type": "object",
             "properties": {
                 "hero_subject": {"type": "string"},
                 "image_prompt": {"type": "string"},
-                "character_ids": {
-                    "type": "array",
-                    "items": (
-                        {"type": "string", "enum": character_ids}
-                        if character_ids
-                        else {"type": "string"}
-                    ),
-                },
                 "scene_type": _SCENE_TYPE_PROPERTY,
             },
-            "required": ["hero_subject", "image_prompt", "character_ids", "scene_type"],
+            "required": ["hero_subject", "image_prompt", "scene_type"],
             "additionalProperties": False,
         },
     }
 
 
+_CAMERA_GUIDANCE = {
+    "wide": "Wide/establishing shot: show the full location and the person small within it, emphasizing isolation or environment.",
+    "medium": "Medium shot: waist-up or full-body at a natural conversational distance.",
+    "close": "Close shot on face and upper body, emphasizing expression.",
+    "macro": "Extreme close-up/macro shot on one physical object or hand detail — the face need not be visible; let the object or gesture carry the feeling.",
+    "pov": "Point-of-view shot: show only what the person is looking at or reaching toward, from their own eyeline or over their shoulder — not their own face.",
+}
+
+
+def _camera_instruction(emotional_beat: dict) -> str:
+    return _CAMERA_GUIDANCE.get(emotional_beat.get("camera_distance"), _CAMERA_GUIDANCE["medium"])
+
+
 def author_story_beat(
     visual_story: dict,
-    story_beat: dict,
+    emotional_beat: dict,
     characters: list[dict],
+    location: str = "",
+    recognition_cue: str = "",
+    casting: dict | None = None,
 ) -> dict:
-    """Plan the one shot for this director beat without seeing narration — one
-    beat now always maps to exactly one narration snippet (see
-    agents/visual_director, which scores every real cut snippet rather than
-    inventing its own count), so one shot per beat is the whole scene."""
-    allowed_ids = set(story_beat.get("character_ids") or [])
-    character_ids = [c["id"] for c in characters if c["id"] in allowed_ids]
+    """Plan the one shot for an abstract-mode beat directly against the shared
+    world bible (locations/style) and this beat's own emotional score. Who is in
+    frame is NOT decided here — agents/casting_director already decided it (from
+    the world + this beat's stakes, since abstract beats are narration-blind) and
+    handed it in as `casting`; this call is a pure renderer of that cast, same as
+    author_literal_beat. `location` comes from agents/location_scout's pre-pass,
+    not chosen freely here. `recognition_cue` comes from agents/
+    recognition_director's pre-pass — empty for ordinary beats, one concrete
+    iconic place/object anchor for significant occasions."""
+    casting = casting or {"character_ids": ["protagonist"], "staging_note": ""}
+    cast_ids = casting.get("character_ids") or []
+    staging_note = (casting.get("staging_note") or "").strip()
+    in_frame = [c for c in characters if c["id"] in cast_ids]
     cast = "\n".join(
         f'- id "{c["id"]}", role "'
-        f'{"protagonist" if c["id"] == "protagonist" else "recurring supporting character"}'
-        f'": {c["appearance"]}'
-        for c in characters
-        if c["id"] in allowed_ids
-    )
+        f'{"protagonist" if c["id"] == "protagonist" else c.get("role") or "recurring supporting character"}'
+        f'": {c.get("appearance") or c.get("story_function", "")}'
+        for c in in_frame
+    ) or "(no tracked character is in this shot — it is entirely about the occasion or the other people in it)"
     locations = json.dumps(visual_story.get("recurring_locations") or [], indent=2)
-    beat = json.dumps(story_beat, indent=2)
+    cues = [cue.get("cue") for cue in emotional_beat.get("bridge_cues") or []]
+    cue_line = (
+        "Optionally show at most one of these portable cues naturally, or none: " + ", ".join(cues)
+        if cues else ""
+    )
     system = f"""
-You are the shot planner for one beat in a coherent Christian animated short film.
-You do not receive the narration and must not reconstruct it. Plan exactly one
-still-image shot that advances the locked movie beat below.
+You are the shot planner for one beat in a coherent Christian animated short film
+set in one shared everyday-America world. You do not receive the narration and
+must not reconstruct it — you receive only this beat's abstract emotional score.
+Plan exactly one still-image shot in this world.
 
-WHOLE FILM:
+WORLD:
 Title: {visual_story.get("film_title", "")}
-Parallel story: {visual_story.get("parallel_story", "")}
-External goal: {visual_story.get("external_goal", "")}
-Protagonist arc: {visual_story.get("protagonist_arc", "")}
 Movie style: {visual_story.get("movie_style", "")}
 
 RECURRING LOCATIONS:
 {locations}
 
-LOCKED STORY BEAT:
-{beat}
-
-TRACKED CAST:
+CAST IN FRAME (agents/casting_director already decided who appears — render
+exactly these tracked characters as the shot's tracked foreground, none other;
+do not add another tracked character back in, and if it lists none, the
+protagonist does NOT appear and the shot is entirely about the occasion or the
+other people in it):
 {cast}
 
-If LOCKED STORY BEAT has a non-empty bridge_cue, show that exact portable cue
-naturally in the shot. It is an intentional point of contact with the narration,
-not permission to reconstruct any source event around it.
-Every stable physical, wardrobe, jewelry, relationship-status, or occupational
-identity detail must come from TRACKED CAST. Do not invent unlisted identity
-markers to make a character feel more specific; specificity comes from action,
-body language, framing, and the established production world.
+STAGING (already decided by the casting pre-pass — honor it exactly; it tells you
+whether this is a solo, populated, or two-person shot, and how any crowd is
+dressed for the occasion):
+{staging_note or "(protagonist alone, an ordinary specific action)"}
 
-The world should feel populated and alive. Anonymous neighbors, customers, coworkers,
-volunteers, congregants, shoppers, and passersby can appear naturally without
-character_ids, but keep them as background texture — never let an anonymous figure
-compete with or outweigh the tracked characters who are the beat's actual foreground
-focus. character_ids contain only recurring cast members clearly visible and
-foregrounded in this shot.
+THIS BEAT'S EMOTIONAL SCORE: story_pressure={emotional_beat.get("story_pressure")}, emotional_valence={emotional_beat.get("emotional_valence")}, tempo={emotional_beat.get("tempo")}
+
+THIS SHOT'S LOCATION (already decided, do not change or invent a different
+place): {location or "(none assigned — pick the best fit from RECURRING LOCATIONS)"}
+
+{f"RECOGNITION ANCHOR (this location/occasion is significant — feature this specific place/object detail prominently): {recognition_cue}" if recognition_cue else ""}
+
+{cue_line}
+
+Give the protagonist, when she is in frame, an ordinary specific physical action
+fitting the location and moment (driving, cooking, shopping, working, walking
+briskly) rather than a static pose whenever the beat allows it. Anonymous
+figures fill out the shot per STAGING above; keep them as background texture
+that never outweighs the tracked characters in CAST IN FRAME, unless CAST IN
+FRAME is empty, in which case those figures are the shot's subject.
+
+Every stable physical, wardrobe, jewelry, relationship-status, or occupational
+identity detail must come from CAST IN FRAME. Do not invent unlisted identity
+markers; specificity comes from action, body language, framing, and the world.
+
+THIS BEAT'S EMOTIONAL STAKES (why this moment actually matters to this person
+right now): {emotional_beat.get("emotional_stakes") or "(none given)"}
+
+EXPRESSION FOR THIS SHOT (render this exactly — overt and legible in a single
+still frame, never a default pleasant or neutral resting expression unless it
+genuinely calls for calm): {emotional_beat.get("expression_directive") or "an expression matching this beat's own emotional score"}
+
+CAMERA FRAMING FOR THIS SHOT: {_camera_instruction(emotional_beat)}
 
 image_prompt is 25-45 words and describes only what the image generator should render:
 specific location, visible action, people and body language, time of day, and framing.
@@ -342,45 +391,118 @@ Return exactly one shot.
             {"role": "system", "content": system},
             {"role": "user", "content": "Plan the shot."},
         ],
-        _shot_schema(character_ids),
+        _shot_schema(),
         max_completion_tokens=2048,
     )
 
 
-def author_literal_beat(snippet: str, characters: list[dict]) -> dict:
+def author_literal_beat(
+    snippet: str,
+    emotional_beat: dict,
+    characters: list[dict],
+    location: str = "",
+    recognition_cue: str = "",
+    local_context: str = "",
+    casting: dict | None = None,
+) -> dict:
     """Plan the one shot for a beat whose narration names a concrete,
     visualizable event — the literal counterpart to author_story_beat's
-    parallel-world shot. Sees only this beat's own narration snippet, never
-    the invented film, so it cannot drift onto the wrong story."""
-    character_ids = [c["id"] for c in characters]
+    world shot. Still narration-blind to the WHOLE script and the invented
+    world (it cannot drift onto the wrong story), but now sees `local_context`
+    — the full text of every sibling snippet sharing this beat's own
+    contiguous location run, not just this one isolated fragment. Confirmed
+    bug this fixes (2026-08-03): `cut_narration_scenes` can chop one
+    continuous sentence ("The church was full... white roses... People smiled
+    like they were witnessing something holy") into several 2-8 word
+    fragments; authoring each in total isolation left the model with no way to
+    know it was even a wedding, let alone that showing the actual couple at
+    the altar might fit better than the protagonist standing static in her
+    everyday outfit for every single fragment. `location` comes from
+    agents/location_scout's pre-pass, not chosen freely here, so a run of
+    beats describing one continuous event (e.g. a wedding) holds one place
+    instead of drifting to a different room mid-event. `recognition_cue` comes
+    from agents/recognition_director's pre-pass — empty for ordinary beats, one
+    concrete iconic anchor for significant occasions."""
+    casting = casting or {"character_ids": ["protagonist"], "staging_note": ""}
+    cast_ids = casting.get("character_ids") or []
+    staging_note = (casting.get("staging_note") or "").strip()
+    in_frame = [c for c in characters if c["id"] in cast_ids]
     cast = "\n".join(
         f'- id "{c["id"]}", role "'
         f'{"protagonist" if c["id"] == "protagonist" else "recurring supporting character"}'
         f'": {c["appearance"]}'
-        for c in characters
-    )
+        for c in in_frame
+    ) or "(no tracked character is in this shot — it is entirely about the occasion or the other people in it)"
     system = f"""
 You are the shot planner for one beat of a Christian animated short film. This
 beat's narration names a concrete, visualizable event — plan exactly one
-still-image shot that directly depicts what this narration describes.
+still-image shot grounded in what this narration describes.
 
 NARRATION FOR THIS BEAT:
 {snippet}
 
-TRACKED CAST:
+CAST IN FRAME (agents/casting_director already decided who appears — render exactly
+these tracked characters as the shot's tracked foreground, none other; do not add
+another tracked character back in, and if it lists none, the protagonist does NOT
+appear and the shot is entirely about the occasion or the other people in it):
 {cast}
 
+STAGING (already decided by the casting pre-pass — honor it exactly; it tells you
+whether this is a solo, two-person, or populated group shot and who anchors it):
+{staging_note or "(protagonist alone, an ordinary specific action)"}
+
+THIS BEAT'S EMOTIONAL SCORE: story_pressure={emotional_beat.get("story_pressure")}, emotional_valence={emotional_beat.get("emotional_valence")}, tempo={emotional_beat.get("tempo")}
+
+THIS SHOT'S LOCATION (already decided, do not change or invent a different
+place unless this narration's own words clearly move to somewhere else):
+{location or "(none assigned — infer the best fit from this narration)"}
+
+{f"RECOGNITION ANCHOR (this location/occasion is significant — feature this specific place/object detail prominently): {recognition_cue}" if recognition_cue else ""}
+
+{f'''THIS BEAT IS ONE FRAGMENT OF A LONGER CONTINUOUS SCENE — here is the full
+surrounding passage, for context only (this fragment's own narration above is
+still the ONE thing this specific shot must be grounded in; do not treat the
+whole passage below as this shot's own content to illustrate):
+{local_context}
+Use this to understand what the whole scene actually is (a wedding, a
+funeral, a meeting) so your choice of subject and props is consistent with it
+and with every other beat cut from the same passage — never invent an object
+or event with its own strong meaning (a casket, a ring box, a diploma) unless
+the passage above actually names or clearly implies it. (Who is in the shot is
+already fixed by CAST IN FRAME and STAGING above — use this passage only to
+ground the subject and props, not to reconsider who appears.)''' if local_context else ""}
+
+Do not transcribe the sentence into a shot-for-shot recreation of every named
+noun and action — that reads as illustration, not cinema. Instead pick ONE
+specific, telling visual moment or detail that captures this beat's real
+substance: a gesture, an object, a look, an environment, or an instant just
+before/after the literal action, seen from a deliberate angle. The image must
+still be clearly grounded in this narration, not a different event — never
+invent a prop or object carrying its own strong narrative weight (a casket, a
+wheelchair, a ring box, a diploma) unless this beat's own narration or the
+surrounding passage actually names or clearly implies it.
+
 Every stable physical, wardrobe, jewelry, relationship-status, or occupational
-identity detail must come from TRACKED CAST. Do not invent unlisted identity
+identity detail must come from CAST IN FRAME. Do not invent unlisted identity
 markers to make a character feel more specific; specificity comes from action,
 body language, framing, and the scene the narration describes.
 
-The world should feel populated and alive. Anonymous neighbors, customers,
-coworkers, and passersby can appear naturally without character_ids, but keep
-them as background texture — never let an anonymous figure compete with or
-outweigh the tracked characters who are the beat's actual foreground focus.
-character_ids contain only recurring cast members clearly visible and
-foregrounded in this shot, actually named or implied by this narration.
+Populate the frame per STAGING above — it already fixes who is present and how
+any crowd is dressed for the occasion; render that, do not re-derive it. Keep
+anonymous figures as background texture that never outweighs the tracked
+characters in CAST IN FRAME; when CAST IN FRAME is empty, those anonymous
+figures ARE this shot's foreground subject — build the image around them, not
+around an absent protagonist. Never render a significant occasion as a generic,
+unpopulated room.
+
+THIS BEAT'S EMOTIONAL STAKES (why this moment actually matters to this person
+right now): {emotional_beat.get("emotional_stakes") or "(none given)"}
+
+EXPRESSION FOR THIS SHOT (render this exactly — overt and legible in a single
+still frame, never a default pleasant or neutral resting expression unless it
+genuinely calls for calm): {emotional_beat.get("expression_directive") or "an expression matching this beat's own emotional score"}
+
+CAMERA FRAMING FOR THIS SHOT: {_camera_instruction(emotional_beat)}
 
 image_prompt is 25-45 words and describes only what the image generator should
 render: specific location, visible action, people and body language, time of
@@ -399,16 +521,29 @@ Return exactly one shot.
             {"role": "system", "content": system},
             {"role": "user", "content": "Plan the shot."},
         ],
-        _shot_schema(character_ids),
+        _shot_schema(),
         max_completion_tokens=2048,
     )
 
 
-def _pick_shot(visual_mode: str, parallel_shot: dict, literal_shot: dict) -> dict:
-    """Route each beat to its authored shot by narration fact, not by
-    comparing the two outputs — visual_mode comes from agents/visual_director's
-    emotional-spine pass, the one stage that reads the real narration snippet."""
-    return literal_shot if visual_mode == "concrete" else parallel_shot
+def _local_contexts(snippets: list[str], locations: list[str]) -> list[str]:
+    """One local_context string per snippet: the full narration text of every
+    sibling snippet sharing this snippet's own contiguous location run (empty
+    for a single-snippet run — that beat already IS the whole scene, nothing
+    to add). Confirmed 2026-08-03: authoring each beat from its own isolated
+    fragment alone (some as short as 2-3 words — "white roses", "and baby's
+    breath,") gave the shot author no way to know it was even part of a
+    wedding, only "just in time" info with no bigger picture to plan against."""
+    contexts = [""] * len(snippets)
+    start = 0
+    for i in range(1, len(locations) + 1):
+        if i == len(locations) or locations[i] != locations[start]:
+            if i - start > 1:
+                joined = " ".join(s.strip() for s in snippets[start:i])
+                for j in range(start, i):
+                    contexts[j] = joined
+            start = i
+    return contexts
 
 
 def break_into_scenes(
@@ -417,58 +552,74 @@ def break_into_scenes(
     visual_story: dict,
     workers: int = 8,
 ) -> list[dict]:
-    """Zip the already-cut verbatim narration snippets 1:1 with the director's
-    story beats — guaranteed equal counts, since agents/visual_director scores
-    every one of these same snippets rather than inventing its own boundaries.
-    Both the parallel-world shot and the literal shot are authored for every
-    beat (the parallel author needs every beat to keep its own invented story
-    coherent, even where its output goes unused), then each beat's own
-    narration-derived visual_mode — never a second call comparing the two
-    outputs — picks which authored shot actually reaches the compositor."""
+    """Zip the already-cut verbatim narration snippets 1:1 with agents/
+    emotion_scout's emotional-spine beats — guaranteed equal counts, since that
+    agent scores every one of these same snippets rather than inventing its own
+    boundaries. Each beat's own narration-derived visual_mode picks which single
+    author runs for it — concrete beats never need the world-shot author, and
+    abstract beats never need the literal author, since there's no shared plot
+    state across beats to keep either author "warm" for anymore. A location
+    (agents/location_scout) and, where the occasion calls for it, a recognition
+    anchor (agents/recognition_director) are assigned to every beat ahead of
+    authoring, so a run of beats describing one continuous event holds one
+    place instead of each author call picking freely with zero memory of its
+    neighbors."""
     from concurrent.futures import ThreadPoolExecutor
 
-    story_beats = visual_story.get("story_beats") or []
     emotional_beats = (visual_story.get("emotional_spine") or {}).get("emotional_beats") or []
-    if len(story_beats) != len(snippets):
-        raise ValueError(
-            f"visual_story has {len(story_beats)} beats but narration was cut into "
-            f"{len(snippets)} snippets — these must match 1:1"
-        )
     if len(emotional_beats) != len(snippets):
         raise ValueError(
             f"visual_story emotional_spine has {len(emotional_beats)} beats but narration "
             f"was cut into {len(snippets)} snippets — these must match 1:1"
         )
 
-    with ThreadPoolExecutor(max_workers=min(workers * 2, len(story_beats) * 2)) as ex:
-        parallel_futures = [
-            ex.submit(author_story_beat, visual_story, beat, characters)
-            for beat in story_beats
+    locations = location_scout.assign(snippets, visual_story)
+    recognition_cues = recognition_director.assign(locations, emotional_beats, workers=workers)
+    local_contexts = _local_contexts(snippets, locations)
+    # Who-is-in-frame is decided here, once, ahead of authoring — for EVERY beat,
+    # concrete or abstract — so presence lives in exactly one place and both shot
+    # authors are pure renderers of the cast + staging they are handed, never
+    # re-deciding it (which defaulted the protagonist into every frame).
+    castings = casting_director.assign(
+        snippets, characters, locations, local_contexts, emotional_beats, workers=workers
+    )
+
+    with ThreadPoolExecutor(max_workers=min(workers * 2, len(snippets) * 2 or 1)) as ex:
+        futures = [
+            ex.submit(author_literal_beat, snippet, emotional_beat, characters, location, recognition_cue, local_context, casting)
+            if emotional_beat.get("visual_mode") == "concrete"
+            else ex.submit(author_story_beat, visual_story, emotional_beat, characters, location, recognition_cue, casting)
+            for snippet, emotional_beat, location, recognition_cue, local_context, casting in zip(
+                snippets, emotional_beats, locations, recognition_cues, local_contexts, castings
+            )
         ]
-        literal_futures = [
-            ex.submit(author_literal_beat, snippet, characters)
-            for snippet in snippets
-        ]
-        parallel_shots = [f.result() for f in parallel_futures]
-        literal_shots = [f.result() for f in literal_futures]
+        shots = [f.result() for f in futures]
 
     out = []
-    for i, (snippet, emotional_beat, parallel_shot, literal_shot) in enumerate(
-        zip(snippets, emotional_beats, parallel_shots, literal_shots), start=1
+    for i, (snippet, emotional_beat, location, recognition_cue, casting, shot) in enumerate(
+        zip(snippets, emotional_beats, locations, recognition_cues, castings, shots), start=1
     ):
         visual_mode = emotional_beat.get("visual_mode")
-        shot = _pick_shot(visual_mode, parallel_shot, literal_shot)
+        # Cast always comes from casting_director now (both authors dropped their
+        # own character_ids output).
+        character_ids = casting["character_ids"]
         out.append({
             "scene_number": i,
             "script_snippet": snippet,
             "director_beat_number": i,
             "visual_mode": visual_mode,
+            "location": location,
+            "recognition_cue": recognition_cue,
+            "staging_note": casting.get("staging_note", ""),
             "hero_subject": shot["hero_subject"],
             "image_prompt": shot["image_prompt"],
             "scene_type": shot["scene_type"],
-            "character_ids": shot["character_ids"],
+            "character_ids": character_ids,
             "prompt_contract_version": PROMPT_CONTRACT_VERSION,
-            "visual_story_contract_version": visual_story.get("visual_story_contract_version"),
+            "visual_story_contract_version": visual_story.get("world_builder_contract_version"),
+            "location_scout_contract_version": location_scout.LOCATION_SCOUT_CONTRACT_VERSION,
+            "recognition_director_contract_version": recognition_director.RECOGNITION_DIRECTOR_CONTRACT_VERSION,
+            "casting_director_contract_version": casting_director.CASTING_DIRECTOR_CONTRACT_VERSION,
         })
     print(f"  -> {len(out)} scenes", flush=True)
     return out
@@ -572,9 +723,10 @@ if __name__ == "__main__":
     sys.path.insert(0, os.path.join(HERE, ".."))  # repo root, for agents/ below
     from agents.character_ledger import client as character_ledger
     from agents.character_sheet import client as character_sheet
-    from agents.scene_compositor import client as scene_compositor
+    from agents.emotion_scout import client as emotion_scout
+    from agents.scene_renderer import client as scene_renderer
     from agents.story_dossier import client as story_dossier_agent
-    from agents.visual_director import client as visual_director
+    from agents.world_builder import client as world_builder
 
     SAMPLE_SCRIPT_PATH = os.path.join(HERE, "..", "she-thought-god-forgot-her-script.txt")
     SAMPLE_AUDIO_URL_PATH = os.path.join(HERE, "..", "she-thought-god-forgot-her-audio.txt")
@@ -605,12 +757,12 @@ if __name__ == "__main__":
     snippets = cut_narration_scenes(SAMPLE_SCRIPT)
     print(f"  -> {len(snippets)} verbatim snippets", flush=True)
 
-    print("\n5/9 visual_director.build()...", flush=True)
-    visual_story = visual_director.build(
-        characters,
-        snippets,
-        story_dossier=story_dossier,
-    )
+    print("\n5/9 emotion_scout.score() + world_builder.build()...", flush=True)
+    emotional_spine = emotion_scout.score(snippets)
+    visual_story = {
+        **world_builder.build(characters, story_dossier, emotional_spine),
+        "emotional_spine": emotional_spine,
+    }
 
     print("\n6/9 break_into_scenes()...", flush=True)
     scenes = break_into_scenes(
@@ -623,8 +775,8 @@ if __name__ == "__main__":
         print(f"  scene {s['scene_number']}: {s['script_snippet'][:60]!r}... "
               f"[{s['scene_type']}] chars={s['character_ids']}", flush=True)
 
-    print("\n7/9 scene_compositor.compose_all()...", flush=True)
-    scenes = scene_compositor.compose_all(scenes, characters)
+    print("\n7/9 scene_renderer.compose_all()...", flush=True)
+    scenes = scene_renderer.compose_all(scenes, characters)
 
     narration_path = os.path.join(HERE, "test-narration.mp3")
     print(f"\n8/9 downloading real narration ({SAMPLE_AUDIO_URL}) -> {narration_path}...", flush=True)

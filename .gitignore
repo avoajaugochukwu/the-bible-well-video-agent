@@ -8,3 +8,5 @@ scratchpad/
 .claude/scheduled_tasks.lock
 .DS_Store
 runs/
+# Disposable validation grid dumps — huge self-contained base64 HTML, never commit
+scene-directing-*.html

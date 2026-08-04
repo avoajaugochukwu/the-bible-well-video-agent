@@ -28,22 +28,35 @@ Output per run → one rendered video, one ClickUp task updated with the video u
 Full pipeline is wired end-to-end via `src/run.py <row_id>` — row_id is a required arg (or the
 `row_id` field of an `/ingest` POST body when triggered over HTTP). **Nothing is kept on
 local disk** — see `docs/architecture.md`'s "State and resume". `agents/` (story_dossier,
-character_ledger, character_sheet, character_wardrobe, visual_director, scene_compositor —
+character_ledger, character_sheet, character_wardrobe, emotion_scout, world_builder,
+location_scout, recognition_director, casting_director, recognition_reviewer, drama_reviewer, scene_renderer —
 plain importable Python packages, no subprocess bridge needed since this whole repo is
-already Python) is where the character-consistency work lives, separate from
-`src/scene_engine.py`'s scene-breakdown LLM calls. There is **no vision-QA anywhere in this
-pipeline** — whether a generated image actually matches its character(s) is a human call
-made off the production UI review, not an automated gate.
+already Python) is where the character-consistency and shot-direction work lives, separate
+from `src/scene_engine.py`'s scene-breakdown/shot-authoring LLM calls. There is **no
+vision-QA anywhere in this pipeline** — whether a generated image actually matches its
+character(s) is a human call made off the production UI review, not an automated gate.
+Every one of these agent modules is single-responsibility by design, so a bad result is
+diagnosable by re-running one small, named call rather than re-reading the whole pipeline.
 
 Stage order: Baserow read → context → whole-script production dossier → character ledger +
-one full-body reference image per tracked character → whole-film parallel-story direction →
-verbatim narration timing blocks → **wardrobe variants for significant recurring contexts
-(a wedding, a work uniform), then a hard human-approval gate before any scene image
-generates** → per-scene images (i2i against each present character's base or wardrobe-variant
-reference, t2i fallback only when a reference is missing or the edit call is rejected) →
-Whisper+DTW alignment against the row's own narration → [production UI review/edit, manual
-render trigger] → Remotion Lambda render → upload to S3 (RAW public link — **never
-presigned**) → ClickUp push. Baserow is never written back to — read-only,
+one full-body reference image per tracked character → narration emotional scoring
+(`agents/emotion_scout`: categorical score plus each beat's own emotional stakes and an
+overt expression directive) → whole-film shared-world direction (`agents/world_builder`) →
+verbatim narration timing blocks, each staged with a location (`agents/location_scout`,
+holds one place across a continuous event and matches a significant occasion's real-world
+scale) and, where the occasion calls for it, an iconic place/object anchor (`agents/
+recognition_director`), then per-beat casting (`agents/casting_director`: who is in frame +
+how any group is staged and dressed, protagonist defaulted out of occasions centered on
+others) ahead of shot authoring → two narrow post-hoc review passes over the
+authored scenes (`agents/recognition_reviewer` for iconicity, `agents/drama_reviewer` for
+emotional boldness — a deliberate, flagged exception to `agents/CLAUDE.md` rule 2, see that
+file's carve-out note) → **wardrobe variants for significant recurring contexts (a wedding, a
+work uniform), then a hard human-approval gate before any scene image generates** →
+per-scene images (`agents/scene_renderer`, i2i against each present character's base or
+wardrobe-variant reference, t2i fallback only when a reference is missing or the edit call is
+rejected) → Whisper+DTW alignment against the row's own narration → [production UI
+review/edit, manual render trigger] → Remotion Lambda render → upload to S3 (RAW public link
+— **never presigned**) → ClickUp push. Baserow is never written back to — read-only,
 `src/baserow.py:get_row(row_id)` only. Full stage-by-stage detail (including the
 wardrobe-approval gate's exact mechanics) and the state/resume contract:
 **see `docs/architecture.md`.**
@@ -63,10 +76,12 @@ wardrobe-approval gate's exact mechanics) and the state/resume contract:
 ## Agent development philosophy
 
 `agents/CLAUDE.md` is the operating philosophy and standing rules for everything under
-`agents/` (story_dossier, character_ledger, character_sheet, visual_director,
-scene_compositor) — read that file before touching any of them. Short version: this is a
-chat played out in code, not a deterministic pipeline with an LLM bolted on; the fix for a
-bad conversation is a better next message, not a new Python gate.
+`agents/` (story_dossier, character_ledger, character_sheet, character_wardrobe,
+emotion_scout, world_builder, location_scout, recognition_director, casting_director,
+recognition_reviewer, drama_reviewer, scene_renderer) — read that file before touching any
+of them. Short version:
+this is a chat played out in code, not a deterministic pipeline with an LLM bolted on; the
+fix for a bad conversation is a better next message, not a new Python gate.
 
 ## Hard rules
 
@@ -110,14 +125,24 @@ the-bible-well/
 │                   prepare_images_and_align/render_pipeline), ingest_server.py (HTTP API,
 │                   see its ROUTES list), baserow.py, clickup.py, s3.py, supabase_jobs.py,
 │                   video_gen.py, scene_engine.py, gpt_image.py
-├── agents/         character-consistency agents (plain importable Python packages, no
-│                   subprocess bridge — this repo has no cross-language boundary):
+├── agents/         character-consistency and shot-direction agents (plain importable
+│                   Python packages, no subprocess bridge — this repo has no cross-language
+│                   boundary), each single-responsibility for independent diagnosability:
 │                   story_dossier/ (casting + plot-free director profile), character_ledger/
 │                   (which characters are worth tracking), character_sheet/ (one full-body
 │                   reference image per tracked character + per-variant reference images),
 │                   character_wardrobe/ (which contexts need their own outfit variant),
-│                   visual_director/ (categorical emotional score + standalone film plan),
-│                   scene_compositor/ (per-scene i2i via reference images, t2i fallback)
+│                   emotion_scout/ (categorical score + emotional stakes + expression
+│                   directive per narration beat), world_builder/ (standalone shared film
+│                   world from that score), location_scout/ (one location per beat, holding
+│                   continuity and matching a significant occasion's real-world scale),
+│                   recognition_director/ (proposes one iconic place/object anchor per beat
+│                   where the occasion calls for it — never people), casting_director/ (who is
+│                   in frame + how any group is staged/dressed, every beat; both shot authors
+│                   are pure renderers of its output), recognition_reviewer/ + drama_reviewer/
+│                   (two narrow post-hoc review passes over authored scenes — see
+│                   agents/CLAUDE.md rule 2's carve-out), scene_renderer/ (per-scene i2i via
+│                   reference images, t2i fallback)
 ├── utils/          stdlib-only / low-dependency helpers: env.py (env-var lookup),
 │                   llm.py (shared OpenAI structured-JSON caller, used by scene_engine.py
 │                   and agents/), align.py (DTW aligner), images.py (image fetcher),

@@ -15,7 +15,7 @@ export type AssetSource = "gpt-image" | "pexels" | "upload" | "video-gen";
 
 /** Which reference (a character's base image, or one wardrobe variant) an
  * image actually resolved to for one present character — a plain fact
- * src/supabase_jobs.py stores verbatim from agents/scene_compositor's own
+ * src/supabase_jobs.py stores verbatim from agents/scene_renderer's own
  * Python dict, not projected to camelCase (same as `Character` below), so the
  * inner keys stay snake_case even though this field's own name is camelCase. */
 export interface CharacterRefUsed {
@@ -59,7 +59,7 @@ export interface CharacterVariant {
 
 /** The locked character ledger, extended with wardrobe variants. Stored
  * verbatim from Python (not camelCase-projected — same reasoning as
- * CharacterRefUsed above), because agents/scene_compositor and
+ * CharacterRefUsed above), because agents/scene_renderer and
  * agents/character_sheet read this exact shape back on the Python side too. */
 export interface Character {
   id: string;
@@ -89,6 +89,16 @@ export interface Scene {
   sceneType?: string;
   visualMode?: "concrete" | "abstract";
   characterIds: string[];
+  /** This beat's assigned location (agents/location_scout) — plain diagnostic
+   * context for the production UI, not used by any render logic. */
+  location?: string;
+  /** The one iconic place/object anchor agents/recognition_director proposed for
+   * this beat, if the occasion was significant enough to get one — empty for
+   * ordinary/domestic beats. */
+  recognitionCue?: string;
+  /** agents/casting_director's staging call for this beat — who is in frame and
+   * how the shot is populated/dressed. Diagnostic only, not used by render. */
+  staging?: string;
   heroSubject?: string;
   imagePrompt: string;
   /** Real Whisper+DTW-aligned narration length for this scene, in seconds —

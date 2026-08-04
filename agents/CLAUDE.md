@@ -1,17 +1,26 @@
-# CLAUDE.md — agents/ (character-consistency stack)
+# CLAUDE.md — agents/ (character-consistency + shot-direction stack)
 
 Directory-scoped instructions for `agents/` (`story_dossier`, `character_ledger`,
-`character_sheet`, `visual_director`, `scene_compositor`). Root `CLAUDE.md` owns the
-overall pipeline SOP (Baserow/ClickUp/S3, stage order, run.py); this file owns how the
-agents in this directory are built and how they're allowed to change.
+`character_sheet`, `character_wardrobe`, `emotion_scout`, `world_builder`,
+`location_scout`, `recognition_director`, `casting_director`, `recognition_reviewer`,
+`drama_reviewer`, `scene_renderer`). Root `CLAUDE.md` owns the overall pipeline SOP
+(Baserow/ClickUp/S3, stage order, run.py); this file owns how the agents in this
+directory are built and how they're allowed to change.
+
+Each module here is deliberately single-responsibility — one small, named, independently
+re-runnable call per judgment — so a bad result is diagnosable without reading the whole
+pipeline. `emotion_scout`/`world_builder` used to be one module (`visual_director`);
+`location_scout` used to be a function inline in `src/scene_engine.py`; `scene_renderer`
+used to be named `scene_compositor`. All three splits/renames/extractions happened for
+this reason alone, not a change in what any of them actually does.
 
 ## Ownership
 
-`src/scene_engine.py` (scene breakdown + classification) is built and maintained as its
-own unit, closely coupled to this directory's narration/visual lane split. `agents/story_dossier`, `agents/visual_director`,
-`agents/character_ledger`, `agents/character_sheet`, and `agents/scene_compositor` are
-their own unit too. Contract versions on context, character, visual-story, and scene
-artifacts force stale cached work to regenerate when any authored interface changes.
+`src/scene_engine.py` (scene breakdown + shot authoring) is built and maintained as its
+own unit, closely coupled to this directory's narration/visual lane split. Every module
+under `agents/` is its own unit too. Contract versions on context, character, emotional-
+spine, world-bible, location, recognition, and scene artifacts force stale cached work to
+regenerate when any authored interface changes.
 
 ## The operating philosophy — read this before writing any agent code
 
@@ -32,6 +41,19 @@ feedback. A reviewer model grading another model's output is where this repo's r
 loops stopped converging — taste can't be arbitrated by a second non-deterministic system
 any better than the first one produced it.
 
+**Explicit, user-directed carve-out (2026-08-03):** `agents/recognition_reviewer` and
+`agents/drama_reviewer` ARE a second LLM reviewing a first LLM's output — this was flagged
+to the user as exactly the pattern this rule warns against (pre-pass-that-feeds-forward vs.
+post-hoc-rewrite-pass), and the user chose the post-hoc reviewer explicitly anyway. Kept as
+narrow as this rule's spirit allows: each reviewer may only ever ADD one concrete detail to
+an existing prompt (an iconic visual anchor, or an intensified expression) and must return
+the original `image_prompt` verbatim whenever no change is needed — it may never re-author
+subject, action, characters, or camera framing. If these two reviewers' outputs stop
+converging (endless back-and-forth rewrites, degrading prompts) the way this rule predicts,
+that is the signal to push their judgment upstream into `agents/location_scout`/
+`agents/recognition_director`/`agents/emotion_scout`'s pre-pass prompts instead, per this
+file's own "fix order" below — not to add a third reviewer.
+
 **3. Deterministic Python checks facts, never taste.**
 Facts: does this id exist, is this a duplicate, does the reconstructed text match the
 source losslessly, does the count match what the schema already requires. Not facts:
@@ -42,7 +64,7 @@ move it into the prompt as guidance for the model making that call, don't code i
 **4. Every instruction has a scope — global, regional, or scene — and lives at that scope.**
 - **Global**: decided once for the whole film/video. Casting, wardrobe, the invented
   world's shape and variety (how many locations, how varied the social domains). Lives in
-  the one call that owns the whole picture (story_dossier, visual_director's single
+  the one call that owns the whole picture (story_dossier, world_builder's single
   world-building call).
 - **Regional**: applies to a phase, act, or beat-range, not the whole film and not one
   scene. Pacing/tempo/camera-distance per emotional phase is regional.
@@ -64,6 +86,23 @@ constructing from parts, prefer having a model write it as one shaped output fie
 Python string-concatenation assembling it — a model asked to write one visual sentence
 won't accidentally narrate its own scaffolding the way an f-string will.
 
+**6. One concept, one agent — no overlap except a review pass.**
+Each decision a scene needs — where it happens, who is in frame, the one iconic
+anchor, how the feeling shows on the face — lives in exactly ONE agent, and no other
+agent decides that same thing. Two agents reasoning about the same concept is a
+mental-model tax: to predict or fix a frame you'd have to know which of two places
+"won," and that is exactly the ambiguity the single-responsibility split exists to
+kill. The shot authors in `src/scene_engine.py` are pure renderers — they assemble the
+upstream decisions (location, cast+staging, recognition anchor, expression) into one
+`image_prompt` and decide none of them. Concretely, as of 2026-08-04: `casting_director`
+owns ALL who-is-in-frame + how-the-crowd-is-staged-and-dressed (for concrete AND abstract
+beats); `location_scout` owns where + its real-world scale; `recognition_director` owns
+the one iconic PLACE/OBJECT anchor and never people; `emotion_scout` owns the expression.
+The ONLY sanctioned two-agent overlap is a post-hoc review pass (`recognition_reviewer`,
+`drama_reviewer`) — see rule 2's carve-out. When you find the same instruction in two
+prompts, that is a bug: pick its one rightful owner and delete it from the other, don't
+let both keep it "to be safe."
+
 **When something's wrong, fix order:**
 1. Can the prompt say it more specifically, at the right scope?
 2. Can one call split into two more targeted calls (global vs. regional vs. scene), or
@@ -84,25 +123,27 @@ exception is the right one.
   into verbatim chronological snippets (homestead pattern: an LLM proposes boundaries,
   code anchors them losslessly to the source, a 30-word ceiling prefers sentence/clause
   boundaries). Every later stage consumes that exact list by position — `agents/
-  visual_director`'s emotional-spine call scores each snippet directly (schema-locked to
-  the exact snippet count, one categorical score per snippet, in order — no free-text
-  anchor, no invented phase count), and `src/scene_engine.py`'s shot author gets exactly
-  one beat per snippet. A second, independent segmentation of the same script is exactly
-  the bug that let a scene's caption and its own emotional category quietly drift apart
-  (confirmed 2026-07-29: a spine call that invents its own boundaries can skip a chunk of
-  narration entirely, and downstream beats silently shift out of correspondence with their
-  matching scene). If a stage has no strong opinion about one snippet,
-  it still scores it with the closest neutral values — it does not skip it. The narration
-  content itself never supplies scene props, locations, or actions to the shot planner.
-  `agents/story_dossier` first separates evidence-backed source facts from production
-  inference, chooses one plausible occupation from an abstract character profile, and
-  commits to concrete casting. `agents/visual_director` invents a standalone contemporary
-  film with its own external goal, recurring social locations, cause-and-effect plot, and
-  resolved ending from that categorical score. `src/scene_engine.py` expands each ordered
-  film beat into one shot without receiving narration. Do not turn narration cuts into
-  per-sentence illustration or source-noun prompting. Show emotion through body language
-  and social situation: despair is a woman with her head in her hands during lived
-  activity, not the narrated book in her hands.
+  emotion_scout`'s emotional-spine call scores each snippet directly (schema-locked to
+  the exact snippet count, one categorical score plus one emotional_stakes/
+  expression_directive pair per snippet, in order — no free-text anchor, no invented phase
+  count), and `src/scene_engine.py`'s shot author gets exactly one beat per snippet. A
+  second, independent segmentation of the same script is exactly the bug that let a
+  scene's caption and its own emotional category quietly drift apart (confirmed
+  2026-07-29: a spine call that invents its own boundaries can skip a chunk of narration
+  entirely, and downstream beats silently shift out of correspondence with their matching
+  scene). If a stage has no strong opinion about one snippet, it still scores it with the
+  closest neutral values — it does not skip it. The narration content itself never
+  supplies scene props, locations, or actions to the shot planner. `agents/story_dossier`
+  first separates evidence-backed source facts from production inference, chooses one
+  plausible occupation from an abstract character profile, and commits to concrete
+  casting. `agents/world_builder` invents ONE consistent everyday-America world (title,
+  style, supporting cast, recurring locations) from that categorical score — no invented
+  plot, external goal, or resolved ending; `src/scene_engine.py` expands each beat into one
+  shot independently against that same world, never receiving narration, so there's no
+  cross-beat causality to keep straight. Do not turn narration cuts into per-sentence
+  illustration or source-noun prompting. Show emotion through body language and social
+  situation: despair is a woman with her head in her hands during lived activity, not the
+  narrated book in her hands.
 - **Bridge the two lanes with sparse literal cues.** The source-aware emotional pass may
   extract a few portable tools, materials, textures, gestures, or garment actions from
   each phase. The independent director can select one only where it fits its invented
@@ -113,7 +154,43 @@ exception is the right one.
 - **Use affirmative image prompts, not safety vocabulary lists.** The Images API has no
   negative-prompt channel. Do not append `negative_prompt` or banned-word lists to
   ordinary prompt text; that previously caused avoidable gpt-image-2 moderation matches.
-  The compositor uses concise renderable direction and positive composition constraints.
+  The renderer uses concise renderable direction and positive composition constraints.
+- **Location scale must match the occasion, and a significant occasion earns one iconic
+  anchor.** `agents/location_scout` assigns one location per beat ahead of authoring
+  (holding a continuous event's location steady across a run of beats) and, for a
+  significant occasion (a wedding, a funeral, a baptism, any ceremony), must pick or invent
+  a location whose real-world scale and formality actually matches that occasion — not
+  just a topically-correct room (the original bug: a wedding correctly held one location
+  across six beats, but that location read as a plain folding-chair meeting room, not a
+  wedding). A communal/social occasion hosted for or about others (a baby shower, a
+  wedding, a party, a funeral) goes to its real public/social venue, never the
+  protagonist's own home, even when the narration is only her attending or thinking about
+  it. `agents/recognition_director` then proposes, only for beats whose location is
+  genuinely significant, ONE concrete real-world-scaled PLACE/OBJECT anchor (a soaring
+  nave, a tiered cake, a flag-draped casket) that makes the shot recognizable as that
+  specific place/occasion from a single still frame — empty for ordinary/domestic beats,
+  since forcing grandeur onto a kitchen scene would be its own bug. It never anchors on
+  people: who is present and how a crowd is staged/dressed belongs to `agents/
+  casting_director` (see below), per rule 6's one-concept-one-agent principle. Both feed
+  forward into the one shot author call in `src/scene_engine.py`; neither writes the shot
+  itself.
+- **Presence and staging are owned by `agents/casting_director`, for every beat.** It
+  decides, per beat, which tracked characters (`character_ids`) are in frame and writes a
+  `staging_note` (solo / two-person / populated group, and how any crowd is dressed for
+  the occasion). Concrete beats are cast from their narration; abstract beats are cast
+  from the world + their emotional stakes only, never narration (they stay narration-blind
+  per the lane rule above). Its standing calls: **leaving the protagonist out is an
+  aggressive standing preference (user-directed, stated repeatedly)** — she appears in
+  many beats already, so whenever a beat can stand on its own without her (it names an
+  event, an occasion, other people, a place, or an object the shot can be built around)
+  she is left out, and this holds even when the line is phrased as her watching/attending/
+  standing at the occasion rather than acting in it (depict the occasion, not her apart
+  from it); she stays in only when the beat cannot be itself without her
+  (names her by name/singular action, or is an inherently private interior moment of hers).
+  A plural collective noun never promotes an anonymous crowd into a named tracked
+  character; a quoted line spoken AT her by an untracked person is staged as a two-person
+  moment with that speaker in frame. The two shot authors render exactly this cast +
+  staging and no longer decide presence themselves.
 - **Recurring, full-body characters — not a stock-figure default.** Every script gets its
   own character ledger, built once up front by `agents/character_ledger:build(script,
   context)`: the protagonist is always tracked, Jesus only if he actually appears, any
@@ -121,7 +198,7 @@ exception is the right one.
   Each tracked character gets one full-body reference image
   (`agents/character_sheet:generate_all()`, gpt-image-2 t2i, `quality=low`).
   `src/scene_engine.py`'s scene authoring then tags every scene with which tracked
-  characters (`character_ids`) are visually present, and `agents/scene_compositor`
+  characters (`character_ids`) are visually present, and `agents/scene_renderer`
   generates that scene's image referencing them by name/appearance. No fixed per-channel
   design and no stick figures.
 - **Characters are locked production specifications, not loose prose.** The approved
@@ -143,14 +220,14 @@ exception is the right one.
   action, and the complete deterministic compiled profile for each visible character —
   written as one model-authored sentence per rule 5 above, never Python-glued from role
   labels (`"the protagonist is..."`) plus appearance fields. `visual_story.movie_style` is
-  planning context for the shot author only, never appended to the final compositor
-  prompt. `COMPOSITOR_CONTRACT_VERSION` invalidates images when final prompt construction
+  planning context for the shot author only, never appended to the final renderer
+  prompt. `RENDERER_CONTRACT_VERSION` invalidates images when final prompt construction
   changes.
 - **No automated vision-QA, anywhere.** Whether a generated image matches its expected
   character(s) is a human call made off the production UI review, not a
   gpt-4o vision gate — keeps cost down; this is a story pipeline, not a verification
   pipeline.
-- **i2i by default, t2i as fallback only.** `agents/scene_compositor` generates each scene
+- **i2i by default, t2i as fallback only.** `agents/scene_renderer` generates each scene
   via gpt-image-2's own `images.edit()`, conditioned on every present tracked character's
   reference image (`src/gpt_image.py:edit_image()`) — identity comes from the image, not
   restated appearance text, so there is nothing for a role label to leak into. Reference

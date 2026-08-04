@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json
 
 
-STORY_DOSSIER_CONTRACT_VERSION = 13
+STORY_DOSSIER_CONTRACT_VERSION = 14
 
 _FACT_SCHEMA = {
     "type": "object",
@@ -185,7 +185,6 @@ DOSSIER_SCHEMA = {
                         "maxItems": 8,
                         "items": {"type": "string"},
                     },
-                    "parallel_story_rule": {"type": "string"},
                 },
                 "required": [
                     "stable_identity",
@@ -193,7 +192,6 @@ DOSSIER_SCHEMA = {
                     "professional_vibe",
                     "visual_vibe",
                     "credible_worlds",
-                    "parallel_story_rule",
                 ],
                 "additionalProperties": False,
             },
@@ -295,7 +293,8 @@ def _choose_occupation(abstract_profile: dict) -> dict:
             {
                 "role": "system",
                 "content": (
-                    "Choose one occupation for a parallel visual film. Balance credibility "
+                    "Choose one occupation for this character's own independent visual world. "
+                    "Balance credibility "
                     "with visual range and prefer the least obvious non-stereotyped casting "
                     "that still fits the abstract character. The work world should support "
                     "active scenes, varied relationships, and changing environments — a "

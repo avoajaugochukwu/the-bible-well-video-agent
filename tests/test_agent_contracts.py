@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch
 
 from agents.character_ledger import client as character_ledger
-from agents.visual_director import client as visual_director
+from agents.world_builder import client as world_builder
 
 
 class AgentContractTests(unittest.TestCase):
@@ -63,7 +63,7 @@ class AgentContractTests(unittest.TestCase):
             "director_profile": {"professional_vibe": "precise"},
         }
 
-        handoff = visual_director._profile_for_director(dossier)
+        handoff = world_builder._profile_for_director(dossier)
 
         self.assertNotIn("source_facts", handoff)
         self.assertEqual(
@@ -102,31 +102,11 @@ class AgentContractTests(unittest.TestCase):
             }],
         }
 
-        score = visual_director._score_for_director(spine)
+        score = world_builder._score_for_director(spine)
 
         self.assertIn("silver tweezers", score)
         self.assertIn("tightening a small screw", score)
         self.assertNotIn("verbatim source phrase", score)
-
-    def test_director_cannot_invent_bridge_cues(self):
-        emotional_beats = [{
-            "beat_number": 1,
-            "bridge_cues": [{
-                "cue": "silver tweezers",
-                "cue_type": "tool",
-                "evidence": "with silver tweezers",
-            }],
-        }]
-        plan = {
-            "story_beats": [{
-                "beat_number": 1,
-                "bridge_cue": "gold pocket watch",
-            }]
-        }
-
-        problems = visual_director._validate_bridge_cues(plan["story_beats"], emotional_beats)
-
-        self.assertTrue(any("not one of that beat's allowed cues" in p for p in problems))
 
     def test_character_retry_includes_previous_json(self):
         generation_messages = []

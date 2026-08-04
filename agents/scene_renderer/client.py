@@ -1,12 +1,15 @@
-"""Scene compositor agent: per-scene i2i generation (gpt-image-2 images.edit) using
-the tracked characters present in that scene. Identity now comes from each
-character's own reference image, conditioned via edit, not from restated
-appearance text in the prompt — the prompt only carries the scene's visible
-action. Reference images are downloaded + shrunk once per character and reused
-across every scene that includes them. NO vision-QA anywhere in this app —
-matching is a human call made off the production UI review. Falls
-back to plain t2i (gpt-image-2 generate, full appearance text) only if a
-character has no usable reference image, or if an edit call is rejected.
+"""Scene renderer agent (renamed from scene_compositor): per-scene i2i generation
+(gpt-image-2 images.edit) using the tracked characters present in that scene.
+Identity now comes from each character's own reference image, conditioned via
+edit, not from restated appearance text in the prompt — the prompt only
+carries the scene's already-authored visible action (that authoring, including
+any recognition_director iconic-symbol staging, happens upstream in
+src/scene_engine.py). Reference images are downloaded + shrunk once per
+character and reused across every scene that includes them. NO vision-QA
+anywhere in this app — matching is a human call made off the production UI
+review. Falls back to plain t2i (gpt-image-2 generate, full appearance text)
+only if a character has no usable reference image, or if an edit call is
+rejected.
 """
 import os
 import re
@@ -22,7 +25,7 @@ import gpt_image      # src/
 import supabase_jobs  # src/
 from images import ImageFetcher, shrink_for_upload  # utils/
 
-COMPOSITOR_CONTRACT_VERSION = 6
+RENDERER_CONTRACT_VERSION = 6
 SCENE_STYLE_PREFIX = (
     "A horizontal 16:9 3D animated film still, Pixar style with soft-matte "
     "detailed textures. "
@@ -229,7 +232,7 @@ def compose_one(
                 "basis_kind": "prompt",
                 "generation_method": "failed",
                 "character_refs_used": character_refs_used,
-                "compositor_contract_version": COMPOSITOR_CONTRACT_VERSION,
+                "renderer_contract_version": RENDERER_CONTRACT_VERSION,
             }
     return {
         **scene,
@@ -238,7 +241,7 @@ def compose_one(
         "basis_kind": "prompt",
         "generation_method": generation_method,
         "character_refs_used": character_refs_used,
-        "compositor_contract_version": COMPOSITOR_CONTRACT_VERSION,
+        "renderer_contract_version": RENDERER_CONTRACT_VERSION,
     }
 
 

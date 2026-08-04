@@ -23,11 +23,15 @@ to test against).
 
   baserow(get_row) -> context(infer_context) -> characters(agents/character_ledger
   + agents/character_sheet — who's worth tracking, one full-body reference image
-  each) -> scenes(break_into_scenes, characters-aware) -> wardrobe
+  each) -> director(agents/emotion_scout scores the narration, agents/world_builder
+  invents the shared world) -> scenes(break_into_scenes, characters-aware —
+  agents/location_scout + agents/recognition_director stage each beat's place
+  and iconic anchor ahead of authoring) -> review(agents/recognition_reviewer +
+  agents/drama_reviewer, two narrow post-hoc passes) -> wardrobe
   (agents/character_wardrobe — which significant recurring contexts need their
   own outfit variant, one i2i variant reference image each) -> [production UI:
   human approves the wardrobe review before any scene image is generated] ->
-  images (agents/scene_compositor, gpt-image-2 i2i per scene against each
+  images (agents/scene_renderer, gpt-image-2 i2i per scene against each
   present tracked character's base or wardrobe-variant reference image — no
   vision-QA anywhere in this pipeline, match/no-match is a human call off the
   production UI) -> download narration -> whisper_words
@@ -68,9 +72,12 @@ import supabase_jobs                    # src/: production-UI job row
 from agents.character_ledger import client as character_ledger
 from agents.character_sheet import client as character_sheet
 from agents.character_wardrobe import client as character_wardrobe
-from agents.scene_compositor import client as scene_compositor
+from agents.drama_reviewer import client as drama_reviewer
+from agents.emotion_scout import client as emotion_scout
+from agents.recognition_reviewer import client as recognition_reviewer
+from agents.scene_renderer import client as scene_renderer
 from agents.story_dossier import client as story_dossier_agent
-from agents.visual_director import client as visual_director
+from agents.world_builder import client as world_builder
 
 # Cooperative cancellation. ingest_server.py replaces this with a lookup into its
 # own _cancelled_ids set; a plain CLI run has nothing to cancel it, so the
@@ -89,7 +96,7 @@ def _stage(row_id, stage: str) -> None:
     """One stage boundary: bail out if the job was cancelled while the previous
     stage was running, otherwise publish what we're about to do. Cancelling
     during a stage doesn't interrupt it — except image generation, which checks
-    between finished images (see scene_compositor.compose_all)."""
+    between finished images (see scene_renderer.compose_all)."""
     if is_cancelled(row_id):
         raise Cancelled(f"job {row_id} cancelled before {stage!r}")
     supabase_jobs.set_stage(row_id, stage)
@@ -140,8 +147,8 @@ def _transcribe(voice_url: str) -> tuple[list[dict], float]:
 
 
 def prepare_cast_and_scenes(row_id) -> dict:
-    """Stages 1-7: script -> context -> narration cut -> dossier -> cast ->
-    director -> scenes -> wardrobe variants. Ends by upserting an
+    """Stages 1-8: script -> context -> narration cut -> dossier -> cast ->
+    director -> scenes -> review -> wardrobe variants. Ends by upserting an
     'awaiting_wardrobe_approval' job row to Supabase (bible_well_jobs) instead of
     generating any scene images — a human reviews the character wardrobe (base
     image + each significant-context variant) in the production UI and fires
@@ -207,21 +214,24 @@ def prepare_cast_and_scenes(row_id) -> dict:
         flush=True,
     )
 
-    # 5 DIRECTOR — narration and visuals are separate lanes. The director sees
-    # the categorical emotional score (one entry per narration snippet, scored by
-    # position — never its own invented boundaries), evidence-backed bridge cues,
-    # production dossier, and source cast. It declares recurring foreground
-    # film-only roles and returns exactly one story beat per narration snippet.
+    # 5 DIRECTOR — narration and visuals are separate lanes. agents/emotion_scout
+    # scores every narration snippet (categorical signals plus emotional_stakes/
+    # expression_directive, one entry per snippet, scored by position — never its
+    # own invented boundaries) with evidence-backed bridge cues; agents/world_builder
+    # then declares recurring foreground film-only roles and the shared world from
+    # that score, production dossier, and source cast.
     _stage(row_id, "Directing visual story")
-    print("  director: visual_director.build()...", flush=True)
-    visual_story = visual_director.build(
-        source_characters,
-        narration_snippets,
-        story_dossier=story_dossier,
-    )
+    print("  director: emotion_scout.score()...", flush=True)
+    emotional_spine = emotion_scout.score(narration_snippets)
+    print("  director: world_builder.build()...", flush=True)
+    visual_story = {
+        **world_builder.build(source_characters, story_dossier, emotional_spine),
+        "emotional_spine": emotional_spine,
+    }
     print(
         f"  director: {visual_story['film_title']!r}, "
-        f"{len(visual_story['story_beats'])} story beats",
+        f"{len(visual_story['recurring_locations'])} locations, "
+        f"{len(visual_story['supporting_characters'])} supporting characters",
         flush=True,
     )
 
@@ -256,6 +266,19 @@ def prepare_cast_and_scenes(row_id) -> dict:
         visual_story=visual_story,
     )
     print(f"  scenes: done ({len(scenes)} scenes)")
+
+    # 7.1 REVIEW — two narrow post-hoc passes over the already-authored scenes,
+    # each only ever intensifying an existing image_prompt (never re-authoring
+    # subject/action/characters/framing): agents/recognition_reviewer checks
+    # iconicity against each scene's own location, agents/drama_reviewer checks
+    # expression boldness against each beat's own emotional stakes. A deliberate,
+    # flagged exception to agents/CLAUDE.md rule 2 — see that file's carve-out note.
+    _stage(row_id, "Reviewing scenes for iconicity and emotional boldness")
+    print("  review: recognition_reviewer.review()...", flush=True)
+    scenes = recognition_reviewer.review(scenes)
+    print("  review: drama_reviewer.review()...", flush=True)
+    scenes = drama_reviewer.review(scenes, emotional_spine.get("emotional_beats") or [])
+    print("  review: done")
 
     # 7.5 WARDROBE — one whole-film decision per character: which SIGNIFICANT
     # recurring contexts (a wedding, a work uniform) need their own outfit
@@ -296,7 +319,7 @@ def prepare_cast_and_scenes(row_id) -> dict:
 
 
 def prepare_images_and_align(row_id) -> dict:
-    """Stages 8-9: images -> narration download + Whisper align
+    """Stages 9-10: images -> narration download + Whisper align
     (duration_seconds per scene). Fired once a human has approved the wardrobe
     review (production UI's approve-wardrobe action) or the CLI auto-approved
     it. Reads scenes/characters straight back out of the Supabase job row
@@ -319,15 +342,15 @@ def prepare_images_and_align(row_id) -> dict:
     scenes = supabase_jobs.full_scenes_from_job(job)
     characters = job.get("characters") or []
 
-    # 8 IMAGES — agents/scene_compositor, i2i per scene against whichever tracked
+    # 8 IMAGES — agents/scene_renderer, i2i per scene against whichever tracked
     # characters (and, where the wardrobe stage assigned one, wardrobe variant)
     # that scene calls for, in parallel (t2i fallback only). No vision-QA
     # anywhere — a human reviews the images in the production UI and judges
     # consistency. The count lives in the job's total/completed counters now,
     # so the label stays a plain verb the UI can show as-is.
     _stage(row_id, "Generating images")
-    print("  images: scene_compositor.compose_all()...", flush=True)
-    scenes = scene_compositor.compose_all(
+    print("  images: scene_renderer.compose_all()...", flush=True)
+    scenes = scene_renderer.compose_all(
         scenes, characters, row_id=row_id, is_cancelled=lambda: is_cancelled(row_id),
     )
     miss = [s["scene_number"] for s in scenes if not s["image_url"]]
@@ -364,9 +387,9 @@ def prepare_images_and_align(row_id) -> dict:
 
 
 def render_pipeline(row_id) -> str:
-    """Stages 10-12: Remotion Lambda render -> S3 -> ClickUp (narration
+    """Stages 11-13: Remotion Lambda render -> S3 -> ClickUp (narration
     download + Whisper+DTW align already happened in
-    prepare_images_and_align(), stage 9). Fired manually (production UI's
+    prepare_images_and_align(), stage 10). Fired manually (production UI's
     Render button) once the job has been reviewed/edited. Scenes come straight
     out of the Supabase job row — the only place they live — so every per-scene
     asset choice made in the UI (regenerated images, Pexels picks, image/video

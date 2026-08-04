@@ -94,7 +94,7 @@ def generate_variant_one(character: dict, variant: dict, prompt: str | None = No
     """One wardrobe variant's reference image: i2i off the character's OWN base
     reference image (identity carried by the image AND by concrete identity
     text — see build_variant_reference_prompt), only the outfit prompt changes,
-    same mechanism agents/scene_compositor already uses for scene images.
+    same mechanism agents/scene_renderer already uses for scene images.
     Always returns `reference_prompt` (the exact prompt used), same reasoning
     as generate_one. `prompt` can be overridden — used verbatim, no further
     wrapping — the production UI's per-variant regenerate route passes its own

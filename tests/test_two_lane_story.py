@@ -26,30 +26,20 @@ class TwoLaneStoryTests(unittest.TestCase):
 
     def test_break_into_scenes_requires_matching_beat_and_snippet_counts(self):
         # Beats and snippets must correspond 1:1 by position — no distribution
-        # logic reconciles a mismatch anymore (agents/visual_director scores every
+        # logic reconciles a mismatch anymore (agents/emotion_scout scores every
         # real snippet directly, so a mismatch means something upstream is broken,
         # not something to silently paper over).
         snippets = ["First.", "Second.", "Third."]
         visual_story = {
-            "story_beats": [
-                {"beat_number": 1, "location_id": "x", "character_ids": []},
-                {"beat_number": 2, "location_id": "x", "character_ids": []},
-            ]
+            "emotional_spine": {
+                "emotional_beats": [
+                    {"beat_number": 1, "visual_mode": "concrete"},
+                    {"beat_number": 2, "visual_mode": "concrete"},
+                ]
+            }
         }
         with self.assertRaises(ValueError):
             scene_engine.break_into_scenes(snippets, [], visual_story)
-
-    def test_pick_shot_routes_by_visual_mode_not_content(self):
-        parallel_shot = {"hero_subject": "parallel"}
-        literal_shot = {"hero_subject": "literal"}
-        self.assertEqual(
-            scene_engine._pick_shot("concrete", parallel_shot, literal_shot),
-            literal_shot,
-        )
-        self.assertEqual(
-            scene_engine._pick_shot("abstract", parallel_shot, literal_shot),
-            parallel_shot,
-        )
 
     def test_scene_cap_is_lossless(self):
         script = " ".join(f"word{i}" for i in range(1, 76))

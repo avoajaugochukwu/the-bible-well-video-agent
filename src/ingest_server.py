@@ -58,7 +58,7 @@ import s3              # src/
 import supabase_jobs   # src/
 import video_gen       # src/
 from agents.character_sheet import client as character_sheet    # agents/
-from agents.scene_compositor import client as scene_compositor  # agents/
+from agents.scene_renderer import client as scene_renderer  # agents/
 
 _ingest_queue = queue.Queue()
 _render_queue = queue.Queue()
@@ -374,7 +374,7 @@ def h_regenerate_image(m, body, query):
         return 404, {"error": "job not found"}
     job_scene = _job_scene(job, scene_number)
     characters = _characters_for(job)
-    result = scene_compositor.regenerate_one(
+    result = scene_renderer.regenerate_one(
         {"scene_number": scene_number, "image_prompt": prompt,
          "character_ids": job_scene.get("characterIds") or []},
         characters,

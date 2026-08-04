@@ -53,6 +53,15 @@ function HistoryStrip({
   );
 }
 
+function DetailRow({ label, value }: { label: string; value?: string | null }) {
+  if (!value) return null;
+  return (
+    <p className="leading-snug text-neutral-600 dark:text-neutral-300">
+      <span className="font-medium text-sky-600 dark:text-sky-400">{label}</span> {value}
+    </p>
+  );
+}
+
 export function SceneModal({
   jobId,
   scene,
@@ -290,6 +299,28 @@ export function SceneModal({
                 onChange={(e) => upload("video", e.target.files?.[0])}
               />
             </div>
+
+            <details className="mt-4 rounded-lg border border-neutral-200 dark:border-neutral-800">
+              <summary className="cursor-pointer select-none px-3 py-2 text-xs font-medium text-neutral-600 dark:text-neutral-300">
+                Agent details
+                <span className="ml-2 font-normal text-neutral-400">
+                  #{scene.sceneNumber}
+                  {scene.visualMode ? ` · ${scene.visualMode}` : ""}
+                </span>
+              </summary>
+              <div className="space-y-1.5 border-t border-neutral-200 px-3 py-3 text-xs dark:border-neutral-800">
+                <p className="italic text-neutral-500 dark:text-neutral-400">{scene.scriptSnippet}</p>
+                {scene.imagePrompt && (
+                  <p className="text-emerald-700 dark:text-emerald-400">{scene.imagePrompt}</p>
+                )}
+                <DetailRow label="loc" value={scene.location} />
+                <DetailRow label="chars" value={scene.characterIds?.length ? scene.characterIds.join(", ") : "—"} />
+                <DetailRow label="staging" value={scene.staging} />
+                <DetailRow label="anchor" value={scene.recognitionCue} />
+                <DetailRow label="hero" value={scene.heroSubject} />
+                <DetailRow label="type" value={scene.sceneType} />
+              </div>
+            </details>
           </div>
 
           <div className="flex w-[40%] flex-col overflow-hidden">

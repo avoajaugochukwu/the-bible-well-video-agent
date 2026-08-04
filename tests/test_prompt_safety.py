@@ -6,7 +6,7 @@ import unittest
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-from agents.scene_compositor import client as compositor
+from agents.scene_renderer import client as compositor
 
 
 CHARACTERS = {
