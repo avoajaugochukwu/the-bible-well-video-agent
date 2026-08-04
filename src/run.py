@@ -244,6 +244,24 @@ def prepare_cast_and_scenes(row_id) -> dict:
         story_dossier=story_dossier,
     )
     characters = source_characters + director_characters
+    # 6.5 ADDITIVE CAST — a second, add-only ledger pass reads the whole script
+    # against the cast so far and names anyone still missing that the story needs
+    # (a named bride/groom/officiant an occasion leaves empty). Returns [] in the
+    # common case; only appends, never restates an existing character.
+    _stage(row_id, "Filling gaps in the cast")
+    print("  additive cast: character_ledger.build_additive()...", flush=True)
+    additive_characters = character_ledger.build_additive(
+        script,
+        context,
+        characters,
+        story_dossier=story_dossier,
+    )
+    if additive_characters:
+        print(
+            f"  additive cast: +{len(additive_characters)} -> {[c['id'] for c in additive_characters]}",
+            flush=True,
+        )
+        characters = characters + additive_characters
     print(
         f"  characters: {len(characters)} locked -> {[c['id'] for c in characters]}",
         flush=True,

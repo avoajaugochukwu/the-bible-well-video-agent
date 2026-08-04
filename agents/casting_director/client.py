@@ -47,7 +47,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 
 from llm import call_llm_json
 
-CASTING_DIRECTOR_CONTRACT_VERSION = 2
+CASTING_DIRECTOR_CONTRACT_VERSION = 3
 CHUNK_SIZE = 8
 MAX_ATTEMPTS = 3
 
@@ -145,14 +145,22 @@ beat can stand on its own WITHOUT her — it names or describes an event, an
 occasion, other people, a place, or an object the shot can be built around —
 LEAVE HER OUT (character_ids empty). Take every such opportunity; never default
 her in just because she is the protagonist or because a beat "could" plausibly
-include her. This holds EVEN WHEN the narration is phrased as her watching,
-attending, standing at, or thinking about the occasion rather than acting in it
-— depict the occasion or the other people themselves (the gathered guests, the
-celebration, the object named), NOT the protagonist standing apart from it. Keep
-her in ONLY when the beat genuinely cannot be itself without her: its narration
-names her by name or by a singular action she performs, OR it is an inherently
-private interior moment that is hers alone (her own prayer, her own grief alone,
-a direct line about her own story). When in doubt, leave her out.
+include her. This applies when the beat is really ABOUT the occasion or the
+other people in it — depict the occasion or those people themselves (the
+gathered guests, the celebration, the object named), NOT the protagonist
+standing apart from it.
+BUT do NOT cut her out of an occasion she is personally attending when the beat
+centers HER OWN experience of being there — her watching, her reaction, her
+hands together, her tears during the service, a beat that is clearly her felt
+moment inside the event. Being one guest among many at an event she is part of
+is not the same as the shot being about the event instead of her; keep her IN
+those beats, staged within the crowd, so a run of scenes at an occasion she
+attends is not entirely emptied of her. Keep her in when the beat genuinely
+cannot be itself without her: its narration names her by name or a singular
+action she performs, it centers her felt reaction to being somewhere, OR it is
+an inherently private interior moment of hers (her own prayer, her own grief
+alone, a direct line about her own story). Leave her out only when the beat can
+be built entirely around the event or other people with no real loss.
 
 STAGING — write one short, plain sentence telling the shot author who is in the
 frame and how it is populated and dressed:

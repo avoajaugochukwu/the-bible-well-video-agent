@@ -17,8 +17,8 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json  # utils/
 
 MAX_ATTEMPTS = 5
-WARDROBE_CONTRACT_VERSION = 1
-MAX_VARIANTS_PER_CHARACTER = 4
+WARDROBE_CONTRACT_VERSION = 2
+MAX_VARIANTS_PER_CHARACTER = 7
 
 _CLOTHING_SCHEMA = {
     "type": "object",
@@ -111,11 +111,22 @@ _SYSTEM = (
     "default in every scene. Your ONLY job is to decide which SIGNIFICANT, "
     "recurring wardrobe contexts appear across this film's scene list and need "
     "their OWN outfit — not every scene, only ones where the everyday base "
-    "outfit would visibly break the scene (a formal wedding, a work uniform, a "
-    "funeral, a swim/beach scene). Do not invent a variant for a passing "
-    "one-scene detail, and do not create one just because the location changed "
-    "if the everyday outfit still plausibly fits it (the character's own "
-    "kitchen, garden, or porch is not a wardrobe-changing context). A character "
+    "outfit would visibly break the scene. The base is a deliberately versatile, "
+    "put-together, smart-casual-to-semi-formal outfit, so depart from it in two "
+    "directions:\n"
+    "- DRESSIER for any formal or celebratory occasion the character is present "
+    "at, even only as a guest or attendee (a wedding, a funeral, a graduation, a "
+    "baptism, a party, a work uniform) — if the scene list puts this character at "
+    "such an occasion across one or more scenes, give them an outfit that matches "
+    "it rather than leaving them in everyday clothes at a wedding.\n"
+    "- MORE RELAXED for genuinely at-home, off-duty, or comfort scenes where the "
+    "put-together base would look overdressed (slouching at home, waking up, "
+    "sick in bed, doing chores) — a simple loungewear / hoodie / comfortable "
+    "at-home variant.\n"
+    "Do not invent a variant for a passing one-scene detail, and do not create "
+    "one just because the location changed if the everyday outfit still "
+    "plausibly fits it (the character's own kitchen, garden, or porch, dressed "
+    "normally, is not a wardrobe-changing context). A character "
     "may have ZERO variants if their base outfit fits every scene they appear in.\n"
     "Each variant is a complete, concrete, one-choice clothing profile: inner "
     "top, outer layer with exact closure state, one simple bottom, footwear, and "

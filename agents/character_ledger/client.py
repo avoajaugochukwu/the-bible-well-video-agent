@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 from llm import call_llm_json  # utils/
 
 MAX_ATTEMPTS = 5
-CHARACTER_CONTRACT_VERSION = 16
+CHARACTER_CONTRACT_VERSION = 18
 
 _VISUAL_PROFILE_PROPERTIES = {
     "age": {"type": "integer", "description": "one exact production age"},
@@ -197,6 +197,13 @@ _SYSTEM = (
     "spread of clothing color across inner_top and outer_layer — real wardrobes include "
     "blues, greens, reds, warm neutrals, and patterns, not just gray, beige, tan, and olive. "
     "Age alone is never a reason to default a character into a muted or drab palette. "
+    "A character's base outfit is the fallback worn in EVERY scene that has no special "
+    "outfit, so make it versatile and put-together enough to read naturally across many "
+    "everyday settings at once — a workday, a dinner, a celebration, a church service — a "
+    "smart-casual to semi-formal register in a real saturated color, never loungewear, "
+    "sweats, athletic wear, or a drab uniform. Women lean toward a colorful dress or a "
+    "tailored blouse with a skirt or trousers; men toward a crisp collared shirt or an "
+    "unstructured blazer without a tie, in a confident non-neutral color. "
     "Preserve credible family "
     "resemblance when the script establishes relatives. Keep the profile reusable and free "
     "of names, story events, relationships, occupation, religion, emotional history, locations, "
@@ -350,7 +357,11 @@ def build_director_cast(
                 "one stable identity-critical item. Do not add bags, pocket objects, handheld "
                 "props, event costumes, alternate outfits, or story actions. Give this cast a real "
                 "spread of clothing color — blues, greens, reds, warm neutrals, patterns — never "
-                "default every character to gray, beige, tan, or olive regardless of age. Describe each field "
+                "default every character to gray, beige, tan, or olive regardless of age. A base "
+                "outfit is the fallback worn in every scene without a special outfit, so make it a "
+                "versatile, put-together, smart-casual to semi-formal look in a real saturated "
+                "color that reads naturally across a workday, a dinner, a celebration, or a church "
+                "service — never loungewear, sweats, athletic wear, or a drab uniform. Describe each field "
                 "with enough concrete visual detail to be redrawable, and make sure no new "
                 "character shares near-identical age, coloring, and build with another new "
                 "character or with anyone in the existing cast. Return only JSON."
@@ -396,6 +407,45 @@ def build_director_cast(
     )
 
 
+# ponytail: the female protagonist's base outfit is HARD-PINNED, not LLM-chosen —
+# the model kept picking drab/odd everyday clothes (and boots) that read wrong the
+# moment a scene has no wardrobe variant. This is the deterministic universal
+# fallback: a put-together skirt-suit that fits office / dinner / celebration /
+# service alike. Upgrade path: make it per-channel config if a channel ever wants a
+# different signature look, or extend to the male protagonist with his own template.
+_FEMALE_PROTAGONIST_BASE_OUTFIT = {
+    "inner_top": "fitted white ribbed sleeveless top with a straight square neckline",
+    "outer_layer": "dusty rose-pink tailored peplum blazer with notched lapels and long sleeves",
+    "outer_layer_closure": "fully open",
+    "bottom": "matching dusty rose-pink knee-length pencil skirt",
+    "footwear": "pointed-toe blush-grey low heels",
+    "jewelry": "no jewelry",
+}
+
+_FEMALE_TOKENS = ("female", "woman", "women", "girl")
+
+
+def _is_female(profile: dict) -> bool:
+    return any(t in (profile.get("gender") or "").lower() for t in _FEMALE_TOKENS)
+
+
+def _pin_protagonist_base_outfit(characters: list[dict]) -> None:
+    """Hard-lock the female protagonist's base outfit to the universal fallback
+    (_FEMALE_PROTAGONIST_BASE_OUTFIT) instead of trusting the ledger LLM's per-run
+    clothing pick, and recompile her appearance so her base reference image renders
+    that outfit. Only the clothing fields change — face/hair/build stay as authored.
+    A male protagonist is left to the prompt-guided base. Mutates in place."""
+    for c in characters:
+        if c.get("id") != "protagonist":
+            continue
+        profile = c.get("visual_profile") or {}
+        if not _is_female(profile):
+            continue
+        profile.update(_FEMALE_PROTAGONIST_BASE_OUTFIT)
+        c["visual_profile"] = profile
+        c["appearance"] = compile_visual_profile(profile)
+
+
 def build(script: str, context: dict, story_dossier: dict | None = None) -> dict:
     """Return {"characters": [...]} — see _SCHEMA for the exact shape."""
     messages = [
@@ -423,6 +473,7 @@ def build(script: str, context: dict, story_dossier: dict | None = None) -> dict
             for character in data["characters"]:
                 character["character_contract_version"] = CHARACTER_CONTRACT_VERSION
                 character["cast_origin"] = "source"
+            _pin_protagonist_base_outfit(data["characters"])
             return data
         messages.append({
             "role": "assistant",
@@ -430,6 +481,116 @@ def build(script: str, context: dict, story_dossier: dict | None = None) -> dict
         })
         last_problems = problems
     raise RuntimeError(f"character_ledger.build() failed validation after {MAX_ATTEMPTS} attempts: {last_problems}")
+
+
+_ADDITIVE_SYSTEM = (
+    "You are reviewing an ALREADY-BUILT character ledger for one Christian story "
+    "video, for completeness only. You are given the whole script and the "
+    "characters that are ALREADY tracked. Your ONLY job is to name characters "
+    "that are MISSING from that cast and genuinely worth tracking as a recurring "
+    "visual identity, and to return ONLY those additions.\n"
+    "Add a character ONLY if BOTH hold: (a) they are a specific named or clearly "
+    "role-defined person (a bride, a groom, an officiant/pastor, a named friend) "
+    "— never an anonymous crowd or a plural collective (guests, the congregation, "
+    "coworkers, mourners), and (b) they recur across more than one beat OR anchor "
+    "a significant occasion the script actually depicts (a wedding, a funeral, a "
+    "graduation, a baptism) where a named figure clearly belongs. An occasion the "
+    "existing cast leaves empty of the people it obviously needs — a wedding with "
+    "no bride or groom, a service with no minister — is exactly what to catch.\n"
+    "Do NOT repeat, rename, re-id, restate, or 'improve' any already-tracked "
+    "character; additions must be genuinely new people. Do NOT add one-off "
+    "mentions or background figures. If nothing is missing, return an EMPTY "
+    "characters list — that is a valid and common answer; never invent someone "
+    "just to fill it.\n"
+    "Every added character is a full locked visual_profile with the SAME "
+    "discipline as the rest of the ledger: fill every field with exactly one "
+    "concrete choice, no ranges or 'or' or deferred decisions; one uniform hair "
+    "color; hair_length and outer_layer_closure from the schema's fixed "
+    "categories; 'no hair accessory', 'no accessories', and 'no jewelry' unless "
+    "the script explicitly makes one worn item identity-critical. The base outfit "
+    "is a versatile, put-together, smart-casual-to-semi-formal look in a real "
+    "saturated color (never drab gray/beige/olive, never loungewear or a uniform) "
+    "that reads across a workday, a dinner, a celebration, or a service. Make each "
+    "addition visually distinct from every already-tracked character and from the "
+    "other additions. Keep profiles free of names, story events, and scene props.\n"
+    "Return ONLY the JSON object described by the schema."
+)
+
+
+def _validate_additive(data: dict, existing_ids: set[str]) -> list[str]:
+    """Additive-pass facts only (agents/CLAUDE.md rule 3): an addition may not
+    collide with an already-tracked id, additions may not collide with each
+    other, and every profile field is filled. An EMPTY list is valid — "nothing
+    was missed" is the common, correct answer, so (unlike _validate) emptiness is
+    never itself a problem."""
+    problems = []
+    chars = data.get("characters") or []
+    ids = [c.get("id") for c in chars]
+    for cid in ids:
+        if cid in existing_ids:
+            problems.append(
+                f"character '{cid}' duplicates an already-tracked character — "
+                "additions must be genuinely NEW people, not restatements"
+            )
+    if len(ids) != len(set(ids)):
+        problems.append("duplicate character ids among additions — every id must be unique")
+    for c in chars:
+        problems.extend(_profile_contract_problems(c))
+    return problems
+
+
+def build_additive(
+    script: str,
+    context: dict,
+    existing_characters: list[dict],
+    story_dossier: dict | None = None,
+) -> list[dict]:
+    """Second, ADDITIVE ledger pass: given the whole script and the cast already
+    tracked, return ONLY the characters that were missed and are worth tracking
+    (e.g. a named bride/groom/officiant a depicted occasion needs) — never
+    duplicating or restating an existing character. Returns [] when nothing is
+    missing, which is the common case. cast_origin='source-additive'. This is a
+    generative add-only call, not a reviewer grading the first pass's taste (it
+    never rewrites or rejects existing characters), so it sits inside
+    agents/CLAUDE.md rule 2, same as build_director_cast()."""
+    existing_ids = {c.get("id") for c in existing_characters}
+    existing_brief = [
+        {"id": c.get("id"), "role": c.get("role"), "name": c.get("name")}
+        for c in existing_characters
+    ]
+    messages = [
+        {"role": "system", "content": _ADDITIVE_SYSTEM},
+        {
+            "role": "user",
+            "content": (
+                f"WHOLE-SCRIPT PRODUCTION DOSSIER:\n{story_dossier or {}}\n\n"
+                "ALREADY-TRACKED CAST (do NOT return any of these again):\n"
+                f"{json.dumps(existing_brief, ensure_ascii=False, indent=2)}\n\n"
+                f"SCRIPT:\n{script}"
+            ),
+        },
+    ]
+    last_problems: list[str] = []
+    for _ in range(MAX_ATTEMPTS):
+        if last_problems:
+            messages.append({
+                "role": "user",
+                "content": "Fix these problems and return the corrected full JSON object:\n"
+                           + "\n".join(f"- {p}" for p in last_problems),
+            })
+        raw_data = call_llm_json(messages, _SCHEMA, max_completion_tokens=6144)
+        data = _materialize_appearances(raw_data)
+        problems = _validate_additive(data, existing_ids)
+        if not problems:
+            for character in data["characters"]:
+                character["character_contract_version"] = CHARACTER_CONTRACT_VERSION
+                character["cast_origin"] = "source-additive"
+            return data["characters"]
+        messages.append({"role": "assistant", "content": json.dumps(raw_data, ensure_ascii=False)})
+        last_problems = problems
+    raise RuntimeError(
+        f"character_ledger.build_additive() failed validation after {MAX_ATTEMPTS} attempts: {last_problems}"
+    )
 
 
 if __name__ == "__main__":
@@ -448,3 +609,23 @@ if __name__ == "__main__":
     assert any(c["id"] == "protagonist" for c in chars), result
     assert all(len(c["appearance"].split()) >= 15 for c in chars), result
     print(f"ok  character_ledger.build() -> {len(chars)} tracked character(s): {[c['id'] for c in chars]}")
+
+    # _validate_additive is pure logic — check it deterministically, no LLM call.
+    _full = {f: "x" for f in _VISUAL_PROFILE_PROPERTIES}
+    assert _validate_additive({"characters": []}, {"protagonist"}) == [], "empty additions must be valid"
+    _collide = {"characters": [{"id": "protagonist", "visual_profile": _full}]}
+    assert any("duplicates" in p for p in _validate_additive(_collide, {"protagonist"})), "id collision must be caught"
+    _new = {"characters": [{"id": "bride", "visual_profile": _full}]}
+    assert _validate_additive(_new, {"protagonist"}) == [], "a genuinely new, fully-specified addition must pass"
+    print("ok  character_ledger._validate_additive: empty ok, collision caught, new addition passes")
+
+    # _pin_protagonist_base_outfit is pure logic — check deterministically, no LLM.
+    _she = {"id": "protagonist", "visual_profile": {**_full, "gender": "female"}, "appearance": "old"}
+    _he = {"id": "protagonist", "visual_profile": {**_full, "gender": "male", "outer_layer": "navy blazer"}, "appearance": "old"}
+    _other = {"id": "friend", "visual_profile": {**_full, "gender": "female", "outer_layer": "teal coat"}, "appearance": "old"}
+    _pin_protagonist_base_outfit([_she, _he, _other])
+    assert _she["visual_profile"]["outer_layer"] == _FEMALE_PROTAGONIST_BASE_OUTFIT["outer_layer"], _she
+    assert "rose-pink" in _she["appearance"], _she["appearance"]
+    assert _he["visual_profile"]["outer_layer"] == "navy blazer", "male protagonist must be untouched"
+    assert _other["visual_profile"]["outer_layer"] == "teal coat", "non-protagonist woman must be untouched"
+    print("ok  character_ledger._pin_protagonist_base_outfit: female protagonist pinned, male + others untouched")

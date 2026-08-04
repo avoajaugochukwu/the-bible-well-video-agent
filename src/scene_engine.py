@@ -29,7 +29,7 @@ from agents.location_scout import client as location_scout
 from agents.recognition_director import client as recognition_director
 from agents.casting_director import client as casting_director
 
-PROMPT_CONTRACT_VERSION = 21
+PROMPT_CONTRACT_VERSION = 22
 CONTEXT_CONTRACT_VERSION = 2
 
 CONTEXT_SCHEMA = {
@@ -310,9 +310,9 @@ def author_story_beat(
     staging_note = (casting.get("staging_note") or "").strip()
     in_frame = [c for c in characters if c["id"] in cast_ids]
     cast = "\n".join(
-        f'- id "{c["id"]}", role "'
+        f'- role "'
         f'{"protagonist" if c["id"] == "protagonist" else c.get("role") or "recurring supporting character"}'
-        f'": {c.get("appearance") or c.get("story_function", "")}'
+        f'"'
         for c in in_frame
     ) or "(no tracked character is in this shot — it is entirely about the occasion or the other people in it)"
     locations = json.dumps(visual_story.get("recurring_locations") or [], indent=2)
@@ -338,7 +338,8 @@ CAST IN FRAME (agents/casting_director already decided who appears — render
 exactly these tracked characters as the shot's tracked foreground, none other;
 do not add another tracked character back in, and if it lists none, the
 protagonist does NOT appear and the shot is entirely about the occasion or the
-other people in it):
+other people in it). Refer to each only by their role — you are told nothing
+about how they look, on purpose:
 {cast}
 
 STAGING (already decided by the casting pre-pass — honor it exactly; it tells you
@@ -362,9 +363,13 @@ figures fill out the shot per STAGING above; keep them as background texture
 that never outweighs the tracked characters in CAST IN FRAME, unless CAST IN
 FRAME is empty, in which case those figures are the shot's subject.
 
-Every stable physical, wardrobe, jewelry, relationship-status, or occupational
-identity detail must come from CAST IN FRAME. Do not invent unlisted identity
-markers; specificity comes from action, body language, framing, and the world.
+Do NOT describe any tracked character's clothing, body, face, hair, jewelry, or
+any other physical appearance — every tracked character's look and outfit is
+carried by a reference image attached at render time, so any wardrobe or
+appearance word you write here only fights that image and drifts from shot to
+shot. Their specificity comes from action, body language, framing, and the
+world, never from how they look. (Anonymous crowd dress per STAGING is fine —
+those background figures have no reference image.)
 
 THIS BEAT'S EMOTIONAL STAKES (why this moment actually matters to this person
 right now): {emotional_beat.get("emotional_stakes") or "(none given)"}
@@ -377,8 +382,9 @@ CAMERA FRAMING FOR THIS SHOT: {_camera_instruction(emotional_beat)}
 
 image_prompt is 25-45 words and describes only what the image generator should render:
 specific location, visible action, people and body language, time of day, and framing.
-Refer to recurring cast by role, never by given name. Their visual appearance is
-injected later. Use no written signs or readable page content. Do not add an art style;
+Refer to recurring cast by role, never by given name. Never state what any tracked
+person wears or looks like — their appearance and outfit come from a reference image
+at render time. Use no written signs or readable page content. Do not add an art style;
 the whole-film movie style is injected later.
 
 Faith is shown through behavior, relationship, service, reconciliation, prayerful
@@ -428,9 +434,9 @@ def author_literal_beat(
     staging_note = (casting.get("staging_note") or "").strip()
     in_frame = [c for c in characters if c["id"] in cast_ids]
     cast = "\n".join(
-        f'- id "{c["id"]}", role "'
+        f'- role "'
         f'{"protagonist" if c["id"] == "protagonist" else "recurring supporting character"}'
-        f'": {c["appearance"]}'
+        f'"'
         for c in in_frame
     ) or "(no tracked character is in this shot — it is entirely about the occasion or the other people in it)"
     system = f"""
@@ -444,7 +450,9 @@ NARRATION FOR THIS BEAT:
 CAST IN FRAME (agents/casting_director already decided who appears — render exactly
 these tracked characters as the shot's tracked foreground, none other; do not add
 another tracked character back in, and if it lists none, the protagonist does NOT
-appear and the shot is entirely about the occasion or the other people in it):
+appear and the shot is entirely about the occasion or the other people in it).
+Refer to each only by their role — you are told nothing about how they look, on
+purpose:
 {cast}
 
 STAGING (already decided by the casting pre-pass — honor it exactly; it tells you
@@ -482,10 +490,13 @@ invent a prop or object carrying its own strong narrative weight (a casket, a
 wheelchair, a ring box, a diploma) unless this beat's own narration or the
 surrounding passage actually names or clearly implies it.
 
-Every stable physical, wardrobe, jewelry, relationship-status, or occupational
-identity detail must come from CAST IN FRAME. Do not invent unlisted identity
-markers to make a character feel more specific; specificity comes from action,
-body language, framing, and the scene the narration describes.
+Do NOT describe any tracked character's clothing, body, face, hair, jewelry, or
+any other physical appearance — every tracked character's look and outfit is
+carried by a reference image attached at render time, so any wardrobe or
+appearance word you write here only fights that image and drifts from shot to
+shot. Their specificity comes from action, body language, framing, and the scene
+the narration describes, never from how they look. (Anonymous crowd dress per
+STAGING is fine — those background figures have no reference image.)
 
 Populate the frame per STAGING above — it already fixes who is present and how
 any crowd is dressed for the occasion; render that, do not re-derive it. Keep
@@ -506,8 +517,9 @@ CAMERA FRAMING FOR THIS SHOT: {_camera_instruction(emotional_beat)}
 
 image_prompt is 25-45 words and describes only what the image generator should
 render: specific location, visible action, people and body language, time of
-day, and framing. Refer to recurring cast by role, never by given name. Their
-visual appearance is injected later. Use no written signs or readable page
+day, and framing. Refer to recurring cast by role, never by given name. Never
+state what any tracked person wears or looks like — their appearance and outfit
+come from a reference image at render time. Use no written signs or readable page
 content. Do not add an art style.
 
 Faith is shown through behavior, relationship, service, reconciliation,
