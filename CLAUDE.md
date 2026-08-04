@@ -157,7 +157,10 @@ the-bible-well/
 ├── .env            all credentials (Baserow, OpenAI, AWS, ClickUp, Supabase, etc.), one file
 ├── .venv/          one virtualenv, referenced by src/run.py via a PROJECT_ROOT-style
 │                   constant one level up from src/
-└── Dockerfile, docker-entrypoint.sh   one image, one Railway service — see README.md
+└── Dockerfile, docker-entrypoint.sh   one image, one Railway service (project `ui-helpers`,
+                    service `the-bible-well-video-agent`, auto-deploys `main` on push — exact
+                    ids + the "don't confuse it with the stale `thebiblewell` project" warning
+                    are in `src/CLAUDE.md`'s Deployment note) — see README.md
 ```
 
 `src/*.py` files that need `utils/` (env, align, images, tts) add a small

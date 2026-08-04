@@ -11,6 +11,22 @@ The deployed service (`src/ingest_server.py`) is a persistent HTTP server with t
 worker queues (prepare, render) so a slow render never blocks a new `/ingest` call — see its
 `ROUTES` list for what the API can do.
 
+### Deployment — Railway (read before touching logs/deploys)
+
+This service is deployed on **Railway**, and it **auto-deploys `main` on every push** (a
+push triggers a build+deploy; the latest SUCCESS deployment is whatever's newest on `main`).
+Exact coordinates — use these, don't guess by name:
+
+- **Project:** `ui-helpers` — id `13d2229c-764e-4da7-bc63-421642f6373f`
+- **Service:** `the-bible-well-video-agent` — id `b169301e-10ed-42aa-ac16-2ea1c091f8e6`
+- **Environment:** `production`
+
+⚠️ There is a SEPARATE, unrelated Railway project literally named **`thebiblewell`** — it is
+NOT this pipeline (its last deploy is months stale and predates this whole agent stack). Do
+not read its logs or deploy to it; that decoy already caused one wrong diagnosis. Job failures
+are also written to the Supabase `bible_well_jobs` row's `payload.error`, which is usually the
+fastest first look before Railway deploy logs.
+
 Nothing is written to local disk: there is no `runs/` directory and no stage-artifact cache.
 The Supabase job row is the only durable state, so a failed prepare re-runs in full (see root
 `CLAUDE.md`'s "State and resume"). Scratch files (the narration mp3, generated PNGs, the
