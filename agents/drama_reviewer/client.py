@@ -70,12 +70,14 @@ each still 25-45 words.
 """.strip()
 
 
-def _has_control_chars(text: str) -> bool:
-    """Confirmed 2026-08-03 (agents/location_scout): repeating a similar
-    string many times in one array can make the decoder corrupt a non-ASCII
-    character into a stray control byte — a content-corruption fact, not a
-    taste call, so it gets the same retry treatment as a count mismatch."""
-    return any(ord(c) < 32 and c not in "\t\n" for c in text)
+def _sanitize(text: str) -> str:
+    """Strip stray control bytes the decoder can inject when a similar string
+    repeats many times in one array (an em dash / curly apostrophe corrupted to
+    e.g. \\x19 — confirmed 2026-08-03). A decoder artifact, not a semantic issue,
+    so fix it in place rather than reject the prompt and fall back to the
+    un-reviewed original over one stray byte."""
+    cleaned = "".join(c for c in (text or "") if ord(c) >= 32 or c in "\t\n")
+    return " ".join(cleaned.split())
 
 
 def _validate(prompts: list[str], scenes: list[dict]) -> list[str]:
@@ -86,8 +88,6 @@ def _validate(prompts: list[str], scenes: list[dict]) -> list[str]:
     for i, p in enumerate(prompts, start=1):
         if not (p or "").strip():
             problems.append(f"shot {i} has an empty image_prompt")
-        elif _has_control_chars(p):
-            problems.append(f"shot {i}'s image_prompt contains corrupted/unprintable characters")
     return problems
 
 
@@ -116,7 +116,7 @@ def _review_chunk(scenes: list[dict]) -> list[str]:
                            + "\n".join(f"- {p}" for p in last_problems),
             })
         data = call_llm_json(messages, _SCHEMA, max_completion_tokens=token_budget)
-        prompts = data.get("image_prompts") or []
+        prompts = [_sanitize(p) for p in (data.get("image_prompts") or [])]
         problems = _validate(prompts, scenes)
         if not problems:
             return prompts

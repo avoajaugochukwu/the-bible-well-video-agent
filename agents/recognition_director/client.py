@@ -85,23 +85,21 @@ order, each at most 20 words.
 """.strip()
 
 
-def _has_control_chars(text: str) -> bool:
-    """Confirmed 2026-08-03 (agents/location_scout): repeating a similar
-    string many times in one array can make the decoder corrupt a non-ASCII
-    character into a stray control byte — a content-corruption fact, not a
-    taste call, so it gets the same retry treatment as a count mismatch."""
-    return any(ord(c) < 32 and c not in "\t\n" for c in text)
+def _sanitize(text: str) -> str:
+    """Strip stray control bytes the decoder can inject when a similar string
+    repeats many times in one array (an em dash / curly apostrophe corrupted to
+    e.g. \\x19 — confirmed 2026-08-03). A decoder artifact, not a semantic issue,
+    so fix it in place rather than drop a good anchor to empty over one stray
+    byte."""
+    cleaned = "".join(c for c in (text or "") if ord(c) >= 32 or c in "\t\n")
+    return " ".join(cleaned.split())
 
 
 def _validate(cues: list[str], beats: list[dict]) -> list[str]:
     if len(cues) != len(beats):
         return [f"recognition_cues must have exactly {len(beats)} entries, one per "
                 f"beat in order — got {len(cues)}"]
-    return [
-        f"beat {i}'s recognition_cue contains corrupted/unprintable characters"
-        for i, cue in enumerate(cues, start=1)
-        if cue and _has_control_chars(cue)
-    ]
+    return []
 
 
 def _assign_chunk(beats: list[dict]) -> list[str]:
@@ -128,20 +126,18 @@ def _assign_chunk(beats: list[dict]) -> list[str]:
                            + "\n".join(f"- {p}" for p in last_problems),
             })
         data = call_llm_json(messages, _SCHEMA, max_completion_tokens=token_budget)
-        cues = data.get("recognition_cues") or []
+        cues = [_sanitize(c) for c in (data.get("recognition_cues") or [])]
         problems = _validate(cues, beats)
         if not problems:
             return cues
         if attempt == MAX_ATTEMPTS - 1:
             # Fail-open: an empty cue is itself a valid answer (most beats get
-            # one), so a still-malformed result after retries pads/drops rather
-            # than raises — this is an optional accent, not a hard shot
-            # requirement like agents/location_scout's location. A corrupted
-            # (non-empty, unprintable) cue is dropped to "" rather than kept.
+            # one), so a still-malformed result (only a count mismatch can reach
+            # here now) pads/truncates rather than raises — this is an optional
+            # accent, not a hard shot requirement like location_scout's location.
             print(f"    recognition_director: {problems[0]} after {MAX_ATTEMPTS} attempts, "
-                  f"padding/dropping", flush=True)
-            cues = (cues + [""] * len(beats))[:len(beats)]
-            return ["" if c and _has_control_chars(c) else c for c in cues]
+                  f"padding/truncating", flush=True)
+            return (cues + [""] * len(beats))[:len(beats)]
         messages.append({"role": "assistant", "content": json.dumps(data, ensure_ascii=False)})
         last_problems = problems
 

@@ -78,12 +78,14 @@ def _schema(cast_ids: list[str]) -> dict:
     }
 
 
-def _has_control_chars(text: str) -> bool:
-    """Confirmed 2026-08-03 (agents/location_scout): repeating a similar string
-    many times in one array can make the decoder corrupt a non-ASCII character
-    into a stray control byte — a content-corruption fact, not a taste call, so
-    it gets the same retry treatment as a count mismatch."""
-    return any(ord(c) < 32 and c not in "\t\n" for c in text)
+def _sanitize(text: str) -> str:
+    """Strip stray control bytes the decoder can inject when a similar string
+    repeats many times in one array (an em dash / curly apostrophe corrupted to
+    e.g. \\x19 — confirmed 2026-08-03). A decoder artifact, not a semantic issue,
+    so fix it in place rather than reject a good staging note over one stray
+    byte."""
+    cleaned = "".join(c for c in (text or "") if ord(c) >= 32 or c in "\t\n")
+    return " ".join(cleaned.split())
 
 
 def _validate(castings: list[dict], beats: list[dict], cast_ids: set[str]) -> list[str]:
@@ -98,8 +100,6 @@ def _validate(castings: list[dict], beats: list[dict], cast_ids: set[str]) -> li
         for cid in ids:
             if cid not in cast_ids:
                 problems.append(f"beat {i} names an unknown character_id {cid!r}")
-        if _has_control_chars(c.get("staging_note") or ""):
-            problems.append(f"beat {i}'s staging_note contains corrupted/unprintable characters")
     return problems
 
 
@@ -223,6 +223,8 @@ def _assign_chunk(beats: list[dict], cast_block: str, cast_ids: list[str]) -> li
             })
         data = call_llm_json(messages, schema, max_completion_tokens=token_budget)
         castings = data.get("castings") or []
+        for c in castings:
+            c["staging_note"] = _sanitize(c.get("staging_note") or "")
         problems = _validate(castings, beats, cast_id_set)
         if not problems:
             return castings

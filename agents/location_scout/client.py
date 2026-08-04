@@ -51,13 +51,16 @@ _SCHEMA = {
 }
 
 
-def _has_control_chars(text: str) -> bool:
-    """Confirmed 2026-08-03: repeating the same long location string many
-    times in one array can make the decoder corrupt a non-ASCII character
-    (an em dash, a curly apostrophe) into a stray control byte (e.g. \\x19) —
-    a content-corruption fact, not a taste call, so it gets the same
-    retry-then-fail treatment as a count mismatch."""
-    return any(ord(c) < 32 and c not in "\t\n" for c in text)
+def _sanitize(text: str) -> str:
+    """Strip stray control bytes the decoder can inject when the same long
+    string repeats many times in one array — an em dash or curly apostrophe
+    corrupted into e.g. \\x19 (confirmed 2026-08-03). It is a decoder artifact,
+    not a semantic problem, so we FIX it in place (drop the byte, collapse the
+    whitespace it leaves) rather than reject the location: a persistent
+    corruption used to survive all retries and hard-crash the whole job, when
+    the string minus one stray byte is a perfectly usable venue name."""
+    cleaned = "".join(c for c in (text or "") if ord(c) >= 32 or c in "\t\n")
+    return " ".join(cleaned.split())
 
 
 def _validate(locations: list[str], snippets: list[str]) -> list[str]:
@@ -71,8 +74,6 @@ def _validate(locations: list[str], snippets: list[str]) -> list[str]:
     for i, loc in enumerate(locations, start=1):
         if not (loc or "").strip():
             problems.append(f"snippet {i} has no location assigned — every snippet needs one")
-        elif _has_control_chars(loc):
-            problems.append(f"snippet {i}'s location contains corrupted/unprintable characters")
     return problems
 
 
@@ -166,7 +167,7 @@ snippet, same order — never leave one blank.
                            + "\n".join(f"- {p}" for p in last_problems),
             })
         data = call_llm_json(messages, _SCHEMA, max_completion_tokens=token_budget)
-        locations = data.get("locations") or []
+        locations = [_sanitize(loc) for loc in (data.get("locations") or [])]
         problems = _validate(locations, snippets)
         if not problems:
             return locations
