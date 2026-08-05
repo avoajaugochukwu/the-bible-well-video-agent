@@ -283,6 +283,13 @@ def prepare_cast_and_scenes(row_id) -> dict:
         characters,
         visual_story=visual_story,
     )
+    # TEMP partial-run cap (reversible: delete this block, or set to None to render
+    # all). Caps scenes here — before reviews/images/wardrobe/align/render — so a
+    # test run only pays for the first N scenes.
+    _TEMP_SCENE_LIMIT = 50
+    if _TEMP_SCENE_LIMIT:
+        scenes = scenes[:_TEMP_SCENE_LIMIT]
+        print(f"  scenes: TEMP capped to first {_TEMP_SCENE_LIMIT}", flush=True)
     print(f"  scenes: done ({len(scenes)} scenes)")
 
     # 7.1 REVIEW — two narrow post-hoc passes over the already-authored scenes,
