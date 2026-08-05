@@ -47,7 +47,7 @@ sys.path.insert(0, os.path.join(ROOT, "utils"))
 
 from llm import call_llm_json
 
-CASTING_DIRECTOR_CONTRACT_VERSION = 3
+CASTING_DIRECTOR_CONTRACT_VERSION = 4
 CHUNK_SIZE = 8
 MAX_ATTEMPTS = 3
 
@@ -163,7 +163,12 @@ alone, a direct line about her own story). Leave her out only when the beat can
 be built entirely around the event or other people with no real loss.
 
 STAGING — write one short, plain sentence telling the shot author who is in the
-frame and how it is populated and dressed:
+frame and how it is populated. You may set how the ANONYMOUS crowd is dressed for
+the occasion, but NEVER state what a tracked character (the protagonist or any
+named role) is wearing — a tracked character's outfit is carried entirely by
+their own reference image, so naming a garment for them here (a "navy dress", a
+"blazer") only fights that image. Describe tracked characters by role and
+position only, never by clothing:
 - Quoted line spoken TO or AT the protagonist by someone who is NOT tracked
   cast: stage it as a two-person moment — that speaker in frame as an anonymous
   foreground figure addressing her — never her alone reacting to an unseen
@@ -172,9 +177,10 @@ frame and how it is populated and dressed:
   and say how the crowd is DRESSED for what it actually is — a wedding is guests
   in bright or pastel formalwear with a couple at the altar and an officiant; a
   funeral is mourners in black or muted formalwear; an ordinary gathering is
-  plain everyday dress, not ceremonial costuming. Place the tracked cast — if
-  any — within that crowd; never a significant occasion as an empty unpopulated
-  room.
+  plain everyday dress, not ceremonial costuming (this dress direction is for the
+  ANONYMOUS crowd only). Place the tracked cast — if any — within that crowd by
+  role and position, never describing what they wear; never a significant
+  occasion as an empty unpopulated room.
 - Ordinary solo beat: say so plainly (e.g. "protagonist alone, mid-action").
 Prefer a populated, group, or two-person staging over a solo static protagonist
 whenever the beat plausibly allows it. Keep the staging note under 35 words and
